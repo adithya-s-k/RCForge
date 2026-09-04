@@ -3,6 +3,7 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 import type { Aircraft } from "../core/schema";
 import { massProperties } from "../core/aircraft";
 import type { AircraftVisual } from "./model";
+import { orientComponent, componentRotation } from "./component-pose";
 import { batchStatic } from "./batch-static";
 
 /** Cosmetic construction detail. SI dimensions and rotor stations come from the aircraft definition.
@@ -148,6 +149,7 @@ export function buildQuad(a: Aircraft): AircraftVisual {
       box([0.002, 0.0015, 0.001], [x, y, -0.0075], metal, 0.0002);
   const battery = a.parts.find((p) => p.kind === "battery");
   if (battery) {
+    const firstChild = construction.children.length;
     const [x, y, z] = battery.positionM,
       [l, w, h] = battery.sizeM;
     // A raised pack needs a visible tray and standoffs, rather than floating
@@ -165,7 +167,8 @@ export function buildQuad(a: Aircraft): AircraftVisual {
             black,
           );
     }
-    box([l, w, h], [x, y, z], mat(battery.color, 0.48), 0.004);
+    const pack = box([l, w, h], [x, y, z], mat(battery.color, 0.48), 0.004);
+    pack.name = "battery";
     // Shrink-wrap seams, label and two full retention straps follow edited battery dimensions.
     for (const side of [-1, 1])
       box(
@@ -218,6 +221,11 @@ export function buildQuad(a: Aircraft): AircraftVisual {
       mat("#b79b3d"),
       0.001,
     );
+    orientComponent(
+      construction,
+      battery,
+      construction.children.slice(firstChild),
+    );
   }
   for (const m of a.motors) {
     const [x, y, z] = m.positionM;
@@ -231,7 +239,9 @@ export function buildQuad(a: Aircraft): AircraftVisual {
       armPart?.positionM ?? [x / 2, y / 2, 0.002],
       armPart ? mat(armPart.color, 0.75) : carbon,
     );
-    arm.rotation.z = Math.atan2(y, x);
+    if (armPart?.orientationDeg)
+      arm.quaternion.copy(componentRotation(armPart));
+    else arm.rotation.z = Math.atan2(y, x);
     // Motor body scales from its component's envelope; shaft/adapter occupy
     // roughly a third of the declared overall height (cosmetic estimate).
     const component = m.partId
@@ -351,7 +361,7 @@ export function buildQuad(a: Aircraft): AircraftVisual {
   }
   for (const part of a.parts.filter((p) => p.id.startsWith("esc-"))) {
     const esc = box(part.sizeM, part.positionM, black, 0.001);
-    esc.rotation.z = ((part.orientationDeg?.[2] ?? 0) * Math.PI) / 180;
+    esc.quaternion.copy(componentRotation(part));
   }
   if (!authoredArms.length || a.parts.some((p) => p.id === "vtx")) {
     wire(

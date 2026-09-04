@@ -10,6 +10,18 @@ By default, local component inertia is a uniform cuboid derived from `sizeM`. Su
 
 Component positions affect CG and torque arms in all three axes. The editor's Components workspace exposes component masses, material descriptions and the calculated CG beside the assembled model. Its selected installation envelope uses `positionM`, `sizeM` and component orientation; it is a mass envelope, not collision geometry. The editor's longitudinal CG control moves the battery. The model is rigid; it does not simulate foam flex, carbon laminate failure, fastener failure or crush damage.
 
+The installation panel exposes battery and servo roll/pitch/yaw. These rotate the
+component envelope and its visible assembly about its own mass center using the
+same Rz Ry Rx convention as inertia. Battery labels/straps follow the pack;
+servo horns remain children of the rotated housing. Fixed-wing body/boom lofts
+also honor their authored component orientation. Quad battery, arm and ESC
+construction retains these transforms through static batching.
+
+Aerodynamic surfaces have separately authored angles, and the current motor
+thrust directions remain fixed to the vehicle convention. A component mass-frame
+rotation is not a wing-incidence or motor-cant control. Cosmetic trays, wiring
+and housing detail are approximations, not a mechanical installation solver.
+
 ## Battery + motor/prop combination
 
 See `aircraft/quad-x-6s.json` for a complete, deliberately **estimated** 650 g example. Its frame, ESC, flight controller, camera, video transmitter, receiver, wiring, hardware, battery and motors are distinct mass components.

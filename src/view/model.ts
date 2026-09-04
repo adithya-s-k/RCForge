@@ -1,3 +1,4 @@
+import { orientComponent } from "./component-pose";
 import { surfaceActuation } from "../core/actuation";
 import { buildQuad } from "./quad-model";
 import { buildPanel } from "./planform";
@@ -293,6 +294,7 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     roughness: 0.7,
   });
   for (const p of a.parts) {
+    const firstChild = group.children.length;
     if ((p.kind === "body" || p.kind === "boom") && p.bodyLoft) {
       const [x, y, z] = p.positionM,
         [l, w, h] = p.sizeM;
@@ -513,6 +515,7 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
       );
       battery.name = "battery";
     }
+    orientComponent(group, p, group.children.slice(firstChild));
   }
   if (isTiny) {
     // Retention hardware is included in the structural mass allocation.

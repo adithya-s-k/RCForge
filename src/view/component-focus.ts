@@ -1,4 +1,5 @@
 import * as T from "three";
+import { componentRotation } from "./component-pose";
 import type { Aircraft } from "../core/schema";
 import type { Vec3 } from "../core/math";
 
@@ -32,13 +33,7 @@ export class ComponentFocus {
       -(part.positionM[2] - cg[2]),
       part.positionM[1] - cg[1],
     );
-    const angles = part.orientationDeg ?? [0, 0, 0];
-    const rotation = new T.Quaternion().setFromEuler(
-      new T.Euler(
-        ...(angles.map(T.MathUtils.degToRad) as [number, number, number]),
-        "ZYX",
-      ),
-    );
+    const rotation = componentRotation(part);
     this.group.quaternion
       .setFromAxisAngle(new T.Vector3(1, 0, 0), Math.PI / 2)
       .multiply(rotation);

@@ -160,3 +160,10 @@
 .component-reference.modified strong {
   color: #d5ab68;
 }
+
+.component-position .component-axis-fields {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.component-position .component-axis-fields + .component-axis-fields {
+  margin-top: 12px;
+}

@@ -111,3 +111,18 @@ it("commits capacity edits through Apply and retains invalid component values", 
   expect(el(capacity).value).toBe("");
   expect(editor.draft.battery!.capacityMah).toBe(3000);
 });
+
+it("applies battery installation angles without moving its CG or changing mass", () => {
+  const { editor, el } = setup();
+  const i = editor.draft.parts.findIndex((p) => p.id === "battery");
+  const before = massProperties(editor.draft);
+  const field = el(`part-detail-${i}-angle-2`);
+  field.value = "90";
+  field.oninput();
+  editor.commitPending();
+  const after = massProperties(editor.draft);
+  expect(editor.draft.parts[i].orientationDeg).toEqual([0, 0, 90]);
+  expect(after.mass).toBe(before.mass);
+  expect(after.cg).toEqual(before.cg);
+  expect(after.inertia[0][0]).not.toBeCloseTo(before.inertia[0][0], 8);
+});

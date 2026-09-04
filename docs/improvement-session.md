@@ -350,3 +350,21 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   compilation; no new browser errors after correction. Flight contact stays flat.
 - Verification: 190 tests in 34 files, definitions/catalog and production build
   pass. Terrain changes are visual; no aircraft dynamics or replay change.
+
+## Pass 15 · installation pose consistency
+
+- Component orientation previously rotated inertia and the selection envelope,
+  while several visible assemblies ignored it. Fixed-wing body/boom construction,
+  batteries and servo housings/horns now use the same component-local rotation.
+  Quad battery details, authored arms and ESCs preserve it through static batching.
+- Exposed battery/servo installation angles alongside their existing dimensions.
+  Position, dimensions and rotation occupy separate field groups. Aerodynamic
+  surface orientation and motor thrust direction remain separately specified;
+  component mass-frame angles do not silently change those models.
+- Browser: rotated the 450 mm quad pack to 90 degrees, applied it, and checked its
+  visible model against the inspection outline. Value persisted through reload;
+  mass stayed 1007 g. Verified 375 px width with no document overflow, restored
+  the original quad and reset the viewport afterward.
+- Verification: 192 tests in 34 files, definitions/catalog and build pass. Tests
+  compare rotated fixed-wing bounds, quad battery transforms after batching, and
+  editor mass/CG/inertia behavior. No new geometry or simulation-version change.
