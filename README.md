@@ -50,7 +50,7 @@ npm run dev
 
 Open the local URL printed by Vite. To choose a port, run `npm run dev -- --port 5180`. Assets are bundled locally; flight does not require a cloud service. `npm run build` produces a static `dist/` directory, and `npm run preview` serves it locally.
 
-For your first flight, choose an aircraft on **Fly**, select **In flight**, and press **Start flight**. Pilot view places you on the ground; Chase follows the aircraft. **Position & view** moves the aircraft and observer. The lower-left instruments show attitude, heading and a minimap.
+For your first flight, choose an aircraft in **Fly → Flight setup → Aircraft**, select **In flight**, and press **Start flight**. Pilot view places you on the ground; Chase follows the aircraft. **Position & view** moves the aircraft and observer. The lower-left instruments show attitude, heading and a minimap.
 
 | Keyboard       | Action                                    |
 | -------------- | ----------------------------------------- |
@@ -58,10 +58,11 @@ For your first flight, choose an aircraft on **Fly**, select **In flight**, and 
 | ← / → or A / D | Roll left / right                         |
 | Q / E          | Yaw left / right                          |
 | Space / Shift  | Increase / decrease throttle              |
+| V / F          | Switch Pilot/Chase / locate aircraft      |
 | X              | Cut throttle                              |
 | Enter / P / R  | Start or resume / pause or resume / reset |
 
-Click the flight view before using shortcuts. Holding a throttle key changes power continuously; releasing it holds the setting. Focus loss pauses flight. [More controls and observer movement →](docs/controllers.md)
+Start, pause and reset remain available in the bottom bar when setup is closed. Click the flight view before using shortcuts. Holding a throttle key changes power continuously; releasing it holds the setting. Focus loss pauses flight. [More controls and observer movement →](docs/controllers.md)
 
 ## What you can do today
 

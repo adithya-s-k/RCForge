@@ -15,6 +15,7 @@ Start with the [project overview and philosophy](../README.md). For code contrib
 | Run numerical checks or compare measurements     | [Physics verification workflow](physics-validation.md)         |
 | Understand what has and has not been verified    | [Validation and model limits](validation.md)                   |
 | Rebuild lightweight scenery assets               | [Scenery sources and preparation](../public/scenery/README.md) |
+| Review simulator UX changes and test coverage    | [UX review](ux-review.md)                                      |
 | See the project's intended direction             | [Roadmap](roadmap.md)                                          |
 
 Definitions and runtime contracts are enforced by [`src/core/schema.ts`](../src/core/schema.ts). Simulation and recording compatibility are enforced by [`src/core/simulation.ts`](../src/core/simulation.ts) and [`src/core/experiment.ts`](../src/core/experiment.ts). Read the implementation when extending a field; documentation may describe a subset of the supported schema.

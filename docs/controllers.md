@@ -4,7 +4,13 @@ RCForge reads keyboard input, browser Gamepad API axes, and the RCForge Arduino 
 
 ## Keyboard
 
-W/S or arrows pitch down/up; A/D or arrows roll; Q/E yaw. Space increases throttle, Shift decreases it, and X cuts power; +/− and keypad +/− also work. Tap for 5% steps or hold for a continuous change. Releasing holds the selected throttle. P pauses, R resets. Enter starts or resumes. Flight shortcuts are suppressed while editing a form field. Launch focuses the flight canvas. Losing focus pauses and clears held keys.
+W/S or arrows pitch down/up; A/D or arrows roll; Q/E yaw. Space increases throttle, Shift decreases it, and X cuts power; +/− and keypad +/− also work. Tap for 5% steps or hold for a continuous change. Releasing holds the selected throttle. P pauses, R resets. Enter starts or resumes. V switches Pilot/Chase, and F recenters the view and briefly marks the aircraft. Flight shortcuts are suppressed while a button, link, form field or dialog owns keyboard focus. On Controllers, click the keyboard diagram to try live inputs. Launch focuses the flight canvas. Losing focus pauses and clears held keys.
+
+## Flight setup
+
+**Flight setup** has three sections: **Aircraft** for model and launch mode, **Field** for scenery and weather, and **Input** for the active control source. Arrow keys switch between the focused setup tabs. The bottom bar always provides Start/Resume, Pause and Reset; after an impact the primary action becomes Restart flight. Closing setup returns focus to the flight view. Pilot/Chase selection is retained when visiting another page.
+
+A missing controller shows connection steps and **Use keyboard for now**. Mapping and calibration appear once hardware is available. Selecting the already-active device type keeps the current assignments and calibration in progress.
 
 ## Gamepad or joystick
 
@@ -46,9 +52,9 @@ Export/import setup under Aircraft trim & profile files transfers a validated pr
 
 ## Controller shortcuts
 
-Expand **Controller shortcuts** to assign Start/pause, Restart, Pilot/chase, or Settings to a button or an unused axis endpoint. Button numbers are one-based in the UI; the pressed-button indicator helps identify them. Analog flight axes are reserved and cannot trigger shortcuts. Move a switch back before triggering its next action. Holding a button does not repeatedly restart, and connecting with a switch already on does not trigger an action.
+Choose the **Shortcuts** tab to assign Start/pause, Restart, Pilot/chase, or Settings to a button or an unused axis endpoint. Standard gamepads use PlayStation/Xbox button names; custom adapters retain one-based hardware numbers. The live diagram and pressed-button indicator help identify inputs. Analog flight axes are reserved and cannot trigger shortcuts. Move a switch back before triggering its next action. Holding a button does not repeatedly restart, and connecting with a switch already on does not trigger an action.
 
-For settings navigation assign Next setting, Previous setting, Activate, Decrease and Increase. Focus is outlined; decrease/increase adjusts selected numeric fields or dropdowns. Shortcuts are stored separately per device in this browser. They do not change transmitter firmware or hardware menus. Leave controls unassigned if the USB adapter does not expose enough inputs. A four-axis simulator adapter may expose no spare switches or buttons.
+For settings navigation assign Next setting, Previous setting, Activate, Decrease and Increase. Focus is outlined; decrease/increase adjusts selected numeric fields or dropdowns. Next/previous can reach all three flight setup tabs; Activate opens the focused tab. Shortcuts are stored separately per device in this browser. They do not change transmitter firmware or hardware menus. Leave controls unassigned if the USB adapter does not expose enough inputs. A four-axis simulator adapter may expose no spare switches or buttons.
 
 ## Flight reference display
 
