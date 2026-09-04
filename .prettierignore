@@ -1,0 +1,5 @@
+node_modules
+dist
+results
+package-lock.json
+src/view/data/*-height.json

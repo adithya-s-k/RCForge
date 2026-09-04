@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "id": "simple-trainer",
+  "name": "Simple Trainer",
+  "description": "Original high-wing single-motor reference aircraft for testing the component API.",
+  "provenance": {
+    "design": {
+      "status": "estimated",
+      "note": "Original RCForge example. All geometry, mass allocation and flight coefficients are estimates. Not a validated real aircraft."
+    }
+  },
+  "parts": [
+    {
+      "id": "left-wing",
+      "kind": "wing",
+      "massKg": 0.1,
+      "positionM": [-0.05, -0.3, -0.04],
+      "sizeM": [0.2, 0.6, 0.024],
+      "color": "#e5c16c"
+    },
+    {
+      "id": "right-wing",
+      "kind": "wing",
+      "massKg": 0.1,
+      "positionM": [-0.05, 0.3, -0.04],
+      "sizeM": [0.2, 0.6, 0.024],
+      "color": "#e5c16c"
+    },
+    {
+      "id": "body",
+      "kind": "body",
+      "massKg": 0.19,
+      "positionM": [-0.12, 0, 0.02],
+      "sizeM": [0.75, 0.075, 0.09],
+      "color": "#eeeade"
+    },
+    {
+      "id": "motor",
+      "kind": "motor",
+      "massKg": 0.065,
+      "positionM": [0.28, 0, 0],
+      "sizeM": [0.06, 0.055, 0.055],
+      "color": "#253b3e"
+    },
+    {
+      "id": "battery",
+      "kind": "battery",
+      "massKg": 0.16,
+      "positionM": [0.2, 0, 0.015],
+      "sizeM": [0.07, 0.035, 0.028],
+      "color": "#df743d"
+    },
+    {
+      "id": "tail",
+      "kind": "tail",
+      "massKg": 0.045,
+      "positionM": [-0.5, 0, -0.04],
+      "sizeM": [0.15, 0.42, 0.14],
+      "color": "#e5c16c"
+    },
+    {
+      "id": "equipment",
+      "kind": "equipment",
+      "massKg": 0.04,
+      "positionM": [0, 0, 0.02],
+      "sizeM": [0.03, 0.05, 0.04],
+      "color": "#253b3e"
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "left-wing",
+      "positionM": [0, -0.3, -0.04],
+      "spanM": 0.6,
+      "chordM": 0.2,
+      "aspectRatio": 6,
+      "rollDeg": 0,
+      "incidenceDeg": 2,
+      "liftSlope": 4.6,
+      "zeroLiftDeg": -2,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": -0.025,
+      "control": {
+        "axis": "roll",
+        "gain": 1,
+        "maxDeg": 12,
+        "effectiveness": 0.55
+      },
+      "kind": "wing"
+    },
+    {
+      "id": "right-wing",
+      "positionM": [0, 0.3, -0.04],
+      "spanM": 0.6,
+      "chordM": 0.2,
+      "aspectRatio": 6,
+      "rollDeg": 0,
+      "incidenceDeg": 2,
+      "liftSlope": 4.6,
+      "zeroLiftDeg": -2,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": -0.025,
+      "control": {
+        "axis": "roll",
+        "gain": -1,
+        "maxDeg": 12,
+        "effectiveness": 0.55
+      },
+      "kind": "wing"
+    },
+    {
+      "id": "elevator",
+      "positionM": [-0.5, 0, 0],
+      "spanM": 0.42,
+      "chordM": 0.13,
+      "aspectRatio": 3.7,
+      "rollDeg": 0,
+      "incidenceDeg": 0,
+      "liftSlope": 3.5,
+      "zeroLiftDeg": 0,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": 0,
+      "control": {
+        "axis": "pitch",
+        "gain": -1,
+        "maxDeg": 12,
+        "effectiveness": 0.55
+      },
+      "kind": "horizontal-tail"
+    },
+    {
+      "id": "fin",
+      "positionM": [-0.5, 0, -0.09],
+      "spanM": 0.18,
+      "chordM": 0.13,
+      "aspectRatio": 1.8,
+      "rollDeg": 90,
+      "incidenceDeg": 0,
+      "liftSlope": 3.5,
+      "zeroLiftDeg": 0,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": 0,
+      "control": {
+        "axis": "yaw",
+        "gain": -1,
+        "maxDeg": 12,
+        "effectiveness": 0.55
+      },
+      "kind": "vertical-tail"
+    }
+  ],
+  "motors": [
+    {
+      "id": "nose",
+      "positionM": [0.32, 0, 0],
+      "maxThrustN": 5,
+      "zeroThrustSpeedMps": 25,
+      "responseSeconds": 0.12,
+      "yawMix": 0
+    }
+  ],
+  "fuselageDragAreaM2": 0.006,
+  "angularDamping": [0.025, 0.04, 0.035],
+  "reference": {
+    "spanM": 1.2,
+    "areaM2": 0.24,
+    "cgFromLeadingEdgeM": 0.051,
+    "leadingEdgeXM": 0.05
+  },
+  "contactPoints": [
+    {
+      "id": "contact-0",
+      "positionM": [0.3, 0, 0.075],
+      "spanLinked": false
+    },
+    {
+      "id": "contact-1",
+      "positionM": [-0.55, 0, 0.065],
+      "spanLinked": false
+    },
+    {
+      "id": "contact-2",
+      "positionM": [0, -0.6, -0.02],
+      "spanLinked": true
+    },
+    {
+      "id": "contact-3",
+      "positionM": [0, 0.6, -0.02],
+      "spanLinked": true
+    }
+  ]
+}

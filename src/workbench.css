@@ -1,0 +1,1519 @@
+/* RCForge application theme. Structural geometry lives in style.css.
+   Compact toolbars, neutral surfaces, one accent, progressive disclosure. */
+:root {
+  --ui-bg: #14181e;
+  --ui-panel: #1c222a;
+  --ui-raised: #252d37;
+  --ui-border: #39434e;
+  --ui-text: #e0e6ed;
+  --ui-muted: #a2aebc;
+  --ui-accent: #3997dc;
+  --ui-selection: #203d55;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13px;
+  color: var(--ui-text);
+  background: var(--ui-bg);
+}
+body,
+.page {
+  background: var(--ui-bg);
+}
+body,
+button,
+input,
+select,
+h1,
+h2,
+h3,
+.brand {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+h1 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.25px;
+}
+h2 {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+h3 {
+  font-size: 12px;
+  letter-spacing: 0;
+}
+p,
+.small {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.muted,
+small,
+label {
+  color: var(--ui-muted);
+}
+button,
+input,
+select {
+  background: var(--ui-raised);
+  border: 1px solid var(--ui-border);
+  border-radius: 3px;
+  padding: 7px 10px;
+  font-size: 12px;
+  min-height: 32px;
+  box-shadow: none;
+}
+button {
+  font-weight: 500;
+}
+button:hover,
+select:hover {
+  background: #303d4b;
+  border-color: #637488;
+}
+button.primary {
+  background: #2379b8;
+  border-color: #459ddc;
+  color: #fff;
+}
+button.primary:hover {
+  background: #2d8bcd;
+}
+button.active,
+button[aria-pressed="true"] {
+  background: var(--ui-selection);
+  border-color: var(--ui-accent);
+  color: #d5edff;
+}
+input[type="checkbox"],
+input[type="range"] {
+  accent-color: var(--ui-accent);
+  min-height: 0;
+}
+:focus-visible {
+  outline: 2px solid #73baf0;
+  outline-offset: 2px;
+}
+.app-header {
+  height: 52px;
+  padding: 0 20px;
+  background: #202630;
+  border-bottom: 1px solid #48515b;
+  box-shadow: none;
+}
+.brand {
+  gap: 8px;
+  font-size: 19px;
+  letter-spacing: -0.4px;
+  min-width: 160px;
+}
+.brand svg {
+  width: 24px;
+  height: 24px;
+  color: #78bceb;
+}
+.brand small {
+  display: none;
+}
+.app-header nav {
+  height: 100%;
+  gap: 0;
+}
+.app-header nav a {
+  padding: 0 19px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  border-bottom: 2px solid transparent;
+  color: #aebaca;
+}
+.app-header nav a.active {
+  color: #fff;
+  border-color: var(--ui-accent);
+  background: #2b3541;
+}
+.header-meta {
+  font-size: 10px;
+  color: #9fadb9;
+  gap: 10px;
+}
+.status-dot {
+  background: #7c97ab;
+  box-shadow: none;
+}
+.page-heading {
+  min-height: 57px;
+  padding: 0 0 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--ui-border);
+  align-items: center;
+}
+.page-heading .eyebrow,
+.page-heading p,
+.panel-title .eyebrow {
+  display: none;
+}
+.heading-actions {
+  gap: 7px;
+}
+.heading-actions select {
+  background: #202b37;
+  border-color: var(--ui-border);
+  min-width: 190px;
+}
+.editor-page,
+.settings-page,
+.experiments-page {
+  padding: 18px 20px 24px;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+.card,
+.editor-inspector,
+.component-panel,
+.editor-view,
+.controller-layout .card {
+  background: var(--ui-panel);
+  border: 1px solid var(--ui-border);
+  border-radius: 3px;
+  box-shadow: none;
+  padding: 16px;
+}
+.section-kicker {
+  color: #bcc9d6;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.65px;
+  margin-bottom: 12px;
+}
+.setup-divider {
+  margin: 14px 0;
+  border-color: var(--ui-border);
+}
+.setup-line {
+  margin: 9px 0;
+  font-size: 12px;
+}
+.setup-line span {
+  color: var(--ui-muted);
+}
+.setup-line strong {
+  color: var(--ui-text);
+}
+.wide {
+  margin-top: 10px;
+}
+summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: #b9c8d7;
+  padding: 8px 0;
+}
+details > p {
+  margin: 8px 0;
+}
+.editor-layout {
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 12px;
+  align-items: start;
+}
+.editor-view {
+  padding: 0;
+  height: min(70vh, 720px);
+  min-height: 410px;
+}
+.editor-stage {
+  height: 100%;
+  min-height: 0;
+}
+.editor-view-label {
+  top: 14px;
+  left: 16px;
+}
+.editor-view-label span {
+  font-size: 12px;
+  font-weight: 600;
+}
+.editor-view-label small {
+  color: #9aabb8;
+}
+.editor-view-tools {
+  bottom: 25px;
+  left: 14px;
+  right: 14px;
+}
+.orbit-hint {
+  bottom: 7px;
+  left: 16px;
+  font-size: 10px;
+}
+.editor-inspector label {
+  margin: 10px 0 5px;
+}
+.editor-inspector .two-col {
+  gap: 10px;
+}
+.editor-inspector details {
+  border-top: 1px solid var(--ui-border);
+  margin-top: 12px;
+  padding-top: 3px;
+}
+.editor-inspector pre {
+  color: #c3d6e8;
+}
+.component-panel {
+  padding: 14px;
+}
+.component-panel th {
+  font-size: 11px;
+  color: #b7c7d6;
+}
+.component-panel input {
+  font-family: ui-monospace, monospace;
+  min-width: 64px;
+  background: #151c25;
+  border-color: #34404e;
+}
+.balance-track i {
+  background: var(--ui-accent);
+}
+/* Flight surface: instrument strip and small utility controls. */
+.fly-page {
+  background: transparent;
+  height: calc(100dvh - 52px);
+}
+.flight-stage {
+  inset: 0;
+}
+.field-label {
+  top: 16px;
+  left: 20px;
+  padding: 9px 12px;
+  background: #151e29d9;
+  border-left: 2px solid var(--ui-accent);
+  color: #e2eaf1;
+}
+.field-label h1 {
+  display: none;
+}
+.field-label .eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.9px;
+  color: #d1deea;
+}
+.field-label p {
+  font-size: 10px;
+  color: #abbccc;
+  margin-top: 4px;
+}
+.flight-setup {
+  top: 16px;
+  right: 20px;
+  width: 280px;
+  background: #1c242eed;
+  border: 1px solid #43505e;
+  border-radius: 3px;
+  padding: 16px;
+  box-shadow: 0 6px 20px #0003;
+  max-height: calc(100dvh - 200px);
+}
+.flight-setup .section-kicker {
+  border-bottom: 1px solid #43505e;
+  padding-bottom: 11px;
+}
+.flight-setup label {
+  margin-top: 9px;
+  margin-bottom: 5px;
+  font-size: 11px;
+}
+.flight-setup p {
+  font-size: 10px;
+  line-height: 1.4;
+  margin: 6px 0;
+}
+.flight-setup .launch-footnote {
+  font-size: 10px;
+  color: #9fafbe;
+}
+.setup-collapsed .flight-setup {
+  display: none;
+}
+.camera-bar {
+  top: 16px;
+  left: 50%;
+  border: 1px solid #43505e;
+  border-radius: 3px;
+  background: #1b2530e8;
+  padding: 5px;
+  gap: 8px;
+}
+.camera-bar button {
+  min-height: 28px;
+  font-size: 11px;
+  padding: 5px 9px;
+}
+.segmented {
+  background: #151c25;
+  border-radius: 3px;
+  padding: 2px;
+}
+.segmented button {
+  border-radius: 2px;
+  font-size: 11px;
+}
+.segmented button.active {
+  background: #2a597b;
+  color: #fff;
+}
+.flight-bottom {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: #171f2aee;
+  border-top: 1px solid #4b5a6a;
+}
+.flight-controls,
+.flight-instruments {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  padding: 10px 18px;
+}
+.flight-instruments {
+  flex: 1;
+  justify-content: flex-end;
+  gap: 24px;
+}
+.flight-instruments strong {
+  font-family: ui-monospace, monospace;
+  font-size: 23px;
+  font-weight: 500;
+  color: #e6eff8;
+  letter-spacing: -0.7px;
+}
+.flight-instruments span,
+.flight-instruments label {
+  font-size: 9px;
+  color: #aabccf;
+  letter-spacing: 0.6px;
+}
+.flight-status {
+  color: #b8d8ef;
+  font-size: 10px;
+}
+.flight-key-guide {
+  bottom: 80px;
+  left: 20px;
+  padding: 5px 9px;
+  border-radius: 2px;
+  background: #17202ac9;
+  font:
+    10px ui-monospace,
+    monospace;
+  max-width: calc(100% - 340px);
+  color: #c8d8e5;
+}
+.axis-guide {
+  border: 1px solid #42505e;
+  border-radius: 3px;
+  background: #17212cdd;
+}
+/* Input setup uses tabs, not a stack of oversized cards. */
+.settings-page .controller-presets {
+  gap: 0;
+  margin: 0 0 14px;
+  border: 1px solid var(--ui-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.settings-page .device-card {
+  border: 0;
+  border-right: 1px solid var(--ui-border);
+  border-radius: 0;
+  background: var(--ui-panel);
+  padding: 12px 16px;
+  min-height: 58px;
+  box-shadow: none;
+}
+.settings-page .device-card.active {
+  background: #243d52;
+  box-shadow: inset 0 -2px var(--ui-accent);
+}
+.settings-page .device-card > span {
+  display: none;
+}
+.settings-page .device-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+.settings-page .device-card strong {
+  color: #dce9f3;
+  font-size: 12px;
+}
+.settings-page .device-card small {
+  color: #9eb0c0;
+  font-size: 10px;
+}
+.device-connection {
+  background: #1c222a;
+  border: 1px solid var(--ui-border);
+  border-radius: 3px;
+  box-shadow: none;
+  padding: 12px 16px;
+  margin-bottom: 14px;
+}
+.connection-symbol {
+  display: none;
+}
+.device-connection {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+.device-connection label {
+  font-size: 9px;
+  letter-spacing: 0.6px;
+}
+.device-connection p {
+  margin: 5px 0 0;
+  font-size: 10px;
+}
+.setup-badge,
+.live-pill {
+  background: #203346;
+  border-color: #45617a;
+  color: #b7d8ef;
+  border-radius: 3px;
+}
+.settings-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid #43505f;
+  margin-bottom: 12px;
+}
+.settings-tabs button {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 10px 22px;
+  border-bottom: 2px solid transparent;
+  color: #a6b6c5;
+}
+.settings-tabs button.active {
+  color: #d7ecff;
+  border-bottom-color: var(--ui-accent);
+  background: #243141;
+}
+.controller-layout {
+  gap: 12px;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+}
+.controller-layout[data-section="mapping"] .calibration-card,
+.controller-layout[data-section="mapping"] .action-card,
+.controller-layout[data-section="calibration"] .mapping-card,
+.controller-layout[data-section="calibration"] .live-card,
+.controller-layout[data-section="calibration"] .action-card,
+.controller-layout[data-section="shortcuts"] .mapping-card,
+.controller-layout[data-section="shortcuts"] .live-card,
+.controller-layout[data-section="shortcuts"] .calibration-card {
+  display: none;
+}
+.panel-title {
+  margin-bottom: 10px;
+}
+.panel-title > span {
+  display: none;
+}
+.mapping-tools {
+  margin: 10px 0;
+}
+.mapping-tools button,
+.channel-assignment button {
+  background: #283747;
+  border-color: #42566b;
+}
+.channel-card {
+  border: 0;
+  border-bottom: 1px solid #35414e;
+  border-radius: 0;
+  padding: 12px 0;
+  margin: 0;
+  background: transparent;
+}
+.channel-heading {
+  margin-bottom: 8px;
+}
+.channel-heading span {
+  display: none;
+}
+.channel-heading output {
+  color: #9bcaec;
+  font-size: 13px;
+}
+.channel-assignment select {
+  background: #19232e;
+  border-color: #425063;
+}
+.response-settings,
+.channel-response {
+  border-color: #344355;
+}
+.reverse-toggle input:checked {
+  background: #468cbe;
+}
+.reverse-toggle input:checked::before {
+  background: #edf7ff;
+}
+.stick-pad {
+  background: #192632;
+  border-color: #53677a;
+  box-shadow: none;
+}
+.stick-pad i {
+  background: #7fbff0;
+  box-shadow: 0 0 0 3px #7fbff024;
+}
+.channel-values > div {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.channel-values strong {
+  color: #bddef5;
+}
+.inline-status {
+  background: #1a3041;
+  border-color: #4c91c2;
+  color: #c1daed;
+  font-size: 11px;
+}
+.cal-step {
+  background: #19222d;
+  border: 1px solid #3f4f60;
+  border-radius: 3px;
+  padding: 16px;
+}
+.cal-step.active {
+  border-color: var(--ui-accent);
+  background: #203346;
+}
+.step-number {
+  border-radius: 3px;
+  background: #2d455a;
+  color: #acd4f1;
+}
+.calibration-progress {
+  background: #151e28;
+  padding: 12px;
+}
+.calibration-progress strong {
+  color: #aed3ed;
+}
+.notification {
+  border-radius: 3px;
+  background: #22384a;
+  border: 1px solid #62839f;
+  color: #e1edf7;
+  font-size: 12px;
+  box-shadow: 0 3px 12px #0004;
+}
+.experiment-layout {
+  gap: 12px;
+  grid-template-columns: 280px minmax(0, 1fr);
+}
+.experiment-empty h2 {
+  font-size: 16px;
+}
+.empty-cross {
+  display: none;
+}
+.experiment-empty p {
+  max-width: 350px;
+  font-size: 12px;
+}
+dialog {
+  background: var(--ui-panel);
+  border: 1px solid #596879;
+  border-radius: 4px;
+  box-shadow: 0 20px 80px #0008;
+}
+dialog::backdrop {
+  background: #050c14a8;
+}
+@media (max-width: 1100px) {
+  .app-header nav a {
+    padding: 0 12px;
+  }
+  .flight-instruments {
+    gap: 14px;
+  }
+  .flight-controls {
+    padding: 10px;
+  }
+  .camera-bar {
+    left: 42%;
+  }
+  .editor-layout {
+    grid-template-columns: minmax(0, 1fr) 280px;
+  }
+}
+@media (max-width: 800px) {
+  .app-header {
+    padding: 0 10px;
+  }
+  .brand {
+    min-width: 100px;
+    font-size: 16px;
+  }
+  .header-meta {
+    display: none;
+  }
+  .app-header nav a {
+    padding: 0 9px;
+    font-size: 11px;
+  }
+  .editor-page,
+  .settings-page,
+  .experiments-page {
+    padding: 14px 12px;
+  }
+  .page-heading {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .heading-actions {
+    flex-wrap: wrap;
+  }
+  .editor-layout,
+  .controller-layout,
+  .experiment-layout {
+    grid-template-columns: 1fr;
+  }
+  .editor-view {
+    height: 52vh;
+    min-height: 320px;
+  }
+  .flight-setup {
+    right: 12px;
+    width: 260px;
+  }
+  .camera-bar {
+    left: 20px;
+    top: 78px;
+    transform: none;
+  }
+  .field-label {
+    left: 12px;
+  }
+  .flight-bottom {
+    flex-wrap: wrap;
+  }
+  .flight-controls {
+    width: 100%;
+    padding: 6px 12px;
+  }
+  .flight-instruments {
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 12px;
+    gap: 10px;
+  }
+  .flight-instruments strong {
+    font-size: 19px;
+  }
+  .flight-key-guide {
+    bottom: 112px;
+    max-width: calc(100% - 24px);
+    left: 12px;
+  }
+  .settings-page .device-card {
+    padding: 10px;
+  }
+  .calibration-flow {
+    grid-template-columns: 1fr;
+  }
+  .action-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 540px) {
+  .brand {
+    min-width: 80px;
+  }
+  .brand svg {
+    display: none;
+  }
+  .app-header nav a {
+    padding: 0 6px;
+    font-size: 10px;
+  }
+  .heading-actions select {
+    width: 100%;
+    min-width: 0;
+  }
+  .heading-actions {
+    width: 100%;
+  }
+  .controller-presets {
+    grid-template-columns: 1fr 1fr;
+  }
+  .action-grid {
+    grid-template-columns: 1fr;
+  }
+  .settings-tabs button {
+    padding: 10px 14px;
+  }
+  .flight-setup {
+    top: 128px;
+    max-height: calc(100dvh - 310px);
+    width: 245px;
+  }
+  .camera-bar {
+    top: 72px;
+  }
+  .axis-guide {
+    display: none;
+  }
+  .flight-instruments .throttle-instrument {
+    width: 80px;
+  }
+  .flight-key-guide {
+    font-size: 9px;
+  }
+  .field-label {
+    max-width: calc(100% - 24px);
+  }
+}
+.page-heading h1 {
+  font-size: 20px;
+  letter-spacing: -0.25px;
+}
+.settings-page .device-card {
+  min-height: 44px;
+  padding: 10px 16px;
+}
+.settings-page .device-card small {
+  display: none;
+}
+.device-connection {
+  padding: 9px 14px;
+}
+.channel-card {
+  padding: 9px 0;
+}
+.channel-heading {
+  margin-bottom: 3px;
+}
+.channel-assignment > label {
+  font-size: 0;
+}
+.channel-assignment select {
+  margin-top: 0;
+}
+.channel-bar {
+  margin-top: 7px;
+  height: 2px;
+}
+.channel-bar i {
+  background: #5ca8df;
+}
+.response-details {
+  margin-top: 3px;
+}
+.response-details summary {
+  padding: 3px 0;
+  font-size: 10px;
+}
+.live-card .stick-pad {
+  background: #192632;
+  box-shadow: none;
+  border-color: #53677a;
+}
+.live-card .stick-pad i {
+  background: #7fbff0;
+  box-shadow: 0 0 0 3px #7fbff024;
+}
+.live-card .stick-pair {
+  margin: 24px 0;
+}
+.connection-help,
+.advanced-input {
+  border-top: 1px solid #35414e;
+  margin-top: 10px;
+  padding-top: 3px;
+}
+
+/* Keep the compact shell independent of the legacy mobile stacking rules. */
+.app-header {
+  min-height: 52px;
+  flex-wrap: nowrap;
+  gap: 12px;
+}
+.app-header nav {
+  order: 0;
+  width: auto;
+  min-width: 0;
+}
+.fly-page .flight-stage,
+body[data-running="true"] .fly-page .flight-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+.flight-setup {
+  left: auto;
+}
+.flight-key-guide {
+  right: auto;
+  width: auto;
+}
+#calibration-status {
+  background: #203344;
+  border-color: #528fb9;
+  color: #c2def1;
+}
+@media (max-width: 540px) {
+  .app-header {
+    gap: 4px;
+  }
+  .flight-setup {
+    top: 154px;
+    width: calc(100% - 24px);
+  }
+}
+.editor-layout > *,
+.editor-inspector .two-col > * {
+  min-width: 0;
+}
+.editor-inspector input {
+  width: 100%;
+  min-width: 0;
+}
+@media (max-width: 540px) {
+  .editor-view-tools {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .editor-view-tools .check-label {
+    font-size: 10px;
+  }
+  .page-heading {
+    align-items: flex-start;
+  }
+}
+/* Persistent feedback belongs beside the controls it describes. */
+.edit-state {
+  display: inline-block;
+  margin-top: 5px;
+  font-size: 11px;
+  color: #9dafbf;
+}
+.edit-state.pending {
+  color: #efc17b;
+}
+#calibration-status {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+}
+#keyboard-device {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 13px;
+}
+#keyboard-device[hidden] {
+  display: none;
+}
+.live-pill.inactive {
+  color: #a5afb9;
+  background: #2a313a;
+  border-color: #47515d;
+}
+.stick-pad {
+  position: relative;
+}
+.stick-pad .stick-axis {
+  position: absolute;
+  font-size: 9px;
+  color: #9baebd;
+  line-height: 1;
+  margin: 0;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.stick-pad .axis-up {
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.stick-pad .axis-down {
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.stick-pad .axis-left {
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.stick-pad .axis-right {
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+#experiment-aircraft {
+  display: block;
+  margin-top: 12px;
+}
+#experiment-config {
+  margin: 7px 0 18px;
+}
+@media (max-width: 800px) {
+  .header-meta {
+    display: flex;
+    gap: 0;
+  }
+  .header-meta > span {
+    display: none;
+  }
+  .header-meta {
+    font-size: 0;
+  }
+  .header-meta button {
+    font-size: 12px;
+    min-width: 28px;
+    padding: 4px;
+  }
+  button,
+  select {
+    min-height: 36px;
+  }
+  .app-header nav a {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+.notification {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: calc(100vw - 24px);
+}
+.notification[hidden] {
+  display: none;
+}
+.notification button {
+  flex: 0 0 auto;
+  min-height: 26px;
+  padding: 0 7px;
+  font-size: 18px;
+  background: transparent;
+  border-color: transparent;
+}
+.browse-aircraft {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 7px;
+}
+#aircraft-catalog {
+  width: min(1100px, calc(100vw - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 40px);
+  padding: 0;
+  overflow: auto;
+}
+#aircraft-catalog .dialog-header {
+  padding: 22px 24px 14px;
+  margin: 0;
+}
+#catalog-title {
+  font-size: 23px;
+  margin: 0;
+}
+#catalog-destination {
+  margin: 6px 0 0;
+  color: var(--ui-muted);
+}
+.catalog-toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 0 24px 18px;
+}
+.catalog-toolbar input {
+  flex: 1;
+  min-width: 0;
+}
+#catalog-count {
+  font-size: 11px;
+  color: var(--ui-muted);
+  white-space: nowrap;
+}
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 0 24px 24px;
+}
+.catalog-card {
+  padding: 0;
+  text-align: left;
+  overflow: hidden;
+  background: #1b232d;
+  border: 1px solid #3a4654;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.catalog-card:hover {
+  border-color: #8bc9f4;
+  background: #223347;
+}
+.catalog-card[aria-pressed="true"] {
+  border-color: #60afe7;
+}
+.catalog-preview {
+  position: relative;
+  aspect-ratio: 16/9;
+  background: radial-gradient(ellipse at 50% 40%, #384b60, #19232e 75%);
+  display: grid;
+  place-items: center;
+}
+.catalog-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.catalog-type {
+  position: absolute;
+  top: 13px;
+  left: 15px;
+  font-size: 9px;
+  letter-spacing: 1.3px;
+  color: #b9c9d7;
+}
+.catalog-current {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border-radius: 3px;
+  background: #205177;
+  color: #d5eeff;
+  padding: 4px 7px;
+  font-size: 10px;
+}
+.catalog-info {
+  padding: 16px 18px 0;
+}
+.catalog-info h3 {
+  font-size: 17px;
+  margin: 0 0 17px;
+}
+.catalog-specs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.catalog-specs span {
+  display: grid;
+  gap: 5px;
+  color: #a9b9c9;
+  font-size: 10px;
+}
+.catalog-specs b {
+  color: #e7eef5;
+  font-size: 14px;
+  font-weight: 500;
+}
+.catalog-choose {
+  margin-top: 17px;
+  padding: 12px 0;
+  border-top: 1px solid #3b4959;
+  display: flex;
+  justify-content: space-between;
+  color: #95cefa;
+  font-size: 12px;
+}
+.catalog-footer {
+  margin: 0;
+  padding: 0 24px 18px;
+  color: #91a3b5;
+  font-size: 11px;
+}
+.catalog-empty {
+  grid-column: 1/-1;
+  padding: 50px 0;
+  text-align: center;
+}
+@media (max-width: 600px) {
+  #aircraft-catalog {
+    width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+  .catalog-grid {
+    grid-template-columns: 1fr;
+    padding: 0 12px 16px;
+  }
+  .catalog-toolbar {
+    padding: 0 12px 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  #aircraft-catalog .dialog-header {
+    padding: 16px 12px;
+  }
+  #catalog-count {
+    width: 100%;
+  }
+}
+/* Aircraft silhouette and registration corners remain legible at toolbar scale. */
+.brand {
+  gap: 9px;
+  text-decoration: none;
+}
+.brand-mark {
+  display: block;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+}
+.brand-wordmark {
+  font-size: 20px;
+  font-weight: 750;
+  letter-spacing: -0.7px;
+  color: #eef5fb;
+}
+.brand-wordmark > span {
+  font-weight: 450;
+  color: #b9cbd9;
+}
+@media (max-width: 800px) {
+  .brand {
+    min-width: 0;
+    gap: 5px;
+  }
+  .brand-mark {
+    width: 27px;
+    height: 27px;
+  }
+  .brand-wordmark {
+    font-size: 16px;
+  }
+}
+@media (max-width: 540px) {
+  .brand-wordmark {
+    display: none;
+  }
+  .brand-mark {
+    width: 30px;
+    height: 30px;
+  }
+}
+.controller-visual-panel {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(250px, 1.3fr) minmax(
+      180px,
+      1fr
+    );
+  align-items: center;
+  gap: 24px;
+  border: 1px solid var(--ui-border);
+  background: var(--ui-panel);
+  padding: 18px 22px;
+  margin-bottom: 18px;
+}
+.controller-visual-panel select {
+  width: 100%;
+}
+.controller-diagram svg {
+  width: 100%;
+  max-height: 230px;
+  display: block;
+}
+.controller-diagram text {
+  fill: #c4d8e7;
+  text-anchor: middle;
+  font: 11px system-ui;
+}
+.controller-diagram .controller-glyph {
+  font-size: 8px;
+}
+.controller-shell {
+  fill: #344553;
+  stroke: #92a8ba;
+  stroke-width: 2;
+}
+.controller-well {
+  fill: #17222d;
+  stroke: #667e92;
+  stroke-width: 1.5;
+}
+.controller-thumb {
+  fill: #526b80;
+  stroke: #9cb5c9;
+  stroke-width: 2;
+}
+.controller-outline {
+  fill: none;
+  stroke: #91aabe;
+  stroke-width: 5;
+}
+.controller-diagram .pressed .controller-well {
+  fill: #168bdb;
+  stroke: #b5e0ff;
+}
+.controller-diagram .pressed text {
+  fill: white;
+}
+.shortcut-legend {
+  display: grid;
+  gap: 9px;
+  font-size: 11px;
+  color: #b1c1d0;
+}
+.shortcut-legend b {
+  display: inline-block;
+  min-width: 55px;
+  color: #d9edff;
+}
+.controller-diagram.compact svg {
+  max-height: 140px;
+}
+#flight-shortcut-legend {
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-bottom: 12px;
+  font-size: 10px;
+}
+#controller-identity {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 800px) {
+  .controller-visual-panel {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .controller-visual-panel .shortcut-legend {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.flight-setup #launch {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  box-shadow: 0 -8px 18px #18212ee6;
+}
+.launch-options button {
+  white-space: nowrap;
+  padding-left: 7px;
+  padding-right: 7px;
+}
+.controller-visual-panel.keyboard-selected {
+  grid-template-columns: minmax(0, 1fr) 140px;
+}
+.controller-visual-panel.keyboard-selected > div:first-child {
+  display: none;
+}
+.keyboard-selected .controller-diagram svg {
+  max-height: 320px;
+}
+.keyboard-body {
+  fill: #111b25;
+  stroke: #4c6173;
+  stroke-width: 2;
+}
+.keyboard-key rect {
+  fill: #202c38;
+  stroke: #394a5a;
+  stroke-width: 1;
+}
+.controller-diagram .keyboard-key .key-letter {
+  font: 12px system-ui;
+  fill: #738494;
+}
+.controller-diagram .keyboard-key .key-function {
+  font: 7px system-ui;
+  fill: #b6cddd;
+}
+.keyboard-key.mapped.flight rect {
+  fill: #203b50;
+  stroke: #599ac5;
+}
+.keyboard-key.mapped.power rect {
+  fill: #433824;
+  stroke: #bd9959;
+}
+.keyboard-key.mapped.session rect {
+  fill: #263d38;
+  stroke: #71b19c;
+}
+.keyboard-key.mapped.view rect {
+  fill: #343047;
+  stroke: #9a8abc;
+}
+.controller-diagram .keyboard-key.mapped .key-letter {
+  fill: #eef7ff;
+  font-weight: 600;
+}
+.keyboard-key.pressed rect {
+  fill: #258ed9 !important;
+  stroke: #e0f5ff !important;
+  stroke-width: 2.5;
+}
+.controller-diagram .keyboard-key.pressed text {
+  fill: #fff;
+}
+.keyboard-color-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 12px 6px 0;
+  font-size: 11px;
+  color: #a3b5c5;
+}
+.keyboard-color-legend .flight {
+  color: #79bde9;
+}
+.keyboard-color-legend .power {
+  color: #dfb870;
+}
+.keyboard-color-legend .session {
+  color: #90d6ba;
+}
+.keyboard-color-legend .view {
+  color: #b6a1d9;
+}
+.compact .keyboard-color-legend {
+  display: none;
+}
+@media (max-width: 800px) {
+  .controller-visual-panel.keyboard-selected {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+}
+#scenery-conditions {
+  font-variant-numeric: tabular-nums;
+  margin: 7px 0 14px;
+}
+.build-part {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px;
+  border-top: 1px solid #354554;
+  padding: 8px 0;
+  font-size: 11px;
+}
+.build-part small {
+  grid-column: 1/-1;
+}
+.component-summary {
+  margin-top: 16px;
+}
+.component-summary p {
+  font-size: 11px;
+  color: #a8bac8;
+}
+.battery-telemetry {
+  border: 1px solid #4e725f;
+  background: #203a2f;
+  color: #c4e5cd;
+  padding: 9px;
+  font-size: 11px;
+  margin-bottom: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.gimbal-guide {
+  fill: none;
+  stroke: #7190a5;
+  stroke-width: 0.7;
+  opacity: 0.6;
+}
+.controller-diagram .controller-channel-label {
+  font-size: 8px;
+  letter-spacing: 0.5px;
+}
+.controller-diagram.device-offline {
+  opacity: 0.6;
+}
+.shortcut-legend [data-shortcut-action] {
+  border: 1px solid transparent;
+  padding: 5px;
+  border-radius: 3px;
+}
+.shortcut-legend .pressed {
+  background: #22577a;
+  border-color: #8ad1ff;
+  color: #fff;
+}
+#battery-hud.low-battery strong {
+  color: #efb275;
+}
+@media (max-width: 800px) {
+  .flight-instruments {
+    flex-wrap: wrap;
+  }
+  #battery-hud strong {
+    font-size: 16px;
+  }
+}
+
+/* Solid instrument panels avoid compositing live 3D through background blur. */
+.app-header,
+.flight-setup,
+.flight-instruments,
+dialog::backdrop {
+  backdrop-filter: none;
+}
+.flight-setup {
+  background: #1c242e;
+}
+
+.arduino-connection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--ui-border);
+  background: var(--ui-panel);
+  margin-bottom: 14px;
+}
+.arduino-connection p {
+  margin: 5px 0 0;
+  max-width: 660px;
+}
+.arduino-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.arduino-actions a {
+  font-size: 11px;
+  color: #8ac7f2;
+}
+#arduino-status[data-state="live"] {
+  color: #a6d39a;
+}
+#arduino-status[data-state="signal-lost"],
+#arduino-status[data-state="error"] {
+  color: #efbc72;
+}
+@media (max-width: 900px) {
+  .arduino-connection {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .arduino-actions {
+    gap: 10px;
+  }
+}

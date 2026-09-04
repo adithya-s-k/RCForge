@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "id": "ft-bronco",
+  "name": "FT Bronco",
+  "description": "Twin-motor foamboard FT Bronco with inverted-V (A-tail) ruddervators, matching the supplied build reference. Estimated flight model.",
+  "provenance": {
+    "dimensions": {
+      "status": "sourced",
+      "note": "Published span 1.086 m and wing area 0.208 m\u00b2. Simplified rectangular wing and component geometry.",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf"
+    },
+    "mass": {
+      "status": "sourced",
+      "note": "PDF specifies 640 g without battery and reference AUW 830 g; uses estimated 190 g battery. Four 9 g servo allocation, other individual component masses estimated.",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf"
+    },
+    "cg": {
+      "status": "calculated",
+      "note": "Battery position calculated to balance at published 51 mm aft leading edge. This is a simulated setup, not a measured battery location.",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf"
+    },
+    "controls": {
+      "status": "sourced",
+      "note": "12 degree reference throws; inverted-V pitch/yaw mixing and aerodynamic effectiveness estimated. No flight-test calibration.",
+      "url": "https://www.flitetest.com/articles/ft-bronco-build"
+    },
+    "aerodynamics": {
+      "status": "estimated",
+      "note": "Low-order quasi-steady surface model, estimated polars, damping and stall. No flight-test calibration."
+    },
+    "propulsion": {
+      "status": "estimated",
+      "note": "Two 4.2 N static thrust sources with approximate speed falloff. No measured motor/propeller curves."
+    },
+    "geometry": {
+      "status": "estimated",
+      "note": "Plan-derived procedural reconstruction: 192 mm wing chord, approximately 61% outer-span ailerons, 658 mm booms, 63 mm fuselage core width; A-tail sheet 3. Folded assembly locations and nose cross-sections inferred from build photos. Not a manufacturing template."
+    },
+    "tail": {
+      "status": "estimated",
+      "note": "A-tail panel flat span approximately 254 mm per side and chord 102 mm measured from PDF sheet 3 ruler. 45 degree fold remains an assembly estimate; yields 359 mm boom spacing and 180 mm apex height. Ruddervator effectiveness and inertia distribution remain estimates."
+    },
+    "servos": {
+      "status": "estimated",
+      "note": "First-order 0.06 s control-surface response and 400 deg/s travel rate. Illustrative micro-servo response, not bench-measured."
+    }
+  },
+  "parts": [
+    {
+      "id": "left-wing",
+      "kind": "wing",
+      "massKg": 0.12,
+      "positionM": [-0.048, -0.2715, 0],
+      "sizeM": [0.192, 0.543, 0.022],
+      "color": "#ebe9dd",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "right-wing",
+      "kind": "wing",
+      "massKg": 0.12,
+      "positionM": [-0.048, 0.2715, 0],
+      "sizeM": [0.192, 0.543, 0.022],
+      "color": "#ebe9dd",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "fuselage",
+      "kind": "body",
+      "massKg": 0.124,
+      "positionM": [0.1035, 0, 0.045],
+      "sizeM": [0.447, 0.063, 0.11],
+      "color": "#e7e5d9",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "left-boom",
+      "kind": "boom",
+      "massKg": 0.06,
+      "positionM": [-0.271, -0.17960512242138307, 0.005],
+      "sizeM": [0.658, 0.05, 0.045],
+      "color": "#e7e5d9",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "right-boom",
+      "kind": "boom",
+      "massKg": 0.06,
+      "positionM": [-0.271, 0.17960512242138307, 0.005],
+      "sizeM": [0.658, 0.05, 0.045],
+      "color": "#e7e5d9",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "left-motor",
+      "kind": "motor",
+      "massKg": 0.045,
+      "positionM": [0.065, -0.17960512242138307, 0],
+      "sizeM": [0.065, 0.055, 0.055],
+      "color": "#253b3e"
+    },
+    {
+      "id": "right-motor",
+      "kind": "motor",
+      "massKg": 0.045,
+      "positionM": [0.065, 0.17960512242138307, 0],
+      "sizeM": [0.065, 0.055, 0.055],
+      "color": "#253b3e"
+    },
+    {
+      "id": "tail-mass",
+      "kind": "tail",
+      "massKg": 0.03,
+      "positionM": [-0.549, 0, -0.08980256121069154],
+      "sizeM": [0.102, 0.35921024484276615, 0.17960512242138307],
+      "color": "#ebe9dd",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "battery",
+      "kind": "battery",
+      "massKg": 0.19,
+      "positionM": [0.22218947368421055, 0, 0.04],
+      "sizeM": [0.075, 0.034, 0.027],
+      "color": "#df743d"
+    },
+    {
+      "id": "servos",
+      "kind": "equipment",
+      "massKg": 0.036,
+      "positionM": [-0.08, 0, 0.015],
+      "sizeM": [0.02, 0.08, 0.02],
+      "color": "#253b3e"
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "left-wing",
+      "positionM": [0, -0.2715, 0],
+      "spanM": 0.543,
+      "chordM": 0.192,
+      "aspectRatio": 5.65,
+      "rollDeg": 0,
+      "incidenceDeg": 2,
+      "liftSlope": 4.6,
+      "zeroLiftDeg": -2,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": -0.025,
+      "control": {
+        "axis": "roll",
+        "gain": 1,
+        "maxDeg": 12,
+        "effectiveness": 0.55,
+        "responseSeconds": 0.06,
+        "rateLimitDegS": 400
+      },
+      "kind": "wing"
+    },
+    {
+      "id": "right-wing",
+      "positionM": [0, 0.2715, 0],
+      "spanM": 0.543,
+      "chordM": 0.192,
+      "aspectRatio": 5.65,
+      "rollDeg": 0,
+      "incidenceDeg": 2,
+      "liftSlope": 4.6,
+      "zeroLiftDeg": -2,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": -0.025,
+      "control": {
+        "axis": "roll",
+        "gain": -1,
+        "maxDeg": 12,
+        "effectiveness": 0.55,
+        "responseSeconds": 0.06,
+        "rateLimitDegS": 400
+      },
+      "kind": "wing"
+    },
+    {
+      "id": "left-ruddervator",
+      "positionM": [-0.5235, -0.08980256121069154, -0.08980256121069154],
+      "spanM": 0.254,
+      "chordM": 0.102,
+      "aspectRatio": 4.980392156862745,
+      "rollDeg": -45,
+      "incidenceDeg": 0,
+      "liftSlope": 3.5,
+      "zeroLiftDeg": 0,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": 0,
+      "control": {
+        "axis": "pitch",
+        "gain": -1,
+        "maxDeg": 12,
+        "effectiveness": 0.55,
+        "mix": {
+          "yaw": 1
+        },
+        "responseSeconds": 0.06,
+        "rateLimitDegS": 400
+      },
+      "kind": "horizontal-tail"
+    },
+    {
+      "id": "right-ruddervator",
+      "positionM": [-0.5235, 0.08980256121069154, -0.08980256121069154],
+      "spanM": 0.254,
+      "chordM": 0.102,
+      "aspectRatio": 4.980392156862745,
+      "rollDeg": 45,
+      "incidenceDeg": 0,
+      "liftSlope": 3.5,
+      "zeroLiftDeg": 0,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": 0,
+      "control": {
+        "axis": "pitch",
+        "gain": -1,
+        "maxDeg": 12,
+        "effectiveness": 0.55,
+        "mix": {
+          "yaw": -1
+        },
+        "responseSeconds": 0.06,
+        "rateLimitDegS": 400
+      },
+      "kind": "horizontal-tail"
+    }
+  ],
+  "motors": [
+    {
+      "id": "left",
+      "positionM": [0.1, -0.17960512242138307, 0],
+      "maxThrustN": 4.2,
+      "zeroThrustSpeedMps": 28,
+      "responseSeconds": 0.12,
+      "yawMix": 1,
+      "propDiameterM": 0.2032
+    },
+    {
+      "id": "right",
+      "positionM": [0.1, 0.17960512242138307, 0],
+      "maxThrustN": 4.2,
+      "zeroThrustSpeedMps": 28,
+      "responseSeconds": 0.12,
+      "yawMix": -1,
+      "propDiameterM": 0.2032
+    }
+  ],
+  "fuselageDragAreaM2": 0.006,
+  "angularDamping": [0.025, 0.04, 0.035],
+  "reference": {
+    "spanM": 1.086,
+    "areaM2": 0.208512,
+    "cgFromLeadingEdgeM": 0.051,
+    "leadingEdgeXM": 0.048
+  },
+  "contactPoints": [
+    {
+      "id": "contact-0",
+      "positionM": [0.327, 0, 0.11],
+      "spanLinked": false
+    },
+    {
+      "id": "contact-1",
+      "positionM": [-0.6, -0.17960512242138307, 0.025],
+      "spanLinked": false
+    },
+    {
+      "id": "contact-2",
+      "positionM": [-0.6, 0.17960512242138307, 0.025],
+      "spanLinked": false
+    },
+    {
+      "id": "contact-3",
+      "positionM": [0, -0.543, 0.012],
+      "spanLinked": true
+    },
+    {
+      "id": "contact-4",
+      "positionM": [0, 0.543, 0.012],
+      "spanLinked": true
+    }
+  ]
+}

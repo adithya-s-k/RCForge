@@ -1,0 +1,41 @@
+{
+  "name": "rcforge",
+  "version": "0.5.0",
+  "private": true,
+  "type": "module",
+  "description": "An open foundation for programmable RC aircraft",
+  "license": "MIT",
+  "engines": {
+    "node": "^22.12.0 || ^24.0.0 || >=26.0.0"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "aircraft:validate": "tsx scripts/validate.ts",
+    "simulate": "tsx scripts/simulate.ts",
+    "replay": "tsx scripts/replay.ts",
+    "check": "npm run aircraft:validate && npm test && npm run build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "physics:validate": "tsx scripts/physics-validate.ts",
+    "physics:compare": "tsx scripts/physics-compare.ts"
+  },
+  "dependencies": {
+    "@fontsource/dm-sans": "^5.3.0",
+    "@fontsource/space-grotesk": "^5.3.0",
+    "three": "^0.185.1",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.1",
+    "@types/three": "^0.185.4",
+    "prettier": "^3.9.6",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0"
+  }
+}

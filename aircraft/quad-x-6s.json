@@ -1,0 +1,409 @@
+{
+  "schemaVersion": 1,
+  "vehicleType": "multirotor",
+  "id": "quad-x-6s",
+  "name": "Quad X \u00b7 6S powertrain",
+  "description": "650 g example with 6S battery sag, discharge, bench-curve propulsion and a component bill of materials. All build and curve values are illustrative estimates.",
+  "multirotor": {
+    "mode": "angle",
+    "maxTiltDeg": 35,
+    "maxRateDegS": 180,
+    "rateGain": 0.06,
+    "attitudeGain": 4
+  },
+  "provenance": {
+    "configuration": {
+      "status": "estimated",
+      "note": "Illustrative 225 mm, 650 g quad. Component masses, motor/prop curves and electrical parameters are estimates, not measured performance or a commercial product model."
+    },
+    "powertrain": {
+      "status": "estimated",
+      "note": "Illustrative 6S 1300 mAh LiPo, 60 milliohm pack resistance, 22.2 V bench curves for 5 inch three-blade props. Replace with measurements for the actual motor, prop, ESC and battery. Static voltage-squared thrust approximation; no thermal, ESC firmware or vortex-ring model."
+    }
+  },
+  "parts": [
+    {
+      "id": "frame",
+      "kind": "body",
+      "massKg": 0.125,
+      "positionM": [0, 0, 0],
+      "sizeM": [0.17, 0.17, 0.012],
+      "color": "#262e35",
+      "material": {
+        "name": "Carbon laminate frame",
+        "finish": "carbon"
+      },
+      "model": "225 mm X frame (estimated)"
+    },
+    {
+      "id": "battery",
+      "kind": "battery",
+      "massKg": 0.25,
+      "positionM": [0, 0, -0.025],
+      "sizeM": [0.075, 0.035, 0.04],
+      "color": "#546273"
+    },
+    {
+      "id": "motor-1",
+      "kind": "motor",
+      "massKg": 0.035,
+      "positionM": [0.07955, -0.07955, -0.012],
+      "sizeM": [0.026, 0.026, 0.02],
+      "color": "#546273"
+    },
+    {
+      "id": "motor-2",
+      "kind": "motor",
+      "massKg": 0.035,
+      "positionM": [0.07955, 0.07955, -0.012],
+      "sizeM": [0.026, 0.026, 0.02],
+      "color": "#546273"
+    },
+    {
+      "id": "motor-3",
+      "kind": "motor",
+      "massKg": 0.035,
+      "positionM": [-0.07955, 0.07955, -0.012],
+      "sizeM": [0.026, 0.026, 0.02],
+      "color": "#546273"
+    },
+    {
+      "id": "motor-4",
+      "kind": "motor",
+      "massKg": 0.035,
+      "positionM": [-0.07955, -0.07955, -0.012],
+      "sizeM": [0.026, 0.026, 0.02],
+      "color": "#546273"
+    },
+    {
+      "id": "esc",
+      "kind": "equipment",
+      "massKg": 0.024,
+      "positionM": [0, 0, 0],
+      "sizeM": [0.035, 0.035, 0.008],
+      "color": "#35434a",
+      "material": {
+        "name": "Four-in-one ESC"
+      }
+    },
+    {
+      "id": "flight-controller",
+      "kind": "equipment",
+      "massKg": 0.009,
+      "positionM": [0, 0, -0.008],
+      "sizeM": [0.03, 0.03, 0.005],
+      "color": "#35434a",
+      "material": {
+        "name": "FR4 flight-controller PCB"
+      }
+    },
+    {
+      "id": "camera",
+      "kind": "equipment",
+      "massKg": 0.012,
+      "positionM": [0.04, 0, 0],
+      "sizeM": [0.019, 0.019, 0.018],
+      "color": "#35434a",
+      "material": {
+        "name": "FPV camera"
+      }
+    },
+    {
+      "id": "vtx",
+      "kind": "equipment",
+      "massKg": 0.012,
+      "positionM": [-0.04, 0, 0],
+      "sizeM": [0.03, 0.025, 0.008],
+      "color": "#35434a",
+      "material": {
+        "name": "Video transmitter"
+      }
+    },
+    {
+      "id": "receiver",
+      "kind": "equipment",
+      "massKg": 0.004,
+      "positionM": [-0.025, 0, -0.01],
+      "sizeM": [0.02, 0.012, 0.004],
+      "color": "#35434a",
+      "material": {
+        "name": "RC receiver"
+      }
+    },
+    {
+      "id": "wiring",
+      "kind": "equipment",
+      "massKg": 0.025,
+      "positionM": [0, 0, 0],
+      "sizeM": [0.1, 0.05, 0.015],
+      "color": "#35434a",
+      "material": {
+        "name": "Copper wiring and connectors"
+      }
+    },
+    {
+      "id": "hardware",
+      "kind": "equipment",
+      "massKg": 0.049,
+      "positionM": [0, 0, 0],
+      "sizeM": [0.1, 0.06, 0.02],
+      "color": "#35434a",
+      "material": {
+        "name": "Steel fasteners and TPU mounts"
+      }
+    }
+  ],
+  "surfaces": [],
+  "motors": [
+    {
+      "id": "rotor-1",
+      "positionM": [0.07955, -0.07955, -0.025],
+      "maxThrustN": 8,
+      "zeroThrustSpeedMps": 50,
+      "responseSeconds": 0.04,
+      "yawMix": 0,
+      "propDiameterM": 0.127,
+      "spin": "cw",
+      "torquePerThrustM": 0.015,
+      "model": "2207 class motor (estimated)",
+      "propeller": "5 inch three blade (estimated)",
+      "performance": {
+        "referenceVoltage": 22.2,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0
+          },
+          {
+            "command": 0.25,
+            "thrustN": 0.6,
+            "currentA": 1.4
+          },
+          {
+            "command": 0.5,
+            "thrustN": 2.5,
+            "currentA": 5
+          },
+          {
+            "command": 0.75,
+            "thrustN": 5,
+            "currentA": 10.5
+          },
+          {
+            "command": 1,
+            "thrustN": 8,
+            "currentA": 18
+          }
+        ]
+      }
+    },
+    {
+      "id": "rotor-2",
+      "positionM": [0.07955, 0.07955, -0.025],
+      "maxThrustN": 8,
+      "zeroThrustSpeedMps": 50,
+      "responseSeconds": 0.04,
+      "yawMix": 0,
+      "propDiameterM": 0.127,
+      "spin": "ccw",
+      "torquePerThrustM": 0.015,
+      "model": "2207 class motor (estimated)",
+      "propeller": "5 inch three blade (estimated)",
+      "performance": {
+        "referenceVoltage": 22.2,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0
+          },
+          {
+            "command": 0.25,
+            "thrustN": 0.6,
+            "currentA": 1.4
+          },
+          {
+            "command": 0.5,
+            "thrustN": 2.5,
+            "currentA": 5
+          },
+          {
+            "command": 0.75,
+            "thrustN": 5,
+            "currentA": 10.5
+          },
+          {
+            "command": 1,
+            "thrustN": 8,
+            "currentA": 18
+          }
+        ]
+      }
+    },
+    {
+      "id": "rotor-3",
+      "positionM": [-0.07955, 0.07955, -0.025],
+      "maxThrustN": 8,
+      "zeroThrustSpeedMps": 50,
+      "responseSeconds": 0.04,
+      "yawMix": 0,
+      "propDiameterM": 0.127,
+      "spin": "cw",
+      "torquePerThrustM": 0.015,
+      "model": "2207 class motor (estimated)",
+      "propeller": "5 inch three blade (estimated)",
+      "performance": {
+        "referenceVoltage": 22.2,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0
+          },
+          {
+            "command": 0.25,
+            "thrustN": 0.6,
+            "currentA": 1.4
+          },
+          {
+            "command": 0.5,
+            "thrustN": 2.5,
+            "currentA": 5
+          },
+          {
+            "command": 0.75,
+            "thrustN": 5,
+            "currentA": 10.5
+          },
+          {
+            "command": 1,
+            "thrustN": 8,
+            "currentA": 18
+          }
+        ]
+      }
+    },
+    {
+      "id": "rotor-4",
+      "positionM": [-0.07955, -0.07955, -0.025],
+      "maxThrustN": 8,
+      "zeroThrustSpeedMps": 50,
+      "responseSeconds": 0.04,
+      "yawMix": 0,
+      "propDiameterM": 0.127,
+      "spin": "ccw",
+      "torquePerThrustM": 0.015,
+      "model": "2207 class motor (estimated)",
+      "propeller": "5 inch three blade (estimated)",
+      "performance": {
+        "referenceVoltage": 22.2,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0
+          },
+          {
+            "command": 0.25,
+            "thrustN": 0.6,
+            "currentA": 1.4
+          },
+          {
+            "command": 0.5,
+            "thrustN": 2.5,
+            "currentA": 5
+          },
+          {
+            "command": 0.75,
+            "thrustN": 5,
+            "currentA": 10.5
+          },
+          {
+            "command": 1,
+            "thrustN": 8,
+            "currentA": 18
+          }
+        ]
+      }
+    }
+  ],
+  "contactPoints": [
+    {
+      "id": "foot-1",
+      "positionM": [0.051707499999999997, -0.051707499999999997, 0.028],
+      "spanLinked": false,
+      "kind": "skid",
+      "steering": false,
+      "wheelRadiusM": 0.008
+    },
+    {
+      "id": "foot-2",
+      "positionM": [0.051707499999999997, 0.051707499999999997, 0.028],
+      "spanLinked": false,
+      "kind": "skid",
+      "steering": false,
+      "wheelRadiusM": 0.008
+    },
+    {
+      "id": "foot-3",
+      "positionM": [-0.051707499999999997, 0.051707499999999997, 0.028],
+      "spanLinked": false,
+      "kind": "skid",
+      "steering": false,
+      "wheelRadiusM": 0.008
+    },
+    {
+      "id": "foot-4",
+      "positionM": [-0.051707499999999997, -0.051707499999999997, 0.028],
+      "spanLinked": false,
+      "kind": "skid",
+      "steering": false,
+      "wheelRadiusM": 0.008
+    }
+  ],
+  "reference": {
+    "spanM": 0.225,
+    "areaM2": 0.025,
+    "cgFromLeadingEdgeM": 0,
+    "leadingEdgeXM": 0
+  },
+  "fuselageDragAreaM2": 0.018,
+  "angularDamping": [0.002, 0.002, 0.003],
+  "battery": {
+    "partId": "battery",
+    "chemistry": "LiPo",
+    "cells": 6,
+    "capacityMah": 1300,
+    "resistanceOhm": 0.06,
+    "initialSoc": 0.95,
+    "avionicsCurrentA": 0.35,
+    "voltageCurve": [
+      {
+        "soc": 0,
+        "voltsPerCell": 3.3
+      },
+      {
+        "soc": 0.1,
+        "voltsPerCell": 3.65
+      },
+      {
+        "soc": 0.5,
+        "voltsPerCell": 3.8
+      },
+      {
+        "soc": 0.9,
+        "voltsPerCell": 4.1
+      },
+      {
+        "soc": 1,
+        "voltsPerCell": 4.2
+      }
+    ]
+  },
+  "bodyDragAreaM2": [0.008, 0.012, 0.025]
+}

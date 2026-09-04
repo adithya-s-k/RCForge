@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "vehicleType": "multirotor",
+  "id": "quad-x-5inch",
+  "name": "Quad X \u00b7 5 inch",
+  "description": "Estimated 225 mm Quad X, 650 g, 5 inch propellers. Angle-mode controller, manual throttle; no altitude or position hold.",
+  "multirotor": {
+    "mode": "angle",
+    "maxTiltDeg": 35,
+    "maxRateDegS": 180,
+    "rateGain": 0.06,
+    "attitudeGain": 4
+  },
+  "provenance": {
+    "configuration": {
+      "status": "estimated",
+      "note": "Illustrative 5 inch quad, not any commercial product or measured build. 225 mm motor diagonal, 650 g all-up, 8 N per motor, 0.04 s actuator lag. Battery/ESC electrical behavior is not simulated."
+    }
+  },
+  "parts": [
+    {
+      "id": "frame",
+      "kind": "body",
+      "massKg": 0.26,
+      "positionM": [0, 0, 0],
+      "sizeM": [0.17, 0.17, 0.012],
+      "color": "#262e35"
+    },
+    {
+      "id": "battery",
+      "kind": "battery",
+      "massKg": 0.25,
+      "positionM": [0, 0, -0.025],
+      "sizeM": [0.075, 0.035, 0.04],
+      "color": "#546273"
+    },
+    {
+      "id": "motor-1",
+      "kind": "motor",
+      "massKg": 0.035,
+      "positionM": [0.07955, -0.07955, -0.012],
+      "sizeM": [0.026, 0.026, 0.02],
+      "color": "#546273"
+    },
+    {
+      "id": "motor-2",
+      "kind": "motor",
+      "massKg": 0.035,
+      "positionM": [0.07955, 0.07955, -0.012],
+      "sizeM": [0.026, 0.026, 0.02],
+      "color": "#546273"
+    },
+    {
+      "id": "motor-3",
+      "kind": "motor",
+      "massKg": 0.035,
+      "positionM": [-0.07955, 0.07955, -0.012],
+      "sizeM": [0.026, 0.026, 0.02],
+      "color": "#546273"
+    },
+    {
+      "id": "motor-4",
+      "kind": "motor",
+      "massKg": 0.035,
+      "positionM": [-0.07955, -0.07955, -0.012],
+      "sizeM": [0.026, 0.026, 0.02],
+      "color": "#546273"
+    }
+  ],
+  "surfaces": [],
+  "motors": [
+    {
+      "id": "rotor-1",
+      "positionM": [0.07955, -0.07955, -0.025],
+      "maxThrustN": 8,
+      "zeroThrustSpeedMps": 50,
+      "responseSeconds": 0.04,
+      "yawMix": 0,
+      "propDiameterM": 0.127,
+      "spin": "cw",
+      "torquePerThrustM": 0.015
+    },
+    {
+      "id": "rotor-2",
+      "positionM": [0.07955, 0.07955, -0.025],
+      "maxThrustN": 8,
+      "zeroThrustSpeedMps": 50,
+      "responseSeconds": 0.04,
+      "yawMix": 0,
+      "propDiameterM": 0.127,
+      "spin": "ccw",
+      "torquePerThrustM": 0.015
+    },
+    {
+      "id": "rotor-3",
+      "positionM": [-0.07955, 0.07955, -0.025],
+      "maxThrustN": 8,
+      "zeroThrustSpeedMps": 50,
+      "responseSeconds": 0.04,
+      "yawMix": 0,
+      "propDiameterM": 0.127,
+      "spin": "cw",
+      "torquePerThrustM": 0.015
+    },
+    {
+      "id": "rotor-4",
+      "positionM": [-0.07955, -0.07955, -0.025],
+      "maxThrustN": 8,
+      "zeroThrustSpeedMps": 50,
+      "responseSeconds": 0.04,
+      "yawMix": 0,
+      "propDiameterM": 0.127,
+      "spin": "ccw",
+      "torquePerThrustM": 0.015
+    }
+  ],
+  "contactPoints": [
+    {
+      "id": "foot-1",
+      "positionM": [0.051707499999999997, -0.051707499999999997, 0.028],
+      "spanLinked": false,
+      "kind": "skid",
+      "steering": false,
+      "wheelRadiusM": 0.008
+    },
+    {
+      "id": "foot-2",
+      "positionM": [0.051707499999999997, 0.051707499999999997, 0.028],
+      "spanLinked": false,
+      "kind": "skid",
+      "steering": false,
+      "wheelRadiusM": 0.008
+    },
+    {
+      "id": "foot-3",
+      "positionM": [-0.051707499999999997, 0.051707499999999997, 0.028],
+      "spanLinked": false,
+      "kind": "skid",
+      "steering": false,
+      "wheelRadiusM": 0.008
+    },
+    {
+      "id": "foot-4",
+      "positionM": [-0.051707499999999997, -0.051707499999999997, 0.028],
+      "spanLinked": false,
+      "kind": "skid",
+      "steering": false,
+      "wheelRadiusM": 0.008
+    }
+  ],
+  "reference": {
+    "spanM": 0.225,
+    "areaM2": 0.025,
+    "cgFromLeadingEdgeM": 0,
+    "leadingEdgeXM": 0
+  },
+  "fuselageDragAreaM2": 0.018,
+  "angularDamping": [0.002, 0.002, 0.003]
+}

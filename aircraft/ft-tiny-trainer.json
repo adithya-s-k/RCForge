@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 1,
+  "id": "ft-tiny-trainer",
+  "name": "FT Tiny Trainer \u00b7 Sport",
+  "description": "FT Tiny Trainer with four-channel sport wing. Plan-derived dimensions, 193 g dry reference plus estimated 60 g battery. Estimated aerodynamics.",
+  "provenance": {
+    "plans": {
+      "status": "sourced",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-Mini%20TinyTrainer-plans.pdf",
+      "note": "Josh Bixler FT Tiny Trainer two-sheet plans. Sport wing on sheet 2; powered nose and conventional tail. 193 g without battery, 16 degree throws, 30% expo, minimum 5x3 prop, 250-size 2200 kv motor, 12 A ESC, 500-1000 mAh 3S, 2-4 5 g servos."
+    },
+    "geometry": {
+      "status": "estimated",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-Mini%20TinyTrainer-plans.pdf",
+      "note": "Vector/ruler readings: sport wing flat half span about 478.5 mm, root chord 139.5 mm; tapered tips and 32 mm aileron chord. Assembly approximation uses 5 degree dihedral, 0.953 m projected span, 0.128 m2 area, 0.58 m fuselage, 0.30 m tail span. Foam thickness 5 mm; not manufacturing CAD."
+    },
+    "mass": {
+      "status": "estimated",
+      "note": "Published dry reference 193 g plus assumed 60 g battery =253 g. Component allocations and box inertia approximate. Battery position solves nominal 35 mm aft leading-edge CG; CG target estimated from plan marker, not a flight-tested measurement."
+    },
+    "aerodynamics": {
+      "status": "estimated",
+      "note": "Low-order coefficients and damping estimates for this size/class, not measured polars. No flight-log validation."
+    },
+    "propulsion": {
+      "status": "estimated",
+      "note": "5x3 prop diameter follows minimum recommendation. Static thrust 2.8 N, speed falloff and lag assumed; no motor/prop bench data."
+    },
+    "servos": {
+      "status": "estimated",
+      "note": "First-order 0.06 s control-surface response and 400 deg/s travel rate. Illustrative micro-servo response, not bench-measured."
+    }
+  },
+  "parts": [
+    {
+      "id": "left-wing",
+      "kind": "wing",
+      "massKg": 0.032,
+      "positionM": [-0.032, -0.23825, -0.041],
+      "sizeM": [0.1395, 0.4785, 0.014],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "right-wing",
+      "kind": "wing",
+      "massKg": 0.032,
+      "positionM": [-0.032, 0.23825, -0.041],
+      "sizeM": [0.1395, 0.4785, 0.014],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "body",
+      "kind": "body",
+      "massKg": 0.049,
+      "positionM": [-0.105, 0, 0.005],
+      "sizeM": [0.58, 0.04, 0.05],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "motor",
+      "kind": "motor",
+      "massKg": 0.02,
+      "positionM": [0.183, 0, 0],
+      "sizeM": [0.024, 0.024, 0.024],
+      "color": "#e9e7df"
+    },
+    {
+      "id": "battery",
+      "kind": "battery",
+      "massKg": 0.06,
+      "positionM": [0.14002291666666666, 0, 0.005],
+      "sizeM": [0.05, 0.025, 0.02],
+      "color": "#e9e7df"
+    },
+    {
+      "id": "tail",
+      "kind": "tail",
+      "massKg": 0.02,
+      "positionM": [-0.355, 0, -0.025],
+      "sizeM": [0.115, 0.3, 0.12],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "equipment",
+      "kind": "equipment",
+      "massKg": 0.04,
+      "positionM": [0.055, 0, 0.005],
+      "sizeM": [0.03, 0.035, 0.025],
+      "color": "#e9e7df"
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "left-wing",
+      "positionM": [0, -0.23825, -0.041],
+      "spanM": 0.4785,
+      "chordM": 0.1343,
+      "aspectRatio": 7.1,
+      "rollDeg": 5.0,
+      "incidenceDeg": 2,
+      "liftSlope": 4.4,
+      "zeroLiftDeg": -2,
+      "stallDeg": 15,
+      "cd0": 0.03,
+      "efficiency": 0.8,
+      "cm": -0.018,
+      "control": {
+        "axis": "roll",
+        "gain": 1,
+        "maxDeg": 16,
+        "effectiveness": 0.42,
+        "responseSeconds": 0.06,
+        "rateLimitDegS": 400
+      },
+      "kind": "wing"
+    },
+    {
+      "id": "right-wing",
+      "positionM": [0, 0.23825, -0.041],
+      "spanM": 0.4785,
+      "chordM": 0.1343,
+      "aspectRatio": 7.1,
+      "rollDeg": -5.0,
+      "incidenceDeg": 2,
+      "liftSlope": 4.4,
+      "zeroLiftDeg": -2,
+      "stallDeg": 15,
+      "cd0": 0.03,
+      "efficiency": 0.8,
+      "cm": -0.018,
+      "control": {
+        "axis": "roll",
+        "gain": -1,
+        "maxDeg": 16,
+        "effectiveness": 0.42,
+        "responseSeconds": 0.06,
+        "rateLimitDegS": 400
+      },
+      "kind": "wing"
+    },
+    {
+      "id": "elevator",
+      "positionM": [-0.35, 0, -0.012],
+      "spanM": 0.3,
+      "chordM": 0.105,
+      "aspectRatio": 2.86,
+      "rollDeg": 0,
+      "incidenceDeg": 0,
+      "liftSlope": 3.2,
+      "zeroLiftDeg": 0,
+      "stallDeg": 15,
+      "cd0": 0.03,
+      "efficiency": 0.8,
+      "cm": 0,
+      "control": {
+        "axis": "pitch",
+        "gain": -1,
+        "maxDeg": 16,
+        "effectiveness": 0.55,
+        "responseSeconds": 0.06,
+        "rateLimitDegS": 400
+      },
+      "kind": "horizontal-tail"
+    },
+    {
+      "id": "fin",
+      "positionM": [-0.355, 0, -0.068],
+      "spanM": 0.112,
+      "chordM": 0.1,
+      "aspectRatio": 1.12,
+      "rollDeg": 90,
+      "incidenceDeg": 0,
+      "liftSlope": 3.2,
+      "zeroLiftDeg": 0,
+      "stallDeg": 15,
+      "cd0": 0.03,
+      "efficiency": 0.8,
+      "cm": 0,
+      "control": {
+        "axis": "yaw",
+        "gain": -1,
+        "maxDeg": 16,
+        "effectiveness": 0.55,
+        "responseSeconds": 0.06,
+        "rateLimitDegS": 400
+      },
+      "kind": "vertical-tail"
+    }
+  ],
+  "motors": [
+    {
+      "id": "nose",
+      "positionM": [0.205, 0, 0],
+      "maxThrustN": 2.8,
+      "zeroThrustSpeedMps": 22,
+      "responseSeconds": 0.09,
+      "yawMix": 0,
+      "propDiameterM": 0.127
+    }
+  ],
+  "fuselageDragAreaM2": 0.0025,
+  "angularDamping": [0.005, 0.008, 0.006],
+  "reference": {
+    "spanM": 0.953,
+    "areaM2": 0.128,
+    "cgFromLeadingEdgeM": 0.035,
+    "leadingEdgeXM": 0.034875
+  },
+  "contactPoints": [
+    {
+      "id": "nose",
+      "positionM": [0.18, 0, 0.03],
+      "spanLinked": false
+    },
+    {
+      "id": "tail",
+      "positionM": [-0.395, 0, 0.02],
+      "spanLinked": false
+    },
+    {
+      "id": "left-tip",
+      "positionM": [-0.03, -0.4765, -0.055],
+      "spanLinked": true
+    },
+    {
+      "id": "right-tip",
+      "positionM": [-0.03, 0.4765, -0.055],
+      "spanLinked": true
+    }
+  ]
+}
