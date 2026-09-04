@@ -33,7 +33,19 @@ again so total mass remains 830 g and the longitudinal CG remains 51 mm aft of L
 
 The plan specifies 193 g without battery, 16° throws, 30% expo and a minimum 5×3 propeller. The preset assumes a 60 g battery for 253 g total. The source recommends a 250-size 2200 kv motor, minimum 12 A ESC, 500–1000 mAh 3S battery and 5 g servos. The preset uses an estimated 3S 650 mAh pack and simplified battery discharge. Motor-current data remains estimated; ESC electronics are not simulated.
 
-Vector/ruler readings put the flat sport half-wing around 478.5 mm with 139.5 mm root chord and approximately 32 mm aileron chord. The assembled approximation uses 5° dihedral and 953 mm projected span. Integrating the sampled tapered outline gives 0.12566 m² wing area and 131.3 mm equivalent chord. The nominal 35 mm CG target is estimated, not a verified published text specification. The 2.8 N motor thrust and aerodynamic coefficients remain estimates requiring bench and flight data.
+Vector/ruler readings put the flat sport half-wing around 478.5 mm with 139.5 mm root chord and approximately 32 mm aileron chord. The assembled approximation uses 5° dihedral and 953 mm projected span. Integrating the sampled tapered outline gives 0.12566 m² wing area and 131.3 mm equivalent chord. The 2.8 N motor thrust and aerodynamic coefficients remain estimates requiring bench and flight data.
+
+The original sheet-2 lower wing skin has its CG marker at X = 523.187 pt and
+leading-edge fold at X = 649.187 pt. Their 126 pt separation is 1.75 in =
+**44.45 mm**. The opposite half repeats the same offset at X = 1603.187 and
+1477.187 pt. This replaces the earlier 35 mm estimate; the 60 g battery moves
+aft to approximately X = 124.3 mm while the airframe stays at 253 g.
+The later [v1.1 plan cover](https://ftforumx2.s3.amazonaws.com/2020/03/290620_b3da14e2e4fd2e6cfb3982664ceafcd4.pdf)
+independently lists 1.75 in / 44 mm. The current
+[MKR2 product specification](https://store.flitetest.com/ft-mighty-mini-tiny-trainer-mkr2/)
+gives a 38–44 mm range. These references establish a starting balance point,
+not measured aerodynamic stability. Later references recommend a 6×3 prop;
+this reconstruction retains the original plan's 5×3 minimum configuration.
 
 The aileron runs approximately 31–373 mm outboard on each half, leaving the swept,
 rounded tip fixed. Its hinge follows the plan's 90 pt trailing strip. The folded

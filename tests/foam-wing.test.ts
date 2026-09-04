@@ -11,6 +11,22 @@ import {
   Simulation,
 } from "../src/core/simulation";
 import { launchTrim } from "../src/core/launch";
+import { massProperties } from "../src/core/aircraft";
+
+it("balances the Tiny Trainer at the repeated 1.75-inch CG station in its original plan", () => {
+  const a = parseAircraft(tiny),
+    properties = massProperties(a);
+  const drawingOffsetM = ((649.187 - 523.187) / 72) * 0.0254;
+  expect(a.reference.cgFromLeadingEdgeM).toBeCloseTo(drawingOffsetM, 8);
+  expect(a.reference.leadingEdgeXM - properties.cg[0]).toBeCloseTo(
+    drawingOffsetM,
+    8,
+  );
+  expect(properties.mass).toBeCloseTo(0.253, 9);
+  expect(a.parts.find((p) => p.id === "battery")!.positionM[0]).toBeLessThan(
+    0.14,
+  );
+});
 
 it("keeps Tiny Trainer ailerons inside the rounded sport-wing tip, at the plan span stations", () => {
   const a = parseAircraft(tiny);

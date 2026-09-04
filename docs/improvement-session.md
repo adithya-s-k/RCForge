@@ -318,3 +318,18 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   numerical report passes. Capacity-only constant-voltage regression shows equal
   mAh consumption and the expected different percentage loss. Replay remains
   identical; no dynamics or simulation-version change was made.
+
+## Pass 13 · Tiny Trainer balance from the original drawing
+
+- Measured both original sport-wing CG markers against the leading-edge folds:
+  126 PDF points / 1.75 inches / 44.45 mm on each half. The later v1.1 cover
+  independently gives the same balance point; MKR2 lists a 38–44 mm range.
+- Replaced the previous 35 mm estimate and moved the assumed 60 g battery aft
+  to solve that station. Total mass stays 253 g. Documented the original 5×3
+  versus later 6×3 prop recommendation without silently mixing build versions.
+- Browser: restored/applied the definition, inspected the side view and CG,
+  hand launched and paused after 23.8 s at 8.5 m/s and 29.6 m AGL. Numerical
+  checks pass; trim survey remains 81/135 with zero nonfinite loads.
+- Verification: 189 tests in 33 files, definitions/catalog and build pass.
+  The new regression checks the mass-weighted CG against the measured drawing
+  offset. This establishes a plan-based starting balance, not flight calibration.

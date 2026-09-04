@@ -16,7 +16,7 @@
     },
     "mass": {
       "status": "estimated",
-      "note": "Published dry reference 193 g plus assumed 60 g battery =253 g. Component allocations and box inertia approximate. Battery position solves nominal 35 mm aft leading-edge CG; CG target estimated from plan marker, not a flight-tested measurement. The assumed pack is carried under the powered nose; its outer envelope and longitudinal balance are not a measured installation."
+      "note": "Published dry reference 193 g plus assumed 60 g battery =253 g. Component allocations and cuboid inertia are estimates. Battery position solves the plan-derived 44.45 mm aft leading-edge CG. The pack is carried under the powered nose; its physical dimensions and installation station are estimated, not measurements of an assembled aircraft."
     },
     "aerodynamics": {
       "status": "estimated",
@@ -24,7 +24,7 @@
     },
     "propulsion": {
       "status": "estimated",
-      "note": "5x3 prop diameter follows minimum recommendation. Static thrust 2.8 N, speed falloff and lag assumed; no motor/prop bench data."
+      "note": "5x3 prop diameter follows the original two-sheet plan minimum. Later v1.1/MKR2 references recommend 6x3; this preset retains the original configuration. Static thrust 2.8 N, forward-speed falloff, lag and current remain estimates without matching motor/prop bench data."
     },
     "servos": {
       "status": "estimated",
@@ -43,6 +43,11 @@
       "status": "estimated",
       "note": "Sport-wing tips taper toward the trailing edge; ailerons occupy measured 31 to 373 mm outboard span, rather than reaching the tips. Tail outlines/hinges are rotated from sheet-2 vectors; root-tab details omitted. Main fuselage and removable power nose split the original 49 g body allocation. Tail split retains 20 g. Fold heights, assembled stations and individual mass distributions remain estimates.",
       "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-Mini%20TinyTrainer-plans.pdf"
+    },
+    "balanceReference": {
+      "status": "calculated",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-Mini%20TinyTrainer-plans.pdf",
+      "note": "Original sheet 2: sport-wing lower skin CG marker X=523.187 pt and leading-edge fold X=649.187 pt, a 126 pt separation = 1.75 in = 44.45 mm. Mirrored right-wing stations 1603.187 and 1477.187 give the same distance. The 2020 v1.1 cover also lists 1.75 in / 44 mm. This corrects the earlier 35 mm estimate; not flight-test calibration."
     }
   },
   "parts": [
@@ -120,7 +125,7 @@
       "id": "battery",
       "kind": "battery",
       "massKg": 0.06,
-      "positionM": [0.16418541703007417, 0, 0.041],
+      "positionM": [0.12433791703007416, 0, 0.041],
       "sizeM": [0.05, 0.025, 0.02],
       "color": "#343a40"
     },
@@ -523,7 +528,7 @@
   "reference": {
     "spanM": 0.953,
     "areaM2": 0.12565958183954998,
-    "cgFromLeadingEdgeM": 0.035,
+    "cgFromLeadingEdgeM": 0.04445,
     "leadingEdgeXM": 0.034875
   },
   "contactPoints": [
