@@ -385,3 +385,15 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
 - Continue within the authorized window: existing flight/controller/editor UX,
   model assembly consistency and efficient rendering. Do not duplicate the active
   continuation automation or claim physical calibration.
+
+### Checkpoint · 23:50 UTC
+
+- Pass 16 final checks: 193 tests / 34 files, build, format and local docs links
+  pass. Branch CI run 33930803966 passed on Node 22/24 plus Arduino build checks.
+- Browser hand release: paused at 18.6 s, 8.5 m/s, 23.7 m AGL, 32% power and
+  94% charge. Restored ground/Pilot defaults and left Bronco in the editor.
+- Reference tabs are closed; viewport override is reset. Branch changes are
+  committed and pushed through de530ad; main remains untouched.
+- Continuation permits one cleanup wake after the deadline so the automation can
+  explicitly pause itself and report. The work deadline remains 02:28:46 UTC;
+  no new work may start after it. Continue reviewing existing workflows before it.
