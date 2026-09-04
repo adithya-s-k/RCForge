@@ -1,3 +1,4 @@
+import { surfaceCommand } from "../src/core/surface-control";
 import type { Aircraft } from "../src/core/schema";
 import {
   Simulation,
@@ -42,6 +43,8 @@ export function extraChecks(a: Aircraft): Check[] {
       });
   const vacuum = structuredClone(a);
   vacuum.surfaces = [];
+  delete vacuum.bodyDragAreaM2;
+  delete vacuum.battery;
   vacuum.motors = [];
   vacuum.fuselageDragAreaM2 = 0;
   vacuum.angularDamping = [0, 0, 0];
@@ -107,7 +110,7 @@ export function extraChecks(a: Aircraft): Check[] {
     length(sub(other.state.position, rotate(q, base.state.position))),
     1e-7,
   );
-  if (a.vehicleType === "fixed-wing") {
+  if (a.vehicleType === "fixed-wing" && a.motors.length) {
     const lagState = initialState(a, 0, 10000, 0);
     lagState.motors.fill(0);
     const lag = new Simulation(a, calmEnvironment(), lagState);
@@ -157,6 +160,9 @@ export function extraChecks(a: Aircraft): Check[] {
         qd = mulQ(s.orientation, [...s.omega, 0] as Quat).map((x) => x * 0.5);
       return [...s.velocity, ...accel, ...alpha, ...qd];
     };
+    trim.state.surfaceCommands = a.surfaces.map((s) =>
+      s.control ? surfaceCommand(s.control, c) : 0,
+    );
     let v = pack(trim.state);
     const dt = 1 / 1000;
     for (let i = 0; i < 2000; i++) {
@@ -169,9 +175,12 @@ export function extraChecks(a: Aircraft): Check[] {
       );
     }
     const regular = new Simulation(a, calmEnvironment(), trim.state);
-    for (let i = 0; i < 240; i++) regular.step(c);
+    for (let i = 0; i < 240; i++) {
+      regular.step(c);
+      regular.state.batterySoc = trim.state.batterySoc;
+    }
     record(
-      "Separate RK4 integrator, shared forces: position error (m)",
+      "Separate RK4 integrator, shared forces and fixed SOC: position error (m)",
       length(sub(regular.state.position, state(v).position)),
       0.01,
     );

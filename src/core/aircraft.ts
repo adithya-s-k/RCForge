@@ -108,6 +108,15 @@ export function modifyAircraft(base: Aircraft, c: DesignChanges): Aircraft {
       s.spanM *= c.spanScale;
       s.positionM[1] *= c.spanScale;
       s.aspectRatio *= c.spanScale;
+      if (c.spanScale !== 1 && (s.polar || s.reynoldsPolars)) {
+        // Finite-wing coefficients belong to the original aspect ratio.
+        delete s.polar;
+        delete s.reynoldsPolars;
+        a.provenance.modifiedWingAerodynamics = {
+          status: "estimated",
+          note: "Span changed: original finite-wing polar tables were removed. Analytical coefficients are estimates until data for the modified geometry is supplied.",
+        };
+      }
     }
     if (s.control) s.control.maxDeg *= c.throwsScale;
   }

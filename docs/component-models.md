@@ -1,6 +1,6 @@
-# Component fidelity in RCForge 0.5
+# Component fidelity in RCForge 0.6
 
-The schema remains aircraft format 1 with optional extensions. Simulation version 0.5.0 rejects recordings from earlier physics versions. These features support measured inputs; their existence does not make an aircraft flight-test calibrated.
+The schema remains aircraft format 1 with optional extensions. Simulation version 0.6.0 rejects recordings from earlier physics versions. These features support measured inputs; their existence does not make an aircraft flight-test calibrated.
 
 ## Mass, materials and inertia
 
@@ -45,3 +45,59 @@ The selected surface changes rolling/lateral friction (estimated asphalt/grass/d
 ## Verification versus calibration
 
 `npm run check` checks schema, component invariants, lookup interpolation, charge conservation, depleted thrust, density scaling, servo limits, directional drag, replay and existing aircraft behavior. `npm run physics:validate` produces an analytical/numerical report including circuit, charge and electrical-replay checks. Neither substitutes for measured trim, glide, stall, maneuvers and thrust/current comparison. Keep held-out flight data separate from coefficient fitting; use `npm run physics:compare` for aligned flight telemetry.
+
+## Reynolds-dependent aerodynamic tables (0.6)
+
+A surface may provide `reynoldsPolars` instead of `polar`:
+
+```json
+{
+  "convention": "finite-wing",
+  "source": "Synthetic example only; replace with an identified finite-wing dataset",
+  "tables": [
+    {
+      "reynolds": 100000,
+      "points": [
+        { "alphaDeg": -10, "cl": -0.4, "cd": 0.08, "cm": -0.04 },
+        { "alphaDeg": 0, "cl": 0, "cd": 0.08, "cm": -0.04 },
+        { "alphaDeg": 10, "cl": 0.4, "cd": 0.08, "cm": -0.04 }
+      ]
+    },
+    {
+      "reynolds": 400000,
+      "points": [
+        { "alphaDeg": -10, "cl": -0.8, "cd": 0.04, "cm": -0.02 },
+        { "alphaDeg": 0, "cl": 0, "cd": 0.04, "cm": -0.02 },
+        { "alphaDeg": 10, "cl": 0.8, "cd": 0.04, "cm": -0.02 }
+      ]
+    }
+  ]
+}
+```
+
+This is a surface-field fragment, not an aircraft file or measured training-plane
+polar. CL/CD/CM describe the finite wing; CD includes induced drag. Do not paste
+2-D section polars in without a documented finite-wing conversion. Angles include
+incidence and effective control deflection, but do not subtract `zeroLiftDeg`
+again: camber is already represented in the table. Explicit deflection-indexed
+polars and dynamic stall are not implemented.
+
+Tables must have increasing Reynolds numbers, increasing angles and nonnegative
+drag. The core linearly interpolates angles, then interpolates in log(Re).
+Reynolds number is local in-plane speed × chord / kinematic viscosity. Environment
+`kinematicViscosityM2S` defaults to standard dry air when absent; site presets
+calculate it using temperature and density. Each table blends to the analytical
+model over 12 degrees beyond its own angle boundary. Reynolds boundaries clamp;
+`outsidePolarEnvelope` reports either form of out-of-data operation. No guessed
+extrapolated coefficients are presented as measured data.
+
+`lastForces.surfaces` exposes `reynolds`, `coefficientSource` and
+`outsidePolarEnvelope`; the operating-point report includes them. Analytical
+surfaces are explicitly identified and have no claimed measured envelope.
+Changing wing span in the editor removes that wing's finite-wing tables and adds
+an estimated-data provenance note. Mass/CG-only changes preserve aerodynamic
+tables. Supply new tables for modified geometry before claiming calibrated loads.
+
+Simulation version 0.6.0 records viscosity and these aircraft fields. Old 0.5.0
+recordings are rejected; do not relabel their version to bypass the check.
+Aircraft schema version 1 remains compatible because the fields are optional.

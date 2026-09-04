@@ -1,7 +1,7 @@
-import { powertrain } from "../src/core/powertrain";
+import { powertrain, interpolate } from "../src/core/powertrain";
 import { createRecording, parseRecording } from "../src/core/experiment";
 import { extraChecks } from "./verification-cases";
-import { readFile, mkdir, writeFile } from "node:fs/promises";
+import { readFile, readdir, mkdir, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { parseAircraft } from "../src/core/schema";
 import {
@@ -22,15 +22,19 @@ const checks: {
   metric: number;
   limit: number;
 }[] = [];
-for (const id of [
-  "ft-bronco",
-  "ft-tiny-trainer",
-  "simple-trainer",
-  "quad-x-5inch",
-]) {
-  const a = parseAircraft(
-      JSON.parse(await readFile(`aircraft/${id}.json`, "utf8")),
-    ),
+const args = process.argv.slice(2);
+const paths = args.length
+  ? args.map((p) => (p.endsWith(".json") ? p : `aircraft/${p}.json`))
+  : (await readdir("aircraft"))
+      .filter((p) => p.endsWith(".json"))
+      .sort()
+      .map((p) => `aircraft/${p}`);
+const definitions = await Promise.all(
+  paths.map((path) => readFile(path, "utf8")),
+);
+const aircraft = definitions.map((raw) => parseAircraft(JSON.parse(raw)));
+for (const a of aircraft) {
+  const id = a.id,
     trim = findTrim(a);
   checks.push(...extraChecks(a));
   checks.push({
@@ -40,11 +44,16 @@ for (const id of [
     metric: Math.hypot(...trim.residual),
     limit: 0.01,
   });
-  const result = runExperiment(a, calmEnvironment(), "cruise", 10),
-    drift = Math.abs(result.finalState.position[2] - trim.state.position[2]);
+  // Hold SOC during the equilibrium-only test; depletion is tested separately.
+  const steady = new Simulation(a, calmEnvironment(), trim.state);
+  for (let i = 0; i < 1200; i++) {
+    steady.step(trim.controls);
+    steady.state.batterySoc = trim.state.batterySoc;
+  }
+  const drift = Math.abs(steady.state.position[2] - trim.state.position[2]);
   checks.push({
     aircraft: id,
-    check: "10 s equilibrium altitude drift (m)",
+    check: "10 s equilibrium altitude drift, fixed SOC (m)",
     pass: drift < 0.02,
     metric: drift,
     limit: 0.02,
@@ -98,67 +107,70 @@ for (const id of [
     });
   }
 }
-// The electrical example is transient by design: charge decay is not an equilibrium failure.
-const electric = parseAircraft(
-  JSON.parse(await readFile("aircraft/quad-x-6s.json", "utf8")),
-);
-const ep = powertrain(electric, [0.5, 0.5, 0.5, 0.5], 0.5);
-const ohmError = Math.abs(
-  ep.voltage - (6 * 3.8 - ep.current * electric.battery!.resistanceOhm),
-);
-checks.push({
-  aircraft: electric.id,
-  check: "Battery resistive circuit residual (V)",
-  pass: ohmError < 1e-10,
-  metric: ohmError,
-  limit: 1e-10,
-});
-const es = initialState(electric, 0, 100, 0);
-es.motors.fill(0.5);
-const esim = new Simulation(electric, calmEnvironment(), es),
-  er = createRecording(esim);
-const ec = { ...neutralControls(), throttle: 0.5 },
-  before = esim.state.batterySoc!,
-  current = powertrain(electric, es.motors, before).current;
-esim.step(ec);
-er.frames.push(ec);
-const chargeError = Math.abs(
-  esim.state.batterySoc! -
-    (before - (current * FIXED_DT) / (electric.battery!.capacityMah * 3.6)),
-);
-checks.push({
-  aircraft: electric.id,
-  check: "Battery coulomb-counting residual (SOC)",
-  pass: chargeError < 1e-10,
-  metric: chargeError,
-  limit: 1e-10,
-});
-for (let i = 0; i < 240; i++) {
+// Every electrical definition gets circuit, charge and replay checks.
+for (const electric of aircraft.filter((a) => a.battery)) {
+  const ep = powertrain(
+    electric,
+    electric.motors.map(() => 0.5),
+    0.5,
+  );
+  const ohmError = Math.abs(
+    ep.voltage -
+      (electric.battery!.cells *
+        interpolate(
+          electric.battery!.voltageCurve,
+          0.5,
+          (p) => p.soc,
+          (p) => p.voltsPerCell,
+        ) -
+        ep.current * electric.battery!.resistanceOhm),
+  );
+  checks.push({
+    aircraft: electric.id,
+    check: "Battery resistive circuit residual (V)",
+    pass: ohmError < 1e-10,
+    metric: ohmError,
+    limit: 1e-10,
+  });
+  const es = initialState(electric, 0, 100, 0);
+  es.motors.fill(0.5);
+  const esim = new Simulation(electric, calmEnvironment(), es),
+    er = createRecording(esim);
+  const ec = { ...neutralControls(), throttle: 0.5 },
+    before = esim.state.batterySoc!,
+    current = powertrain(electric, es.motors, before).current;
   esim.step(ec);
   er.frames.push(ec);
+  const chargeError = Math.abs(
+    esim.state.batterySoc! -
+      (before - (current * FIXED_DT) / (electric.battery!.capacityMah * 3.6)),
+  );
+  checks.push({
+    aircraft: electric.id,
+    check: "Battery coulomb-counting residual (SOC)",
+    pass: chargeError < 1e-10,
+    metric: chargeError,
+    limit: 1e-10,
+  });
+  for (let i = 0; i < 240; i++) {
+    esim.step(ec);
+    er.frames.push(ec);
+  }
+  const replayError = Math.abs(
+    replayRecording(parseRecording(JSON.parse(JSON.stringify(er))))
+      .batterySoc! - esim.state.batterySoc!,
+  );
+  checks.push({
+    aircraft: electric.id,
+    check: "Electrical state replay error (SOC)",
+    pass: replayError === 0,
+    metric: replayError,
+    limit: 0,
+  });
 }
-const replayError = Math.abs(
-  replayRecording(parseRecording(JSON.parse(JSON.stringify(er)))).batterySoc! -
-    esim.state.batterySoc!,
-);
-checks.push({
-  aircraft: electric.id,
-  check: "Electrical state replay error (SOC)",
-  pass: replayError === 0,
-  metric: replayError,
-  limit: 0,
-});
-const definitions = await Promise.all(
-  [
-    "ft-bronco",
-    "ft-tiny-trainer",
-    "simple-trainer",
-    "quad-x-5inch",
-    "quad-x-6s",
-  ].map((id) => readFile(`aircraft/${id}.json`, "utf8")),
-);
 const report = {
   simulationVersion: SIM_VERSION,
+  aircraftIds: aircraft.map((a) => a.id),
   generatedAt: new Date().toISOString(),
   definitionSHA256: createHash("sha256")
     .update(definitions.join("\n"))
@@ -178,9 +190,17 @@ await writeFile(
   "results/validation/report.json",
   JSON.stringify(report, null, 2),
 );
+const escape = (s: string) =>
+  s.replace(
+    /[&<>"\']/g,
+    (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
+        c
+      ]!,
+  );
 await writeFile(
   "results/validation/report.html",
-  `<!doctype html><meta charset="utf-8"><title>RCForge physics verification</title><style>body{font:15px system-ui;background:#111b22;color:#dce7ec;max-width:1100px;margin:50px auto;padding:20px}h1{font-weight:500}p{line-height:1.7;color:#9eb3bf}table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;padding:12px;border-bottom:1px solid #344550}.pass{color:#bbd89e}.fail{color:#ed8f77}</style><h1>RCForge · Physics verification</h1><p>Simulator ${SIM_VERSION} · ${report.generatedAt}<br>${report.scope}</p><h2 class="${report.passed ? "pass" : "fail"}">${checks.filter((c) => c.pass).length} / ${checks.length} checks passed</h2><table><tr><th>Aircraft</th><th>Check</th><th>Measured error</th><th>Limit</th><th>Result</th></tr>${checks.map((c) => `<tr><td>${c.aircraft}</td><td>${c.check}</td><td>${c.metric.toExponential(3)}</td><td>${c.limit.toExponential(3)}</td><td class="${c.pass ? "pass" : "fail"}">${c.pass ? "PASS" : "FAIL"}</td></tr>`).join("")}</table><h2>Not yet validated</h2><p>Real flight fidelity, independent engine agreement, exact transmitter integration, rotor thrust curves, flight-controller firmware and battery/electrical response require additional evidence. Passing these numerical checks does not establish those claims.</p>`,
+  `<!doctype html><meta charset="utf-8"><title>RCForge physics verification</title><style>body{font:15px system-ui;background:#111b22;color:#dce7ec;max-width:1100px;margin:50px auto;padding:20px}h1{font-weight:500}p{line-height:1.7;color:#9eb3bf}table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;padding:12px;border-bottom:1px solid #344550}.pass{color:#bbd89e}.fail{color:#ed8f77}</style><h1>RCForge · Physics verification</h1><p>Simulator ${SIM_VERSION} · ${report.generatedAt}<br>${report.scope}</p><h2 class="${report.passed ? "pass" : "fail"}">${checks.filter((c) => c.pass).length} / ${checks.length} checks passed</h2><table><tr><th>Aircraft</th><th>Check</th><th>Measured error</th><th>Limit</th><th>Result</th></tr>${checks.map((c) => `<tr><td>${escape(c.aircraft)}</td><td>${escape(c.check)}</td><td>${c.metric.toExponential(3)}</td><td>${c.limit.toExponential(3)}</td><td class="${c.pass ? "pass" : "fail"}">${c.pass ? "PASS" : "FAIL"}</td></tr>`).join("")}</table><h2>Not yet validated</h2><p>Real flight fidelity, independent engine agreement, exact transmitter integration, rotor thrust curves, flight-controller firmware and battery/electrical response require additional evidence. Passing these numerical checks does not establish those claims.</p>`,
 );
 console.log(JSON.stringify(report, null, 2));
 if (!report.passed) process.exitCode = 1;

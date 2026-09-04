@@ -16,7 +16,7 @@ In Aircraft editor:
 
 JSON `multirotor` settings also expose maximum angular rate, rate feedback gain and attitude feedback gain. The present mixer supports four rotors in separate X-layout quadrants. Plus, coaxial, hex, octo, tilted-rotor and fully general actuator allocation are not implemented. Definition validation rejects unsupported layouts.
 
-The mass model uses axis-aligned box components, not a detailed CAD inertia model. The battery mass and location affect dynamics, but voltage sag, capacity, KV, winding resistance, ESC response nonlinearities, prop RPM, rotor interference, aerodynamic ground effect and sensor latency/noise are not modeled. A prop-diameter edit changes the visualization; it does not infer a new thrust curve. Supply measured thrust and torque values for the selected motor/prop/battery combination.
+The mass model defaults to box components, with optional measured principal inertia and orientation. Battery mass and location affect dynamics. Optional thrust/current tables and a resistive battery model support voltage sag and charge depletion (see the 6S preset). KV/winding dynamics, a complete ESC model, prop RPM, rotor interference, aerodynamic ground effect and sensor latency/noise are not modeled. A prop-diameter edit changes the visualization; it does not infer a new thrust curve. Supply measured thrust and torque values for the selected motor/prop/battery combination.
 
 ## Flight behavior and validation
 

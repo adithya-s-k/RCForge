@@ -2,7 +2,12 @@ import "./view/flight-navigation.css";
 import { createFlightNavigation } from "./view/flight-navigation";
 import { setupArduino } from "./app/arduino";
 import { renderBudget } from "./view/render-budget";
-import { sceneries, airDensity, type SceneryId } from "./core/scenery";
+import {
+  sceneries,
+  airDensity,
+  airKinematicViscosity,
+  type SceneryId,
+} from "./core/scenery";
 import { powertrain } from "./core/powertrain";
 import detailedQuadData from "../aircraft/quad-x-6s.json";
 import { setupCatalog } from "./app/catalog";
@@ -717,6 +722,10 @@ $("scenery-select").onchange = () => {
     sceneryId: id,
     surface: site.surface,
     densityKgM3: airDensity(site.temperatureC, site.elevationM),
+    kinematicViscosityM2S: airKinematicViscosity(
+      site.temperatureC,
+      airDensity(site.temperatureC, site.elevationM),
+    ),
   };
   reset();
   invalidate();

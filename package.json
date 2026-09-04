@@ -1,6 +1,6 @@
 {
   "name": "rcforge",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "type": "module",
   "description": "An open foundation for programmable RC aircraft",
@@ -22,7 +22,8 @@
     "format:check": "prettier --check .",
     "physics:validate": "tsx scripts/physics-validate.ts",
     "physics:compare": "tsx scripts/physics-compare.ts",
-    "docs:check": "tsx scripts/check-docs.ts"
+    "docs:check": "tsx scripts/check-docs.ts",
+    "physics:envelope": "tsx scripts/physics-envelope.ts"
   },
   "dependencies": {
     "@fontsource/dm-sans": "^5.3.0",

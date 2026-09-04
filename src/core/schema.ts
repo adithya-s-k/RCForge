@@ -3,6 +3,24 @@ const finite = z.number().finite();
 const vec = z.tuple([finite, finite, finite]);
 const positive = finite.positive();
 const dims = z.tuple([positive, positive, positive]);
+const polarTable = z
+  .array(
+    z
+      .object({
+        alphaDeg: finite.min(-180).max(180),
+        cl: finite.min(-5).max(5),
+        cd: finite.min(0).max(5),
+        cm: finite.min(-2).max(2),
+      })
+      .strict(),
+  )
+  .min(3)
+  .max(721)
+  .refine(
+    (points) =>
+      points.every((p, i) => i === 0 || p.alphaDeg > points[i - 1].alphaDeg),
+    "Polar angles must be strictly increasing",
+  );
 const provenance = z
   .object({
     status: z.enum(["sourced", "calculated", "estimated", "calibrated"]),
@@ -100,6 +118,32 @@ export const AircraftSchema = z
           aspectRatio: positive,
           rollDeg: finite.min(-180).max(180),
           incidenceDeg: finite.min(-20).max(20),
+          reynoldsPolars: z
+            .object({
+              // A 2-D section table must first be converted to finite-wing data.
+              convention: z.literal("finite-wing"),
+              source: z.string().min(1).max(2000),
+              tables: z
+                .array(
+                  z
+                    .object({
+                      reynolds: positive.min(1000).max(100000000),
+                      points: polarTable,
+                    })
+                    .strict(),
+                )
+                .min(2)
+                .max(20)
+                .refine(
+                  (tables) =>
+                    tables.every(
+                      (t, i) => i === 0 || t.reynolds > tables[i - 1].reynolds,
+                    ),
+                  "Reynolds numbers must be strictly increasing",
+                ),
+            })
+            .strict()
+            .optional(),
           polar: z
             .array(
               z
@@ -274,6 +318,8 @@ export const AircraftSchema = z
         );
     });
     a.surfaces.forEach((s, i) => {
+      if (s.polar && s.reynoldsPolars)
+        issue(["surfaces", i], "Choose polar or reynoldsPolars, not both");
       if (
         s.polar &&
         s.polar.some((p, j) => j > 0 && p.alphaDeg <= s.polar![j - 1].alphaDeg)

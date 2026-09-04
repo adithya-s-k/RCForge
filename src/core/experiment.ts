@@ -143,6 +143,7 @@ export function parseRecording(raw: unknown): Recording {
           gustMps: finite.min(0).max(20),
           seed: z.number().int(),
           densityKgM3: finite.positive().max(3),
+          kinematicViscosityM2S: finite.min(1e-6).max(0.001).optional(),
           sceneryId: z.string().optional(),
           surface: z.enum(["asphalt", "grass", "dirt"]).optional(),
         })

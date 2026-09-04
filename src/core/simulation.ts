@@ -1,4 +1,5 @@
-import { powertrain, interpolate } from "./powertrain";
+import { surfacePolar, STANDARD_AIR_VISCOSITY } from "./aerodynamics";
+import { powertrain } from "./powertrain";
 import { rotorCommands } from "./multirotor";
 import { surfaceCommand } from "./surface-control";
 import { resolveGroundContacts } from "./ground";
@@ -22,7 +23,7 @@ import {
   type Vec3,
   type Quat,
 } from "./math";
-export const SIM_VERSION = "0.5.0";
+export const SIM_VERSION = "0.6.0";
 export const FIXED_DT = 1 / 120;
 export const GRAVITY = 9.80665;
 export interface Controls {
@@ -42,6 +43,7 @@ export interface Environment {
   gustMps: number;
   seed: number;
   densityKgM3: number;
+  kinematicViscosityM2S?: number;
   sceneryId?: string;
   surface?: "asphalt" | "grass" | "dirt";
 }
@@ -68,6 +70,9 @@ export interface SurfaceForce {
   position: Vec3;
   force: Vec3;
   alphaDeg: number;
+  reynolds: number;
+  coefficientSource: "analytical" | "polar-table" | "reynolds-table";
+  outsidePolarEnvelope: boolean;
   stalled: boolean;
 }
 export interface Forces {
@@ -207,45 +212,16 @@ export class Simulation {
         (cl * cl) / (Math.PI * wing.aspectRatio * wing.efficiency) +
         blend * 1.3 * Math.sin(alpha) ** 2;
       let cm = wing.cm;
-      if (wing.polar) {
-        // Tables contain total finite-wing coefficients; do not add induced drag twice.
-        const angle =
-          ((geometric + radians(wing.incidenceDeg) + deflect) * 180) / Math.PI;
-        const low = wing.polar[0].alphaDeg,
-          high = wing.polar.at(-1)!.alphaDeg;
-        const weight = clamp(
-          (angle < low ? low - angle : angle > high ? angle - high : 0) / 12,
-          0,
-          1,
-        );
-        cl =
-          (1 - weight) *
-            interpolate(
-              wing.polar,
-              angle,
-              (p) => p.alphaDeg,
-              (p) => p.cl,
-            ) +
-          weight * cl;
-        cd =
-          (1 - weight) *
-            interpolate(
-              wing.polar,
-              angle,
-              (p) => p.alphaDeg,
-              (p) => p.cd,
-            ) +
-          weight * cd;
-        cm =
-          (1 - weight) *
-            interpolate(
-              wing.polar,
-              angle,
-              (p) => p.alphaDeg,
-              (p) => p.cm,
-            ) +
-          weight * cm;
-      }
+      const reynolds =
+        (speed * wing.chordM) /
+        (this.environment.kinematicViscosityM2S ?? STANDARD_AIR_VISCOSITY);
+      const coefficients = surfacePolar(
+        wing,
+        ((geometric + radians(wing.incidenceDeg) + deflect) * 180) / Math.PI,
+        reynolds,
+        { cl, cd, cm },
+      );
+      ({ cl, cd, cm } = coefficients);
       const pressure =
         0.5 *
         this.environment.densityKgM3 *
@@ -266,6 +242,9 @@ export class Simulation {
         position: wing.positionM,
         force: f,
         alphaDeg: (alpha * 180) / Math.PI,
+        reynolds,
+        coefficientSource: coefficients.source,
+        outsidePolarEnvelope: coefficients.outsideEnvelope,
         stalled: Math.abs(alpha) > stall,
       });
     }

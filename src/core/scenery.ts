@@ -58,3 +58,12 @@ export function airDensity(temperatureC: number, elevationM: number) {
   const pressure = 101325 * Math.pow(1 - 2.25577e-5 * elevationM, 5.25588);
   return pressure / (287.05 * (temperatureC + 273.15));
 }
+
+/** Sutherland dry-air law, SI; kinematic viscosity = dynamic viscosity / density. */
+export function airKinematicViscosity(
+  temperatureC: number,
+  densityKgM3: number,
+) {
+  const kelvin = temperatureC + 273.15;
+  return (1.458e-6 * kelvin ** 1.5) / (kelvin + 110.4) / densityKgM3;
+}

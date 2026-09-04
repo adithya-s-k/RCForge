@@ -11,6 +11,8 @@
 
 ```sh
 npm run aircraft:validate -- aircraft/my-aircraft.json
+npm run physics:validate -- aircraft/my-aircraft.json
+npm run physics:envelope -- aircraft/my-aircraft.json
 npm run simulate -- aircraft/my-aircraft.json --scenario cruise
 npm run simulate -- aircraft/my-aircraft.json --scenario pitch-pulse
 ```

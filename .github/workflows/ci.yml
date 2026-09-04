@@ -29,6 +29,7 @@ jobs:
       - run: npm run docs:check
       - run: npm run format:check
       - run: npm run physics:validate
+      - run: npm run physics:envelope
       - run: npm run simulate -- ft-bronco --scenario pitch-pulse --duration 5
       - run: npm run replay -- results/ft-bronco-pitch-pulse/recording.json
       - name: Retain numerical verification report
