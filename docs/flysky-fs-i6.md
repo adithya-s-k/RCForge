@@ -4,11 +4,11 @@ This guide covers the **original FS-i6**, a **classic ATmega328P Uno R3 or Nano*
 
 ## Choose a connection
 
-| Path                                   | What you need                                                                                  | RCForge connection                             |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| Transmitter → simulator adapter → USB  | FS-i6-compatible trainer/PPM-to-USB **joystick** adapter, such as the appropriate FS-SM100 kit | Controllers → RC transmitter → Find devices    |
-| Transmitter → Arduino → USB            | Verified trainer **PPM OUT** breakout, Uno/Nano, resistors, USB data cable                     | Controllers → RC transmitter → Connect Arduino |
-| Transmitter → receiver → Arduino → USB | Bound receiver with PPM output, or six PWM channel outputs; Uno/Nano and jumpers               | Controllers → RC transmitter → Connect Arduino |
+| Path                                   | What you need                                                                                  | RCForge connection                              |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Transmitter → simulator adapter → USB  | FS-i6-compatible trainer/PPM-to-USB **joystick** adapter, such as the appropriate FS-SM100 kit | Controllers → RC transmitter → Find USB adapter |
+| Transmitter → Arduino → USB            | Verified trainer **PPM OUT** breakout, Uno/Nano, resistors, USB data cable                     | Controllers → RC transmitter → Connect Arduino  |
+| Transmitter → receiver → Arduino → USB | Bound receiver with PPM output, or six PWM channel outputs; Uno/Nano and jumpers               | Controllers → RC transmitter → Connect Arduino  |
 
 A firmware-update cable is not a simulator adapter. FlySky describes both transmitter and receiver PPM simulator connections in its [simulator FAQ, question 34](https://shop.flysky-cn.com/pages/support).
 
@@ -43,7 +43,7 @@ Source ground ─────────────┴── Arduino GND
 1. Use an adapter explicitly compatible with the FS-i6 rear trainer connector and documented to expose a USB joystick. Do not use an update/programming cable.
 2. Connect the transmitter's trainer output to the adapter, then connect the adapter to USB. Power on the transmitter.
 3. Create a dedicated simulator airplane model with channel mixing disabled. Follow the adapter's instructions for any trainer/student output setting.
-4. In RCForge choose **Controllers → RC transmitter → Find devices**. Select the USB controller and calibrate as below. This route does not use the Arduino sketch or Connect Arduino button.
+4. In RCForge choose **Controllers → RC transmitter → Find USB adapter**. Select the USB controller and calibrate as below. This route does not use the Arduino sketch or Connect Arduino button.
 
 ### Using your Uno or Nano
 

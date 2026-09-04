@@ -2646,3 +2646,54 @@ button.primary:hover {
     font-size: 25px;
   }
 }
+
+/* The two transmitter transports have different hardware and browser actions. */
+.transmitter-connections {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+.transmitter-path {
+  padding: 18px;
+  border: 1px solid var(--ui-border);
+  border-radius: 5px;
+  background: var(--ui-panel);
+  min-width: 0;
+}
+.connection-path-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 10px;
+}
+.connection-path-title h2 {
+  margin: 0;
+  font-size: 13px;
+}
+.transmitter-path > p {
+  margin: 8px 0;
+}
+.transmitter-path > small {
+  display: block;
+  line-height: 1.5;
+  max-width: 65ch;
+}
+.connection-path-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.connection-path-actions a {
+  font-size: 11px;
+  color: var(--ui-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (max-width: 760px) {
+  .transmitter-connections {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -250,3 +250,19 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   No physical radio, servo, battery or flight calibration claim.
 - Next: continue controller/transmitter and catalog/playtesting passes within the
   authorized window. Main remains untouched.
+
+## Pass 9 · transmitter connection paths
+
+- Put the USB simulator adapter and Arduino bridge routes side by side, with an
+  action for each. The Arduino sketch and wiring guide remain directly available.
+  The copy distinguishes a PPM joystick adapter from the radio update cable and
+  names the supported classic Uno/Nano boards and receiver signal types.
+- Finding devices now gives visible feedback even when calibration is hidden.
+  An empty device selector says Awaiting input, avoiding a false disconnected
+  claim while a serial bridge waits for channel data.
+- Browser: Find USB adapter displayed the no-input notification; the two paths
+  stacked correctly at a verified 375 px document width with no overflow.
+  Keyboard fallback worked; viewport override reset after checking.
+- Verification: 180 tests in 32 files, seven aircraft/eight catalog definitions
+  and production build pass. No radio was connected; this verifies the UI and
+  existing automated transport behavior, not physical wiring or signal reception.
