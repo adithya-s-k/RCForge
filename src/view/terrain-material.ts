@@ -24,7 +24,7 @@ export const noiseGLSL = /* glsl */ `
 export function terrainMaterial(dry: boolean, prepared = false) {
   const material = new T.MeshStandardMaterial({
     map: surfaceTexture(`lite/${dry ? "dry-ground" : "turf"}-color.jpg`, true),
-    color: dry ? "#fff3dd" : "#d1d8b5",
+    color: dry ? "#e8ddd0" : "#bdc4b0",
     roughness: 1,
   });
   material.onBeforeCompile = (shader) => {
@@ -58,7 +58,10 @@ export function terrainMaterial(dry: boolean, prepared = false) {
       float broad = fieldNoise(broadPoint * 0.008 + vec2(7.3, 19.1));
       float patches = fieldNoise(broadPoint * 0.061 + vec2(broad * 2.7, 31.7));
       float grain = fieldNoise(broadPoint * 0.73 + vec2(12.4, 4.9));
-      float variation = (broad - 0.5) * 0.38 + (patches - 0.5) * 0.26;
+      // Low-contrast landcover, not large blurry green clouds.
+      float variation = (broad - 0.5) * 0.16 + (patches - 0.5) * 0.12;
+      float soilPockets = smoothstep(0.57, 0.77, patches + (grain - 0.5) * 0.22);
+      float tussock = fieldNoise(broadPoint * 0.21 + vec2(patches * 2.0));
       // Continuous maintenance zone; no separate rectangular lawn tile.
       float clearing = 1.0 - smoothstep(0.0, 8.0,
         max(abs(fieldPoint.x - 48.0) - 92.0, abs(fieldPoint.y) - 4.0));
@@ -69,7 +72,7 @@ export function terrainMaterial(dry: boolean, prepared = false) {
       ${
         dry
           ? "fieldAlbedo *= mix(vec3(0.90, 0.94, 1.0), vec3(1.07, 1.03, 0.94), patches); vec3 packedSoil = fieldMean * vec3(1.18, 1.37, 1.70) + (fieldAlbedo - fieldMean) * 0.25; fieldAlbedo = mix(fieldAlbedo, packedSoil, preparedStrip * 0.85);"
-          : "fieldAlbedo *= mix(vec3(0.88, 0.98, 0.92), vec3(1.13, 1.02, 0.87), patches); fieldAlbedo *= 1.0 + clearing * 0.06 + preparedStrip * 0.14;"
+          : "fieldAlbedo *= mix(vec3(0.92, 0.98, 0.94), vec3(1.07, 1.02, 0.91), patches); fieldAlbedo = mix(fieldAlbedo, vec3(0.145, 0.128, 0.075), soilPockets * 0.16 * (1.0 - clearing)); fieldAlbedo *= 1.0 + (tussock - 0.5) * 0.12; fieldAlbedo *= 1.0 + clearing * 0.06 + preparedStrip * 0.14;"
       }
       fieldAlbedo = mix(vec3(dot(fieldAlbedo, vec3(0.299,0.587,0.114))), fieldAlbedo, 0.72);
       diffuseColor.rgb *= fieldAlbedo;
@@ -83,7 +86,7 @@ export function terrainMaterial(dry: boolean, prepared = false) {
       "#include <normal_fragment_maps>\nnormal = surfaceRelief(-vViewPosition, normal, fieldHeight);",
     );
   };
-  material.customProgramCacheKey = () => `field-natural-v2-${dry}-${prepared}`;
+  material.customProgramCacheKey = () => `field-natural-v3-${dry}-${prepared}`;
   return material;
 }
 

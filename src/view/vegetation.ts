@@ -5,22 +5,24 @@ import { renderBudget } from "./render-budget";
 import { landscapeHeight } from "./landscape";
 
 /** Crossed foliage cards retain parallax without thousands of solid canopy blobs. */
-function plantGeometry(kind: "oak" | "pine" | "scrub") {
-  // Pixel bounds in the generated atlas. Alpha is retained, including canopy gaps.
-  const rect =
-    kind === "oak"
-      ? [0, 50, 715, 980]
-      : kind === "pine"
-        ? [717, 50, 1198, 980]
-        : [1175, 604, 1535, 980];
+function plantGeometry(kind: number) {
+  // Independent silhouettes with transparent gutters. Bounds avoid adjacent crowns.
+  const rect = [
+    [0, 0, 634, 622],
+    [638, 0, 1064, 626],
+    [1070, 0, 1536, 627],
+    [0, 637, 590, 1002],
+    [596, 638, 1104, 999],
+    [1110, 638, 1536, 995],
+  ][kind];
   const [left, top, right, bottom] = rect;
   const width = (right - left) / (bottom - top);
   const pos: number[] = [],
     uv: number[] = [],
     normals: number[] = [],
     indices: number[] = [];
-  for (let p = 0; p < 2; p++) {
-    const angle = (p * Math.PI) / 2,
+  for (let p = 0; p < 3; p++) {
+    const angle = (p * Math.PI) / 3,
       dx = (Math.cos(angle) * width) / 2,
       dz = (Math.sin(angle) * width) / 2;
     pos.push(-dx, 0, -dz, dx, 0, dz, -dx, 1, -dz, dx, 1, dz);
@@ -99,57 +101,110 @@ export function addVegetation(field: T.Group, profile: Scenery) {
     alpine = profile.surface === "grass";
   const rand = seededRandom(profile.seed + 380),
     dummy = new T.Object3D();
-  const atlas = surfaceTexture("lite/vegetation-atlas.png", true);
+  const atlas = surfaceTexture("vegetation-v2.png", true);
   atlas.wrapS = atlas.wrapT = T.ClampToEdgeWrapping;
-  const plants = new T.InstancedMesh(
-    plantGeometry(dry ? "scrub" : alpine ? "pine" : "oak"),
-    new T.MeshBasicMaterial({
-      map: atlas,
-      alphaTest: 0.48,
-      side: T.DoubleSide,
-      color: dry ? "#e1d2b8" : "#bac6ae",
-      alphaToCoverage: true,
-    }),
-    profile.treeCount,
-  );
-  const clusters = Array.from({ length: 24 }, (_, i) => {
-    const angle = (i * Math.PI * 2) / 24 + rand() * 0.25;
-    const r = 160 + rand() * (i < 8 ? 120 : 650);
+  // Keep an alpha-tested, depth-writing cutout. No sorting, temporal noise or
+  // bright opaque backing; the new atlas has foliage-colored transparent RGB.
+  const foliage = new T.MeshBasicMaterial({
+    map: atlas,
+    alphaTest: 0.38,
+    side: T.DoubleSide,
+    color: dry ? "#ded5c3" : "#d5dbcd",
+    alphaToCoverage: true,
+  });
+  foliage.onBeforeCompile = (shader) => {
+    shader.vertexShader = "varying float plantHeight;\n" + shader.vertexShader;
+    shader.vertexShader = shader.vertexShader.replace(
+      "#include <begin_vertex>",
+      "#include <begin_vertex>\nplantHeight = position.y;",
+    );
+    shader.fragmentShader =
+      "varying float plantHeight;\n" + shader.fragmentShader;
+    shader.fragmentShader = shader.fragmentShader.replace(
+      "#include <map_fragment>",
+      `#include <map_fragment>
+       // Soft self-occlusion makes crowns sit above the shaded lower branches.
+       diffuseColor.rgb *= 1.5 * mix(0.7, 1.0, smoothstep(0.0, 0.8, plantHeight));`,
+    );
+  };
+  foliage.customProgramCacheKey = () => "foliage-v2";
+  const variants = dry ? [5, 4] : alpine ? [2, 2, 1, 4] : [0, 1, 3, 4];
+  const counts = new Map<number, number>();
+  for (let i = 0; i < profile.treeCount; i++) {
+    const variant = variants[i % variants.length];
+    counts.set(variant, (counts.get(variant) ?? 0) + 1);
+  }
+  // Irregular woodland edges and small groves, rather than radial rows of trees.
+  const clusters = Array.from({ length: 14 }, () => {
+    const angle = rand() * Math.PI * 2,
+      r = 150 + rand() ** 1.6 * 1050;
     return [Math.cos(angle) * r + 45, Math.sin(angle) * r];
   });
-  for (let i = 0; i < plants.count; i++) {
-    const cluster = clusters[i % clusters.length];
-    const spread = dry ? 170 : 90;
-    let x = cluster[0] + (rand() + rand() - 1) * spread,
-      z = cluster[1] + (rand() + rand() - 1) * spread;
-    // An unobstructed runway and flight line, with a few trees defining the near field edge.
-    if (Math.abs(z) < 43 && x > -65 && x < 210)
-      z = Math.sign(z || 1) * (48 + rand() * 50);
-    const height = dry
-      ? 0.3 + rand() * 1.15
-      : alpine
-        ? 9 + rand() * 15
-        : 8 + rand() * 12;
-    dummy.position.set(
-      x,
-      Math.max(-0.015, landscapeHeight(x, z, profile) - 0.25),
-      z,
-    );
-    dummy.rotation.set(0, rand() * Math.PI * 2, 0);
-    dummy.scale.set(height * (0.85 + rand() * 0.35), height, height);
-    dummy.updateMatrix();
-    plants.setMatrixAt(i, dummy.matrix);
-    plants.setColorAt(
-      i,
-      new T.Color().setHSL(
-        dry ? 0.1 : 0.18,
-        dry ? 0.08 : 0.09,
-        0.78 + rand() * 0.18,
-      ),
-    );
+  const shade = new T.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    polygonOffset: true,
+    polygonOffsetFactor: -1,
+    polygonOffsetUnits: -1,
+    vertexShader: `varying vec2 shadeUV;
+      #include <common>
+      #include <logdepthbuf_pars_vertex>
+      void main() { shadeUV = uv; gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.0);
+      #include <logdepthbuf_vertex>
+      }`,
+    fragmentShader: `varying vec2 shadeUV;
+      #include <logdepthbuf_pars_fragment>
+      void main() {
+      #include <logdepthbuf_fragment>
+      float r = length(shadeUV - 0.5) * 2.0;
+      gl_FragColor = vec4(0.025, 0.030, 0.017, (1.0 - smoothstep(0.05, 1.0, r)) * 0.20);
+      }`,
+  });
+  const shadeGeometry = new T.PlaneGeometry(1, 1);
+  shadeGeometry.rotateX(-Math.PI / 2);
+  const shades = new T.InstancedMesh(shadeGeometry, shade, profile.treeCount);
+  let plantIndex = 0;
+  for (const [kind, count] of counts) {
+    const plants = new T.InstancedMesh(plantGeometry(kind), foliage, count);
+    for (let i = 0; i < count; i++) {
+      const cluster = clusters[plantIndex % clusters.length];
+      const spread = dry ? 180 : 85;
+      const x = cluster[0] + (rand() + rand() - 1) * spread;
+      let z = cluster[1] + (rand() + rand() - 1) * spread;
+      if (Math.abs(z) < 60 && x > -120 && x < 260)
+        z = Math.sign(z || 1) * (70 + rand() * 55);
+      const height =
+        kind >= 4
+          ? (dry ? 0.5 : 1.2) + rand() * 2.0
+          : kind === 2
+            ? 12 + rand() * 12
+            : 7 + rand() * 11;
+      const ground = Math.max(0, landscapeHeight(x, z, profile));
+      dummy.position.set(x, ground - 0.06, z);
+      dummy.rotation.set(0, rand() * Math.PI * 2, 0);
+      dummy.scale.set(height * (0.8 + rand() * 0.35), height, height);
+      dummy.updateMatrix();
+      plants.setMatrixAt(i, dummy.matrix);
+      plants.setColorAt(
+        i,
+        new T.Color().setHSL(
+          dry ? 0.1 : 0.2,
+          0.04 + rand() * 0.06,
+          0.82 + rand() * 0.15,
+        ),
+      );
+      // Small static contact occlusion on the flat field only; no extra shadow pass.
+      dummy.position.set(x, 0.012, z);
+      dummy.rotation.set(0, 0, 0);
+      dummy.scale.setScalar(ground > 0.05 ? 0 : height * 0.7);
+      dummy.updateMatrix();
+      shades.setMatrixAt(plantIndex++, dummy.matrix);
+    }
+    plants.computeBoundingSphere();
+    field.add(plants);
   }
-  // Distant foliage does not render into the aircraft shadow map.
-  field.add(plants);
+  shades.computeBoundingSphere();
+  field.add(shades);
 
   const material = new T.MeshBasicMaterial({
     vertexColors: true,

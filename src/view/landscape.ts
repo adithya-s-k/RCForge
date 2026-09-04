@@ -12,10 +12,17 @@ export function landscapeHeight(x: number, z: number, profile: Scenery) {
   const radius = Math.hypot(x, z);
   const rise = T.MathUtils.smoothstep(radius, 430, 1100);
   if (profile.surface === "asphalt") {
+    // Overlapping asymmetric ridges leave saddles/open horizons instead of a
+    // smooth circular wall. The central operating field remains physically flat.
+    const broad = noise(x * 0.0008 + profile.seed, z * 0.0008);
+    const ridge = Math.max(
+      0,
+      1 - Math.abs(noise(x * 0.0018 + 4.1, z * 0.0013) * 2 - 1),
+    );
     const rolling =
-      noise(x * 0.00065 + profile.seed, z * 0.00065) * 150 +
-      noise(x * 0.002, z * 0.002) * 24;
-    return rolling * T.MathUtils.smoothstep(radius, 700, 1900) - 1.5;
+      broad * broad * 115 + ridge ** 3 * 45 + noise(x * 0.007, z * 0.005) * 7;
+    const clearing = T.MathUtils.smoothstep(Math.hypot(x / 1.3, z), 380, 1250);
+    return rolling * clearing - 1.5;
   }
   const data = profile.surface === "grass" ? alpineTerrain : mesaTerrain;
   const u = T.MathUtils.clamp(
@@ -56,8 +63,15 @@ export function addLandscape(field: T.Group, profile: Scenery) {
   );
   geometry.rotateX(-Math.PI / 2);
   const p = geometry.getAttribute("position");
-  for (let i = 0; i < p.count; i++)
-    p.setY(i, landscapeHeight(p.getX(i), p.getZ(i), profile));
+  for (let i = 0; i < p.count; i++) {
+    // Same triangle budget, with more samples near the flight area and fewer
+    // at the outer horizon. The DEM and shading use world-space metres.
+    const distribute = (v: number) =>
+      Math.sign(v) * 6000 * (Math.abs(v) / 6000) ** 1.45;
+    const x = distribute(p.getX(i)),
+      z = distribute(p.getZ(i));
+    p.setXYZ(i, x, landscapeHeight(x, z, profile), z);
+  }
   geometry.computeVertexNormals();
   const occlusion = new Float32Array(p.count);
   for (let i = 0; i < p.count; i++) {

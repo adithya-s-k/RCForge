@@ -38,13 +38,11 @@ asphalt before painting runway markings.
 
 Ground now uses **three diffuse texture taps instead of one**, plus inexpensive
 procedural colour/normal calculations. Asphalt additionally retains its existing
-paint-mask tap. Filtering may require multiple hardware samples per tap. There
-are no new images, samplers, meshes, vegetation instances, draw calls, render
-targets, shadow passes or runtime services. This is additional fragment work,
+paint-mask tap. Filtering may require multiple hardware samples per tap. The ground-material change itself adds no images, meshes, render targets, shadow passes or runtime services. This is additional fragment work,
 not a claim of identical GPU frame time on every device.
 
 The existing 512² images, drawing-buffer cap, 1024² shadow map, distant terrain
-mesh and frame pacing remain. The renderer still stops drawing on Controllers
+triangle count and frame pacing remain. The renderer still stops drawing on Controllers
 and Experiments. Graphics never change the 120 Hz simulation step.
 
 Relief affects lighting only. It does **not** move the ground, create a terrain
@@ -77,3 +75,22 @@ GLSL material renders correctly; inspect it in the actual browser.
 
 Photograph sources and licenses remain in
 [the scenery asset manifest](../public/scenery/README.md).
+
+## Vegetation and landscape revision (0.6)
+
+The separate foliage revision replaces the legacy atlas with a six-silhouette
+1536 × 1024 RGBA asset, uses three crossed cards per plant, and batches species
+in irregular groves. Exact UV bounds retain transparent gaps without sampling
+neighboring plants. Lower-branch shading and one instanced contact-occlusion pass
+help anchor plants to the flat field. Counts remain 150/260/45 by site. The new
+asset uses about 8 MiB of GPU texture memory with mipmaps; it is approximately
+2.7 MB on disk. This is more texture memory and a few more draw calls than the
+legacy single-species cards, without adding a vegetation shadow-map pass.
+
+The distant mesh keeps 128 × 128 segments, redistributing coordinates to sample
+nearer terrain more densely. Club hills use asymmetric ridges rather than a
+smooth radial wall. Fragment-scale strata and rock/vegetation colour variation
+supplement vertex slope/height shading, without new terrain textures. Ground
+macro variation is restrained to reduce the blurry cloud appearance. None of
+these changes adds terrain collision. Research references and the next physics
+and scenery steps are in the [realism plan](realism-plan.md).
