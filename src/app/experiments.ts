@@ -15,6 +15,13 @@ const metrics = {
   pitchDeg: "Pitch · degrees",
 } as const;
 type Metric = keyof typeof metrics;
+const endState = (status: string) =>
+  ({
+    flying: "Still flying",
+    grounded: "Ground contact",
+    landed: "Belly landing",
+    crashed: "Airframe impact",
+  })[status] ?? status;
 function chart(base: Sample[], edited: Sample[], metric: Metric) {
   const samples = [...base, ...edited],
     min = Math.min(0, ...samples.map((s) => s[metric])),
@@ -28,7 +35,7 @@ function chart(base: Sample[], edited: Sample[], metric: Metric) {
     ss
       .map(
         (s, i) =>
-          `${i ? "L" : "M"}${(50 + (s.time / 20) * 680).toFixed(1)},${(height - 32 - ((s[metric] - min) / (max - min)) * (height - 64)).toFixed(1)}`,
+          `${i ? "L" : "M"}${(72 + (s.time / 20) * 658).toFixed(1)},${(height - 32 - ((s[metric] - min) / (max - min)) * (height - 64)).toFixed(1)}`,
       )
       .join(" ");
   return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${metrics[metric]} traces for baseline and edited aircraft">${[
@@ -36,11 +43,11 @@ function chart(base: Sample[], edited: Sample[], metric: Metric) {
   ]
     .map((t) => {
       const y = height - 32 - t * (height - 64);
-      return `<line x1="50" x2="730" y1="${y}" y2="${y}" stroke="var(--ui-border)"/><text x="40" y="${y + 4}" fill="var(--ui-muted)" text-anchor="end" font-size="12">${(min + t * (max - min)).toFixed(0)}</text>`;
+      return `<line x1="72" x2="730" y1="${y}" y2="${y}" stroke="var(--ui-border)"/><text x="60" y="${y + 4}" fill="var(--ui-muted)" text-anchor="end" font-size="12">${(min + t * (max - min)).toFixed(0)}</text>`;
     })
     .join(
       "",
-    )}${[0, 5, 10, 15, 20].map((t) => `<text x="${50 + (t / 20) * 680}" y="292" fill="var(--ui-muted)" text-anchor="middle" font-size="12">${t}s</text>`).join("")}<path d="${path(base)}" fill="none" stroke="var(--ui-muted)" stroke-width="2" stroke-dasharray="6 5"/><path d="${path(edited)}" fill="none" stroke="var(--ui-text)" stroke-width="2.5"/></svg>`;
+    )}${[0, 5, 10, 15, 20].map((t) => `<text x="${72 + (t / 20) * 658}" y="292" fill="var(--ui-muted)" text-anchor="middle" font-size="12">${t}s</text>`).join("")}<path d="${path(base)}" fill="none" stroke="var(--ui-muted)" stroke-width="2" stroke-dasharray="6 5"/><path d="${path(edited)}" fill="none" stroke="var(--ui-text)" stroke-width="2.5"/></svg>`;
 }
 export function setupExperiments(
   get: () => {
@@ -82,6 +89,8 @@ export function setupExperiments(
   $("run-experiment").onclick = () => {
     pause();
     $("run-experiment").setAttribute("disabled", "");
+    $("run-experiment").textContent = "Running…";
+    $("experiment-results").setAttribute("aria-busy", "true");
     $("experiment-results").textContent =
       "Running baseline and edited configurations…";
     setTimeout(() => {
@@ -137,7 +146,11 @@ export function setupExperiments(
               base.summary.finalAltitudeM.toFixed(1) + " m",
               edited.summary.finalAltitudeM.toFixed(1) + " m",
             ],
-            ["End state", base.summary.status, edited.summary.status],
+            [
+              "End state",
+              endState(base.summary.status),
+              endState(edited.summary.status),
+            ],
             [
               "Trim converged",
               base.trimConverged ? "Yes" : "No — check model",
@@ -157,7 +170,7 @@ export function setupExperiments(
             )
             .join(
               "",
-            )}</tbody></table>${scenario === "cruise" ? '<p class="small muted">Each aircraft uses its own calculated trim. Matching altitude can be expected even when weight or required power differs.</p>' : ""}<p class="small muted">A run ends early on an impact or belly landing. These are estimates from the same model, not independent validation.</p>`;
+            )}</tbody></table>${scenario === "cruise" ? '<p class="small muted">Each aircraft uses its own calculated trim. Matching altitude can be expected even when weight or required power differs.</p>' : ""}<p class="small muted">Runs stop at ground contact, landing or impact, up to 20 seconds. These estimates use the same model; they are not independent validation.</p>`;
         $("response-metric").onchange = renderChart;
         $("export-experiment").removeAttribute("disabled");
         $("export-csv").removeAttribute("disabled");
@@ -165,6 +178,17 @@ export function setupExperiments(
         $("experiment-results").textContent = "Experiment failed: " + String(e);
       } finally {
         $("run-experiment").removeAttribute("disabled");
+        $("run-experiment").textContent = "Run comparison";
+        const results = $("experiment-results");
+        results.removeAttribute("aria-busy");
+        if (!$("page-experiments").hidden) {
+          results.focus({ preventScroll: true });
+          if (
+            results.getBoundingClientRect().top >
+            document.documentElement.clientHeight - 180
+          )
+            results.scrollIntoView({ block: "start" });
+        }
       }
     }, 20);
   };

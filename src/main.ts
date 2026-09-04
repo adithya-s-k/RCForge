@@ -18,6 +18,7 @@ import { placementUI } from "./app/placement";
 import "./style.css";
 import "./workbench.css";
 import "./view/position-panel.css";
+import "./view/flight-feedback.css";
 import { ZodError } from "zod";
 import broncoData from "../aircraft/ft-bronco.json";
 import quadData from "../aircraft/quad-x-5inch.json";
@@ -49,9 +50,22 @@ import { AircraftEditor } from "./app/editor";
 import { setupExperiments } from "./app/experiments";
 import { $, escape, download } from "./app/dom";
 import { ownsKeyboard } from "./input/ui-focus";
-import { flightAction } from "./app/flight-session";
+import { flightAction, flightFeedback } from "./app/flight-session";
 import { setupTabs } from "./app/tabs";
 $("app").innerHTML = workbenchMarkup();
+const flightOverlaySizes = new ResizeObserver((entries) => {
+  for (const entry of entries) {
+    const variable = entry.target.classList.contains("flight-bottom")
+      ? "--flight-hud-height"
+      : "--flight-guide-height";
+    $("page-fly").style.setProperty(
+      variable,
+      `${entry.target.getBoundingClientRect().height}px`,
+    );
+  }
+});
+for (const selector of [".flight-bottom", ".flight-key-guide"])
+  flightOverlaySizes.observe(document.querySelector(selector)!);
 const originals = [
   parseAircraft(broncoData),
   parseAircraft(tinyTrainerData),
@@ -84,13 +98,19 @@ let scene: FlightScene | undefined;
 let flightCamera: "ground" | "chase" = "ground";
 let locatorUntil = 0;
 const audio = new FlightAudio();
-function message(text: string) {
+let pauseReason = "";
+let notificationTimer: ReturnType<typeof setTimeout> | undefined;
+function dismissNotification() {
+  clearTimeout(notificationTimer);
+  $("notification").hidden = true;
+}
+function message(text: string, persistent = false) {
+  clearTimeout(notificationTimer);
   $("notification-text").textContent = text;
   $("notification").hidden = false;
+  if (!persistent) notificationTimer = setTimeout(dismissNotification, 10000);
 }
-$("dismiss-notification").onclick = () => {
-  $("notification").hidden = true;
-};
+$("dismiss-notification").onclick = dismissNotification;
 function errorText(e: unknown) {
   return e instanceof ZodError
     ? e.issues
@@ -110,7 +130,7 @@ function pause(reason?: string) {
     "aria-expanded",
     String(!$("page-fly").classList.contains("setup-collapsed")),
   );
-  if (wasRunning && reason && page === "fly") message(reason);
+  if (wasRunning) pauseReason = reason ?? "";
   audio.update(0, 0, false);
 }
 const input = new InputManager((reason) => pause(reason));
@@ -510,7 +530,7 @@ function applyDraft() {
     );
     return true;
   } catch (e) {
-    message(errorText(e));
+    message(errorText(e), true);
     return false;
   }
 }
@@ -532,7 +552,7 @@ $("export-aircraft").onclick = () => {
     editor.commitPending();
     download(editor.draft.id + ".json", JSON.stringify(editor.draft, null, 2));
   } catch (e) {
-    message(errorText(e));
+    message(errorText(e), true);
   }
 };
 $("import-aircraft-button").onclick = () => $("import-aircraft").click();
@@ -557,7 +577,7 @@ $<HTMLInputElement>("import-aircraft").onchange = async (e) => {
       "Aircraft imported. Review mass, CG and assumptions before flight.",
     );
   } catch (e) {
-    message(errorText(e));
+    message(errorText(e), true);
   }
   (e.target as HTMLInputElement).value = "";
 };
@@ -710,7 +730,7 @@ $<HTMLInputElement>("import-replay").onchange = async (e) => {
     $("launch").textContent = "Play recording";
     message("Recording ready. Begin playback from the pilot station.");
   } catch (e) {
-    message(errorText(e));
+    message(errorText(e), true);
   }
   (e.target as HTMLInputElement).value = "";
 };
@@ -731,13 +751,31 @@ $("scenery-select").onchange = () => {
   invalidate();
 };
 function stats() {
-  const action = flightAction({
+  const session = {
     running,
     started,
     status: sim.state.status,
     replay: !!replay,
     replayComplete: !!replay && replayIndex >= replay.frames.length,
+    inputReady: input.source === "keyboard" || !!input.selected(),
+  };
+  const action = flightAction(session);
+  const feedback = flightFeedback({
+    ...session,
+    mode,
+    keyboard: input.source === "keyboard",
+    quad: sim.aircraft.vehicleType === "multirotor",
+    pauseReason,
   });
+  $("flight-feedback").dataset.tone = feedback.tone;
+  for (const [id, value] of [
+    ["flight-cue-title", feedback.title],
+    ["flight-cue-detail", feedback.detail],
+    ["flight-model-label", sim.aircraft.name],
+  ]) {
+    if ($(id).textContent !== value) $(id).textContent = value;
+  }
+  $("flight-cue-detail").hidden = !feedback.detail;
   const hint =
     input.source === "keyboard"
       ? running
@@ -829,11 +867,15 @@ function stats() {
     slider.value = String(chase ? scene.chaseDistance : scene.pilotFov);
   }
 }
-function channelsHint() {
-  return (["roll", "pitch", "yaw", "throttle"] as const)
-    .map((ch) => `${ch} A${input.profile.bindings[ch].axis + 1}`)
-    .join(" · ");
-}
+$("quick-input").onclick = () => {
+  positioning.close(false);
+  pause();
+  $("page-fly").classList.remove("setup-collapsed");
+  $("toggle-flight-setup").setAttribute("aria-expanded", "true");
+  $<HTMLButtonElement>("setup-tab-input").click();
+  $("flight-input-type").focus();
+};
+$("quick-guide").onclick = () => $("help-button").click();
 $("flight-input-type").onchange = () => {
   pause();
   input.clear();
@@ -915,11 +957,6 @@ function frame(now: number) {
         }
         if (["crashed", "landed"].includes(sim.state.status)) {
           pause();
-          message(
-            sim.state.status === "landed"
-              ? "Belly landing complete. Restart flight when ready."
-              : "Airframe impact. Restart flight to try again.",
-          );
         }
       }
     }
@@ -967,18 +1004,40 @@ function frame(now: number) {
       if (page === "fly")
         updateNavigation(sim.state, scene?.pilotPosition ?? { x: -8, z: -14 });
       const hardware = input.source === "controller";
-      $("flight-input-guide").textContent = hardware
-        ? `${controller.type === "transmitter" ? "RC transmitter" : controller.type === "joystick" ? "Flight stick" : "Gamepad"} · ${channelsHint()} · ${controllerActions.hint("toggle") || "On-screen"} start/pause · ${controllerActions.hint("reset") || "On-screen"} restart`
-        : "↑↓ Pitch · ←→ Roll · Space / Shift Power · Q / E Yaw · V Camera · F Locate";
-      $("reset").textContent = hardware
-        ? `Restart ${controllerActions.hint("reset")}`
-        : "Reset R";
+      const source = hardware
+        ? controller.type === "transmitter"
+          ? "RC transmitter"
+          : controller.type === "joystick"
+            ? "Flight stick"
+            : "Gamepad"
+        : "Keyboard";
+      $("quick-input").textContent =
+        `${source}${hardware && !input.selected() ? " · disconnected" : ""} ▾`;
+      $("quick-input").classList.toggle(
+        "input-offline",
+        hardware && !input.selected(),
+      );
+      const bindings = hardware
+        ? (["roll", "pitch", "yaw", "throttle"] as const)
+            .map(
+              (ch) =>
+                `<span><kbd>A${input.profile.bindings[ch].axis + 1}</kbd> ${ch}</span>`,
+            )
+            .join("")
+        : '<span><kbd>↑ ↓</kbd> Pitch</span><span><kbd>← →</kbd> Roll</span><span><kbd>Q E</kbd> Yaw</span><span class="power-hint"><kbd>Space</kbd> Power + <kbd>Shift</kbd> −</span>';
+      if ($("flight-input-guide").innerHTML !== bindings)
+        $("flight-input-guide").innerHTML = bindings;
+      const resetHint = hardware ? controllerActions.hint("reset") : "R";
+      const resetLabel = `Reset${resetHint ? ` <kbd>${escape(resetHint)}</kbd>` : ""}`;
+      if ($("reset").innerHTML !== resetLabel)
+        $("reset").innerHTML = resetLabel;
+      $("reset").setAttribute("aria-label", "Reset flight");
       if (page === "controllers") controller.update();
       lastUI = now;
     }
   } catch (e) {
     pause();
-    message(errorText(e));
+    message(errorText(e), true);
   }
   requestAnimationFrame(frame);
 }
@@ -986,7 +1045,7 @@ try {
   scene = new FlightScene($("viewport"));
   scene.onGroundPick = (north, east) => positioning.pickGround(north, east);
 } catch (e) {
-  message("3D rendering unavailable: " + errorText(e));
+  message("3D rendering unavailable: " + errorText(e), true);
 }
 fillSelects();
 loadAircraft(baseline);

@@ -1035,18 +1035,23 @@ body[data-running="true"] .fly-page .flight-stage {
   margin-top: 7px;
 }
 #aircraft-catalog {
-  width: min(1100px, calc(100vw - 32px));
+  width: min(1160px, calc(100vw - 32px));
   max-width: none;
   max-height: calc(100dvh - 40px);
   padding: 0;
-  overflow: auto;
+  overflow: hidden;
+}
+#aircraft-catalog[open] {
+  display: flex;
+  flex-direction: column;
 }
 #aircraft-catalog .dialog-header {
-  padding: 22px 24px 14px;
+  padding: 18px 24px 12px;
+  flex: 0 0 auto;
   margin: 0;
 }
 #catalog-title {
-  font-size: 23px;
+  font-size: 20px;
   margin: 0;
 }
 #catalog-destination {
@@ -1057,7 +1062,8 @@ body[data-running="true"] .fly-page .flight-stage {
   display: flex;
   gap: 12px;
   align-items: center;
-  padding: 0 24px 18px;
+  padding: 0 24px 16px;
+  flex: 0 0 auto;
 }
 .catalog-toolbar input {
   flex: 1;
@@ -1070,9 +1076,13 @@ body[data-running="true"] .fly-page .flight-stage {
 }
 .catalog-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  padding: 0 24px 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 4px 24px 20px;
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
 }
 .catalog-card {
   padding: 0;
@@ -1126,11 +1136,11 @@ body[data-running="true"] .fly-page .flight-stage {
   font-size: 10px;
 }
 .catalog-info {
-  padding: 16px 18px 0;
+  padding: 14px 14px 0;
 }
 .catalog-info h3 {
-  font-size: 17px;
-  margin: 0 0 17px;
+  font-size: 15px;
+  margin: 0 0 14px;
 }
 .catalog-specs {
   display: grid;
@@ -1158,6 +1168,7 @@ body[data-running="true"] .fly-page .flight-stage {
   font-size: 12px;
 }
 .catalog-footer {
+  flex: 0 0 auto;
   margin: 0;
   padding: 0 24px 18px;
   color: var(--ui-muted);
@@ -1167,6 +1178,11 @@ body[data-running="true"] .fly-page .flight-stage {
   grid-column: 1/-1;
   padding: 50px 0;
   text-align: center;
+}
+@media (min-width: 601px) and (max-width: 900px) {
+  .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 @media (max-width: 600px) {
   #aircraft-catalog {
@@ -1808,7 +1824,7 @@ button.primary:hover {
   margin-bottom: 16px;
 }
 .controller-diagram svg {
-  max-height: 244px;
+  max-height: 264px;
 }
 .controller-visual-panel.keyboard-selected {
   grid-template-columns: minmax(0, 1fr) 150px;
@@ -1946,8 +1962,8 @@ button.primary:hover {
   fill: var(--ui-muted);
 }
 .controller-shell {
-  fill: #262629;
-  stroke: #626269;
+  fill: #303034;
+  stroke: #909098;
   stroke-width: 1.2;
 }
 .controller-well {
@@ -2039,12 +2055,21 @@ button.primary:hover {
   fill: #18181b;
   stroke: #303035;
 }
-.keyboard-key.mapped.flight rect,
-.keyboard-key.mapped.power rect,
-.keyboard-key.mapped.session rect,
+.keyboard-key.mapped.flight rect {
+  fill: #343438;
+  stroke: #9898a1;
+}
+.keyboard-key.mapped.power rect {
+  fill: #46464b;
+  stroke: #c7c7cf;
+}
+.keyboard-key.mapped.session rect {
+  fill: #29292d;
+  stroke: #96969f;
+}
 .keyboard-key.mapped.view rect {
-  fill: #303034;
-  stroke: #797982;
+  fill: #222226;
+  stroke: #64646e;
 }
 .controller-diagram .keyboard-key .key-letter {
   fill: #777780;
@@ -2601,4 +2626,23 @@ button.primary:hover {
 }
 .result-table thead th {
   color: var(--ui-muted);
+}
+
+/* Focus the completed comparison without trapping its output below the fold. */
+#experiment-results {
+  scroll-margin-top: calc(var(--ui-header-height) + 20px);
+}
+#experiment-results:focus {
+  outline: none;
+}
+
+@media (max-width: 700px) {
+  #response-chart svg text {
+    font-size: 20px;
+  }
+}
+@media (max-width: 450px) {
+  #response-chart svg text {
+    font-size: 25px;
+  }
 }

@@ -1,5 +1,5 @@
 import * as T from "three";
-import { buildAircraft } from "../view/model";
+import { buildAircraft, disposeAircraft } from "../view/model";
 import { massProperties } from "../core/aircraft";
 import type { Aircraft } from "../core/schema";
 import { $, escape } from "./dom";
@@ -36,9 +36,7 @@ function previews(models: Aircraft[]) {
       renderer.render(scene, camera);
       images.set(a.id, renderer.domElement.toDataURL("image/png"));
       scene.remove(model);
-      model.traverse((o) => {
-        if (o instanceof T.Mesh) o.geometry.dispose();
-      });
+      disposeAircraft(model);
     }
   } finally {
     renderer.dispose();
@@ -69,6 +67,7 @@ export function setupCatalog(
         (kind === "all" ||
           (a.vehicleType === "multirotor" ? "quad" : "wing") === kind),
     );
+    $("catalog-clear").hidden = !query && kind === "all";
     $("catalog-count").textContent = `${matches.length} aircraft`;
     $("catalog-grid").innerHTML =
       matches
@@ -77,7 +76,7 @@ export function setupCatalog(
           return `<button class="catalog-card" data-catalog-id="${escape(a.id)}" aria-label="Select ${escape(a.name)}" aria-pressed="${a.id === current()}"><div class="catalog-preview">${cache.has(a.id) ? `<img src="${cache.get(a.id)}" alt="${escape(a.name)} 3D model"/>` : "<span>Preview unavailable</span>"}<span class="catalog-type">${quad ? "MULTIROTOR" : "FIXED WING"}</span>${a.id === current() ? '<span class="catalog-current">Selected</span>' : ""}</div><div class="catalog-info"><h3>${escape(a.name)}</h3><div class="catalog-specs"><span><b>${(a.reference.spanM * 1000).toFixed(0)} mm</b>${quad ? "Motor diagonal" : "Wingspan"}</span><span><b>${(massProperties(a).mass * 1000).toFixed(0)} g</b>Model mass</span><span><b>${a.motors.length}</b>Motors</span></div><div class="catalog-choose">${target === "editor" ? "Open in editor" : "Use for flight"}<span>→</span></div></div></button>`;
         })
         .join("") ||
-      '<p class="catalog-empty">No aircraft match. Try another name or aircraft type.</p>';
+      '<div class="catalog-empty"><h3>No matching aircraft</h3><p>Try a different search or clear the filters above.</p></div>';
     $("catalog-grid")
       .querySelectorAll<HTMLButtonElement>("[data-catalog-id]")
       .forEach(
@@ -112,9 +111,61 @@ export function setupCatalog(
         }
         render();
         dialog.showModal();
+        $("catalog-search").focus();
+        $("catalog-grid").scrollTop = 0;
       }),
   );
   $("catalog-search").oninput = render;
   $("catalog-kind").onchange = render;
+  $("catalog-clear").onclick = () => {
+    $<HTMLInputElement>("catalog-search").value = "";
+    $<HTMLSelectElement>("catalog-kind").value = "all";
+    render();
+    $("catalog-search").focus();
+  };
+  // Follow the visible grid, including its one/two/three-column responsive layouts.
+  $("catalog-grid").onkeydown = (event) => {
+    const cards = [
+      ...$("catalog-grid").querySelectorAll<HTMLButtonElement>(".catalog-card"),
+    ];
+    const index = cards.indexOf(event.target as HTMLButtonElement);
+    if (
+      index < 0 ||
+      ![
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown",
+        "Home",
+        "End",
+      ].includes(event.key)
+    )
+      return;
+    event.preventDefault();
+    const columns = cards.filter(
+      (card) => card.offsetTop === cards[0].offsetTop,
+    ).length;
+    const next =
+      event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? cards.length - 1
+          : index +
+            ({
+              ArrowLeft: -1,
+              ArrowRight: 1,
+              ArrowUp: -columns,
+              ArrowDown: columns,
+            }[event.key] ?? 0);
+    cards[Math.max(0, Math.min(cards.length - 1, next))]?.focus();
+  };
+  $("catalog-search").onkeydown = (event) => {
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      $("catalog-grid")
+        .querySelector<HTMLButtonElement>(".catalog-card")
+        ?.focus();
+    }
+  };
   $("close-catalog").onclick = () => dialog.close();
 }
