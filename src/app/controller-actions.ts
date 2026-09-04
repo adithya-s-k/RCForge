@@ -8,6 +8,7 @@ import {
 import { mapGamepad } from "../input/controls";
 import { $, escape } from "./dom";
 import { InputManager, channels } from "../input/controls";
+import { ownsKeyboard } from "../input/ui-focus";
 import {
   ActionEdges,
   actionNames,
@@ -30,11 +31,7 @@ export class ControllerActions {
     private perform: (a: Action) => void,
   ) {
     window.addEventListener("keydown", (e) => {
-      if (
-        e.target instanceof HTMLElement &&
-        e.target.closest("input,select,textarea,[contenteditable=true]")
-      )
-        return;
+      if (ownsKeyboard(e.target)) return;
       this.pressedKeys.add(e.code);
     });
     window.addEventListener("keyup", (e) => this.pressedKeys.delete(e.code));
@@ -115,7 +112,7 @@ export class ControllerActions {
         ? "Keyboard"
         : d
           ? `${kind === "transmitter" ? "RC transmitter" : kind === "joystick" ? "Flight stick" : this.style === "playstation" ? "PlayStation" : this.style === "xbox" ? "Xbox" : "Controller"} · ${d.id}`
-          : "No controller connected";
+          : "Preview only";
     const visualSignature = [kind, this.style, this.standard].join(":");
     if (this.visualSignature !== visualSignature) {
       this.visualSignature = visualSignature;
@@ -276,7 +273,7 @@ export function navigateSetting(action: Action) {
       e.getClientRects().length &&
       !e.closest("[hidden]") &&
       !e.matches(":disabled") &&
-      e.tabIndex >= 0,
+      (e.tabIndex >= 0 || e.getAttribute("role") === "tab"),
   );
   const current = document.activeElement as HTMLElement,
     index = controls.indexOf(current);

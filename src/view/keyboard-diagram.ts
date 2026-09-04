@@ -18,6 +18,8 @@ export function keyboardDiagram() {
     Enter: ["Start", "session"],
     KeyP: ["Pause", "session"],
     KeyR: ["Restart", "session"],
+    KeyV: ["Camera", "view"],
+    KeyF: ["Locate", "view"],
     KeyI: ["Walk", "view"],
     KeyJ: ["Walk", "view"],
     KeyK: ["Walk", "view"],

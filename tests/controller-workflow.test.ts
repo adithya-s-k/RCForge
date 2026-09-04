@@ -58,6 +58,14 @@ it("cancel restores the exact original profile after partial capture", () => {
   expect(input.profile).toEqual(original);
   expect(page.ready()).toBe(true);
 });
+it("reselecting the active input type does not discard assignments or calibration", () => {
+  const { input, page, el } = setup();
+  input.profile.bindings.roll.expo = 0.4;
+  el("capture-centers").onclick();
+  page.selectType("joystick");
+  expect(input.profile.bindings.roll.expo).toBe(0.4);
+  expect(page.ready()).toBe(false);
+});
 it("requires travel on both sides of neutral and saves captured ranges", () => {
   const { el, input, page, device } = setup();
   el("capture-centers").onclick();

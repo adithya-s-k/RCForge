@@ -8,20 +8,30 @@ import {
 } from "../core/experiment";
 import type { Aircraft } from "../core/schema";
 import type { Environment } from "../core/simulation";
-function chart(base: Sample[], edited: Sample[]) {
+const metrics = {
+  altitudeM: "Altitude · m AGL",
+  airspeedMps: "Airspeed · m/s",
+  rollDeg: "Roll · degrees",
+  pitchDeg: "Pitch · degrees",
+} as const;
+type Metric = keyof typeof metrics;
+function chart(base: Sample[], edited: Sample[], metric: Metric) {
   const samples = [...base, ...edited],
-    min = Math.min(0, ...samples.map((s) => s.altitudeM)),
-    max = Math.max(25, ...samples.map((s) => s.altitudeM)),
+    min = Math.min(0, ...samples.map((s) => s[metric])),
+    max = Math.max(
+      metric === "altitudeM" ? 25 : 5,
+      ...samples.map((s) => s[metric]),
+    ),
     width = 760,
     height = 300;
   const path = (ss: Sample[]) =>
     ss
       .map(
         (s, i) =>
-          `${i ? "L" : "M"}${(50 + (s.time / 20) * 680).toFixed(1)},${(height - 32 - ((s.altitudeM - min) / (max - min)) * (height - 64)).toFixed(1)}`,
+          `${i ? "L" : "M"}${(50 + (s.time / 20) * 680).toFixed(1)},${(height - 32 - ((s[metric] - min) / (max - min)) * (height - 64)).toFixed(1)}`,
       )
       .join(" ");
-  return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Altitude traces for baseline and edited aircraft">${[
+  return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${metrics[metric]} traces for baseline and edited aircraft">${[
     0, 0.25, 0.5, 0.75, 1,
   ]
     .map((t) => {
@@ -41,6 +51,34 @@ export function setupExperiments(
   pause: () => void,
 ) {
   let latest: ReturnType<typeof runExperiment> | null = null;
+  let comparison: {
+    base: ReturnType<typeof runExperiment>;
+    edited: ReturnType<typeof runExperiment>;
+  } | null = null;
+  const renderChart = () => {
+    if (!comparison) return;
+    const metric = $<HTMLSelectElement>("response-metric").value as Metric;
+    $("response-chart").innerHTML = chart(
+      comparison.base.recording.samples,
+      comparison.edited.recording.samples,
+      metric,
+    );
+  };
+  const scenarioHelp = () => {
+    const scenario = $<HTMLSelectElement>("scenario").value;
+    $("scenario-help").textContent = (
+      {
+        cruise: "Hold the calculated trim for 20 seconds.",
+        glide: "Cut power and retain the trimmed elevator position.",
+        "pitch-pulse":
+          "At 2 seconds, add 25% pitch input for one second, then release.",
+        "roll-pulse":
+          "At 2 seconds, apply 25% right roll for one second, then release.",
+        stall:
+          "Cut power, then progressively increase pitch input after 2 seconds.",
+      } as Record<string, string>
+    )[scenario];
+  };
   $("run-experiment").onclick = () => {
     pause();
     $("run-experiment").setAttribute("disabled", "");
@@ -53,28 +91,57 @@ export function setupExperiments(
           base = runExperiment(baseline, environment, scenario),
           edited = runExperiment(aircraft, environment, scenario);
         latest = edited;
+        comparison = { base, edited };
+        const metric: Metric =
+          scenario === "roll-pulse"
+            ? "rollDeg"
+            : scenario === "pitch-pulse"
+              ? "pitchDeg"
+              : "altitudeM";
+        $("experiment-results").classList.remove("experiment-empty");
         $("experiment-results").innerHTML =
-          `<div class="chart-heading"><h2>Altitude · m AGL</h2><div class="chart-legend"><span><i></i>Baseline</span><span class="edited"><i></i>Edited</span></div></div>${chart(base.recording.samples, edited.recording.samples)}<table class="result-table"><thead><tr><th>At end of run</th><th>Baseline</th><th>Edited aircraft</th></tr></thead><tbody>${[
+          `<div class="chart-heading"><select id="response-metric" aria-label="Response plot">${Object.entries(
+            metrics,
+          )
+            .map(
+              ([key, label]) =>
+                `<option value="${key}" ${key === metric ? "selected" : ""}>${label}</option>`,
+            )
+            .join(
+              "",
+            )}</select><div class="chart-legend"><span><i></i>Baseline</span><span class="edited"><i></i>Edited</span></div></div><div id="response-chart">${chart(base.recording.samples, edited.recording.samples, metric)}</div><table class="result-table"><thead><tr><th>Measurement</th><th>Baseline</th><th>Edited aircraft</th></tr></thead><tbody>${[
+            [
+              "Initial power",
+              ((base.recording.frames[0]?.throttle ?? 0) * 100).toFixed(1) +
+                "%",
+              ((edited.recording.frames[0]?.throttle ?? 0) * 100).toFixed(1) +
+                "%",
+            ],
+            [
+              "Initial pitch command",
+              ((base.recording.frames[0]?.pitch ?? 0) * 100).toFixed(1) + "%",
+              ((edited.recording.frames[0]?.pitch ?? 0) * 100).toFixed(1) + "%",
+            ],
             [
               "Duration",
               base.summary.durationSeconds.toFixed(2) + " s",
               edited.summary.durationSeconds.toFixed(2) + " s",
             ],
             [
-              "Distance",
+              "Final distance",
               base.summary.distanceM.toFixed(1) + " m",
               edited.summary.distanceM.toFixed(1) + " m",
             ],
             [
-              "Altitude",
+              "Final altitude",
               base.summary.finalAltitudeM.toFixed(1) + " m",
               edited.summary.finalAltitudeM.toFixed(1) + " m",
             ],
             ["End state", base.summary.status, edited.summary.status],
             [
               "Trim converged",
-              String(base.trimConverged),
-              String(edited.trimConverged),
+              base.trimConverged ? "Yes" : "No — check model",
+              edited.trimConverged ? "Yes" : "No — check model",
             ],
           ]
             .map(
@@ -90,7 +157,8 @@ export function setupExperiments(
             )
             .join(
               "",
-            )}</tbody></table><p class="small muted">A run ends early on an impact or belly landing. These are estimates from the same model, not independent validation.</p>`;
+            )}</tbody></table>${scenario === "cruise" ? '<p class="small muted">Each aircraft uses its own calculated trim. Matching altitude can be expected even when weight or required power differs.</p>' : ""}<p class="small muted">A run ends early on an impact or belly landing. These are estimates from the same model, not independent validation.</p>`;
+        $("response-metric").onchange = renderChart;
         $("export-experiment").removeAttribute("disabled");
         $("export-csv").removeAttribute("disabled");
       } catch (e) {
@@ -116,9 +184,12 @@ export function setupExperiments(
       );
   };
   const invalidate = () => {
+    scenarioHelp();
     latest = null;
+    comparison = null;
     $("export-experiment").setAttribute("disabled", "");
     $("export-csv").setAttribute("disabled", "");
+    $("experiment-results").classList.add("experiment-empty");
     $("experiment-results").innerHTML =
       `<span class="experiment-empty-icon">${uiIcon("experiments")}</span><h2>No comparison yet</h2><p class="muted">Run a scenario to compare the original and your current setup.</p>`;
   };

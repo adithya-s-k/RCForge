@@ -8,17 +8,80 @@ import {
 } from "../core/aircraft";
 import { setTotalMass, setLongitudinalCG } from "../core/editor";
 import { parseAircraft, type Aircraft } from "../core/schema";
+import { ZodError } from "zod";
+function numericValue(field: HTMLInputElement) {
+  const value = Number(field.value);
+  if (!field.value.trim() || !Number.isFinite(value))
+    throw new Error("Enter a number.");
+  if (field.min !== "" && value < Number(field.min))
+    throw new Error(`Minimum ${field.min}.`);
+  if (field.max !== "" && value > Number(field.max))
+    throw new Error(`Maximum ${field.max}.`);
+  return value;
+}
 export class AircraftEditor {
   draft: Aircraft;
   private pending = new Map<string, string>();
   private editError: unknown = null;
+  private errors = new Map<string, string>();
+  private selectionInitialized = false;
+  private drafts = new Map<
+    string,
+    {
+      draft: Aircraft;
+      pending: Map<string, string>;
+      errors: Map<string, string>;
+    }
+  >();
   get hasPending() {
     return this.pending.size > 0;
   }
   private track(id: string, value: string) {
     this.pending.set(id, value);
+    this.errors.delete(id);
+    $<HTMLInputElement>(id).setCustomValidity("");
+    $(id).removeAttribute("aria-invalid");
+    this.renderPending();
     $("editor-state").textContent = "Unapplied changes";
     $("editor-state").classList.add("pending");
+  }
+  private fail(id: string, value: string, error: unknown) {
+    this.editError = error;
+    this.pending.set(id, value);
+    this.errors.set(
+      id,
+      error instanceof ZodError
+        ? error.issues[0].message
+        : error instanceof Error
+          ? error.message
+          : String(error),
+    );
+    this.update();
+    this.changed(this.draft);
+  }
+  private renderPending() {
+    document
+      .querySelectorAll<HTMLInputElement>(".editor-page [aria-invalid]")
+      .forEach((field) => {
+        field.removeAttribute("aria-invalid");
+        field.setCustomValidity("");
+      });
+    for (const [id, value] of this.pending) {
+      const field = $<HTMLInputElement>(id);
+      if (field) field.value = value;
+    }
+    const messages: string[] = [];
+    for (const [id, error] of this.errors) {
+      const field = $<HTMLInputElement>(id);
+      if (!field) continue;
+      field.setAttribute("aria-invalid", "true");
+      field.setCustomValidity(error);
+      messages.push(
+        `${field.labels?.[0]?.textContent || field.getAttribute("aria-label") || id}: ${error}`,
+      );
+    }
+    $("editor-error").hidden = !messages.length;
+    $("editor-error").textContent = messages.join(" ");
   }
   commitPending() {
     const entries = [...this.pending];
@@ -38,11 +101,14 @@ export class AircraftEditor {
     const action = (id: string, fn: (value: number) => Aircraft) => {
       $(id).oninput = () => this.track(id, $<HTMLInputElement>(id).value);
       $(id).onchange = () => {
-        this.pending.delete(id);
+        const raw = $<HTMLInputElement>(id).value;
         try {
-          const value = Number($<HTMLInputElement>(id).value);
-          if (!Number.isFinite(value)) throw new Error("Enter a finite number");
+          const value = numericValue($<HTMLInputElement>(id));
           this.draft = parseAircraft(fn(value));
+          this.pending.delete(id);
+          this.errors.delete(id);
+          $<HTMLInputElement>(id).setCustomValidity("");
+          $(id).removeAttribute("aria-invalid");
           this.draft.provenance.editor = {
             status: "calculated",
             note: "User-edited component masses and geometry. Mass, CG and inertia recomputed; aerodynamic coefficients remain estimates.",
@@ -50,9 +116,7 @@ export class AircraftEditor {
           this.update();
           changed(this.draft);
         } catch (e) {
-          this.editError = e;
-          notify(String(e));
-          this.update();
+          this.fail(id, raw, e);
         }
       };
     };
@@ -84,8 +148,28 @@ export class AircraftEditor {
     this.update();
   }
   set(a: Aircraft) {
+    this.selectionInitialized = true;
     this.pending.clear();
+    this.errors.clear();
+    this.drafts.delete(a.id);
     this.draft = structuredClone(a);
+    this.update();
+    this.changed(this.draft);
+  }
+  /** Aircraft selection retains each unfinished draft, including raw invalid fields. */
+  switchTo(a: Aircraft) {
+    if (this.selectionInitialized)
+      this.drafts.set(this.draft.id, {
+        draft: structuredClone(this.draft),
+        pending: new Map(this.pending),
+        errors: new Map(this.errors),
+      });
+    this.selectionInitialized = true;
+    const saved = this.drafts.get(a.id);
+    this.draft = structuredClone(saved?.draft ?? a);
+    this.pending = new Map(saved?.pending);
+    this.errors = new Map(saved?.errors);
+    this.editError = null;
     this.update();
     this.changed(this.draft);
   }
@@ -125,17 +209,18 @@ export class AircraftEditor {
         const field = $<HTMLInputElement>(id);
         field.oninput = () => this.track(id, field.value);
         field.onchange = () => {
-          this.pending.delete(id);
+          const raw = field.value;
           try {
+            if (field.type === "number") numericValue(field);
             const out = structuredClone(this.draft);
             edit(out, field.value);
             this.draft = parseAircraft(out);
+            this.pending.delete(id);
+            this.errors.delete(id);
             this.changed(this.draft);
             this.update();
           } catch (e) {
-            this.editError = e;
-            this.notify(String(e));
-            this.update();
+            this.fail(id, raw, e);
           }
         };
       };
@@ -218,12 +303,12 @@ export class AircraftEditor {
       .forEach((input) => {
         input.oninput = () => this.track(input.id, input.value);
         input.onchange = () => {
-          this.pending.delete(input.id);
+          const raw = input.value;
           try {
             const clone = structuredClone(this.draft),
               part = clone.parts[Number(input.dataset.part)],
               index = Number(input.dataset.value),
-              value = Number(input.value) / 1000;
+              value = numericValue(input) / 1000;
             if (index === 0) {
               if (part.inertiaDiagonalKgM2)
                 part.inertiaDiagonalKgM2 = part.inertiaDiagonalKgM2.map(
@@ -234,12 +319,12 @@ export class AircraftEditor {
             const next = parseAircraft(clone);
             massProperties(next);
             this.draft = next;
+            this.pending.delete(input.id);
+            this.errors.delete(input.id);
             this.update();
             this.changed(next);
           } catch (e) {
-            this.editError = e;
-            this.notify(String(e));
-            this.update();
+            this.fail(input.id, raw, e);
           }
         };
       });
@@ -249,5 +334,6 @@ export class AircraftEditor {
           `<p><strong>${escape(key)} · ${v.status}</strong>${escape(v.note)}${v.url && /^https?:/.test(v.url) ? `<a href="${escape(v.url)}" target="_blank" rel="noopener noreferrer">Source ↗</a>` : ""}</p>`,
       )
       .join("");
+    this.renderPending();
   }
 }

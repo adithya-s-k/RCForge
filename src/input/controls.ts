@@ -1,5 +1,6 @@
 import { clamp } from "../core/math";
 import { cleanControls, type Controls } from "../core/simulation";
+import { ownsKeyboard } from "./ui-focus";
 export type Channel = keyof Controls;
 /** Shared, read-only input surface for browser HID and the Arduino serial bridge. */
 export interface InputDevice {
@@ -142,7 +143,7 @@ export class InputManager {
   private keyboard = { roll: 0, pitch: 0, yaw: 0 };
   constructor(private onInterrupt: (reason: string) => void) {
     window.addEventListener("keydown", (e) => {
-      if (!this.active || this.isEditing(e.target)) return;
+      if (!this.active || ownsKeyboard(e.target)) return;
       if (
         [
           "Space",
@@ -199,14 +200,6 @@ export class InputManager {
         onInterrupt("Controller disconnected — reconnect and resume");
       }
     });
-  }
-  private isEditing(target: EventTarget | null) {
-    return (
-      target instanceof Element &&
-      (target.matches("input,select,textarea") ||
-        target.closest("dialog[open],[data-input-scope=ui]") !== null ||
-        (target instanceof HTMLElement && target.isContentEditable))
-    );
   }
   clear() {
     this.keys.clear();

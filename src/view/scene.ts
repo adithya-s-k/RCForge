@@ -222,7 +222,9 @@ export class FlightScene {
     this.shadowRadius =
       Math.max(bounds.min.length(), bounds.max.length()) + 0.25;
     this.cg = massProperties(a).cg;
-    this.span = a.reference.spanM;
+    // The rotor diagonal excludes propeller tips; frame the full rendered model.
+    const size = bounds.getSize(new T.Vector3());
+    this.span = Math.max(a.reference.spanM, size.x, size.y, size.z);
     this.forces.clear();
     this.arrows = a.surfaces.map(() => {
       const arrow = new T.ArrowHelper(
@@ -241,6 +243,24 @@ export class FlightScene {
   setCamera(mode: CameraMode) {
     this.mode = mode;
     this.snap = true;
+  }
+  locateAircraft() {
+    this.trackAircraft = true;
+    this.lookYaw = this.lookPitch = 0;
+    this.snap = true;
+  }
+  aircraftScreenPoint(position: Vec3) {
+    const point = toWorld(position);
+    const distance = point.distanceTo(this.camera.position);
+    point.project(this.camera);
+    if (
+      point.z < -1 ||
+      point.z > 1 ||
+      Math.abs(point.x) > 1 ||
+      Math.abs(point.y) > 1
+    )
+      return null;
+    return { x: (point.x + 1) * 50, y: (1 - point.y) * 50, distance };
   }
   setScenery(id: SceneryId) {
     if (this.scenery === id) return;

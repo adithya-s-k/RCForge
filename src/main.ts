@@ -43,6 +43,9 @@ import { ControllerPage } from "./app/controllers";
 import { AircraftEditor } from "./app/editor";
 import { setupExperiments } from "./app/experiments";
 import { $, escape, download } from "./app/dom";
+import { ownsKeyboard } from "./input/ui-focus";
+import { flightAction } from "./app/flight-session";
+import { setupTabs } from "./app/tabs";
 $("app").innerHTML = workbenchMarkup();
 const originals = [
   parseAircraft(broncoData),
@@ -68,6 +71,8 @@ let sim = new Simulation(aircraft, environment, launchState(aircraft, mode)),
   recording = createRecording(sim),
   editorSim = sim;
 let scene: FlightScene | undefined;
+let flightCamera: "ground" | "chase" = "ground";
+let locatorUntil = 0;
 const audio = new FlightAudio();
 function message(text: string) {
   $("notification-text").textContent = text;
@@ -87,11 +92,15 @@ function errorText(e: unknown) {
       : String(e);
 }
 function pause(reason?: string) {
+  const wasRunning = running;
   running = false;
   accumulator = 0;
   document.body.dataset.running = "false";
-  $("pause").textContent = "Resume";
-  if (started && reason && page === "fly") message(reason);
+  $("toggle-flight-setup").setAttribute(
+    "aria-expanded",
+    String(!$("page-fly").classList.contains("setup-collapsed")),
+  );
+  if (wasRunning && reason && page === "fly") message(reason);
   audio.update(0, 0, false);
 }
 const input = new InputManager((reason) => pause(reason));
@@ -106,6 +115,7 @@ function updateFlightInfo() {
   document.querySelectorAll<HTMLButtonElement>("[data-launch]").forEach((b) => {
     b.disabled = quad && b.dataset.launch === "hand";
     b.classList.toggle("active", b.dataset.launch === mode);
+    b.setAttribute("aria-pressed", String(b.dataset.launch === mode));
     if (b.dataset.launch === "airborne")
       b.textContent = quad ? "Hover" : "In flight";
   });
@@ -159,7 +169,7 @@ function showScenery(env: typeof environment) {
     `${site.temperatureC} °C · ${site.elevationM} m elevation · ${env.densityKgM3.toFixed(3)} kg/m³`;
 }
 function reset() {
-  const cameraMode = scene?.mode === "chase" ? "chase" : "ground";
+  const cameraMode = flightCamera;
   showScenery(environment);
   pause();
   if (aircraft.vehicleType === "multirotor" && mode === "hand") mode = "ground";
@@ -190,7 +200,7 @@ function reset() {
   else setFlightCamera(cameraMode);
   $<HTMLInputElement>("pitch-trim").value = String(Math.round(pitchTrim * 100));
   $("pitch-trim-value").textContent = Math.round(pitchTrim * 100) + "%";
-  $("pause").hidden = true;
+  $("pause").hidden = false;
   $("launch").innerHTML = "Start flight";
   $("notification").hidden = true;
   $("throttle").toggleAttribute("disabled", input.source === "controller");
@@ -234,8 +244,8 @@ async function launch() {
   input.clear();
   document.body.dataset.running = "true";
   $("pause").hidden = false;
-  $("pause").innerHTML = "Pause <kbd>P</kbd>";
-  $("launch").textContent = replay ? "Resume replay" : "Resume flight";
+  $("toggle-flight-setup").setAttribute("aria-expanded", "false");
+  stats();
   $("notification").hidden = true;
   scene.renderer.domElement.focus();
   await audio.start();
@@ -247,7 +257,7 @@ function loadAircraft(a: Aircraft) {
     const saved = localStorage.getItem("rcforge.aircraft.v3." + a.id);
     if (saved) aircraft = parseAircraft(JSON.parse(saved));
   } catch {}
-  editor.set(aircraft);
+  editor.switchTo(aircraft);
   reset();
   invalidate();
   fillSelects();
@@ -263,7 +273,8 @@ function fillSelects() {
 const editor = new AircraftEditor(
   aircraft,
   (a) => {
-    const unapplied = JSON.stringify(a) !== JSON.stringify(aircraft);
+    const unapplied =
+      editor.hasPending || JSON.stringify(a) !== JSON.stringify(aircraft);
     $("editor-state").textContent = unapplied
       ? "Unapplied changes"
       : "Applied to flight";
@@ -302,7 +313,7 @@ function route() {
     $("flight-stage").append($("viewport"));
     scene?.setStudio(false);
     scene?.setAircraft(sim.aircraft);
-    setFlightCamera("ground");
+    setFlightCamera(flightCamera);
   }
   if (page === "aircraft") {
     $("editor-stage").append($("viewport"));
@@ -313,11 +324,7 @@ function route() {
   if (page === "controllers") controller.refresh();
   if (page === "experiments") {
     $("experiment-aircraft").textContent = aircraft.name;
-    $("experiment-config").textContent =
-      editor.hasPending ||
-      JSON.stringify(editor.draft) !== JSON.stringify(aircraft)
-        ? "Uses the applied aircraft. Apply your editor changes to include them."
-        : "Compares the original with your applied aircraft.";
+    updateExperimentInfo();
   }
 }
 window.addEventListener("hashchange", route);
@@ -363,6 +370,13 @@ const positioning = placementUI({
 const updateNavigation = createFlightNavigation(() => {
   if (!positioning.isOpen()) positioning.open();
 });
+setupTabs($("flight-setup-tabs"), (id) => {
+  document
+    .querySelectorAll<HTMLElement>("[data-setup-panel]")
+    .forEach((panel) => {
+      panel.hidden = panel.dataset.setupPanel !== id;
+    });
+});
 $("toggle-flight-setup").onclick = () => {
   positioning.close(false);
   const wasRunning = running;
@@ -372,6 +386,11 @@ $("toggle-flight-setup").onclick = () => {
     : !$("page-fly").classList.contains("setup-collapsed");
   $("page-fly").classList.toggle("setup-collapsed", closed);
   $("toggle-flight-setup").setAttribute("aria-expanded", String(!closed));
+};
+$("close-flight-setup").onclick = () => {
+  $("page-fly").classList.add("setup-collapsed");
+  $("toggle-flight-setup").setAttribute("aria-expanded", "false");
+  scene?.renderer.domElement.focus();
 };
 document.querySelectorAll<HTMLButtonElement>("[data-controller-tab]").forEach(
   (button) =>
@@ -388,10 +407,16 @@ document.querySelectorAll<HTMLButtonElement>("[data-controller-tab]").forEach(
     }),
 );
 $("launch").onclick = () => void launch();
-$("pause").onclick = () => (running ? pause() : void launch());
+$("pause").onclick = () => {
+  if (running) {
+    pause();
+    scene?.renderer.domElement.focus();
+  } else void launch();
+};
 $("reset").onclick = () => {
   positioning.close(false);
   reset();
+  scene?.renderer.domElement.focus();
 };
 document.querySelectorAll<HTMLButtonElement>("[data-launch]").forEach(
   (b) =>
@@ -434,7 +459,18 @@ setupCatalog(
   },
   loadAircraft,
 );
-$("save-aircraft").onclick = () => {
+function updateExperimentInfo() {
+  const pending =
+    editor.hasPending ||
+    JSON.stringify(editor.draft) !== JSON.stringify(aircraft);
+  $("experiment-aircraft").textContent = aircraft.name;
+  $("experiment-draft-note").hidden = !pending;
+  $("experiment-config").textContent =
+    JSON.stringify(baseline) === JSON.stringify(aircraft)
+      ? "Original configuration. Both traces will match until you apply an edit."
+      : "Original model compared with your applied configuration.";
+}
+function applyDraft() {
   try {
     editor.commitPending();
     aircraft = parseAircraft(editor.draft);
@@ -451,17 +487,31 @@ $("save-aircraft").onclick = () => {
     $("editor-state").textContent = "Applied to flight";
     $("editor-state").classList.remove("pending");
     reset();
-    scene?.setStudio(true);
-    scene?.setAircraft(editor.draft);
+    if (page === "aircraft") {
+      scene?.setStudio(true);
+      scene?.setAircraft(editor.draft);
+    }
     invalidate();
+    updateExperimentInfo();
     message(
       stored
         ? "Aircraft saved locally and applied to flight."
         : "Aircraft applied. Browser storage unavailable; export JSON to keep your changes.",
     );
+    return true;
   } catch (e) {
     message(errorText(e));
+    return false;
   }
+}
+$("save-aircraft").onclick = () => {
+  applyDraft();
+};
+$("apply-and-fly").onclick = () => {
+  if (applyDraft()) location.hash = "/fly";
+};
+$("apply-experiment-draft").onclick = () => {
+  if (applyDraft()) $("run-experiment").click();
 };
 $("restore-aircraft").onclick = () => {
   editor.set(baseline);
@@ -519,6 +569,7 @@ for (const id of ["wind-speed", "wind-direction", "gusts"])
     invalidate();
   };
 function setFlightCamera(camera: "ground" | "chase") {
+  flightCamera = camera;
   scene?.setCamera(camera);
   document
     .querySelectorAll<HTMLButtonElement>("[data-camera]")
@@ -532,11 +583,22 @@ function setFlightCamera(camera: "ground" | "chase") {
       ? "Following aircraft · chase view"
       : "Pilot view · eye height 1.7 m";
 }
+function locateAircraft() {
+  if (!scene) return;
+  scene.locateAircraft();
+  $<HTMLInputElement>("track-plane").checked = true;
+  locatorUntil = performance.now() + 5000;
+  scene.renderer.domElement.focus();
+}
+$("locate-aircraft").onclick = locateAircraft;
 document
   .querySelectorAll<HTMLButtonElement>("[data-camera]")
   .forEach((button) => {
-    button.onclick = () =>
+    button.onclick = (event) => {
       setFlightCamera(button.dataset.camera as "ground" | "chase");
+      // Pointer users can keep flying immediately; keyboard activation keeps native focus.
+      if (event.detail > 0) scene?.renderer.domElement.focus();
+    };
   });
 document.querySelectorAll<HTMLButtonElement>("[data-inspect]").forEach(
   (b) =>
@@ -587,14 +649,10 @@ window.addEventListener("keydown", (e) => {
     positioning.close();
     return;
   }
-  if (
-    page !== "fly" ||
-    $<HTMLDialogElement>("help").open ||
-    (e.target instanceof Element && e.target.closest("#position-panel")) ||
-    (e.target instanceof HTMLElement &&
-      e.target.matches("input,select,textarea"))
-  )
-    return;
+  if (page !== "fly" || ownsKeyboard(e.target)) return;
+  if (e.code === "KeyF" && !e.repeat) locateAircraft();
+  if (e.code === "KeyV" && !e.repeat)
+    setFlightCamera(flightCamera === "ground" ? "chase" : "ground");
   if (e.code === "KeyP" && !e.repeat) {
     e.preventDefault();
     if (running) pause();
@@ -659,6 +717,32 @@ $("scenery-select").onchange = () => {
   invalidate();
 };
 function stats() {
+  const action = flightAction({
+    running,
+    started,
+    status: sim.state.status,
+    replay: !!replay,
+    replayComplete: !!replay && replayIndex >= replay.frames.length,
+  });
+  const hint =
+    input.source === "keyboard"
+      ? running
+        ? "P"
+        : "Enter"
+      : controllerActions.hint("toggle");
+  for (const id of ["pause", "launch"]) {
+    const button = $(id);
+    const label = `${action}${hint ? ` <kbd>${escape(hint)}</kbd>` : ""}`;
+    if (button.innerHTML !== label) button.innerHTML = label;
+    button.setAttribute("aria-label", action);
+  }
+  $("pause").classList.toggle("primary", !running);
+  $("flight-input-status").textContent =
+    input.source === "keyboard"
+      ? "Ready · Space raises power, Shift lowers it."
+      : input.selected()
+        ? "Connected · Check mapping before launch."
+        : "No input detected. Connect your device or choose Keyboard.";
   const power = powertrain(
     sim.aircraft,
     sim.state.motors,
@@ -782,6 +866,8 @@ function frame(now: number) {
     controllerActions.update(
       document.hasFocus() && !document.querySelector("dialog[open]"),
     );
+    if (!running && page === "fly" && input.source === "keyboard" && !replay)
+      input.read(dt);
     if (running && page === "fly") {
       accumulator += dt;
       while (accumulator >= FIXED_DT && running) {
@@ -817,8 +903,8 @@ function frame(now: number) {
           pause();
           message(
             sim.state.status === "landed"
-              ? "Belly landing complete. Reset for another flight."
-              : "Airframe impact. Reset to try again.",
+              ? "Belly landing complete. Restart flight when ready."
+              : "Airframe impact. Restart flight to try again.",
           );
         }
       }
@@ -831,8 +917,19 @@ function frame(now: number) {
     drawAccumulator += dt * 1000;
     if (drawAccumulator >= renderInterval - 0.5) {
       const viewDt = Math.min((now - lastDraw) / 1000, 0.1);
-      if (page === "fly") scene?.render(sim, controls, viewDt);
-      else if (page === "aircraft")
+      if (page === "fly") {
+        scene?.render(sim, controls, viewDt);
+        const target =
+          now < locatorUntil
+            ? scene?.aircraftScreenPoint(sim.state.position)
+            : null;
+        $("aircraft-locator").hidden = !target;
+        if (target) {
+          $("aircraft-locator").style.left = `${target.x}%`;
+          $("aircraft-locator").style.top = `${target.y}%`;
+          $("locator-distance").textContent = `${target.distance.toFixed(0)} m`;
+        }
+      } else if (page === "aircraft")
         scene?.render(
           editorSim,
           { roll: 0, pitch: 0, yaw: 0, throttle: 0 },
@@ -858,7 +955,7 @@ function frame(now: number) {
       const hardware = input.source === "controller";
       $("flight-input-guide").textContent = hardware
         ? `${controller.type === "transmitter" ? "RC transmitter" : controller.type === "joystick" ? "Flight stick" : "Gamepad"} · ${channelsHint()} · ${controllerActions.hint("toggle") || "On-screen"} start/pause · ${controllerActions.hint("reset") || "On-screen"} restart`
-        : "↑/↓ Pitch · ←/→ Roll · Q/E Yaw · Space/Shift Power · P Pause · R Reset";
+        : "↑↓ Pitch · ←→ Roll · Space / Shift Power · Q / E Yaw · V Camera · F Locate";
       $("reset").textContent = hardware
         ? `Restart ${controllerActions.hint("reset")}`
         : "Reset R";

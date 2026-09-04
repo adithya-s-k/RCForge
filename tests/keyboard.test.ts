@@ -3,11 +3,12 @@ import { InputManager } from "../src/input/controls";
 afterEach(() => vi.unstubAllGlobals());
 function keyboard() {
   class TestElement {
+    constructor(private owner = "[data-input-scope=ui]") {}
     matches() {
       return false;
     }
     closest(selector: string) {
-      return selector.includes("[data-input-scope=ui]") ? this : null;
+      return selector.includes(this.owner) ? this : null;
     }
   }
   const handlers = new Map<string, (e: any) => void>();
@@ -23,6 +24,8 @@ function keyboard() {
   return {
     input,
     mapMarker: new TestElement(),
+    button: new TestElement("button"),
+    dialog: new TestElement("dialog[open]"),
     key: (code: string, type = "keydown", target: TestElement | null = null) =>
       handlers.get(type)!({
         code,
@@ -44,6 +47,14 @@ it("Space raises power, release retains it and Shift reduces it", () => {
   key("ShiftLeft");
   input.read(0.5);
   expect(input.throttle).toBeCloseTo(0.175);
+});
+it("native buttons and dialogs retain Space and arrow keys", () => {
+  const { input, key, button, dialog } = keyboard();
+  for (const target of [button, dialog]) {
+    key("Space", "keydown", target);
+    key("ArrowDown", "keydown", target);
+  }
+  expect(input.read(0.5)).toMatchObject({ throttle: 0, pitch: 0 });
 });
 it("walking WASD does not steer the plane, while arrows still do", () => {
   const { input, key } = keyboard();

@@ -31,11 +31,13 @@ export class ControllerPage {
     until: number;
   } | null = null;
   private dirty = false;
+  private initialized = false;
   constructor(
     readonly input: InputManager,
     private interrupt: () => void,
     private notify: (s: string) => void,
   ) {
+    $("use-keyboard").onclick = () => this.selectType("keyboard");
     document
       .querySelectorAll<HTMLButtonElement>("[data-input]")
       .forEach(
@@ -212,6 +214,8 @@ export class ControllerPage {
     this.updateAvailability();
   }
   selectType(type: InputType) {
+    if (this.initialized && type === this.type) return;
+    this.initialized = true;
     this.cancel();
     this.type = type;
     $<HTMLSelectElement>("flight-input-type").value = type;
@@ -346,6 +350,22 @@ export class ControllerPage {
   }
   private updateAvailability() {
     const available = this.type !== "keyboard" && !!this.input.selected();
+    const missing = this.type !== "keyboard" && !available;
+    $("controller-empty").hidden = !missing;
+    $("calibration-status").hidden = missing || this.type === "keyboard";
+    $("save-controller").hidden = missing || this.type === "keyboard";
+    $("controller-settings-tabs").hidden = missing || this.type === "keyboard";
+    document.querySelector<HTMLElement>(".controller-layout")!.hidden = missing;
+    $("controller-empty-title").textContent =
+      this.type === "transmitter"
+        ? "Connect your radio"
+        : this.type === "joystick"
+          ? "Connect your flight stick"
+          : "Connect your gamepad";
+    $("controller-empty-help").textContent =
+      this.type === "transmitter"
+        ? "Use a USB simulator adapter, or connect the Arduino bridge above. Mapping appears when a signal is available."
+        : "Connect by USB or Bluetooth, then press a button with this page focused. Mapping and calibration appear once it is detected.";
     for (const id of [
       "save-controller",
       "capture-centers",
@@ -409,7 +429,7 @@ export class ControllerPage {
     if (this.type === "keyboard") {
       c = this.input.read(0.1);
       $("device-status").textContent =
-        "Ready. Click outside a text field to try the controls below.";
+        "Click the keyboard diagram, then press a key to check its response.";
     } else if (d) {
       if (this.detecting) {
         const moved = movedAxis(this.detecting.axes, d.axes);
