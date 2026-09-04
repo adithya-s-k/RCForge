@@ -1,20 +1,13 @@
 import { uiIcon } from "../view/icons";
 import { $, download, escape } from "./dom";
-import {
-  runExperiment,
-  samplesToCsv,
-  type Scenario,
-  type Sample,
-} from "../core/experiment";
+import { runExperiment, samplesToCsv, type Scenario } from "../core/experiment";
 import type { Aircraft } from "../core/schema";
 import type { Environment } from "../core/simulation";
-const metrics = {
-  altitudeM: "Altitude · m AGL",
-  airspeedMps: "Airspeed · m/s",
-  rollDeg: "Roll · degrees",
-  pitchDeg: "Pitch · degrees",
-} as const;
-type Metric = keyof typeof metrics;
+import {
+  responseMetrics as metrics,
+  responseChart as chart,
+  type ResponseMetric as Metric,
+} from "../view/response-chart";
 const endState = (status: string) =>
   ({
     flying: "Still flying",
@@ -22,33 +15,6 @@ const endState = (status: string) =>
     landed: "Belly landing",
     crashed: "Airframe impact",
   })[status] ?? status;
-function chart(base: Sample[], edited: Sample[], metric: Metric) {
-  const samples = [...base, ...edited],
-    min = Math.min(0, ...samples.map((s) => s[metric])),
-    max = Math.max(
-      metric === "altitudeM" ? 25 : 5,
-      ...samples.map((s) => s[metric]),
-    ),
-    width = 760,
-    height = 300;
-  const path = (ss: Sample[]) =>
-    ss
-      .map(
-        (s, i) =>
-          `${i ? "L" : "M"}${(72 + (s.time / 20) * 658).toFixed(1)},${(height - 32 - ((s[metric] - min) / (max - min)) * (height - 64)).toFixed(1)}`,
-      )
-      .join(" ");
-  return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${metrics[metric]} traces for baseline and edited aircraft">${[
-    0, 0.25, 0.5, 0.75, 1,
-  ]
-    .map((t) => {
-      const y = height - 32 - t * (height - 64);
-      return `<line x1="72" x2="730" y1="${y}" y2="${y}" stroke="var(--ui-border)"/><text x="60" y="${y + 4}" fill="var(--ui-muted)" text-anchor="end" font-size="12">${(min + t * (max - min)).toFixed(0)}</text>`;
-    })
-    .join(
-      "",
-    )}${[0, 5, 10, 15, 20].map((t) => `<text x="${72 + (t / 20) * 658}" y="292" fill="var(--ui-muted)" text-anchor="middle" font-size="12">${t}s</text>`).join("")}<path d="${path(base)}" fill="none" stroke="var(--ui-muted)" stroke-width="2" stroke-dasharray="6 5"/><path d="${path(edited)}" fill="none" stroke="var(--ui-text)" stroke-width="2.5"/></svg>`;
-}
 export function setupExperiments(
   get: () => {
     baseline: Aircraft;
@@ -64,13 +30,25 @@ export function setupExperiments(
   } | null = null;
   const renderChart = () => {
     if (!comparison) return;
-    const metric = $<HTMLSelectElement>("response-metric").value as Metric;
-    $("response-chart").innerHTML = chart(
+    const select = $<HTMLSelectElement>("response-metric");
+    const host = $("response-chart");
+    if (!host || !select) return;
+    const metric = select.value as Metric;
+    host.innerHTML = chart(
       comparison.base.recording.samples,
       comparison.edited.recording.samples,
       metric,
+      host.clientWidth,
     );
   };
+  let chartWidth = 0;
+  const resize = new ResizeObserver(() => {
+    const width = $("experiment-results").clientWidth;
+    if (width === chartWidth) return;
+    chartWidth = width;
+    renderChart();
+  });
+  resize.observe($("experiment-results"));
   const scenarioHelp = () => {
     const scenario = $<HTMLSelectElement>("scenario").value;
     $("scenario-help").textContent = (
@@ -88,6 +66,10 @@ export function setupExperiments(
   };
   $("run-experiment").onclick = () => {
     pause();
+    latest = null;
+    comparison = null;
+    $("export-experiment").setAttribute("disabled", "");
+    $("export-csv").setAttribute("disabled", "");
     $("run-experiment").setAttribute("disabled", "");
     $("run-experiment").textContent = "Running…";
     $("experiment-results").setAttribute("aria-busy", "true");
@@ -112,6 +94,11 @@ export function setupExperiments(
           `<div class="chart-heading"><select id="response-metric" aria-label="Response plot">${Object.entries(
             metrics,
           )
+            .filter(([key]) =>
+              [...base.recording.samples, ...edited.recording.samples].some(
+                (s) => s[key as Metric] !== undefined,
+              ),
+            )
             .map(
               ([key, label]) =>
                 `<option value="${key}" ${key === metric ? "selected" : ""}>${label}</option>`,
@@ -131,6 +118,28 @@ export function setupExperiments(
               ((base.recording.frames[0]?.pitch ?? 0) * 100).toFixed(1) + "%",
               ((edited.recording.frames[0]?.pitch ?? 0) * 100).toFixed(1) + "%",
             ],
+            ...(aircraft.battery || baseline.battery
+              ? [
+                  [
+                    "Charge used",
+                    ...[base, edited].map((run) => {
+                      const mah = run.recording.samples.at(-1)?.batteryUsedMah;
+                      return mah === undefined
+                        ? "Not modeled"
+                        : mah.toFixed(1) + " mAh";
+                    }),
+                  ],
+                  [
+                    "Remaining charge",
+                    ...[base, edited].map((run) => {
+                      const soc = run.finalState.batterySoc;
+                      return soc === undefined
+                        ? "Not modeled"
+                        : (soc * 100).toFixed(1) + "%";
+                    }),
+                  ],
+                ]
+              : []),
             [
               "Duration",
               base.summary.durationSeconds.toFixed(2) + " s",
@@ -172,6 +181,7 @@ export function setupExperiments(
               "",
             )}</tbody></table>${scenario === "cruise" ? '<p class="small muted">Each aircraft uses its own calculated trim. Matching altitude can be expected even when weight or required power differs.</p>' : ""}<p class="small muted">Runs stop at ground contact, landing or impact, up to 20 seconds. These estimates use the same model; they are not independent validation.</p>`;
         $("response-metric").onchange = renderChart;
+        renderChart();
         $("export-experiment").removeAttribute("disabled");
         $("export-csv").removeAttribute("disabled");
       } catch (e) {

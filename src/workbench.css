@@ -1721,6 +1721,17 @@ button.primary:hover {
 .result-table th {
   font-weight: 500;
 }
+.result-table :is(th, td) {
+  padding: 9px 12px;
+  font-variant-numeric: tabular-nums;
+}
+.result-table td {
+  white-space: nowrap;
+}
+#response-chart {
+  max-width: 940px;
+  margin-inline: auto;
+}
 .component-panel tbody tr:hover {
   background: var(--ui-raised);
 }
@@ -2634,17 +2645,6 @@ button.primary:hover {
 }
 #experiment-results:focus {
   outline: none;
-}
-
-@media (max-width: 700px) {
-  #response-chart svg text {
-    font-size: 20px;
-  }
-}
-@media (max-width: 450px) {
-  #response-chart svg text {
-    font-size: 25px;
-  }
 }
 
 /* The two transmitter transports have different hardware and browser actions. */

@@ -10,6 +10,8 @@ import {
 } from "./simulation";
 import { findTrim } from "./trim";
 import { euler, degrees, length } from "./math";
+import { powertrain } from "./powertrain";
+import { batteryUsage } from "./components";
 export type Scenario =
   "cruise" | "glide" | "pitch-pulse" | "roll-pulse" | "stall";
 export const scenarios: Scenario[] = [
@@ -27,6 +29,10 @@ export interface Sample {
   rollDeg: number;
   pitchDeg: number;
   throttle: number;
+  batterySoc?: number;
+  batteryVoltageV?: number;
+  batteryCurrentA?: number;
+  batteryUsedMah?: number;
 }
 export interface Recording {
   formatVersion: 1;
@@ -41,6 +47,14 @@ export interface Recording {
 export function sample(sim: Simulation, c: Controls): Sample {
   const s = sim.state,
     angles = euler(s.orientation);
+  const electrical = sim.aircraft.battery
+    ? powertrain(
+        sim.aircraft,
+        s.motors,
+        s.batterySoc,
+        sim.environment.densityKgM3,
+      )
+    : undefined;
   return {
     time: s.time,
     altitudeM: -s.position[2],
@@ -49,6 +63,18 @@ export function sample(sim: Simulation, c: Controls): Sample {
     rollDeg: degrees(angles[0]),
     pitchDeg: degrees(angles[1]),
     throttle: c.throttle,
+    ...(electrical
+      ? {
+          batterySoc: s.batterySoc!,
+          batteryVoltageV: electrical.voltage,
+          batteryCurrentA: electrical.current,
+          batteryUsedMah: batteryUsage(
+            sim.aircraft,
+            s.batterySoc!,
+            electrical.current,
+          )!.usedMah,
+        }
+      : {}),
   };
 }
 export function createRecording(sim: Simulation): Recording {
@@ -107,6 +133,11 @@ export function runExperiment(
     recording.frames.push(c);
     if (i % 12 === 0) recording.samples.push(sample(sim, c));
   }
+  // Include the actual endpoint, including a contact that ends a run between samples.
+  if (recording.samples.at(-1)?.time !== sim.state.time)
+    recording.samples.push(
+      sample(sim, recording.frames.at(-1) ?? trim.controls),
+    );
   return {
     recording,
     finalState: sim.state,
@@ -177,6 +208,10 @@ export function parseRecording(raw: unknown): Recording {
             rollDeg: finite,
             pitchDeg: finite,
             throttle: finite,
+            batterySoc: finite.min(0).max(1).optional(),
+            batteryVoltageV: finite.min(0).max(120).optional(),
+            batteryCurrentA: finite.min(0).optional(),
+            batteryUsedMah: finite.min(0).max(100000).optional(),
           }),
         )
         .max(36000),
@@ -207,10 +242,19 @@ export function samplesToCsv(samples: Sample[]): string {
     "pitchDeg",
     "throttle",
   ];
+  for (const key of [
+    "batterySoc",
+    "batteryVoltageV",
+    "batteryCurrentA",
+    "batteryUsedMah",
+  ] as const)
+    if (samples.some((s) => s[key] !== undefined)) keys.push(key);
   return (
     keys.join(",") +
     "\n" +
-    samples.map((s) => keys.map((k) => s[k].toFixed(6)).join(",")).join("\n") +
+    samples
+      .map((s) => keys.map((k) => s[k]?.toFixed(6) ?? "").join(","))
+      .join("\n") +
     "\n"
   );
 }

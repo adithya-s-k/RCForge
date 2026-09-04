@@ -179,3 +179,12 @@ Constant-voltage tests isolate force equilibrium; discharge tests separately che
 charge conservation, mass independence, falling available thrust and replay.
 Changing mAh does not change weight automatically, and charge depletion does not
 remove physical battery mass.
+
+Experiment plots include battery charge (%), pack voltage, current draw and charge
+used (mAh). The comparison table reports charge consumed and remaining charge at
+the actual endpoint, including an early landing or impact. New telemetry CSVs and
+recordings include optional `batterySoc` (0–1), `batteryVoltageV`,
+`batteryCurrentA` and `batteryUsedMah` when an electrical model is present.
+Older 0.7 recordings without those telemetry fields remain readable; missing
+electrical samples are not reported as zero. This adds observations of the
+existing model and does not change the physics or replay version.

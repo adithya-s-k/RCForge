@@ -297,3 +297,24 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   its scale label measures the scale bar, not the full map width.
 - Regression compares the highlight center to the actual rendered battery after
   an off-axis mass/CG change. This is rendering consistency, not flight calibration.
+
+## Pass 12 · battery comparisons and readable experiment plots
+
+- Extended existing experiment/flight telemetry with optional charge fraction,
+  terminal voltage, current and consumed mAh. CSV/recording export preserves these
+  observations. Older 0.7 samples remain readable and absent data is not zero.
+  Experiment samples include the actual endpoint, including early ground contact.
+- Added four electrical response choices and two charge rows to the comparison.
+  Figures redraw at their actual width, with fixed readable tick lettering and
+  finite scales at full/empty charge. Removed the old mobile font compensation;
+  compacted table spacing and kept value/unit pairs together.
+- A new run clears old results/exports before execution so failure cannot export
+  an earlier run. Rendering updates when the results column changes size.
+- Browser: reviewed current, voltage and charge graphs; Bronco cruise used
+  10.6 mAh and ended at 94.5% in the current field conditions. Verified 745 px and
+  375 px layouts with equal document/scroll widths; phone plot has 12 px labels.
+  Restored desktop viewport and checked no browser errors.
+- Verification: 188 tests in 33 files, definitions/catalog and build pass;
+  numerical report passes. Capacity-only constant-voltage regression shows equal
+  mAh consumption and the expected different percentage loss. Replay remains
+  identical; no dynamics or simulation-version change was made.
