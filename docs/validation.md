@@ -29,6 +29,7 @@ Check the following when changing browser integration:
 6. Recordings load, play, terminate and reset back to the current design.
 7. Focus loss pauses; model import errors leave the previous working aircraft available.
 8. Desktop and narrow viewports keep the field and controls accessible.
+9. In Pilot and Chase, aircraft shadows persist beyond the runway and after placement changes. Check low passes at north 120 m, east offsets, climbing above 60 m, all three sun directions, and returning to the studio. The shadow must stay aligned with the sun rather than being pinned directly below the aircraft.
 
 ## What is modeled
 

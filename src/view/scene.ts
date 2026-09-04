@@ -10,6 +10,7 @@ import { buildAircraft, type AircraftVisual } from "./model";
 import { createField } from "./field";
 import type { Placement } from "../core/placement";
 import { renderBudget, renderPixelRatio } from "./render-budget";
+import { followAircraftShadow } from "./aircraft-shadow";
 const toWorld = (v: Vec3) => new T.Vector3(v[0], -v[2], v[1]);
 const conversion = new T.Quaternion().setFromAxisAngle(
   new T.Vector3(1, 0, 0),
@@ -56,6 +57,7 @@ export class FlightScene {
   private visual?: AircraftVisual;
   private cg: Vec3 = [0, 0, 0];
   private span = 1.086;
+  private shadowRadius = 1;
   private studio = false;
   private axisGuide = document.createElement("div");
   private scenery: SceneryId = "club";
@@ -98,17 +100,8 @@ export class FlightScene {
     sun.position.set(25, 60, -35);
     sun.castShadow = true;
     sun.shadow.mapSize.set(renderBudget.shadowSize, renderBudget.shadowSize);
-    Object.assign(sun.shadow.camera, {
-      left: -38,
-      right: 38,
-      top: 38,
-      bottom: -38,
-      near: 1,
-      far: 160,
-    });
-    sun.shadow.bias = -0.0001;
-    sun.shadow.normalBias = 0.015;
-    this.scene.add(sun);
+    sun.shadow.normalBias = 0.006;
+    this.scene.add(sun, sun.target);
     this.field = createField(this.scene);
     this.scene.add(this.forces, this.studioGroup);
     this.placementMarker.visible = false;
@@ -225,6 +218,9 @@ export class FlightScene {
     this.disposeVisual();
     this.visual = buildAircraft(a);
     this.scene.add(this.visual.group);
+    const bounds = new T.Box3().setFromObject(this.visual.group);
+    this.shadowRadius =
+      Math.max(bounds.min.length(), bounds.max.length()) + 0.25;
     this.cg = massProperties(a).cg;
     this.span = a.reference.spanM;
     this.forces.clear();
@@ -344,6 +340,13 @@ export class FlightScene {
     const s = sim.state,
       pos = this.studio ? new T.Vector3(0, 0, 0) : toWorld(s.position);
     this.visual.group.position.copy(pos);
+    followAircraftShadow(
+      this.sun,
+      pos,
+      sceneries[this.scenery].sun,
+      this.shadowRadius,
+      this.studio ? -0.27 : 0,
+    );
     this.visual.group.quaternion
       .copy(conversion)
       .multiply(
@@ -512,6 +515,7 @@ export class FlightScene {
     this.placementRing.geometry.dispose();
     this.placementRing.material.dispose();
     this.placementArrow.dispose();
+    this.sun.shadow.dispose();
     this.renderer.dispose();
   }
 }
