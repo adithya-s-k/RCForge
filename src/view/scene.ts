@@ -255,6 +255,10 @@ export class FlightScene {
     this.shadowRadius =
       Math.max(bounds.min.length(), bounds.max.length()) + 0.25;
     this.cg = massProperties(a).cg;
+    this.setComponentInspection(
+      a.parts.find((p) => p.id === this.selectedComponent?.id),
+      this.inspectComponents,
+    );
     // The rotor diagonal excludes propeller tips; frame the full rendered model.
     const size = bounds.getSize(new T.Vector3());
     this.modelSize.copy(size);
@@ -286,7 +290,7 @@ export class FlightScene {
   ) {
     this.selectedComponent = part;
     this.inspectComponents = active;
-    this.componentFocus.set(part);
+    this.componentFocus.set(part, this.cg);
     this.componentFocusLabel.textContent = part
       ? `${part.id.replaceAll("-", " ")} · ${(part.massKg * 1000).toFixed(1)} g · installation envelope`
       : "";
@@ -317,8 +321,6 @@ export class FlightScene {
     if (this.scenery === id) return;
     this.scenery = id;
     this.field.dispose();
-    this.componentFocus.dispose();
-    this.componentFocusLabel.remove();
     this.field = createField(this.scene, sceneries[id]);
     const p = sceneries[id];
     this.sun.position.set(...p.sun);

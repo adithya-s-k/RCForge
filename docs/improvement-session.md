@@ -282,3 +282,18 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
 - Verification: 183 tests in 32 files, definitions/catalog, production build and
   documentation links pass. Added saved-data, servo and complete motor-package
   comparison cases. A catalog match is not physical validation.
+
+## Pass 11 · component inspection lifecycle and CG alignment
+
+- Corrected installation envelopes to use the same CG-centered origin as the
+  assembled aircraft. Rebuilding after mass/position edits refreshes the selected
+  component against the new definition and CG.
+- Scenery replacement no longer disposes the editor's envelope or removes its
+  label; those resources belong to the scene and are released on scene disposal.
+- Browser: FT-22 ground run at 50% power reached 13.4 s, 12.0 m/s and 4.3 m AGL;
+  paused successfully and inspected pilot tracking/placement. Changed to Alpine
+  meadow, returned to Components and confirmed visible battery label/envelope
+  with no browser errors. Placement map already fits its two markers correctly;
+  its scale label measures the scale bar, not the full map width.
+- Regression compares the highlight center to the actual rendered battery after
+  an off-axis mass/CG change. This is rendering consistency, not flight calibration.

@@ -1,5 +1,6 @@
 import * as T from "three";
 import type { Aircraft } from "../core/schema";
+import type { Vec3 } from "../core/math";
 
 type Part = Aircraft["parts"][number];
 /** One reusable installation envelope; authored mass extents, not a collision mesh. */
@@ -23,13 +24,13 @@ export class ComponentFocus {
     this.group.add(this.box);
     this.group.visible = false;
   }
-  set(part?: Part) {
+  set(part?: Part, cg: Vec3 = [0, 0, 0]) {
     this.group.visible = !!part;
     if (!part) return;
     this.group.position.set(
-      part.positionM[0],
-      -part.positionM[2],
-      part.positionM[1],
+      part.positionM[0] - cg[0],
+      -(part.positionM[2] - cg[2]),
+      part.positionM[1] - cg[1],
     );
     const angles = part.orientationDeg ?? [0, 0, 0];
     const rotation = new T.Quaternion().setFromEuler(
