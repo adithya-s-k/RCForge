@@ -57,7 +57,7 @@ const originals = [
 let baseline = originals[0],
   aircraft = structuredClone(baseline),
   environment = calmEnvironment(),
-  mode: LaunchMode = "hand",
+  mode: LaunchMode = "ground",
   page = "fly",
   running = false,
   started = false,
@@ -66,8 +66,13 @@ let baseline = originals[0],
   pitchTrim = 0,
   accumulator = 0;
 let placement: Placement | null = null;
-let sim = new Simulation(aircraft, environment, launchState(aircraft, mode)),
-  controls: Controls = { roll: 0, pitch: 0, yaw: 0, throttle: 0.65 },
+const initialAircraft = physicalAircraft();
+let sim = new Simulation(
+    initialAircraft,
+    environment,
+    launchState(initialAircraft, mode),
+  ),
+  controls: Controls = { roll: 0, pitch: 0, yaw: 0, throttle: 0 },
   recording = createRecording(sim),
   editorSim = sim;
 let scene: FlightScene | undefined;
@@ -977,6 +982,12 @@ try {
 fillSelects();
 loadAircraft(baseline);
 $("scenery-select").dispatchEvent(new Event("change"));
+// Start beside the parked aircraft, before the first rendered frame.
+scene?.pilotPosition.set(
+  sim.state.position[0] - 2,
+  1.7,
+  sim.state.position[1] - 3,
+);
 route();
 controller.selectType("keyboard");
 requestAnimationFrame(frame);

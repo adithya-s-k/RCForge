@@ -50,7 +50,7 @@ npm run dev
 
 Open the local URL printed by Vite. To choose a port, run `npm run dev -- --port 5180`. Assets are bundled locally; flight does not require a cloud service. `npm run build` produces a static `dist/` directory, and `npm run preview` serves it locally.
 
-For your first flight, choose an aircraft in **Fly → Flight setup → Aircraft**, select **In flight**, and press **Start flight**. Pilot view places you on the ground; Chase follows the aircraft. **Position & view** moves the aircraft and observer. The lower-left instruments show attitude, heading and a minimap.
+New sessions start with the aircraft parked on the runway, throttle at zero, and the pilot standing beside it at 1.7 m eye height. Press **Start flight**, then increase power for takeoff. To begin at altitude instead, choose **Fly → Flight setup → Aircraft → In flight**. Chase follows the aircraft; **Position & view** moves the aircraft and observer. The lower-left instruments show attitude, heading and a minimap.
 
 | Keyboard       | Action                                    |
 | -------------- | ----------------------------------------- |
