@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "vehicleType": "multirotor",
   "id": "quad-x-5inch",
-  "name": "Quad X \u00b7 5 inch",
+  "name": "Quad X · 5 inch",
   "description": "Estimated 225 mm Quad X, 650 g, 5 inch propellers. Angle-mode controller, manual throttle; no altitude or position hold.",
   "multirotor": {
     "mode": "angle",
@@ -15,6 +15,11 @@
     "configuration": {
       "status": "estimated",
       "note": "Illustrative 5 inch quad, not any commercial product or measured build. 225 mm motor diagonal, 650 g all-up, 8 N per motor, 0.04 s actuator lag. Battery/ESC electrical behavior is not simulated."
+    },
+    "electricalEstimate": {
+      "status": "estimated",
+      "note": "4S 2200 mAh pack, 0.05 ohm DC resistance and OCV curve are illustrative. Component battery mass remains unchanged. Static motor current is ideal induced power T^(3/2)/sqrt(2*rho*A), divided by an assumed 0.45 overall factor and nominal voltage, plus 0.2 A at full command. Thrust commands retain the prior estimated linear thrust curve. This is NOT a bench motor/prop test, efficiency map or endurance validation; replace with measured curves. Forward-flight current and servo loads are not resolved.",
+      "url": "https://www.grc.nasa.gov/WWW/K-12/BGP/propth.html"
     }
   },
   "parts": [
@@ -78,7 +83,44 @@
       "yawMix": 0,
       "propDiameterM": 0.127,
       "spin": "cw",
-      "torquePerThrustM": 0.015
+      "torquePerThrustM": 0.015,
+      "performance": {
+        "referenceVoltage": 14.8,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0.0
+          },
+          {
+            "command": 0.1,
+            "thrustN": 0.8,
+            "currentA": 0.629858
+          },
+          {
+            "command": 0.25,
+            "thrustN": 2.0,
+            "currentA": 2.460677
+          },
+          {
+            "command": 0.5,
+            "thrustN": 4.0,
+            "currentA": 6.918425
+          },
+          {
+            "command": 0.75,
+            "thrustN": 6.0,
+            "currentA": 12.676246
+          },
+          {
+            "command": 1,
+            "thrustN": 8,
+            "currentA": 19.485418
+          }
+        ]
+      },
+      "partId": "motor-1"
     },
     {
       "id": "rotor-2",
@@ -89,7 +131,44 @@
       "yawMix": 0,
       "propDiameterM": 0.127,
       "spin": "ccw",
-      "torquePerThrustM": 0.015
+      "torquePerThrustM": 0.015,
+      "performance": {
+        "referenceVoltage": 14.8,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0.0
+          },
+          {
+            "command": 0.1,
+            "thrustN": 0.8,
+            "currentA": 0.629858
+          },
+          {
+            "command": 0.25,
+            "thrustN": 2.0,
+            "currentA": 2.460677
+          },
+          {
+            "command": 0.5,
+            "thrustN": 4.0,
+            "currentA": 6.918425
+          },
+          {
+            "command": 0.75,
+            "thrustN": 6.0,
+            "currentA": 12.676246
+          },
+          {
+            "command": 1,
+            "thrustN": 8,
+            "currentA": 19.485418
+          }
+        ]
+      },
+      "partId": "motor-2"
     },
     {
       "id": "rotor-3",
@@ -100,7 +179,44 @@
       "yawMix": 0,
       "propDiameterM": 0.127,
       "spin": "cw",
-      "torquePerThrustM": 0.015
+      "torquePerThrustM": 0.015,
+      "performance": {
+        "referenceVoltage": 14.8,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0.0
+          },
+          {
+            "command": 0.1,
+            "thrustN": 0.8,
+            "currentA": 0.629858
+          },
+          {
+            "command": 0.25,
+            "thrustN": 2.0,
+            "currentA": 2.460677
+          },
+          {
+            "command": 0.5,
+            "thrustN": 4.0,
+            "currentA": 6.918425
+          },
+          {
+            "command": 0.75,
+            "thrustN": 6.0,
+            "currentA": 12.676246
+          },
+          {
+            "command": 1,
+            "thrustN": 8,
+            "currentA": 19.485418
+          }
+        ]
+      },
+      "partId": "motor-3"
     },
     {
       "id": "rotor-4",
@@ -111,7 +227,44 @@
       "yawMix": 0,
       "propDiameterM": 0.127,
       "spin": "ccw",
-      "torquePerThrustM": 0.015
+      "torquePerThrustM": 0.015,
+      "performance": {
+        "referenceVoltage": 14.8,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0.0
+          },
+          {
+            "command": 0.1,
+            "thrustN": 0.8,
+            "currentA": 0.629858
+          },
+          {
+            "command": 0.25,
+            "thrustN": 2.0,
+            "currentA": 2.460677
+          },
+          {
+            "command": 0.5,
+            "thrustN": 4.0,
+            "currentA": 6.918425
+          },
+          {
+            "command": 0.75,
+            "thrustN": 6.0,
+            "currentA": 12.676246
+          },
+          {
+            "command": 1,
+            "thrustN": 8,
+            "currentA": 19.485418
+          }
+        ]
+      },
+      "partId": "motor-4"
     }
   ],
   "contactPoints": [
@@ -155,5 +308,36 @@
     "leadingEdgeXM": 0
   },
   "fuselageDragAreaM2": 0.018,
-  "angularDamping": [0.002, 0.002, 0.003]
+  "angularDamping": [0.002, 0.002, 0.003],
+  "battery": {
+    "partId": "battery",
+    "chemistry": "LiPo",
+    "cells": 4,
+    "capacityMah": 2200,
+    "resistanceOhm": 0.05,
+    "initialSoc": 0.95,
+    "avionicsCurrentA": 0.2,
+    "voltageCurve": [
+      {
+        "soc": 0,
+        "voltsPerCell": 3.3
+      },
+      {
+        "soc": 0.1,
+        "voltsPerCell": 3.65
+      },
+      {
+        "soc": 0.5,
+        "voltsPerCell": 3.8
+      },
+      {
+        "soc": 0.9,
+        "voltsPerCell": 4.1
+      },
+      {
+        "soc": 1,
+        "voltsPerCell": 4.2
+      }
+    ]
+  }
 }

@@ -9,6 +9,7 @@ import {
   type SceneryId,
 } from "./core/scenery";
 import { powertrain } from "./core/powertrain";
+import { batteryUsage } from "./core/components";
 import largeQuadData from "../aircraft/quad-x-450.json";
 import detailedQuadData from "../aircraft/quad-x-6s.json";
 import { setupCatalog } from "./app/catalog";
@@ -817,9 +818,13 @@ function stats() {
   $("battery-hud-voltage").textContent =
     `${power.voltage.toFixed(1)} V · ${power.current.toFixed(1)} A`;
   $("battery-hud").classList.toggle("low-battery", power.soc < 0.2);
+  const usage = batteryUsage(sim.aircraft, power.soc, power.current);
+  $("battery-hud").title = usage
+    ? `${usage.usedMah.toFixed(0)} mAh used · ${usage.remainingMah.toFixed(0)} mAh remaining${usage.minutesToReserve === null ? "" : ` · about ${usage.minutesToReserve.toFixed(1)} min to 20% at this current`}. Model estimate; load changes in flight.`
+    : "";
   if (sim.aircraft.battery)
     $("battery-telemetry").textContent =
-      `${sim.aircraft.battery.cells}S ${sim.aircraft.battery.chemistry} · ${(power.soc * 100).toFixed(0)}% · ${power.voltage.toFixed(1)} V · ${power.current.toFixed(1)} A`;
+      `${sim.aircraft.battery.cells}S ${sim.aircraft.battery.chemistry} · ${(power.soc * 100).toFixed(0)}% · ${power.voltage.toFixed(1)} V · ${power.current.toFixed(1)} A · ${usage!.usedMah.toFixed(0)} / ${sim.aircraft.battery.capacityMah} mAh used`;
 
   const s = sim.state;
   $("speed").textContent = sim.lastForces.airspeed.toFixed(1);

@@ -9,6 +9,8 @@ import {
 import { setTotalMass, setLongitudinalCG } from "../core/editor";
 import { parseAircraft, type Aircraft } from "../core/schema";
 import { ZodError } from "zod";
+import { ComponentWorkshop } from "./component-workshop";
+import { moveComponent } from "../core/components";
 function numericValue(field: HTMLInputElement) {
   const value = Number(field.value);
   if (!field.value.trim() || !Number.isFinite(value))
@@ -21,6 +23,7 @@ function numericValue(field: HTMLInputElement) {
 }
 export class AircraftEditor {
   draft: Aircraft;
+  private workshop: ComponentWorkshop;
   private pending = new Map<string, string>();
   private editError: unknown = null;
   private errors = new Map<string, string>();
@@ -98,6 +101,38 @@ export class AircraftEditor {
     private notify: (s: string) => void,
   ) {
     this.draft = structuredClone(a);
+    this.workshop = new ComponentWorkshop(
+      () => this.draft,
+      (id, edit) => {
+        const field = $<HTMLInputElement>(id);
+        field.oninput = () => this.track(id, field.value);
+        field.onchange = () => {
+          const raw = field.value;
+          try {
+            const out = structuredClone(this.draft);
+            edit(out, numericValue(field));
+            out.provenance.componentEdits = {
+              status: "estimated",
+              note: "User-edited component specifications. Mass, CG, inertia, battery and actuation recomputed. Edited values are not manufacturer measurements.",
+            };
+            this.draft = parseAircraft(out);
+            this.pending.delete(id);
+            this.errors.delete(id);
+            this.update();
+            this.changed(this.draft);
+          } catch (e) {
+            this.fail(id, raw, e);
+          }
+        };
+      },
+      () => this.commitPending(),
+      (out) => {
+        this.draft = out;
+        this.update();
+        this.changed(out);
+      },
+      this.notify,
+    );
     const action = (id: string, fn: (value: number) => Aircraft) => {
       $(id).oninput = () => this.track(id, $<HTMLInputElement>(id).value);
       $(id).onchange = () => {
@@ -179,7 +214,13 @@ export class AircraftEditor {
       cg = a.reference.leadingEdgeXM - p.cg[0];
     $("editor-model-name").textContent = a.name;
     $("component-summary").innerHTML =
-      `<details><summary>Build & powertrain</summary><p>${a.parts.length} mass components · CG [${p.cg.map((v) => (v * 1000).toFixed(1)).join(", ")}] mm</p>${a.battery ? `<p>${a.battery.cells}S ${a.battery.chemistry} · ${a.battery.capacityMah} mAh · ${(a.battery.resistanceOhm * 1000).toFixed(0)} mΩ<br>Battery mass included once via ${escape(a.battery.partId)}.</p>` : "<p>No electrical model. Add battery and motor test data in the aircraft JSON to simulate discharge.</p>"}<p>${a.motors.filter((m) => m.performance).length}/${a.motors.length} motors with thrust/current curves · ${a.surfaces.filter((s) => s.polar || s.reynoldsPolars).length} tabulated aerodynamic surfaces</p>${a.parts.map((part) => `<div class="build-part"><b>${escape(part.id)}</b><span>${(part.massKg * 1000).toFixed(0)} g</span><small>${escape(part.material?.name ?? part.kind)}${part.model ? " · " + escape(part.model) : ""}</small></div>`).join("")}</details>`;
+      `<button id="open-components" class="wide">Components & battery ↓</button><small class="muted">${a.battery ? `${a.battery.cells}S · ${a.battery.capacityMah} mAh · ` : ""}${a.parts.length} installed parts</small>`;
+    $("open-components").onclick = () =>
+      $("component-workshop").scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    this.workshop.render();
     const quad = a.vehicleType === "multirotor";
     $("mass-scope").textContent = quad
       ? "Includes all components and battery."
@@ -204,7 +245,7 @@ export class AircraftEditor {
     $("quad-config").hidden = !quad;
     if (quad) {
       $("quad-config").innerHTML =
-        `<div class="section-kicker">ROTOR SETUP · SI UNITS · body X forward, Y right, Z down</div><p class="small muted">Thrust and response must be measured for your motor, prop and battery combination. Spin means viewed from above. Changing spin flips the complete diagonal pair pattern. Mode is a simple internal controller, not Betaflight or PX4 firmware.</p><div class="two-col"><label>Flight mode<select id="quad-mode"><option value="angle" ${a.multirotor!.mode === "angle" ? "selected" : ""}>Angle / self-level</option><option value="rate" ${a.multirotor!.mode === "rate" ? "selected" : ""}>Rate / acro</option></select></label><label>Max tilt · degrees<input id="quad-tilt" type="number" value="${a.multirotor!.maxTiltDeg}"/></label></div><div class="component-scroll"><table><thead><tr><th>Rotor</th><th>X / m</th><th>Y / m</th><th>Z / m</th><th>Max thrust / N</th><th>Prop / m</th><th>Lag / s</th><th>Torque / thrust · m</th><th>Spin</th></tr></thead><tbody>${a.motors.map((m, i) => `<tr><th>${escape(m.id)}</th>${[...m.positionM, m.maxThrustN, m.propDiameterM, m.responseSeconds, m.torquePerThrustM].map((v, j) => `<td><input id="rotor-${i}-${j}" type="number" step="0.001" value="${v}" aria-label="${escape(m.id)} ${["X", "Y", "Z", "thrust", "propeller", "lag", "torque ratio"][j]}"/></td>`).join("")}<td><select id="spin-${i}"><option ${m.spin === "cw" ? "selected" : ""}>cw</option><option ${m.spin === "ccw" ? "selected" : ""}>ccw</option></select></td></tr>`).join("")}</tbody></table></div>`;
+        `<div class="section-kicker">ROTOR SETUP · SI UNITS · body X forward, Y right, Z down</div><p class="small muted">Thrust and response must be measured for your motor, prop and battery combination. Spin means viewed from above. Changing spin flips the complete diagonal pair pattern. Mode is a simple internal controller, not Betaflight or PX4 firmware.</p><div class="two-col"><label>Flight mode<select id="quad-mode"><option value="angle" ${a.multirotor!.mode === "angle" ? "selected" : ""}>Angle / self-level</option><option value="rate" ${a.multirotor!.mode === "rate" ? "selected" : ""}>Rate / acro</option></select></label><label>Max tilt · degrees<input id="quad-tilt" type="number" value="${a.multirotor!.maxTiltDeg}"/></label></div><div class="component-scroll"><table><thead><tr><th>Rotor</th><th>X / m</th><th>Y / m</th><th>Z / m</th><th>Max thrust / N</th><th>Prop / m</th><th>Lag / s</th><th>Torque / thrust · m</th><th>Spin</th></tr></thead><tbody>${a.motors.map((m, i) => `<tr><th>${escape(m.id)}</th>${[...m.positionM, m.maxThrustN, m.propDiameterM, m.responseSeconds, m.torquePerThrustM].map((v, j) => `<td><input id="rotor-${i}-${j}" type="number" step="0.001" value="${Number(Number(v).toFixed(4))}" aria-label="${escape(m.id)} ${["X", "Y", "Z", "thrust", "propeller", "lag", "torque ratio"][j]}"/></td>`).join("")}<td><select id="spin-${i}"><option ${m.spin === "cw" ? "selected" : ""}>cw</option><option ${m.spin === "ccw" ? "selected" : ""}>ccw</option></select></td></tr>`).join("")}</tbody></table></div>`;
       const register = (
         id: string,
         edit: (out: Aircraft, value: string) => void,
@@ -241,9 +282,12 @@ export class AircraftEditor {
             const motor = out.motors[i],
               n = Number(v);
             if (j < 3) {
+              const delta = n - motor.positionM[j];
               motor.positionM[j] = n;
-              const part = out.parts.find((p) => p.id === `motor-${i + 1}`);
-              if (part) part.positionM[j] = n;
+              const part = out.parts.find((p) => p.id === motor.partId);
+              const prop = out.parts.find((p) => p.id === motor.propPartId);
+              if (part) part.positionM[j] += delta;
+              if (prop) prop.positionM[j] += delta;
             } else if (j === 3) {
               motor.performance?.points.forEach(
                 (p) => (p.thrustN *= n / motor.maxThrustN),
@@ -318,7 +362,7 @@ export class AircraftEditor {
                   (v) => (v * value) / part.massKg,
                 ) as [number, number, number];
               part.massKg = value;
-            } else part.positionM[index - 1] = value;
+            } else moveComponent(clone, part.id, index - 1, value);
             const next = parseAircraft(clone);
             massProperties(next);
             this.draft = next;

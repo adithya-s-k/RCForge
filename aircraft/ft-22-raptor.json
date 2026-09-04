@@ -38,6 +38,16 @@
     "initialControlTravel": {
       "status": "estimated",
       "note": "Published build calls for 40 degree surface throws. Initial radio/servo travel is reduced to +/-25 degrees with a 10/12.5 mm horn ratio, giving +/-20 degrees effective elevon deflection for less sensitive first flights. Adjust linkage/travel deliberately; sourced plan throw remains the upper surface limit."
+    },
+    "electricalEstimate": {
+      "status": "estimated",
+      "note": "3S 1000 mAh pack, 0.07 ohm DC resistance and OCV curve are illustrative. Component battery mass remains unchanged. Static motor current is ideal induced power T^(3/2)/sqrt(2*rho*A), divided by an assumed 0.45 overall factor and nominal voltage, plus 0.2 A at full command. Thrust commands retain the prior estimated linear thrust curve. This is NOT a bench motor/prop test, efficiency map or endurance validation; replace with measured curves. Forward-flight current and servo loads are not resolved.",
+      "url": "https://www.grc.nasa.gov/WWW/K-12/BGP/propth.html"
+    },
+    "batteryProduct": {
+      "status": "sourced",
+      "note": "Orange 3S 1000 mAh 30C product mass 85 g and 75 x 34 x 17 mm from indexed Robu specifications. Resistance/OCV/current remain estimates. Does not establish that this battery was used in the original Flite Test build.",
+      "url": "https://robu.in/product/orange-1000mah-3s-30c60c-lithium-polymer-battery-pack-lipo/"
     }
   },
   "parts": [
@@ -204,13 +214,15 @@
       "kind": "battery",
       "massKg": 0.085,
       "positionM": [0.06402814096453863, 0, 0.017],
-      "sizeM": [0.067, 0.034, 0.023],
-      "color": "#e9e7df",
+      "sizeM": [0.075, 0.034, 0.017],
+      "color": "#252729",
       "material": {
-        "name": "Electronics assembly",
+        "name": "plastic",
         "finish": "plastic"
       },
-      "model": "3S 1000 mAh pack (estimated)"
+      "model": "Orange 3S · 1000 mAh",
+      "manufacturer": "Orange",
+      "catalogId": "orange-3s-1000-30c"
     },
     {
       "id": "servo-left-elevon",
@@ -477,7 +489,44 @@
       "yawMix": 0,
       "propDiameterM": 0.2286,
       "model": "1300 KV / 24 g class (estimated)",
-      "propeller": "9x4.7 slow-fly pusher"
+      "propeller": "9x4.7 slow-fly pusher",
+      "performance": {
+        "referenceVoltage": 11.100000000000001,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0.0,
+            "currentA": 0.0
+          },
+          {
+            "command": 0.1,
+            "thrustN": 0.48,
+            "currentA": 0.229953
+          },
+          {
+            "command": 0.25,
+            "thrustN": 1.2,
+            "currentA": 0.879912
+          },
+          {
+            "command": 0.5,
+            "thrustN": 2.4,
+            "currentA": 2.447346
+          },
+          {
+            "command": 0.75,
+            "thrustN": 3.6,
+            "currentA": 4.46235
+          },
+          {
+            "command": 1,
+            "thrustN": 4.8,
+            "currentA": 6.839298
+          }
+        ]
+      },
+      "partId": "motor"
     }
   ],
   "fuselageDragAreaM2": 0.0025,
@@ -520,5 +569,36 @@
       "positionM": [0.1, 0, 0.041],
       "spanLinked": false
     }
-  ]
+  ],
+  "battery": {
+    "partId": "battery",
+    "chemistry": "LiPo",
+    "cells": 3,
+    "capacityMah": 1000,
+    "resistanceOhm": 0.07,
+    "initialSoc": 0.95,
+    "avionicsCurrentA": 0.2,
+    "voltageCurve": [
+      {
+        "soc": 0,
+        "voltsPerCell": 3.3
+      },
+      {
+        "soc": 0.1,
+        "voltsPerCell": 3.65
+      },
+      {
+        "soc": 0.5,
+        "voltsPerCell": 3.8
+      },
+      {
+        "soc": 0.9,
+        "voltsPerCell": 4.1
+      },
+      {
+        "soc": 1,
+        "voltsPerCell": 4.2
+      }
+    ]
+  }
 }

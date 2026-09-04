@@ -258,6 +258,7 @@ export const AircraftSchema = z
           propeller: z.string().optional(),
           // Optional visual dimensions from the motor already present in the mass ledger.
           partId: z.string().min(1).optional(),
+          propPartId: z.string().min(1).optional(),
           propBlades: z.number().int().min(2).max(6).optional(),
           maxThrustN: positive.max(1000),
           zeroThrustSpeedMps: positive,
@@ -357,6 +358,17 @@ export const AircraftSchema = z
         );
     });
     a.motors.forEach((m, i) => {
+      if (
+        m.propPartId &&
+        (!a.parts.some(
+          (p) => p.id === m.propPartId && p.kind === "equipment",
+        ) ||
+          a.motors.some((n, j) => j < i && n.propPartId === m.propPartId))
+      )
+        issue(
+          ["motors", i, "propPartId"],
+          "Propeller must reference its own equipment mass component",
+        );
       if (
         m.partId &&
         !a.parts.some((p) => p.id === m.partId && p.kind === "motor")

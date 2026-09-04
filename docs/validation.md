@@ -82,3 +82,11 @@ travel geometry, component mass changes, invalid references and deterministic
 replay. These are numerical checks of a rigid no-load linkage approximation, not
 servo bench validation or calibrated FT-22 handling. Older simulation recordings
 are rejected; aircraft JSON remains schema version 1.
+
+The 0.7 component catalog and editor copy actual physical fields into each aircraft,
+with catalog replacements tested for mass/CG/inertia, servo rate and motor/prop
+accounting. All bundled aircraft include consumption; the plane and basic-quad
+current curves remain induced-power estimates. Manufacturer samples in the larger
+quad cover a specific prop and voltage only, with command mapping still estimated.
+Numerical pass counts therefore do not establish battery endurance or handling
+accuracy. Constant-supply trim tests and discharge tests exercise different claims.

@@ -440,7 +440,8 @@
             "currentA": 9.5
           }
         ]
-      }
+      },
+      "propPartId": "prop-1"
     },
     {
       "id": "rotor-2",
@@ -516,7 +517,8 @@
             "currentA": 9.5
           }
         ]
-      }
+      },
+      "propPartId": "prop-2"
     },
     {
       "id": "rotor-3",
@@ -592,7 +594,8 @@
             "currentA": 9.5
           }
         ]
-      }
+      },
+      "propPartId": "prop-3"
     },
     {
       "id": "rotor-4",
@@ -668,7 +671,8 @@
             "currentA": 9.5
           }
         ]
-      }
+      },
+      "propPartId": "prop-4"
     }
   ],
   "contactPoints": [

@@ -84,5 +84,7 @@ it("Tiny Trainer separates published dry reference mass from assumed battery mas
   expect(findTrim(a).converged).toBe(true);
   const result = runExperiment(a, calmEnvironment(), "cruise", 10);
   expect(result.finalState.status).not.toBe("crashed");
-  expect(result.finalState.position[2]).toBeCloseTo(-18, 2);
+  // Fixed controls do not compensate for falling pack voltage.
+  expect(result.finalState.batterySoc).toBeLessThan(a.battery!.initialSoc);
+  expect(result.finalState.position[2]).toBeGreaterThan(-18);
 });

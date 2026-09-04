@@ -131,3 +131,41 @@ first control step obeys its speed limit. Trimmed and hand launches explicitly
 initialize the trimmed deflections. Recordings preserve these states. Simulation
 version **0.7.0** rejects older recordings instead of silently replaying them under
 new actuator behavior. Aircraft format remains version 1 with optional fields.
+
+## Catalog and discharge presets (0.7)
+
+The [component catalog](../components/README.md) includes Indian-retailer battery
+references and manufacturer servo/ESC/motor data. Replacement preserves installation
+coordinates and references, replacing component mass, size and intrinsic inertia.
+A motor/prop package uses separate `partId` and `propPartId` ledger entries. Moving
+either linked component translates the complete motor/prop unit while retaining
+its authored offsets. Structural mass positions and aerodynamic surface positions
+remain independently specified.
+
+The browser component panel edits battery mass, capacity, cells, initial charge,
+DC resistance, servo speed/travel and linkage dimensions. Source notes stay with
+the exported definition. No mass is added merely by rendering a detail.
+
+All bundled aircraft now include battery discharge. The FT-22 uses the Robu-listed
+85 g Orange 3S 1000 mAh pack dimensions; this is a selectable reference setup, not
+proof of the battery used in the original Flite Test build. Other original pack
+capacities and resistances remain assumptions. Plane/basic-quad current tables
+are deliberately estimated using ideal static induced power:
+
+`Pideal = T × sqrt(T / (2 × rho × diskArea))`
+
+`Iestimate = Pideal / (0.45 × nominalVoltage) + 0.2 × command`
+
+The momentum-theory basis is described by [NASA](https://www.grc.nasa.gov/WWW/K-12/BGP/propth.html).
+The 0.45 overall factor and no-load term are RCForge assumptions, not NASA data or
+measured motor efficiencies. Thrust tables retain the previous linear estimated
+command mapping. Replace both thrust and current with matching bench samples.
+Forward-flight current, dynamic prop loading and servo electrical loads remain
+unresolved. More series cells uses approximate voltage scaling, not evidence that
+an actual motor/ESC can use that pack.
+
+Fixed throttle does not maintain exact hover/level trim as pack voltage falls.
+Constant-voltage tests isolate force equilibrium; discharge tests separately check
+charge conservation, mass independence, falling available thrust and replay.
+Changing mAh does not change weight automatically, and charge depletion does not
+remove physical battery mass.

@@ -11,6 +11,11 @@
     "servoAssembly": {
       "status": "estimated",
       "note": "Individual positional servos replace the previous combined equipment allocation without changing total mass or longitudinal CG. Positions, horn ratios, travel setup and response lag are estimates. Servo speed is a no-load reference; torque under aerodynamic hinge load and dynamic servo current are not modeled."
+    },
+    "electricalEstimate": {
+      "status": "estimated",
+      "note": "3S 1800 mAh pack, 0.05 ohm DC resistance and OCV curve are illustrative. Component battery mass remains unchanged. Static motor current is ideal induced power T^(3/2)/sqrt(2*rho*A), divided by an assumed 0.45 overall factor and nominal voltage, plus 0.2 A at full command. Thrust commands retain the prior estimated linear thrust curve. This is NOT a bench motor/prop test, efficiency map or endurance validation; replace with measured curves. Forward-flight current and servo loads are not resolved.",
+      "url": "https://www.grc.nasa.gov/WWW/K-12/BGP/propth.html"
     }
   },
   "parts": [
@@ -287,7 +292,44 @@
       "maxThrustN": 5,
       "zeroThrustSpeedMps": 25,
       "responseSeconds": 0.12,
-      "yawMix": 0
+      "yawMix": 0,
+      "performance": {
+        "referenceVoltage": 11.100000000000001,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0.0
+          },
+          {
+            "command": 0.1,
+            "thrustN": 0.5,
+            "currentA": 0.271112
+          },
+          {
+            "command": 0.25,
+            "thrustN": 1.25,
+            "currentA": 1.042608
+          },
+          {
+            "command": 0.5,
+            "thrustN": 2.5,
+            "currentA": 2.90752
+          },
+          {
+            "command": 0.75,
+            "thrustN": 3.75,
+            "currentA": 5.307743
+          },
+          {
+            "command": 1,
+            "thrustN": 5,
+            "currentA": 8.140865
+          }
+        ]
+      },
+      "partId": "motor"
     }
   ],
   "fuselageDragAreaM2": 0.006,
@@ -319,5 +361,36 @@
       "positionM": [0, 0.6, -0.02],
       "spanLinked": true
     }
-  ]
+  ],
+  "battery": {
+    "partId": "battery",
+    "chemistry": "LiPo",
+    "cells": 3,
+    "capacityMah": 1800,
+    "resistanceOhm": 0.05,
+    "initialSoc": 0.95,
+    "avionicsCurrentA": 0.2,
+    "voltageCurve": [
+      {
+        "soc": 0,
+        "voltsPerCell": 3.3
+      },
+      {
+        "soc": 0.1,
+        "voltsPerCell": 3.65
+      },
+      {
+        "soc": 0.5,
+        "voltsPerCell": 3.8
+      },
+      {
+        "soc": 0.9,
+        "voltsPerCell": 4.1
+      },
+      {
+        "soc": 1,
+        "voltsPerCell": 4.2
+      }
+    ]
+  }
 }

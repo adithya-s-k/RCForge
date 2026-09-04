@@ -1,8 +1,13 @@
-import { readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
+import { ComponentCatalogSchema } from "../src/core/components";
 import { loadAircraft, fail } from "./args";
 import { massProperties } from "../src/core/aircraft";
 import { findTrim } from "../src/core/trim";
 try {
+  const catalog = ComponentCatalogSchema.parse(
+    JSON.parse(await readFile("components/catalog.json", "utf8")),
+  );
+  console.log(`Component catalog: ${catalog.entries.length} valid entries`);
   const ids = process.argv.slice(2);
   if (!ids.length)
     ids.push(

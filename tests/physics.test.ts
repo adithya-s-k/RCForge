@@ -147,8 +147,10 @@ describe("flight dynamics", () => {
     expect(f.force.every(Number.isFinite)).toBe(true);
   });
   it.each([a, parseAircraft(trainer)])(
-    "finds and holds level trim for $id",
-    (aircraft) => {
+    "finds and holds level trim at constant supply voltage for $id",
+    (definition) => {
+      const aircraft = structuredClone(definition);
+      aircraft.battery!.voltageCurve.forEach((p) => (p.voltsPerCell = 3.9));
       const trim = findTrim(aircraft);
       expect(trim.converged).toBe(true);
       const result = runExperiment(aircraft, calmEnvironment(), "cruise", 20);

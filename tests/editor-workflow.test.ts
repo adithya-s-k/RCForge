@@ -95,3 +95,18 @@ it("uses the applied saved model on initial selection, not the constructor basel
   expect(massProperties(editor.draft).mass).toBeCloseTo(0.93);
   expect(el("edit-mass").value).toBe("930.0");
 });
+it("commits capacity edits through Apply and retains invalid component values", () => {
+  const { editor, el } = setup();
+  const i = editor.draft.parts.findIndex((p) => p.id === "battery");
+  const capacity = `part-detail-${i}-capacity`;
+  el(capacity).value = "3000";
+  el(capacity).oninput();
+  editor.commitPending();
+  expect(editor.draft.battery!.capacityMah).toBe(3000);
+  expect(massProperties(editor.draft).mass).toBeCloseTo(0.83);
+  el(capacity).value = "";
+  el(capacity).oninput();
+  expect(() => editor.commitPending()).toThrow("Enter a number");
+  expect(el(capacity).value).toBe("");
+  expect(editor.draft.battery!.capacityMah).toBe(3000);
+});

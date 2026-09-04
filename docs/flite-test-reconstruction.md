@@ -21,7 +21,7 @@ Battery mass is assumed to be 190 g; its position is solved to meet the publishe
 
 ## Tiny Trainer Sport
 
-The plan specifies 193 g without battery, 16° throws, 30% expo and a minimum 5×3 propeller. The preset assumes a 60 g battery for 253 g total. The source recommends a 250-size 2200 kv motor, minimum 12 A ESC, 500–1000 mAh 3S battery and 5 g servos. These electrical specifications are reference setup information; battery discharge and ESC electronics are not simulated.
+The plan specifies 193 g without battery, 16° throws, 30% expo and a minimum 5×3 propeller. The preset assumes a 60 g battery for 253 g total. The source recommends a 250-size 2200 kv motor, minimum 12 A ESC, 500–1000 mAh 3S battery and 5 g servos. The preset uses an estimated 3S 650 mAh pack and simplified battery discharge. Motor-current data remains estimated; ESC electronics are not simulated.
 
 Vector/ruler readings put the flat sport half-wing around 478.5 mm with 139.5 mm root chord and approximately 32 mm aileron chord. The assembled approximation uses 5° dihedral and 953 mm projected span, an equivalent aerodynamic chord/area, tapered tips and a conventional foamboard tail. Wing shape and fuselage/nose overlap are approximations rather than a complete fold simulation. The nominal 35 mm CG target is estimated, not a verified published text specification. The 2.8 N motor thrust and aerodynamic coefficients remain estimates requiring bench and flight data.
 

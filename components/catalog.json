@@ -1,0 +1,405 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-05",
+  "entries": [
+    {
+      "id": "orange-3s-1000-30c",
+      "name": "Orange 3S · 1000 mAh",
+      "type": "battery",
+      "description": "1000 mAh · 11.1 V nominal · 85 g · XT60",
+      "part": {
+        "kind": "battery",
+        "massKg": 0.085,
+        "sizeM": [0.075, 0.034, 0.017],
+        "color": "#252729",
+        "manufacturer": "Orange",
+        "model": "Orange 3S · 1000 mAh",
+        "material": {
+          "name": "plastic",
+          "finish": "plastic"
+        }
+      },
+      "battery": {
+        "chemistry": "LiPo",
+        "cells": 3,
+        "capacityMah": 1000,
+        "resistanceOhm": 0.07,
+        "initialSoc": 0.95,
+        "avionicsCurrentA": 0.2,
+        "voltageCurve": [
+          {
+            "soc": 0,
+            "voltsPerCell": 3.3
+          },
+          {
+            "soc": 0.1,
+            "voltsPerCell": 3.65
+          },
+          {
+            "soc": 0.5,
+            "voltsPerCell": 3.8
+          },
+          {
+            "soc": 0.9,
+            "voltsPerCell": 4.1
+          },
+          {
+            "soc": 1,
+            "voltsPerCell": 4.2
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Robu product specifications (indexed listing)",
+          "url": "https://robu.in/product/orange-1000mah-3s-30c60c-lithium-polymer-battery-pack-lipo/"
+        }
+      ],
+      "evidence": "Capacity, cell count, product mass and dimensions are retailer specifications, not shipping weight. Pack DC resistance and OCV curve are illustrative estimates, not measured for this product. The listed 1 kHz impedance is not a DC-resistance measurement. Stock, authenticity and C-rating performance are unverified; no C-rating or thermal cutoff is simulated."
+    },
+    {
+      "id": "orange-3s-1500-40c",
+      "name": "Orange 3S · 1500 mAh",
+      "type": "battery",
+      "description": "1500 mAh · 11.1 V nominal · 120 g · XT60",
+      "part": {
+        "kind": "battery",
+        "massKg": 0.12,
+        "sizeM": [0.074, 0.034, 0.024],
+        "color": "#252729",
+        "manufacturer": "Orange",
+        "model": "Orange 3S · 1500 mAh",
+        "material": {
+          "name": "plastic",
+          "finish": "plastic"
+        }
+      },
+      "battery": {
+        "chemistry": "LiPo",
+        "cells": 3,
+        "capacityMah": 1500,
+        "resistanceOhm": 0.05,
+        "initialSoc": 0.95,
+        "avionicsCurrentA": 0.2,
+        "voltageCurve": [
+          {
+            "soc": 0,
+            "voltsPerCell": 3.3
+          },
+          {
+            "soc": 0.1,
+            "voltsPerCell": 3.65
+          },
+          {
+            "soc": 0.5,
+            "voltsPerCell": 3.8
+          },
+          {
+            "soc": 0.9,
+            "voltsPerCell": 4.1
+          },
+          {
+            "soc": 1,
+            "voltsPerCell": 4.2
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Robu product specifications (indexed listing)",
+          "url": "https://stg.robu.in/product/orange-11-1v-1500mah-3s-40c-lipo-battery-pack-xt60-connector/"
+        }
+      ],
+      "evidence": "Capacity, cell count, product mass and dimensions are retailer specifications, not shipping weight. Pack DC resistance and OCV curve are illustrative estimates, not measured for this product. The listed 1 kHz impedance is not a DC-resistance measurement. Stock, authenticity and C-rating performance are unverified; no C-rating or thermal cutoff is simulated."
+    },
+    {
+      "id": "orange-3s-3300-35c",
+      "name": "Orange 3S · 3300 mAh",
+      "type": "battery",
+      "description": "3300 mAh · 11.1 V nominal · 260 g · XT60",
+      "part": {
+        "kind": "battery",
+        "massKg": 0.26,
+        "sizeM": [0.134, 0.043, 0.02],
+        "color": "#252729",
+        "manufacturer": "Orange",
+        "model": "Orange 3S · 3300 mAh",
+        "material": {
+          "name": "plastic",
+          "finish": "plastic"
+        }
+      },
+      "battery": {
+        "chemistry": "LiPo",
+        "cells": 3,
+        "capacityMah": 3300,
+        "resistanceOhm": 0.035,
+        "initialSoc": 0.95,
+        "avionicsCurrentA": 0.2,
+        "voltageCurve": [
+          {
+            "soc": 0,
+            "voltsPerCell": 3.3
+          },
+          {
+            "soc": 0.1,
+            "voltsPerCell": 3.65
+          },
+          {
+            "soc": 0.5,
+            "voltsPerCell": 3.8
+          },
+          {
+            "soc": 0.9,
+            "voltsPerCell": 4.1
+          },
+          {
+            "soc": 1,
+            "voltsPerCell": 4.2
+          }
+        ]
+      },
+      "sources": [
+        {
+          "title": "Robu product specifications (indexed listing)",
+          "url": "https://stg.robu.in/product/orange-3300mah-3s-35c-80c-lithium-polymer-battery-pack-lipo/"
+        }
+      ],
+      "evidence": "Capacity, cell count, product mass and dimensions are retailer specifications, not shipping weight. Pack DC resistance and OCV curve are illustrative estimates, not measured for this product. The listed 1 kHz impedance is not a DC-resistance measurement. Stock, authenticity and C-rating performance are unverified; no C-rating or thermal cutoff is simulated."
+    },
+    {
+      "id": "towerpro-sg90-digital",
+      "name": "TowerPro SG90 Digital",
+      "type": "servo",
+      "description": "9 g · 0.10 s / 60° at 4.8 V",
+      "part": {
+        "kind": "equipment",
+        "massKg": 0.009,
+        "sizeM": [0.023, 0.012199999999999999, 0.029],
+        "color": "#252729",
+        "manufacturer": "TowerPro",
+        "model": "TowerPro SG90 Digital",
+        "material": {
+          "name": "plastic",
+          "finish": "plastic"
+        },
+        "servo": {
+          "speedSecondsPer60Deg": 0.1,
+          "travelDeg": 150,
+          "ratedVoltage": 4.8,
+          "stallTorqueNm": 0.1765197
+        }
+      },
+      "sources": [
+        {
+          "title": "TowerPro manufacturer specification",
+          "url": "https://towerpro.com.tw/product/sg90-7/"
+        },
+        {
+          "title": "Robu TowerPro range — check exact variant",
+          "url": "https://robu.in/product-category/dc-motors/motors/servo-motors/towerpro-servo-motor/"
+        }
+      ],
+      "evidence": "Manufacturer mass, case dimensions, no-load speed and stall torque at 4.8 V. 150° positional range used; verify your exact unit. Robu variants and clones may differ. Speed and linkage affect simulation; torque is recorded only, with no hinge-load, BEC, thermal or servo-current model."
+    },
+    {
+      "id": "towerpro-mg90s",
+      "name": "TowerPro MG90S",
+      "type": "servo",
+      "description": "13.4 g · 0.10 s / 60° at 4.8 V",
+      "part": {
+        "kind": "equipment",
+        "massKg": 0.0134,
+        "sizeM": [0.0228, 0.012199999999999999, 0.0285],
+        "color": "#252729",
+        "manufacturer": "TowerPro",
+        "model": "TowerPro MG90S",
+        "material": {
+          "name": "plastic",
+          "finish": "plastic"
+        },
+        "servo": {
+          "speedSecondsPer60Deg": 0.1,
+          "travelDeg": 150,
+          "ratedVoltage": 4.8,
+          "stallTorqueNm": 0.1765197
+        }
+      },
+      "sources": [
+        {
+          "title": "TowerPro manufacturer specification",
+          "url": "https://towerpro.com.tw/product/mg90s-3/"
+        },
+        {
+          "title": "Robu TowerPro range — check exact variant",
+          "url": "https://robu.in/product-category/dc-motors/motors/servo-motors/towerpro-servo-motor/"
+        }
+      ],
+      "evidence": "Manufacturer mass, case dimensions, no-load speed and stall torque at 4.8 V. 150° positional range used; verify your exact unit. Robu variants and clones may differ. Speed and linkage affect simulation; torque is recorded only, with no hinge-load, BEC, thermal or servo-current model."
+    },
+    {
+      "id": "emax-blheli-12a",
+      "name": "EMAX BLHeli 12A ESC",
+      "type": "equipment",
+      "description": "11 g including wires · 2–4S",
+      "part": {
+        "kind": "equipment",
+        "massKg": 0.011,
+        "sizeM": [0.042, 0.02, 0.008],
+        "color": "#252729",
+        "manufacturer": "EMAX",
+        "model": "BLHeli 12A",
+        "material": {
+          "name": "plastic",
+          "finish": "plastic"
+        }
+      },
+      "sources": [
+        {
+          "title": "EMAX BLHeli manual, hosted by Robu",
+          "url": "https://robu.in/wp-content/uploads/2022/04/BLHeli-Instruction-SKU-1187881.pdf"
+        }
+      ],
+      "evidence": "Manual lists mass including wires and case dimensions. Mass and inertia change; amp rating is informational. ESC thermal behavior, current limiting, BEC and firmware are not simulated. Avoid counting these wires again in a separate component."
+    },
+    {
+      "id": "emax-blheli-20a",
+      "name": "EMAX BLHeli 20A ESC",
+      "type": "equipment",
+      "description": "28 g including wires · 2–4S",
+      "part": {
+        "kind": "equipment",
+        "massKg": 0.028,
+        "sizeM": [0.052, 0.026, 0.007],
+        "color": "#252729",
+        "manufacturer": "EMAX",
+        "model": "BLHeli 20A",
+        "material": {
+          "name": "plastic",
+          "finish": "plastic"
+        }
+      },
+      "sources": [
+        {
+          "title": "EMAX BLHeli manual, hosted by Robu",
+          "url": "https://robu.in/wp-content/uploads/2022/04/BLHeli-Instruction-SKU-1187881.pdf"
+        }
+      ],
+      "evidence": "Manual lists mass including wires and case dimensions. Mass and inertia change; amp rating is informational. ESC thermal behavior, current limiting, BEC and firmware are not simulated. Avoid counting these wires again in a separate component."
+    },
+    {
+      "id": "emax-mt2213-1045-3s",
+      "name": "EMAX MT2213 935KV + 1045",
+      "type": "motor",
+      "description": "53 g motor · 10 × 4.5 in prop · 3S reference curve",
+      "part": {
+        "kind": "motor",
+        "massKg": 0.053,
+        "sizeM": [
+          0.027899999999999998, 0.027899999999999998, 0.039700000000000006
+        ],
+        "color": "#252729",
+        "manufacturer": "EMAX",
+        "model": "MT2213 935KV",
+        "material": {
+          "name": "metal",
+          "finish": "metal"
+        }
+      },
+      "prop": {
+        "kind": "equipment",
+        "massKg": 0.008,
+        "sizeM": [0.254, 0.012, 0.003],
+        "color": "#252729",
+        "manufacturer": "EMAX",
+        "model": "1045 prop (mass estimated)",
+        "material": {
+          "name": "plastic",
+          "finish": "plastic"
+        }
+      },
+      "motor": {
+        "maxThrustN": 6.276256,
+        "zeroThrustSpeedMps": 35,
+        "responseSeconds": 0.085,
+        "propDiameterM": 0.254,
+        "propBlades": 2,
+        "torquePerThrustM": 0.018,
+        "model": "EMAX MT2213 935KV",
+        "propeller": "EMAX1045 two blade",
+        "performance": {
+          "referenceVoltage": 11.1,
+          "referenceDensityKgM3": 1.225,
+          "points": [
+            {
+              "command": 0,
+              "thrustN": 0,
+              "currentA": 0
+            },
+            {
+              "command": 0.450229709035222,
+              "thrustN": 1.2748645,
+              "currentA": 1
+            },
+            {
+              "command": 0.5911179173047473,
+              "thrustN": 2.157463,
+              "currentA": 2
+            },
+            {
+              "command": 0.6738131699846861,
+              "thrustN": 2.8439285,
+              "currentA": 3
+            },
+            {
+              "command": 0.7565084226646248,
+              "thrustN": 3.5303940000000003,
+              "currentA": 4
+            },
+            {
+              "command": 0.8177641653905053,
+              "thrustN": 4.2168595,
+              "currentA": 5
+            },
+            {
+              "command": 0.8759571209800919,
+              "thrustN": 4.8052585,
+              "currentA": 6
+            },
+            {
+              "command": 0.9157733537519143,
+              "thrustN": 5.295591,
+              "currentA": 7
+            },
+            {
+              "command": 0.9448698315467075,
+              "thrustN": 5.687857,
+              "currentA": 8
+            },
+            {
+              "command": 0.9816232771822359,
+              "thrustN": 6.080123,
+              "currentA": 9
+            },
+            {
+              "command": 1.0,
+              "thrustN": 6.276256,
+              "currentA": 9.5
+            }
+          ]
+        }
+      },
+      "sources": [
+        {
+          "title": "EMAX motor specifications and thrust table",
+          "url": "https://emaxmodel.com/collections/mt-series/products/emax-mt2213-935kv-multicopter-brushless-motor"
+        },
+        {
+          "title": "Robu motor datasheet — older variant, specifications differ",
+          "url": "https://robu.in/wp-content/uploads/2017/04/EMAX-MT2213-935KV-BLDC-Motor-ROBU.IN_.pdf"
+        }
+      ],
+      "evidence": "Motor mass and dimensions and 11.1 V / 1045 thrust-current-RPM samples from EMAX. Command is estimated RPM/max RPM, not measured PWM. Propeller mass, response time, torque ratio and air density are estimated. Robu datasheet describes an older 920KV variant; do not treat its maximum-thrust headline as this curve."
+    }
+  ]
+}

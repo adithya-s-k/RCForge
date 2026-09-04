@@ -102,6 +102,41 @@ pause the automation, and report the outcome. Do not start more work.
 - Next: component catalog and editor, battery fields/discharge on plane presets,
   motor/prop selection and source-aware component swaps. These remain unfinished.
 
+## Pass 5 · component catalog and battery workflow
+
+- Added a strict, offline catalog: three Orange 3S battery references from Robu,
+  TowerPro SG90/MG90S, EMAX 12A/20A ESCs and a matched MT2213/1045 motor package.
+  Source notes distinguish retailer/manufacturer specifications from electrical
+  assumptions and contradictory shipping/variant figures.
+- Added a focused installed-component editor with replacement preview (mass/CG),
+  battery mass/capacity/cells/charge/resistance, servo speed/travel and horn ratios.
+  Advanced installation fields retain motor/prop offsets. Invalid draft values
+  survive and block Apply. Catalog values are copied into portable aircraft JSON.
+- Enabled battery consumption on every bundled aircraft. Original plane/basic-quad
+  current tables are explicitly induced-power estimates, not bench measurements.
+  Tiny Trainer uses the source-recommended 3S class with an assumed 650 mAh pack.
+  The HUD shows charge/voltage/current, used mAh and conditional time to reserve.
+- Browser verified FT-22 1000-to-1500 mAh swap: 320 to 355 g, CG 6.3 mm forward;
+  subsequent capacity edit applied correctly. Reviewed servo panel and desktop/
+  760 px layout; no horizontal overflow. Fixed component-selection page jumping
+  and preserved open installation sections across edits.
+- Verification: 168 tests, all aircraft/catalog validation, production build,
+  docs and formatting pass. Numerical report 93/93; FT-22 electrical envelope
+  75/135 trim points, zero nonfinite loads. Supply-dependent trim failures remain
+  visible. Constant-voltage equilibrium and discharge are tested separately.
+- Limits: motor-package swaps require distinct motor/prop mass references (complete
+  in the 450 mm quad). Other presets still combine some prop/electronics allocation;
+  no hidden mass is invented. Physical battery endurance and servo loads are not
+  measured. Saved browser drafts keep their old definitions until restored/applied.
+
+## Latest steering · model reconstruction
+
+User explicitly requested substantially more accurate 3D models of the actual
+Flite Test builds, compared with photographs, wireframes and plans. Next inspect
+and measure the Bronco, Tiny Trainer Sport and FT-22 plan outlines and folded
+assembly geometry. Correct proportions and construction details efficiently;
+keep aerodynamic and component definitions consistent and provenance honest.
+
 ## User's added priority
 
 The user explicitly added interchangeable physical components, a compact component
@@ -115,7 +150,7 @@ The continuation prompt was updated with this scope. Deadline remains unchanged.
 
 ## Next passes
 
-1. Implement component catalog, physical servo links and battery editor workflow.
+1. Reconstruct the three Flite Test models more accurately against plans/photos.
 2. Improve new preset geometry and catalog previews where playtests show faults.
 3. Playtest both presets, aircraft selection and editor behavior.
 4. Review input selection, mapping, calibration and Arduino bridge workflows.

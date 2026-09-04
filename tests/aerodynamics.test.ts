@@ -157,6 +157,7 @@ it("reports failed trim and source coverage instead of treating finite output as
     m.maxThrustN = 0.0001;
     delete m.performance;
   });
+  delete a.battery; // This deliberately underpowered fixture has no electrical model.
   const survey = surveyEnvelope(a);
   expect(survey.points).toHaveLength(45);
   expect(survey.points.some((p) => !p.trimmed)).toBe(true);
