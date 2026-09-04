@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
   <title>RCForge aircraft mark</title>
-  <path d="M5 17V7a2 2 0 0 1 2-2h10M31 5h10a2 2 0 0 1 2 2v10M43 31v10a2 2 0 0 1-2 2H31M17 43H7a2 2 0 0 1-2-2V31" stroke="#5CAFE8" stroke-width="2"/>
-  <path d="m21 17-13 12v5l14-6Zm6 0 13 12v5l-14-6Z" fill="#5CAFE8"/>
-  <path d="m24 8 3 9-1 16 5 5v3l-7-3-7 3v-3l5-5-1-16Z" fill="#EAF4FC"/>
+  <path d="M5 17V7a2 2 0 0 1 2-2h10M31 5h10a2 2 0 0 1 2 2v10M43 31v10a2 2 0 0 1-2 2H31M17 43H7a2 2 0 0 1-2-2V31" stroke="#A1A1AA" stroke-width="2"/>
+  <path d="m21 17-13 12v5l14-6Zm6 0 13 12v5l-14-6Z" fill="#A1A1AA"/>
+  <path d="m24 8 3 9-1 16 5 5v3l-7-3-7 3v-3l5-5-1-16Z" fill="#F4F4F5"/>
 </svg>

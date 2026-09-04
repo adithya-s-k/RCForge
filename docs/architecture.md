@@ -48,6 +48,8 @@ Start additions with a concrete use case and tests. New aircraft generally need 
 
 ## Browser workspaces
 
+The interface uses a monochrome palette defined by `--ui-*` tokens in `src/workbench.css`; base layouts and field panels share those tokens. Reserve colour for warnings, physical axes and distinct map markers. Navigation icons live in `view/icons.ts`. Controller SVGs carry their own stick anchors and hardware button indices; `ControllerActions` uses those attributes for live feedback. Cosmetic PlayStation/Xbox selection must never change channel mapping or invent standard button names for custom USB devices.
+
 `view/workbench.ts` defines four hash-routed pages. `app/editor.ts`, `controllers.ts`, and `experiments.ts` own page behavior; `main.ts` coordinates state and recordings. A single Three.js renderer moves between the flight stage and studio. `view/model.ts` builds shaped airframes and animated controls; `view/field.ts` builds scenery. The pilot stands at eye height and can walk or move through Position & view; view direction can track the aircraft. `core/editor.ts` provides pure mass and CG edits. Total mass scales component weights; requested longitudinal CG moves the battery and recomputes inertia.
 
 ## Multirotor branch

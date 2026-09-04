@@ -4,10 +4,10 @@
   bottom: 116px;
   width: 318px;
   z-index: 5;
-  background: #19232bee;
-  border: 1px solid #455462;
+  background: color-mix(in srgb, var(--ui-panel) 93%, transparent);
+  border: 1px solid var(--ui-border);
   border-radius: 4px;
-  color: #cbd7e0;
+  color: var(--ui-text);
   overflow: hidden;
 }
 .flight-navigation > header {
@@ -16,7 +16,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 10px;
-  border-bottom: 1px solid #344350;
+  border-bottom: 1px solid var(--ui-hover);
   font-size: 8px;
   letter-spacing: 1.2px;
 }
@@ -26,7 +26,7 @@
   width: 24px;
   border: 0;
   background: none;
-  color: #b9cbd8;
+  color: var(--ui-muted);
   font-size: 16px;
 }
 #navigation-content {
@@ -39,12 +39,12 @@
 .attitude-instrument {
   text-align: center;
   padding: 8px 0;
-  border-right: 1px solid #344350;
+  border-right: 1px solid var(--ui-hover);
 }
 .nav-caption {
   font-size: 8px;
   letter-spacing: 1px;
-  color: #879cac;
+  color: var(--ui-faint);
 }
 .attitude-instrument svg {
   display: block;
@@ -66,13 +66,13 @@
   justify-content: space-between;
   min-width: 0;
   padding: 9px;
-  background: #22362f;
+  background: var(--ui-raised);
   border: 0;
   border-radius: 0;
-  color: #cbd7d2;
+  color: var(--ui-text);
 }
 .nav-map:hover {
-  background: #2a4036;
+  background: var(--ui-hover);
 }
 .nav-map svg {
   display: block;
@@ -95,7 +95,7 @@
 }
 .nav-map-footer {
   font-size: 8px;
-  color: #a5b7ac;
+  color: var(--ui-muted);
 }
 .nav-map-footer i {
   display: inline-block;

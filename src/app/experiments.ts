@@ -1,3 +1,4 @@
+import { uiIcon } from "../view/icons";
 import { $, download, escape } from "./dom";
 import {
   runExperiment,
@@ -25,11 +26,11 @@ function chart(base: Sample[], edited: Sample[]) {
   ]
     .map((t) => {
       const y = height - 32 - t * (height - 64);
-      return `<line x1="50" x2="730" y1="${y}" y2="${y}" stroke="#343e48"/><text x="40" y="${y + 4}" fill="#8795a1" text-anchor="end" font-size="12">${(min + t * (max - min)).toFixed(0)}</text>`;
+      return `<line x1="50" x2="730" y1="${y}" y2="${y}" stroke="var(--ui-border)"/><text x="40" y="${y + 4}" fill="var(--ui-muted)" text-anchor="end" font-size="12">${(min + t * (max - min)).toFixed(0)}</text>`;
     })
     .join(
       "",
-    )}${[0, 5, 10, 15, 20].map((t) => `<text x="${50 + (t / 20) * 680}" y="292" fill="#8795a1" text-anchor="middle" font-size="12">${t}s</text>`).join("")}<path d="${path(base)}" fill="none" stroke="#7799af" stroke-width="2"/><path d="${path(edited)}" fill="none" stroke="#e2ad68" stroke-width="2.5"/></svg>`;
+    )}${[0, 5, 10, 15, 20].map((t) => `<text x="${50 + (t / 20) * 680}" y="292" fill="var(--ui-muted)" text-anchor="middle" font-size="12">${t}s</text>`).join("")}<path d="${path(base)}" fill="none" stroke="var(--ui-muted)" stroke-width="2" stroke-dasharray="6 5"/><path d="${path(edited)}" fill="none" stroke="var(--ui-text)" stroke-width="2.5"/></svg>`;
 }
 export function setupExperiments(
   get: () => {
@@ -53,7 +54,7 @@ export function setupExperiments(
           edited = runExperiment(aircraft, environment, scenario);
         latest = edited;
         $("experiment-results").innerHTML =
-          `<div class="chart-heading"><h2>Altitude · m AGL</h2><span>● Baseline <b>● Edited</b></span></div>${chart(base.recording.samples, edited.recording.samples)}<table class="result-table"><thead><tr><th>At end of run</th><th>Baseline</th><th>Edited aircraft</th></tr></thead><tbody>${[
+          `<div class="chart-heading"><h2>Altitude · m AGL</h2><div class="chart-legend"><span><i></i>Baseline</span><span class="edited"><i></i>Edited</span></div></div>${chart(base.recording.samples, edited.recording.samples)}<table class="result-table"><thead><tr><th>At end of run</th><th>Baseline</th><th>Edited aircraft</th></tr></thead><tbody>${[
             [
               "Duration",
               base.summary.durationSeconds.toFixed(2) + " s",
@@ -119,7 +120,7 @@ export function setupExperiments(
     $("export-experiment").setAttribute("disabled", "");
     $("export-csv").setAttribute("disabled", "");
     $("experiment-results").innerHTML =
-      '<h2>Ready for a new comparison.</h2><p class="muted">Aircraft or conditions changed. Run the scenario to refresh these results.</p>';
+      `<span class="experiment-empty-icon">${uiIcon("experiments")}</span><h2>No comparison yet</h2><p class="muted">Run a scenario to compare the original and your current setup.</p>`;
   };
   $("scenario").addEventListener("change", invalidate);
   return invalidate;

@@ -93,6 +93,9 @@ export class ControllerActions {
     this.standard = d?.mapping === "standard";
     this.style = padStyle(this.preference, id);
     const kind = $<HTMLSelectElement>("flight-input-type").value;
+    document.querySelector<HTMLElement>(
+      ".controller-visual-panel",
+    )!.dataset.controllerKind = kind;
     document
       .querySelector<HTMLElement>(".controller-visual-panel")!
       .classList.toggle("keyboard-selected", kind === "keyboard");
@@ -111,7 +114,7 @@ export class ControllerActions {
       this.input.source === "keyboard"
         ? "Keyboard"
         : d
-          ? `${this.style === "playstation" ? "PlayStation" : this.style === "xbox" ? "Xbox" : kind === "transmitter" ? "RC transmitter" : "Controller"} · ${d.id}`
+          ? `${kind === "transmitter" ? "RC transmitter" : kind === "joystick" ? "Flight stick" : this.style === "playstation" ? "PlayStation" : this.style === "xbox" ? "Xbox" : "Controller"} · ${d.id}`
           : "No controller connected";
     const visualSignature = [kind, this.style, this.standard].join(":");
     if (this.visualSignature !== visualSignature) {
@@ -151,16 +154,8 @@ export class ControllerActions {
     document.querySelectorAll<SVGGElement>("[data-pad-stick]").forEach((e) => {
       const i = Number(e.dataset.padStick),
         rc = kind === "transmitter";
-      const x = rc
-        ? i
-          ? 255
-          : 105
-        : i
-          ? 230
-          : this.style === "xbox"
-            ? 85
-            : 130;
-      const y = rc ? 100 : !i && this.style === "xbox" ? 95 : 143;
+      const x = Number(e.dataset.stickX),
+        y = Number(e.dataset.stickY);
       const dx = rc ? (i ? mapped.roll : mapped.yaw) : (d?.axes[i * 2] ?? 0);
       const dy = rc
         ? i
@@ -171,13 +166,15 @@ export class ControllerActions {
     });
     const legend =
       this.input.source === "keyboard"
-        ? "Enter · Start<br>P · Pause<br>R · Restart"
-        : (["toggle", "reset", "camera", "settings"] as Action[])
-            .map(
-              (a) =>
-                `<span data-shortcut-action="${a}"><b>${escape(this.hint(a) || "Unassigned")}</b> ${actionNames[a]}</span>`,
-            )
-            .join("");
+        ? "<span><kbd>Enter</kbd> Start</span><span><kbd>P</kbd> Pause</span><span><kbd>R</kbd> Restart</span>"
+        : !d
+          ? '<div class="shortcut-empty"><strong>Flight shortcuts</strong><p>Connect hardware to see your button bindings.</p></div>'
+          : (["toggle", "reset", "camera", "settings"] as Action[])
+              .map(
+                (a) =>
+                  `<span data-shortcut-action="${a}"><b>${escape(this.hint(a) || "Unassigned")}</b> ${actionNames[a]}</span>`,
+              )
+              .join("");
     for (const id of ["setup-shortcut-legend", "flight-shortcut-legend"])
       if ($(id).innerHTML !== legend) $(id).innerHTML = legend;
     document

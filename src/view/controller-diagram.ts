@@ -1,70 +1,142 @@
 import { keyboardDiagram } from "./keyboard-diagram";
 import { buttonName } from "../input/presentation";
+
+const well = (x: number, y: number, radius: number) =>
+  `<circle cx="${x}" cy="${y}" r="${radius}" class="controller-well"/>`;
+
+/** Anchors travel with the SVG, so live input never relies on a second layout. */
+function gimbal(
+  x: number,
+  y: number,
+  index: number,
+  rc: boolean,
+  style = "generic",
+  standard = true,
+) {
+  return `<g>${well(x, y, rc ? 43 : 29)}<circle cx="${x}" cy="${y}" r="${rc ? 36 : 24}" class="controller-detail"/>
+    <path d="M${x - 32} ${y}h64M${x} ${y - 32}v64" class="gimbal-guide"/>
+    <g data-pad-stick="${index}" data-stick-x="${x}" data-stick-y="${y}" transform="translate(${x} ${y})">
+      <g ${rc ? "" : `data-pad-button="${10 + index}"`}>
+        <title>${rc ? (index ? "Roll and pitch" : "Yaw and throttle") : buttonName(10 + index, style, standard)}</title>
+        <circle r="${rc ? 13 : 19}" class="controller-thumb"/>
+        <circle r="${rc ? 8 : 14}" class="thumb-inset"/>
+        ${rc ? '<path d="M-3-3 3 3M-3 3 3-3" class="controller-detail"/>' : '<path d="M-6 0h12M0-6v12" class="thumb-center"/>'}
+      </g>
+    </g></g>`;
+}
+
 export function controllerDiagram(
   kind: string,
   style: string,
   standard: boolean,
 ) {
+  if (kind === "keyboard") return keyboardDiagram();
   const rc = kind === "transmitter",
-    stick = kind === "joystick",
-    keyboard = kind === "keyboard";
-  const circle = (x: number, y: number, r: number) =>
-    `<circle cx="${x}" cy="${y}" r="${r}" class="controller-well"/>`;
-  if (keyboard) return keyboardDiagram();
-  let body = rc
-    ? `<path d="M170 30V8h20v22M70 35h220l20 175H50Z" class="controller-shell"/><rect x="140" y="145" width="80" height="40" rx="5" class="controller-well"/><text x="180" y="170">RC</text><path d="M85 40V20m30 20V15m130 25V15m30 25V20" class="controller-outline"/>`
-    : stick
-      ? `<path d="M90 180h180l30 35H60ZM165 170V70q-25-60 10-55h30q30 5 10 60l-15 95Z" class="controller-shell"/>`
-      : `<path d="M85 45Q55 38 42 77L15 174Q8 226 45 213L100 158H260l55 55Q350 226 344 174L318 77Q305 38 275 45Z" class="controller-shell"/><rect x="137" y="54" width="86" height="46" rx="8" class="controller-well"/>`;
-  const left = rc ? [105, 100] : style === "xbox" ? [85, 95] : [130, 143];
-  const right = rc ? [255, 100] : [230, 143];
-  if (!stick)
-    body += [left, right]
-      .map(
-        ([x, y], i) =>
-          `${circle(x, y, 31)}<path d="M${x - 24} ${y}h48M${x} ${y - 24}v48" class="gimbal-guide"/><g data-pad-stick="${i}" transform="translate(${x} ${y})"><circle r="15" class="controller-thumb"/></g>`,
-      )
-      .join("");
-  if (rc)
-    body += `<text x="105" y="61" class="controller-channel-label">YAW / POWER</text><text x="255" y="61" class="controller-channel-label">ROLL / PITCH</text><path d="M155 157h50m-50 9h50m-50 9h32" class="gimbal-guide"/>`;
-  if (stick)
-    body += `<g data-joystick-live><circle cx="186" cy="51" r="16" class="controller-thumb"/><circle cx="186" cy="44" r="5" class="controller-well"/></g><text x="180" y="197">ROLL / PITCH</text>`;
-  if (!rc && !stick) {
-    const locations = [
-      [285, 117],
-      [308, 94],
-      [262, 94],
-      [285, 71],
-      [85, 38],
-      [275, 38],
-      [85, 16],
-      [275, 16],
-      [121, 75],
-      [239, 75],
-      [130, 143],
-      [230, 143],
-      [78, 76],
-      [78, 114],
-      [59, 95],
-      [97, 95],
-      [180, 122],
-    ];
-    body += locations
-      .map(([x, y], i) => {
-        if (i === 10 || i === 11) return "";
-        if (style === "xbox" && i >= 12 && i <= 15) {
-          x += 52;
-          y += 48;
-        }
-        const label = standard
+    stick = kind === "joystick";
+  let body: string;
+  if (rc) {
+    body = `<path d="M190 33V8q0-5 5-5h10q5 0 5 5v25" class="controller-shell"/>
+      <path d="M137 38V24h126v14" class="controller-outline"/>
+      <path d="M95 37h210l27 34-8 142-26 21H102l-26-21-8-142Z" class="controller-shell"/>
+      <path d="m78 91 17-12v113l-13-5m240-96-17-12v113l13-5" class="controller-grip"/>
+      <path d="M96 63h208M92 193h216" class="controller-detail"/>
+      <path d="M105 47V24m28 21V17m134 28V17m28 30V24" class="controller-outline"/>
+      <path d="M100 24h10m18-7h10m124 0h10m18 7h10" class="controller-detail"/>
+      <text x="128" y="62" class="controller-channel-label">YAW / POWER</text><text x="272" y="62" class="controller-channel-label">ROLL / PITCH</text>
+      ${gimbal(128, 112, 0, true)}${gimbal(272, 112, 1, true)}
+      <rect x="157" y="170" width="86" height="43" rx="4" class="controller-screen"/>
+      <text x="200" y="185" class="controller-channel-label">RCFORGE</text>
+      <path d="M169 194h62M169 202h39" class="screen-lines"/>
+      <circle cx="122" cy="189" r="10" class="controller-well"/>
+      <path d="M118 189h8M122 185v8" class="controller-detail"/>
+      <circle cx="278" cy="189" r="10" class="controller-well"/>
+      <path d="m275 186 4 3-4 3" class="controller-detail"/>
+      <path d="M178 90v42m44-42v42M101 162h40m118 0h40" class="gimbal-guide"/>
+      <circle cx="200" cy="148" r="4" class="device-led"/>`;
+  } else if (stick) {
+    body = `<path d="M110 175h180l31 43q4 10-10 10H89q-14 0-10-10Z" class="controller-shell"/>
+      <ellipse cx="200" cy="187" rx="51" ry="21" class="controller-well"/>
+      <ellipse cx="200" cy="183" rx="32" ry="13" class="controller-grip"/>
+      <g data-joystick-live><path d="m181 182-9-79-13-38q-3-12 5-24l15-20h34q22 2 17 27l-12 57-2 76Z" class="controller-shell"/>
+      <path d="m175 86 31 6-4 74-15 0M177 108l25 5M179 123l22 5M181 138l19 5" class="controller-detail"/>
+      <g data-pad-button="0"><title>Button 1</title><rect x="182" y="31" width="28" height="21" rx="7" class="controller-well"/><text x="196" y="45" class="controller-glyph">1</text></g>
+      <g data-pad-button="1"><title>Button 2</title><circle cx="216" cy="64" r="9" class="controller-well"/><text x="216" y="67" class="controller-glyph">2</text></g></g>
+      <path d="M107 203h32m-23-6v12" class="controller-outline"/>
+      <text x="257" y="209" class="controller-channel-label">FLIGHT STICK</text>`;
+  } else {
+    const xbox = style === "xbox";
+    const label = (i: number) =>
+      standard && style === "generic" && i < 8
+        ? ["S", "E", "W", "N", "LB", "RB", "LT", "RT"][i]
+        : standard
           ? i >= 12 && i <= 15
             ? ["↑", "↓", "←", "→"][i - 12]
-            : buttonName(i, style, true).split(" ")[0]
+            : i === 8
+              ? "▱"
+              : i === 9
+                ? "≡"
+                : i === 16
+                  ? style === "playstation"
+                    ? "PS"
+                    : xbox
+                      ? "X"
+                      : "⌂"
+                  : buttonName(i, style, true).split(" ")[0]
           : String(i + 1);
-        return `<g data-pad-button="${i}"><title>${buttonName(i, style, standard)}</title>${circle(x, y, i < 4 ? 11 : 9)}<text x="${x}" y="${y + 3}" class="controller-glyph">${label}</text></g>`;
-      })
-      .join("");
+    const button = (i: number, x: number, y: number, shape: string) =>
+      `<g data-pad-button="${i}"><title>${buttonName(i, style, standard)}</title>${shape}<text x="${x}" y="${y + 3}" class="controller-glyph">${label(i)}</text></g>`;
+    body = `<path d="M91 48q-33-10-51 44l-25 101q-7 33 17 34 12 2 26-17l44-43q15-7 36 0h124q21-7 36 0l44 43q14 19 26 17 24-1 17-34L360 92q-18-54-51-44Z" class="controller-shell"/>
+      <path d="m84 62-25 47-22 92m279-139 25 47 22 92" class="controller-detail"/>
+      <path d="M139 119q61-13 122 0l-8 47H147Z" class="controller-grip"/>
+      ${[4, 5, 6, 7]
+        .map((i) => {
+          const x = i % 2 ? 305 : 95,
+            y = i < 6 ? 43 : 20;
+          return button(
+            i,
+            x,
+            y,
+            `<rect x="${x - 26}" y="${y - 8}" width="52" height="16" rx="6" class="controller-well"/>`,
+          );
+        })
+        .join("")}
+      ${style !== "playstation" ? '<path d="M166 62h68" class="controller-detail"/>' : `<g data-pad-button="17"><title>${standard ? "Touchpad" : "Button 18"}</title><rect x="156" y="58" width="88" height="44" rx="7" class="controller-well"/><path d="M163 64h74" class="controller-detail"/></g>`}
+      ${gimbal(xbox ? 94 : 146, xbox ? 100 : 148, 0, false, style, standard)}${gimbal(254, 148, 1, false, style, standard)}
+      ${[
+        [314, 125],
+        [338, 101],
+        [290, 101],
+        [314, 77],
+      ]
+        .map(([x, y], i) => button(i, x, y, well(x, y, 13)))
+        .join("")}
+      ${button(8, 137, 78, well(137, 78, 9))}${button(9, 263, 78, well(263, 78, 9))}${button(16, 200, xbox ? 84 : 124, well(200, xbox ? 84 : 124, 10))}
+      ${[
+        [0, -19],
+        [0, 19],
+        [-19, 0],
+        [19, 0],
+      ]
+        .map(([dx, dy], i) => {
+          const x = (xbox ? 146 : 88) + dx,
+            y = (xbox ? 155 : 104) + dy;
+          return button(
+            i + 12,
+            x,
+            y,
+            `<rect x="${x - 9}" y="${y - 9}" width="18" height="18" rx="4" class="controller-well"/>`,
+          );
+        })
+        .join("")}
+      <path d="M185 151h30m-25 6h20" class="controller-detail"/>`;
   }
-  body += `<text x="180" y="238">${rc ? "Mapped sticks · yaw / power · roll / pitch" : stick ? "Flight stick · verify axes in live controls" : standard ? "Live buttons and physical sticks" : "Custom device · button numbering varies"}</text>`;
-  return `<svg viewBox="0 0 360 250" role="img" aria-label="${rc ? "RC transmitter" : stick ? "Flight joystick" : style + " gamepad"} input diagram">${body}</svg>`;
+  const caption = rc
+    ? "MAPPED STICKS"
+    : stick
+      ? "LIVE INPUT"
+      : standard
+        ? "PHYSICAL STICKS & BUTTONS"
+        : "CUSTOM USB MAPPING";
+  body += `<text x="200" y="251" class="controller-caption">${caption}</text>`;
+  return `<svg viewBox="0 0 400 260" role="img" aria-label="${rc ? "RC transmitter" : stick ? "Flight joystick" : style + " gamepad"} input diagram">${body}</svg>`;
 }
