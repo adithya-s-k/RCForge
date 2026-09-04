@@ -1,4 +1,5 @@
 import { buildQuad } from "./quad-model";
+import { buildPanel } from "./planform";
 import { disposeModel } from "./dispose-model";
 import type { SurfaceControl } from "../core/surface-control";
 import * as T from "three";
@@ -12,6 +13,7 @@ export interface AircraftVisual {
   controls: {
     surfaceId: string;
     pivot: T.Group;
+    hingeAxis?: T.Vector3;
     axis: keyof Controls;
     gain: number;
     control: SurfaceControl;
@@ -256,7 +258,21 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     roughness: 0.7,
   });
   for (const p of a.parts) {
-    if (p.kind === "body" && isTiny) {
+    if (p.kind === "body" && p.bodyLoft) {
+      const [x, y, z] = p.positionM,
+        [l, w, h] = p.sizeM;
+      loft(
+        group,
+        p.bodyLoft.map((s) => ({
+          x: x + s.x * l,
+          width: s.width * w,
+          top: z + s.top * h,
+          bottom: z + s.bottom * h,
+        })),
+        baseColor,
+        y,
+      );
+    } else if (p.kind === "body" && isTiny) {
       const [x, y, z] = p.positionM,
         [l, w, h] = p.sizeM;
       loft(
@@ -422,7 +438,11 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
         baseColor,
         y,
       );
-    } else if (p.kind === "motor" && !isTiny) {
+    } else if (
+      p.kind === "motor" &&
+      !isTiny &&
+      !a.parts.some((p) => p.bodyLoft)
+    ) {
       const [x, y, z] = p.positionM;
       loft(
         group,
@@ -446,6 +466,21 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     surface.rotation.x = radians(s.rollDeg);
     surface.rotation.y = radians(s.incidenceDeg);
     group.add(surface);
+    if (s.panel) {
+      const panel = buildPanel(s, baseColor);
+      surface.add(panel.group);
+      if (s.control && panel.pivot)
+        controls.push({
+          surfaceId: s.id,
+          pivot: panel.pivot,
+          hingeAxis: panel.hingeAxis,
+          axis: s.control.axis,
+          gain: s.control.gain,
+          control: s.control,
+          max: radians(s.control.maxDeg),
+        });
+      continue;
+    }
     const side = Math.sign(s.positionM[1]) || 1,
       hinge = planModel ? (isBronco ? 0.765 : 0.77) : 0.72;
     if (s.kind === "wing") {

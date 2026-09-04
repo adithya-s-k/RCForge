@@ -7,6 +7,7 @@ export function followAircraftShadow(
   sunDirection: readonly [number, number, number],
   aircraftRadius: number,
   groundHeight = 0,
+  minimumHalfSize = 16,
 ) {
   const direction = new T.Vector3(...sunDirection).normalize();
   // Caster and ground projection lie on the same light ray: altitude needs
@@ -15,7 +16,7 @@ export function followAircraftShadow(
   const center = aircraftPosition
     .clone()
     .addScaledVector(direction, -rayLength / 2);
-  const halfSize = Math.max(16, aircraftRadius * 1.5 + 2);
+  const halfSize = Math.max(minimumHalfSize, aircraftRadius * 1.5 + 0.25);
   const right = new T.Vector3().crossVectors(light.up, direction).normalize();
   const up = new T.Vector3().crossVectors(direction, right);
   const texel = (halfSize * 2) / light.shadow.mapSize.x;

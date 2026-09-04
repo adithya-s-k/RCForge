@@ -25,8 +25,32 @@ The plan specifies 193 g without battery, 16° throws, 30% expo and a minimum 5�
 
 Vector/ruler readings put the flat sport half-wing around 478.5 mm with 139.5 mm root chord and approximately 32 mm aileron chord. The assembled approximation uses 5° dihedral and 953 mm projected span, an equivalent aerodynamic chord/area, tapered tips and a conventional foamboard tail. Wing shape and fuselage/nose overlap are approximations rather than a complete fold simulation. The nominal 35 mm CG target is estimated, not a verified published text specification. The 2.8 N motor thrust and aerodynamic coefficients remain estimates requiring bench and flight data.
 
+## FT-22 Raptor
+
+Added 2026-09-05 from the original [FT-22 build and assembly photos](https://www.flitetest.com/articles/ft-22-raptor-build)
+and [two-sheet full-size plan](https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-22-plans.pdf).
+This is the foamboard pusher park jet, not an EDF model or the Mighty Mini.
+The plan's 235 g dry reference plus an assumed 85 g 3S pack gives 320 g.
+Its two servos operate mixed elevons; the canted fins are fixed. There is no
+rudder command. Roll to turn and use elevator to manage the turn.
+
+The [manufacturer's listing](https://store.flitetest.com/ft-22-mkr2/) gives both
+25.5 inches and 635 mm for span; these disagree. This preset chooses 635 mm,
+scales a simplified wing outline to that width, and places CG 400 mm aft of the
+nose, within its published 394–406 mm range. The editor uses a wing-root leading
+edge 90 mm ahead of CG; that datum is not the nose. Fold heights, fin/elevon
+stations and the nose loft remain approximate. Source artwork is not bundled.
+
+The 9×4.7-inch prop follows the original plan; 4.8 N thrust, speed falloff,
+servo dynamics and all aerodynamic coefficients are estimates. The wing's
+low-aspect-ratio/vortex behavior is not independently validated. At the initial
+definition, 12 m/s trim converged, numerical/replay checks passed, and 22 of 45
+surveyed mass/speed/site combinations trimmed. Unsolved points are retained.
+Ground mode adds the same explicitly estimated removable gear modification;
+hand launch preserves the reference gearless build.
+
 ## Verification boundary
 
-Mass totals, Bronco CG and prop diameter have regression checks. Both designs trim successfully, and the numerical physics report includes both definitions. These checks verify implementation consistency; they do not establish agreement with a real aircraft. Reproduce an actual build's component masses, CG, thrust-versus-command curves and recorded response before making that claim.
+Mass totals, CG references, prop diameter and elevon control signs have regression checks. All three designs trim at the default operating point, and the numerical physics report includes their definitions. These checks verify implementation consistency; they do not establish agreement with a real aircraft. Reproduce an actual build's component masses, CG, thrust-versus-command curves and recorded response before making that claim.
 
-Ground mode adds the existing optional 45 g tricycle gear modification. It is not part of either original foamboard build. Select hand launch or airborne mode to use the reference airframe without that modification.
+Ground mode adds the existing optional 45 g tricycle gear modification. It is not part of the original foamboard builds. Select hand launch or airborne mode to use the reference airframe without that modification.

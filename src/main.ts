@@ -23,6 +23,7 @@ import { ZodError } from "zod";
 import broncoData from "../aircraft/ft-bronco.json";
 import quadData from "../aircraft/quad-x-5inch.json";
 import tinyTrainerData from "../aircraft/ft-tiny-trainer.json";
+import raptorData from "../aircraft/ft-22-raptor.json";
 import trainerData from "../aircraft/simple-trainer.json";
 import { workbenchMarkup } from "./view/workbench";
 import { FlightScene, type CameraMode } from "./view/scene";
@@ -37,7 +38,13 @@ import {
 } from "./core/simulation";
 import { massProperties } from "./core/aircraft";
 import { findTrim } from "./core/trim";
-import { fitLandingGear, launchState, type LaunchMode } from "./core/launch";
+import {
+  fitLandingGear,
+  launchState,
+  launchTrim,
+  type LaunchMode,
+} from "./core/launch";
+import { aircraftChannels } from "./app/aircraft-channels";
 import {
   createRecording,
   parseRecording,
@@ -69,6 +76,7 @@ for (const selector of [".flight-bottom", ".flight-key-guide"])
 const originals = [
   parseAircraft(broncoData),
   parseAircraft(tinyTrainerData),
+  parseAircraft(raptorData),
   parseAircraft(trainerData),
   parseAircraft(quadData),
   parseAircraft(detailedQuadData),
@@ -208,7 +216,7 @@ function reset() {
   replayIndex = 0;
   input.clear();
   const a = physicalAircraft(),
-    trim = findTrim(a, 12, environment);
+    trim = launchTrim(a, mode, environment);
   pitchTrim = trim.controls.pitch;
   sim = new Simulation(
     a,
@@ -1018,13 +1026,24 @@ function frame(now: number) {
         hardware && !input.selected(),
       );
       const bindings = hardware
-        ? (["roll", "pitch", "yaw", "throttle"] as const)
+        ? aircraftChannels(aircraft)
             .map(
               (ch) =>
                 `<span><kbd>A${input.profile.bindings[ch].axis + 1}</kbd> ${ch}</span>`,
             )
             .join("")
-        : '<span><kbd>↑ ↓</kbd> Pitch</span><span><kbd>← →</kbd> Roll</span><span><kbd>Q E</kbd> Yaw</span><span class="power-hint"><kbd>Space</kbd> Power + <kbd>Shift</kbd> −</span>';
+        : aircraftChannels(aircraft)
+            .map(
+              (ch) =>
+                ({
+                  pitch: "<span><kbd>↑ ↓</kbd> Pitch</span>",
+                  roll: "<span><kbd>← →</kbd> Roll</span>",
+                  yaw: "<span><kbd>Q E</kbd> Yaw</span>",
+                  throttle:
+                    '<span class="power-hint"><kbd>Space</kbd> Power + <kbd>Shift</kbd> −</span>',
+                })[ch],
+            )
+            .join("");
       if ($("flight-input-guide").innerHTML !== bindings)
         $("flight-input-guide").innerHTML = bindings;
       const resetHint = hardware ? controllerActions.hint("reset") : "R";

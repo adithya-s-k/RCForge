@@ -24,3 +24,5 @@ DM Sans and Space Grotesk are bundled through Fontsource and distributed under t
 FlySky and FS-i6 identify third-party hardware. No hardware certification, affiliation or guaranteed compatibility is implied.
 
 FT Tiny Trainer design is credited to Josh Bixler / Flite Test. The preset is an independent approximate parameterization from the public build plans, not an official digital model. Original plan artwork and reference photographs are not redistributed. See docs/flite-test-reconstruction.md for source links.
+
+FT-22 Raptor design is credited to Josh Bixler / Flite Test. The independent RCForge approximation references the [original plans](https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-22-plans.pdf) and [build article](https://www.flitetest.com/articles/ft-22-raptor-build). Original artwork is not redistributed, and no endorsement is implied.

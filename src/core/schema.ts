@@ -3,6 +3,15 @@ const finite = z.number().finite();
 const vec = z.tuple([finite, finite, finite]);
 const positive = finite.positive();
 const dims = z.tuple([positive, positive, positive]);
+const panelPoint = z.tuple([finite.min(-10).max(10), finite.min(-10).max(10)]);
+const panel = z
+  .object({
+    // Coordinates are chord/span fractions, relative to the surface aerodynamic center.
+    outline: z.array(panelPoint).min(3).max(64),
+    thicknessM: positive.max(0.1),
+    controlHinge: z.tuple([panelPoint, panelPoint]).optional(),
+  })
+  .strict();
 const polarTable = z
   .array(
     z
@@ -100,6 +109,21 @@ export const AircraftSchema = z
               .tuple([positive, positive, positive])
               .optional(),
             orientationDeg: vec.optional(),
+            // Dimensionless sections relative to component position and size.
+            bodyLoft: z
+              .array(
+                z
+                  .object({
+                    x: finite.min(-2).max(2),
+                    width: positive.max(2),
+                    top: finite.min(-2).max(2),
+                    bottom: finite.min(-2).max(2),
+                  })
+                  .strict(),
+              )
+              .min(2)
+              .max(32)
+              .optional(),
             positionM: vec,
             sizeM: dims,
             color: z.string().regex(/^#[0-9a-fA-F]{6}$/),
@@ -118,6 +142,7 @@ export const AircraftSchema = z
           aspectRatio: positive,
           rollDeg: finite.min(-180).max(180),
           incidenceDeg: finite.min(-20).max(20),
+          panel: panel.optional(),
           reynoldsPolars: z
             .object({
               // A 2-D section table must first be converted to finite-wing data.
@@ -285,6 +310,18 @@ export const AircraftSchema = z
         );
     }
     a.parts.forEach((p, i) => {
+      if (
+        p.bodyLoft &&
+        (p.kind !== "body" ||
+          p.bodyLoft.some(
+            (s, j) =>
+              s.top >= s.bottom || (j > 0 && s.x <= p.bodyLoft![j - 1].x),
+          ))
+      )
+        issue(
+          ["parts", i, "bodyLoft"],
+          "Body lofts need increasing X sections and top below bottom in the body Z-down frame",
+        );
       const d = p.inertiaDiagonalKgM2;
       if (d && d.some((v, j) => v > d[(j + 1) % 3] + d[(j + 2) % 3] + 1e-12))
         issue(
@@ -318,6 +355,24 @@ export const AircraftSchema = z
         );
     });
     a.surfaces.forEach((s, i) => {
+      if (s.panel) {
+        const points = s.panel.outline;
+        const twiceArea = points.reduce((sum, p, j) => {
+          const next = points[(j + 1) % points.length];
+          return sum + p[0] * next[1] - next[0] * p[1];
+        }, 0);
+        if (Math.abs(twiceArea) < 1e-8)
+          issue(
+            ["surfaces", i, "panel", "outline"],
+            "Panel outline must enclose an area",
+          );
+        const hinge = s.panel.controlHinge;
+        if (hinge && (!s.control || hinge[1][1] <= hinge[0][1]))
+          issue(
+            ["surfaces", i, "panel", "controlHinge"],
+            "A control hinge needs a control and must run from lower to higher span coordinate",
+          );
+      }
       if (s.polar && s.reynoldsPolars)
         issue(["surfaces", i], "Choose polar or reynoldsPolars, not both");
       if (

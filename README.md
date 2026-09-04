@@ -69,7 +69,7 @@ Start, pause and reset remain available in the bottom bar when setup is closed. 
 | Area        | Included                                                                                                                                            |
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Fly         | Ground, hand-launch and airborne starts; ground pilot and chase views; aircraft placement; wind and seeded gusts                                    |
-| Aircraft    | FT Bronco with inverted-V/A-tail, FT Tiny Trainer Sport, a generic trainer, and two Quad X examples                                                 |
+| Aircraft    | FT Bronco with inverted-V/A-tail, FT Tiny Trainer Sport, FT-22 Raptor, a generic trainer, and two Quad X examples                                   |
 | Edit        | Component masses and positions, center of gravity, inertia, wingspan, control throws and propulsion; JSON import/export                             |
 | Input       | Keyboard, browser-compatible gamepads, flight sticks and RC USB adapters; mapping, reversal, calibration and shortcuts                              |
 | Arduino     | Classic Uno/Nano bridge for trainer PPM, receiver PPM or six PWM channels through Web Serial                                                        |
@@ -152,4 +152,4 @@ npm run format:check
 
 RCForge code and original aircraft parameterizations are [MIT licensed](LICENSE). Bundled assets and elevation data retain their respective terms and credits in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the [scenery manifest](public/scenery/README.md).
 
-The FT Bronco and Tiny Trainer are credited to their original Flite Test designers. Original plan PDFs and reference photographs are not bundled. RCForge is an independent project, with no affiliation or endorsement implied by aircraft or hardware names.
+The FT Bronco, Tiny Trainer and FT-22 Raptor are credited to their original Flite Test designers. Original plan PDFs and reference photographs are not bundled. RCForge is an independent project, with no affiliation or endorsement implied by aircraft or hardware names.

@@ -111,3 +111,27 @@ it("refits for the studio floor after a high-altitude flight", () => {
     light.shadow.bias * (light.shadow.camera.far - light.shadow.camera.near),
   ).toBeCloseTo(-0.002);
 });
+
+it("uses the same map with a tighter studio footprint for foamboard detail", () => {
+  const { light, update } = setup();
+  followAircraftShadow(
+    light,
+    new T.Vector3(),
+    sceneries.club.sun,
+    0.5,
+    -0.27,
+    1,
+  );
+  update();
+  expect(light.shadow.camera.right - light.shadow.camera.left).toBe(2);
+  expect(light.shadow.mapSize.x).toBe(renderBudget.shadowSize);
+  for (const p of [
+    new T.Vector3(0.4, 0, 0.32),
+    new T.Vector3(-0.4, -0.27, -0.32),
+  ]) {
+    const clip = p.project(light.shadow.camera);
+    expect(Math.abs(clip.x)).toBeLessThan(1);
+    expect(Math.abs(clip.y)).toBeLessThan(1);
+    expect(Math.abs(clip.z)).toBeLessThan(1);
+  }
+});

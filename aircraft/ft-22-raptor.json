@@ -1,0 +1,482 @@
+{
+  "schemaVersion": 1,
+  "id": "ft-22-raptor",
+  "name": "FT-22 Raptor",
+  "description": "Flite Test foamboard park jet. 635 mm span, two mixed elevons and a 9-inch pusher. 235 g dry reference plus an estimated 85 g battery. Estimated flight model.",
+  "provenance": {
+    "plans": {
+      "status": "sourced",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-22-plans.pdf",
+      "note": "Original two-sheet FT-22 plans by Josh Bixler, Flite Test (2014): 235 g without battery, 1300 KV 24 g motor, 9x4.7 prop, 10-25 A ESC, 500-1300 mAh 3S, two 9 g servos. This is the original FT-22, not the Mighty Mini or a turbine/EDF F-22."
+    },
+    "dimensions": {
+      "status": "estimated",
+      "url": "https://store.flitetest.com/ft-22-mkr2/",
+      "note": "Manufacturer lists span as both 25.5 inches and 635 mm; these disagree. This model uses 635 mm, scales simplified sheet-1 wing outline to it, and uses 400 mm nose-to-CG within the published 394-406 mm range. Assembly nose/fin/elevon stations and fold heights are approximations checked against build photos, not manufacturing CAD. Wing-root leading edge is estimated 90 mm ahead of CG; wing/tail assembly placement gives a positive modeled static margin. This is an assembly estimate, not a measured stability derivative."
+    },
+    "mass": {
+      "status": "estimated",
+      "note": "Dry allocations sum to published 235 g; assumed 85 g 3S 1000 mAh pack gives 320 g. Component positions and cuboid inertia estimated. Battery position solves CG at datum X=0, 400 mm behind nose. No measured component inertias."
+    },
+    "aerodynamics": {
+      "status": "estimated",
+      "note": "Separate finite-wing lifting plate halves, mixed elevons and two fixed canted fins. Area comes from reconstructed polygons; aerodynamic centers, lift slopes, drag, damping and control effectiveness are estimates. No rudder channel or active stabilization. Delta vortex lift, deep stall, prop interference and actual flight behavior remain unvalidated."
+    },
+    "controls": {
+      "status": "estimated",
+      "url": "https://www.flitetest.com/articles/ft-22-raptor-build",
+      "note": "Two elevons mix pitch and roll in RCForge; transmitter should send unmixed aircraft axes. Maximum 40 degree throw follows plan; 0.06 s and 400 deg/s servo response estimated. No physical rudder; yaw input has no direct authority."
+    },
+    "propulsion": {
+      "status": "estimated",
+      "note": "9x4.7-inch pusher with assumed 4.8 N static thrust, 24 m/s zero-thrust speed and 90 ms response. No measured motor/prop thrust-current table, electrical depletion, P-factor or propeller gyroscopic model."
+    }
+  },
+  "parts": [
+    {
+      "id": "fuselage",
+      "kind": "body",
+      "massKg": 0.06,
+      "positionM": [0.1, 0, 0.008],
+      "sizeM": [0.6, 0.05, 0.065],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 0.78,
+          "top": -0.35,
+          "bottom": 0.2
+        },
+        {
+          "x": -0.3,
+          "width": 1,
+          "top": -0.35,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.05,
+          "width": 1,
+          "top": -0.8,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.2,
+          "width": 0.95,
+          "top": -0.85,
+          "bottom": 0.35
+        },
+        {
+          "x": 0.38,
+          "width": 0.7,
+          "top": -0.35,
+          "bottom": 0.22
+        },
+        {
+          "x": 0.5,
+          "width": 0.04,
+          "top": 0.08,
+          "bottom": 0.12
+        }
+      ]
+    },
+    {
+      "id": "left-wing",
+      "kind": "wing",
+      "massKg": 0.04,
+      "positionM": [-0.045692399774822305, -0.12527480822689332, 0],
+      "sizeM": [0.39, 0.3175, 0.005],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Paper-faced foamboard",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "left-elevon",
+      "kind": "tail",
+      "massKg": 0.008,
+      "positionM": [-0.27499999999999997, -0.098, 0],
+      "sizeM": [0.14, 0.18, 0.005],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Paper-faced foamboard",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "left-fin",
+      "kind": "tail",
+      "massKg": 0.007,
+      "positionM": [-0.17, -0.093, -0.067],
+      "sizeM": [0.15, 0.005, 0.13],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Paper-faced foamboard",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "right-wing",
+      "kind": "wing",
+      "massKg": 0.04,
+      "positionM": [-0.045692399774822305, 0.12527480822689332, 0],
+      "sizeM": [0.39, 0.3175, 0.005],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Paper-faced foamboard",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "right-elevon",
+      "kind": "tail",
+      "massKg": 0.008,
+      "positionM": [-0.27499999999999997, 0.098, 0],
+      "sizeM": [0.14, 0.18, 0.005],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Paper-faced foamboard",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "right-fin",
+      "kind": "tail",
+      "massKg": 0.007,
+      "positionM": [-0.17, 0.093, -0.067],
+      "sizeM": [0.15, 0.005, 0.13],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Paper-faced foamboard",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "motor",
+      "kind": "motor",
+      "massKg": 0.024,
+      "positionM": [-0.053, 0, -0.013],
+      "sizeM": [0.028, 0.028, 0.026],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Electronics assembly",
+        "finish": "plastic"
+      }
+    },
+    {
+      "id": "esc",
+      "kind": "equipment",
+      "massKg": 0.017,
+      "positionM": [0.095, 0, 0.027],
+      "sizeM": [0.045, 0.022, 0.012],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Electronics assembly",
+        "finish": "plastic"
+      }
+    },
+    {
+      "id": "servos",
+      "kind": "equipment",
+      "massKg": 0.018,
+      "positionM": [-0.095, 0, 0.012],
+      "sizeM": [0.024, 0.16, 0.025],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Electronics assembly",
+        "finish": "plastic"
+      }
+    },
+    {
+      "id": "receiver",
+      "kind": "equipment",
+      "massKg": 0.006,
+      "positionM": [0.06, 0, 0.025],
+      "sizeM": [0.03, 0.02, 0.012],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Electronics assembly",
+        "finish": "plastic"
+      }
+    },
+    {
+      "id": "battery",
+      "kind": "battery",
+      "massKg": 0.085,
+      "positionM": [0.06402814096453863, 0, 0.017],
+      "sizeM": [0.067, 0.034, 0.023],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Electronics assembly",
+        "finish": "plastic"
+      },
+      "model": "3S 1000 mAh pack (estimated)"
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "left-wing",
+      "kind": "wing",
+      "positionM": [0.01953322832697065, -0.12527480822689332, 0],
+      "spanM": 0.3175,
+      "chordM": 0.2609025124071718,
+      "aspectRatio": 2.433859276176693,
+      "rollDeg": 0,
+      "incidenceDeg": 0,
+      "liftSlope": 3.1,
+      "zeroLiftDeg": 0,
+      "stallDeg": 18,
+      "cd0": 0.035,
+      "efficiency": 0.7,
+      "cm": 0,
+      "panel": {
+        "outline": [
+          [-0.9289523285384194, 0.39456632512407347],
+          [-0.9289523285384194, -0.017864541893220304],
+          [-0.7566640299775604, -0.4513354271621485],
+          [-0.5274399928854991, -0.6054354678740732],
+          [-0.32032640866166967, -0.6054354678740732],
+          [0.27260928853077565, 0.04039159788934996],
+          [0.7757940026988858, 0.1177404512697517],
+          [0.857584164774252, 0.3207947747125995],
+          [0.4926294528977835, 0.3207947747125995],
+          [0.4926294528977835, 0.39456632512407347],
+          [-0.1308403565391275, 0.39456632512407347],
+          [-0.1308403565391275, 0.3340955609640201],
+          [-0.10050460362063268, 0.04023946471327154],
+          [-0.35432519713309524, 0.04023946471327154],
+          [-0.3112679994423282, 0.3340955609640201],
+          [-0.3112679994423282, 0.39456632512407347]
+        ],
+        "thicknessM": 0.005
+      }
+    },
+    {
+      "id": "left-elevon",
+      "kind": "horizontal-tail",
+      "positionM": [-0.24976319444444445, -0.103, 0],
+      "spanM": 0.18,
+      "chordM": 0.11105277777777778,
+      "aspectRatio": 2.2,
+      "rollDeg": 0,
+      "incidenceDeg": 0,
+      "liftSlope": 2.5,
+      "zeroLiftDeg": 0,
+      "stallDeg": 18,
+      "cd0": 0.035,
+      "efficiency": 0.7,
+      "cm": 0,
+      "panel": {
+        "outline": [
+          [0.25, 0.47222222222222227],
+          [0.25, -0.3055555555555556],
+          [-0.4343592886265289, -0.5277777777777778],
+          [-0.9746429375422098, -0.15555555555555556],
+          [-0.8215625703494334, 0.47222222222222227]
+        ],
+        "thicknessM": 0.005,
+        "controlHinge": [
+          [0.25, -0.6],
+          [0.25, 0.6]
+        ]
+      },
+      "control": {
+        "axis": "pitch",
+        "gain": -1,
+        "mix": {
+          "roll": 1
+        },
+        "maxDeg": 40,
+        "effectiveness": 0.6,
+        "responseSeconds": 0.06,
+        "rateLimitDegS": 400
+      }
+    },
+    {
+      "id": "left-fin",
+      "kind": "vertical-tail",
+      "positionM": [-0.163, -0.092, -0.06],
+      "spanM": 0.135,
+      "chordM": 0.13,
+      "aspectRatio": 1.05,
+      "rollDeg": 72,
+      "incidenceDeg": 0,
+      "liftSlope": 2.6,
+      "zeroLiftDeg": 0,
+      "stallDeg": 18,
+      "cd0": 0.035,
+      "efficiency": 0.7,
+      "cm": 0,
+      "panel": {
+        "outline": [
+          [0.4, 0.5],
+          [0.1, -0.5],
+          [-0.45, -0.5],
+          [-0.7, 0.5]
+        ],
+        "thicknessM": 0.005
+      }
+    },
+    {
+      "id": "right-wing",
+      "kind": "wing",
+      "positionM": [0.01953322832697065, 0.12527480822689332, 0],
+      "spanM": 0.3175,
+      "chordM": 0.2609025124071718,
+      "aspectRatio": 2.433859276176693,
+      "rollDeg": 0,
+      "incidenceDeg": 0,
+      "liftSlope": 3.1,
+      "zeroLiftDeg": 0,
+      "stallDeg": 18,
+      "cd0": 0.035,
+      "efficiency": 0.7,
+      "cm": 0,
+      "panel": {
+        "outline": [
+          [-0.9289523285384194, -0.39456632512407347],
+          [-0.9289523285384194, 0.017864541893220304],
+          [-0.7566640299775604, 0.4513354271621485],
+          [-0.5274399928854991, 0.6054354678740732],
+          [-0.32032640866166967, 0.6054354678740732],
+          [0.27260928853077565, -0.04039159788934996],
+          [0.7757940026988858, -0.1177404512697517],
+          [0.857584164774252, -0.3207947747125995],
+          [0.4926294528977835, -0.3207947747125995],
+          [0.4926294528977835, -0.39456632512407347],
+          [-0.1308403565391275, -0.39456632512407347],
+          [-0.1308403565391275, -0.3340955609640201],
+          [-0.10050460362063268, -0.04023946471327154],
+          [-0.35432519713309524, -0.04023946471327154],
+          [-0.3112679994423282, -0.3340955609640201],
+          [-0.3112679994423282, -0.39456632512407347]
+        ],
+        "thicknessM": 0.005
+      }
+    },
+    {
+      "id": "right-elevon",
+      "kind": "horizontal-tail",
+      "positionM": [-0.24976319444444445, 0.103, 0],
+      "spanM": 0.18,
+      "chordM": 0.11105277777777778,
+      "aspectRatio": 2.2,
+      "rollDeg": 0,
+      "incidenceDeg": 0,
+      "liftSlope": 2.5,
+      "zeroLiftDeg": 0,
+      "stallDeg": 18,
+      "cd0": 0.035,
+      "efficiency": 0.7,
+      "cm": 0,
+      "panel": {
+        "outline": [
+          [0.25, -0.47222222222222227],
+          [0.25, 0.3055555555555556],
+          [-0.4343592886265289, 0.5277777777777778],
+          [-0.9746429375422098, 0.15555555555555556],
+          [-0.8215625703494334, -0.47222222222222227]
+        ],
+        "thicknessM": 0.005,
+        "controlHinge": [
+          [0.25, -0.6],
+          [0.25, 0.6]
+        ]
+      },
+      "control": {
+        "axis": "pitch",
+        "gain": -1,
+        "mix": {
+          "roll": -1
+        },
+        "maxDeg": 40,
+        "effectiveness": 0.6,
+        "responseSeconds": 0.06,
+        "rateLimitDegS": 400
+      }
+    },
+    {
+      "id": "right-fin",
+      "kind": "vertical-tail",
+      "positionM": [-0.163, 0.092, -0.06],
+      "spanM": 0.135,
+      "chordM": 0.13,
+      "aspectRatio": 1.05,
+      "rollDeg": -72,
+      "incidenceDeg": 0,
+      "liftSlope": 2.6,
+      "zeroLiftDeg": 0,
+      "stallDeg": 18,
+      "cd0": 0.035,
+      "efficiency": 0.7,
+      "cm": 0,
+      "panel": {
+        "outline": [
+          [0.4, -0.5],
+          [0.1, 0.5],
+          [-0.45, 0.5],
+          [-0.7, -0.5]
+        ],
+        "thicknessM": 0.005
+      }
+    }
+  ],
+  "motors": [
+    {
+      "id": "pusher",
+      "positionM": [-0.065, 0, -0.013],
+      "maxThrustN": 4.8,
+      "zeroThrustSpeedMps": 24,
+      "responseSeconds": 0.09,
+      "yawMix": 0,
+      "propDiameterM": 0.2286,
+      "model": "1300 KV / 24 g class (estimated)",
+      "propeller": "9x4.7 slow-fly pusher"
+    }
+  ],
+  "fuselageDragAreaM2": 0.0025,
+  "bodyDragAreaM2": [0.0025, 0.006, 0.01],
+  "angularDamping": [0.004, 0.006, 0.008],
+  "reference": {
+    "spanM": 0.635,
+    "areaM2": 0.2056520953785541,
+    "cgFromLeadingEdgeM": 0.09,
+    "leadingEdgeXM": 0.09
+  },
+  "contactPoints": [
+    {
+      "id": "left-tip",
+      "positionM": [-0.09, -0.3175, 0.0025],
+      "spanLinked": true
+    },
+    {
+      "id": "left-tail",
+      "positionM": [-0.35, -0.1, 0.01],
+      "spanLinked": false
+    },
+    {
+      "id": "right-tip",
+      "positionM": [-0.09, 0.3175, 0.0025],
+      "spanLinked": true
+    },
+    {
+      "id": "right-tail",
+      "positionM": [-0.35, 0.1, 0.01],
+      "spanLinked": false
+    },
+    {
+      "id": "nose",
+      "positionM": [0.4, 0, 0.015],
+      "spanLinked": false
+    },
+    {
+      "id": "belly",
+      "positionM": [0.1, 0, 0.041],
+      "spanLinked": false
+    }
+  ]
+}

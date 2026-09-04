@@ -365,6 +365,7 @@ export class FlightScene {
       sceneries[this.scenery].sun,
       this.shadowRadius,
       this.studio ? -0.27 : 0,
+      this.studio ? 1 : 16,
     );
     this.visual.group.quaternion
       .copy(conversion)
@@ -376,10 +377,13 @@ export class FlightScene {
       const index = sim.aircraft.surfaces.findIndex(
         (s) => s.id === v.surfaceId,
       );
-      v.pivot.rotation.y =
+      const deflection =
         (!this.studio && s.surfaceCommands?.[index] !== undefined
           ? s.surfaceCommands[index]
           : surfaceCommand(v.control, c)) * v.max;
+      if (v.hingeAxis)
+        v.pivot.quaternion.setFromAxisAngle(v.hingeAxis, deflection);
+      else v.pivot.rotation.y = deflection;
     }
     const rotorPower = powertrain(
       sim.aircraft,

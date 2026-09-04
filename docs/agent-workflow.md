@@ -13,7 +13,7 @@ npm run aircraft:validate
 npm run dev
 ```
 
-Read the actual schema and nearby code before inventing a field or extension point. Use the local URL printed by Vite. The five bundled presets are in `aircraft/`; the built-in browser catalog is assembled through `originals` in `src/main.ts`. Importing a JSON file in the editor is enough to try an unbundled aircraft.
+Read the actual schema and nearby code before inventing a field or extension point. Use the local URL printed by Vite. Bundled presets are in `aircraft/`; the built-in browser catalog is assembled through `originals` in `src/main.ts`. Importing a JSON file in the editor is enough to try an unbundled aircraft. The FT-22 shows how to author foamboard panel outlines and a shaped fuselage directly in JSON.
 
 | Task                                | Read first                                                                                        | Main entry points                                                                             |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
