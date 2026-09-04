@@ -1,0 +1,44 @@
+# Add an aircraft
+
+1. Copy `aircraft/simple-trainer.json` to a new lowercase, hyphenated ID, and update `id`, `name`, `description` and `provenance`.
+2. Establish a fixed datum and use meters, kilograms, seconds and Newtons. Angular definition fields ending in `Deg` use degrees. Physical state uses radians.
+3. Add `parts` with mass, position, cuboid dimensions and a visual color. Account for the battery, motors, servos, structure and payload exactly once. Wing/tail parts contribute mass; their visible lifting surfaces come from `surfaces`.
+4. Add wing halves and tail surfaces, assigning `kind` (`wing`, `horizontal-tail`, `vertical-tail` or `other`) independently of control assignments. `positionM` is the aerodynamic center (normally near quarter chord), not the leading edge. The renderer constructs the chord around that point. `rollDeg: 0` is horizontal and `rollDeg: 90` is a vertical surface. `aspectRatio` on a half-wing should describe the full wing, not that half alone.
+5. Assign controls. Positive commands are roll-right, pitch-up and yaw-right. With the provided surface convention, the example right wing uses roll gain -1, left wing +1, elevator pitch -1, vertical fins yaw -1. Verify signs with tests after changing surface orientations.
+6. Add motors at their thrust application positions. Static thrust, speed falloff and response time need measurements or clearly marked estimates. Opposite `yawMix` signs on a twin provide differential thrust.
+7. Add `contactPoints` at physical extremities with an ID, `positionM`, and `spanLinked` flag. Set `spanLinked` on wingtip contacts so span edits update collision geometry. Set reference wing area/span and the X coordinate of the leading edge used for the CG readout.
+8. Validate and fly:
+
+```sh
+npm run aircraft:validate -- aircraft/my-aircraft.json
+npm run simulate -- aircraft/my-aircraft.json --scenario cruise
+npm run simulate -- aircraft/my-aircraft.json --scenario pitch-pulse
+```
+
+Load the JSON through the browser's **Aircraft editor → Import JSON** control. For a bundled example, add an explicit import to `src/main.ts` and register it in the `originals` array. This keeps the default aircraft list deliberate; the CLI discovers local JSON automatically.
+
+## Sources and assumptions
+
+`provenance` maps parameter groups to `{ status, note, url? }`. Allowed statuses are `sourced`, `calculated`, `estimated`, `calibrated`. Describe which quantities within a group remain estimated. A source URL alone does not make an entire model sourced. Label assumptions rather than filling gaps with unqualified numbers.
+
+For plan-based work, extract the published scale and assembled dimensions; flat foamboard patterns are not automatically the assembled 3D geometry. Reconstruct folds/assembly separately. Keep original copyrighted artwork outside the repository unless reuse rights have been established. Record original designer and drawing credits.
+
+## Validation expectations
+
+- Mass and CG match the intended build or are documented estimates.
+- Positive control commands produce the intended torque signs.
+- Trim is reported, and any failure is investigated rather than hidden by artificial stabilization.
+- Doubling dynamic pressure at the same angle increases aerodynamic loads accordingly.
+- Increasing span changes aerodynamic area and mass/inertia, not just the mesh.
+- A run is stable numerically under timestep refinement.
+- A real-world fidelity claim includes actual flight or bench data and uncertainty.
+
+The source-of-truth schema is `src/core/schema.ts`. Unknown fields and invalid values are rejected with paths. The core supports rigid fixed-wing aircraft and multirotors. Surfaces and rotor geometry remain approximations; unusual configurations may require additional physical terms. See [multirotors](multirotors.md) for quad-specific authoring and controls.
+
+## Mixed control surfaces
+
+A surface control can supply an optional `mix` object with additional `roll`, `pitch`, and `yaw` gains. The base `axis * gain` and additional channels are summed and clamped to [-1,1] before applying `maxDeg`. Physics and animation use the same command. The Bronco inverted-V panels use pitch gain -1 on both, yaw +1 on the left panel (roll -45 degrees), and yaw -1 on the right (roll +45 degrees). Avoid double-mixing in a transmitter: RCForge expects aircraft-axis inputs.
+
+## Detailed component and powertrain inputs
+
+See [component-models.md](component-models.md) for material/BOM metadata, principal inertia, battery voltage and charge, motor/prop current-thrust tables, surface polars and servo dynamics. `aircraft/quad-x-6s.json` is the full electrical example; all its hardware/curve values are labeled estimates.

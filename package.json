@@ -21,7 +21,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "physics:validate": "tsx scripts/physics-validate.ts",
-    "physics:compare": "tsx scripts/physics-compare.ts"
+    "physics:compare": "tsx scripts/physics-compare.ts",
+    "docs:check": "tsx scripts/check-docs.ts"
   },
   "dependencies": {
     "@fontsource/dm-sans": "^5.3.0",
