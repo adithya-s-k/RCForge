@@ -9,6 +9,7 @@ import {
   type SceneryId,
 } from "./core/scenery";
 import { powertrain } from "./core/powertrain";
+import largeQuadData from "../aircraft/quad-x-450.json";
 import detailedQuadData from "../aircraft/quad-x-6s.json";
 import { setupCatalog } from "./app/catalog";
 import { ControllerActions, navigateSetting } from "./app/controller-actions";
@@ -80,6 +81,7 @@ const originals = [
   parseAircraft(trainerData),
   parseAircraft(quadData),
   parseAircraft(detailedQuadData),
+  parseAircraft(largeQuadData),
 ];
 let baseline = originals[0],
   aircraft = structuredClone(baseline),

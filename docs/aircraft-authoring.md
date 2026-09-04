@@ -70,3 +70,8 @@ aerodynamic center, coefficients, component mass and inertia separately, with
 their own evidence. A detailed outline does not add vortex lift, flexibility or
 CAD-derived inertia. Span edits scale wing outlines with their physical span;
 mass/CG edits retain the authored shape. Existing definitions remain compatible.
+
+Optional motor `partId` references an existing motor component for the quad visual
+envelope; it never adds mass. `propBlades` sets 2–6 rendered blades, with existing
+defaults preserved when omitted. These appearance fields do not generate new
+thrust/current or torque curves. See the [450 mm quad example](multirotors.md).

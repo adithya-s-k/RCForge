@@ -605,14 +605,18 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     group.add(prop);
     propellers.push(prop);
     const radius = motor.propDiameterM / 2;
-    for (const sign of [-1, 1]) {
-      const blade = mesh(new T.SphereGeometry(1, 12, 8), dark, prop, [
+    const bladeCount = motor.propBlades ?? 2;
+    for (let i = 0; i < bladeCount; i++) {
+      const bladeRoot = new T.Group();
+      bladeRoot.rotation.x = (i * Math.PI * 2) / bladeCount;
+      prop.add(bladeRoot);
+      const blade = mesh(new T.SphereGeometry(1, 12, 8), dark, bladeRoot, [
         0,
-        sign * radius * 0.49,
+        radius * 0.49,
         0,
       ]);
       blade.scale.set(0.003, radius * 0.52, 0.014);
-      blade.rotation.y = sign * 0.15;
+      blade.rotation.y = 0.15;
     }
     const hub = mesh(
       new T.ConeGeometry(isTiny ? 0.006 : 0.01, isTiny ? 0.01 : 0.018, 20),

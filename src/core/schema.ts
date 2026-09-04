@@ -237,6 +237,9 @@ export const AircraftSchema = z
             .optional(),
           model: z.string().optional(),
           propeller: z.string().optional(),
+          // Optional visual dimensions from the motor already present in the mass ledger.
+          partId: z.string().min(1).optional(),
+          propBlades: z.number().int().min(2).max(6).optional(),
           maxThrustN: positive.max(1000),
           zeroThrustSpeedMps: positive,
           responseSeconds: positive,
@@ -330,6 +333,19 @@ export const AircraftSchema = z
         );
     });
     a.motors.forEach((m, i) => {
+      if (
+        m.partId &&
+        !a.parts.some((p) => p.id === m.partId && p.kind === "motor")
+      )
+        issue(
+          ["motors", i, "partId"],
+          "Motor must reference an existing motor mass component",
+        );
+      if (m.partId && a.motors.some((n, j) => j < i && n.partId === m.partId))
+        issue(
+          ["motors", i, "partId"],
+          "A motor mass component cannot represent two motors",
+        );
       const p = m.performance?.points;
       if (
         p &&

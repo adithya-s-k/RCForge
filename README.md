@@ -69,7 +69,7 @@ Start, pause and reset remain available in the bottom bar when setup is closed. 
 | Area        | Included                                                                                                                                            |
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Fly         | Ground, hand-launch and airborne starts; ground pilot and chase views; aircraft placement; wind and seeded gusts                                    |
-| Aircraft    | FT Bronco with inverted-V/A-tail, FT Tiny Trainer Sport, FT-22 Raptor, a generic trainer, and two Quad X examples                                   |
+| Aircraft    | FT Bronco with inverted-V/A-tail, FT Tiny Trainer Sport, FT-22 Raptor, a generic trainer, and three Quad X examples (5-inch, 6S and 450 mm)         |
 | Edit        | Component masses and positions, center of gravity, inertia, wingspan, control throws and propulsion; JSON import/export                             |
 | Input       | Keyboard, browser-compatible gamepads, flight sticks and RC USB adapters; mapping, reversal, calibration and shortcuts                              |
 | Arduino     | Classic Uno/Nano bridge for trainer PPM, receiver PPM or six PWM channels through Web Serial                                                        |

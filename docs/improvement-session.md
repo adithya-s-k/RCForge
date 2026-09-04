@@ -45,9 +45,38 @@ pause the automation, and report the outcome. Do not start more work.
   in Chase. Existing user aircraft profiles were retained. HMR can reset the
   selected preset; saved local builds override updated repository definitions.
 
+## Pass 2 · larger quad and render cost
+
+- Added `quad-x-450`: 450 mm motor diagonal, 1,007 g component total, 10-inch
+  two-blade props, 3S 3300 mAh electrical model. Manufacturer frame/motor references
+  and EMAX 11.1 V / 1045 thrust-current-RPM samples are cited in the JSON and guide.
+  PWM/command mapping, battery parameters, remaining assembly masses and dynamics
+  are explicitly estimated. No physical hardware validation claimed.
+- Added optional motor-to-component references and blade counts. Larger quad
+  geometry follows authored arms, battery, ESC and motor dimensions. No fake FPV
+  camera appears on a build without one. Existing compact models retain defaults.
+- Batched static quad details by material and simplified submillimetre fastener
+  geometry. Small quad: 157 to 30 meshes, 40,888 to 21,592 triangles. New larger
+  model: 27 meshes / 19,708 triangles. CPU geometry counts, not an FPS benchmark.
+  Propellers remain animated independently; physics is unchanged.
+- Corrected the editor's misleading statement that every quad stores electronics
+  mass inside its frame. Detailed component ledgers now read correctly.
+- Verification: 154 tests pass; all bundled aircraft build/validate. Larger-quad
+  envelope: 27/27 hover points, zero nonfinite loads. Numerical verification passes.
+  Component accounting, torque signs, takeoff, angle recovery and electrical replay
+  have targeted tests. Docs resolve and formatting passes.
+- Browser: inspected the authored quad, then used Space taps and Enter for a ground
+  takeoff. It climbed vertically and paused successfully; view showed 67.8 m at
+  11.4 s. Browser timing/input snapshots are not a calibrated handling measurement.
+  The standalone 65% takeoff regression exceeds 3 m after 3 s.
+- Remaining critique: editor lighting is too muddy on dark components; Top is
+  currently an angled perspective rather than a proper top inspection. The browser
+  range-fill operation was unreliable; use keyboard/click interactions and verify
+  settled state rather than treating range-fill output as evidence.
+
 ## Next passes
 
-1. Add and validate a larger component-based Quad X configuration.
+1. Improve studio lighting and inspection views; check both new catalog previews.
 2. Improve new preset geometry and catalog previews where playtests show faults.
 3. Playtest both presets, aircraft selection and editor behavior.
 4. Review input selection, mapping, calibration and Arduino bridge workflows.

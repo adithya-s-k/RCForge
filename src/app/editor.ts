@@ -179,13 +179,13 @@ export class AircraftEditor {
       cg = a.reference.leadingEdgeXM - p.cg[0];
     $("editor-model-name").textContent = a.name;
     $("component-summary").innerHTML =
-      `<details><summary>Build & powertrain</summary><p>${a.parts.length} mass components · CG [${p.cg.map((v) => (v * 1000).toFixed(1)).join(", ")}] mm</p>${a.battery ? `<p>${a.battery.cells}S ${a.battery.chemistry} · ${a.battery.capacityMah} mAh · ${(a.battery.resistanceOhm * 1000).toFixed(0)} mΩ<br>Battery mass included once via ${escape(a.battery.partId)}.</p>` : "<p>No electrical model. Add battery and motor test data in the aircraft JSON to simulate discharge.</p>"}<p>${a.motors.filter((m) => m.performance).length}/${a.motors.length} motors with thrust/current curves · ${a.surfaces.filter((s) => s.polar).length} tabulated aerodynamic surfaces</p>${a.parts.map((part) => `<div class="build-part"><b>${escape(part.id)}</b><span>${(part.massKg * 1000).toFixed(0)} g</span><small>${escape(part.material?.name ?? part.kind)}${part.model ? " · " + escape(part.model) : ""}</small></div>`).join("")}</details>`;
+      `<details><summary>Build & powertrain</summary><p>${a.parts.length} mass components · CG [${p.cg.map((v) => (v * 1000).toFixed(1)).join(", ")}] mm</p>${a.battery ? `<p>${a.battery.cells}S ${a.battery.chemistry} · ${a.battery.capacityMah} mAh · ${(a.battery.resistanceOhm * 1000).toFixed(0)} mΩ<br>Battery mass included once via ${escape(a.battery.partId)}.</p>` : "<p>No electrical model. Add battery and motor test data in the aircraft JSON to simulate discharge.</p>"}<p>${a.motors.filter((m) => m.performance).length}/${a.motors.length} motors with thrust/current curves · ${a.surfaces.filter((s) => s.polar || s.reynoldsPolars).length} tabulated aerodynamic surfaces</p>${a.parts.map((part) => `<div class="build-part"><b>${escape(part.id)}</b><span>${(part.massKg * 1000).toFixed(0)} g</span><small>${escape(part.material?.name ?? part.kind)}${part.model ? " · " + escape(part.model) : ""}</small></div>`).join("")}</details>`;
     const quad = a.vehicleType === "multirotor";
     $("mass-scope").textContent = quad
       ? "Includes all components and battery."
       : "Ground starts add removable gear to this mass.";
     $("mass-evidence").textContent = quad
-      ? `Component total: ${(p.mass * 1000).toFixed(0)} g. This preset is an estimated build. Frame mass includes electronics, fasteners and wiring; detailed meshes do not add hidden weight.`
+      ? `Component total: ${(p.mass * 1000).toFixed(0)} g. Each listed component is counted once. Rendered detail adds no hidden mass; replace estimates with measured values.`
       : `Component total: ${(p.mass * 1000).toFixed(0)} g. Replace estimated component weights with measured values for your build.`;
     document.querySelector('label[for="edit-span"]')!.textContent = quad
       ? "Motor diagonal · mm"
