@@ -147,6 +147,15 @@ The browser component panel edits battery mass, capacity, cells, initial charge,
 DC resistance, servo speed/travel and linkage dimensions. Source notes stay with
 the exported definition. No mass is added merely by rendering a detail.
 
+Installed catalog components show **Catalog setup** when their modeled product
+specifications match, or **Modified setup** with the changed fields. The comparison
+is recalculated from the aircraft definition, including imported/saved files; it
+does not depend on which UI edited them. Installation position/orientation,
+starting charge, avionics load, propeller rotation and linkage geometry remain
+airframe settings. A catalog match is not measurement validation: expand **Catalog
+source & assumptions** for the referenced facts and estimated parameters. Custom
+external catalog IDs remain readable even without their catalog installed.
+
 All bundled aircraft now include battery discharge. The FT-22 uses the Robu-listed
 85 g Orange 3S 1000 mAh pack dimensions; this is a selectable reference setup, not
 proof of the battery used in the original Flite Test build. Other original pack

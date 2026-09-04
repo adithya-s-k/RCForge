@@ -6,6 +6,7 @@ import {
   moveComponent,
 } from "../core/components";
 import { massProperties } from "../core/aircraft";
+import { componentDifferences } from "../core/component-reference";
 import { surfaceActuation } from "../core/actuation";
 import { type Aircraft } from "../core/schema";
 import { $, escape } from "./dom";
@@ -147,6 +148,12 @@ export class ComponentWorkshop {
     const b = a.battery?.partId === part.id ? a.battery : undefined;
     const motorIndex = a.motors.findIndex((m) => m.partId === part.id);
     const motor = a.motors[motorIndex];
+    const reference = componentCatalog.entries.find(
+      (e) => e.id === part.catalogId,
+    );
+    const differences = reference
+      ? componentDifferences(a, part.id, reference)
+      : [];
     const id = (key: string) => `part-detail-${partIndex}-${key}`;
     const f = (
       key: string,
@@ -212,6 +219,7 @@ export class ComponentWorkshop {
         : ""
     }
     <div class="component-installed" ${this.browse ? "hidden" : ""}><div class="component-fields">${f("mass", "Mass · g", part.massKg * 1000, 0.1, 100000, 0.1)}${b ? f("capacity", "Capacity · mAh", b.capacityMah, 1, 100000, 50) + f("cells", "Cells · S", b.cells, 1, 24) + f("charge", "Starting charge · %", b.initialSoc * 100, 0, 100) + f("resistance", "Pack resistance · mΩ", b.resistanceOhm * 1000, 0, 10000, 1) : ""}${part.servo ? f("speed", "Speed · s / 60°", part.servo.speedSecondsPer60Deg, 0.001, 5, 0.01) + f("range", "Rated total travel · °", part.servo.travelDeg, 1, 270) : ""}${motor ? f("thrust", "Static thrust · N", motor.maxThrustN, 0.01, 1000, 0.1) + f("lag", "Motor response · s", motor.responseSeconds, 0.001, 5, 0.01) : ""}</div>
+    ${reference ? `<div class="component-reference ${differences.length ? "modified" : ""}"><strong>${differences.length ? "Modified setup" : "Catalog setup"}</strong><span>${differences.length ? `Changed: ${escape(differences.join(" · "))}` : "Specifications match the catalog model."}</span></div><details id="installed-reference-${partIndex}" class="component-evidence"><summary>Catalog source & assumptions</summary><p class="small muted">${escape(reference.evidence)}</p><div class="component-sources">${reference.sources.map((s) => (/^https?:/.test(s.url) ? `<a href="${escape(s.url)}" target="_blank" rel="noopener noreferrer">${escape(s.title)} ↗</a>` : "")).join("")}</div></details>` : ""}
     ${part.kind === "battery" && !b ? `<p class="component-note">This saved design has no electrical model. Restore the original aircraft to use its latest battery setup, or add battery and motor-current data in the JSON.</p>` : ""}
     ${b ? `<div class="component-effects"><span>Nominal energy<strong>${((b.capacityMah * b.cells * 3.7) / 1000).toFixed(1)} Wh</strong></span><span>Voltage model<strong>${b.cells}S · ${(b.cells * 3.7).toFixed(1)} V nominal</strong></span></div><p class="small muted">Capacity sets stored charge. Mass sets weight, CG and inertia. Resistance causes voltage sag under load.</p>${a.motors.some((m) => m.performance && Math.abs(m.performance.referenceVoltage - b.cells * 3.7) > 1) ? '<p class="component-note">Motor curves use a different reference voltage. Output is extrapolated; supply matching bench data for this pack.</p>' : ""}` : ""}
     ${
@@ -230,7 +238,7 @@ export class ComponentWorkshop {
     }
     ${motor ? `<p class="small muted">${escape(motor.propeller ?? "Configured propeller")} · ${(motor.propDiameterM * 1000).toFixed(0)} mm · ${motor.performance ? motor.performance.referenceVoltage + " V curve" : "No current curve"}. Editing thrust scales the existing force curve; it does not invent measured current data.</p>` : ""}
     <details id="part-installation-${partIndex}" class="component-position"><summary>Installation position & dimensions</summary><p class="small muted">Body axes: X forward · Y right · Z down. Millimeters from the aircraft datum.</p><div class="component-fields">${part.positionM.map((v, i) => f(`pos-${i}`, `${["X", "Y", "Z"][i]} position · mm`, v * 1000, -10000, 10000, 0.5)).join("")}${part.sizeM.map((v, i) => f(`size-${i}`, `${["Length X", "Width Y", "Height Z"][i]} · mm`, v * 1000, 0.1, 10000, 0.5)).join("")}</div></details>
-    ${part.catalogId ? `<small class="muted">Catalog reference: ${escape(part.catalogId)} · values may have been edited</small>` : ""}</div>`;
+    ${part.catalogId && !reference ? `<small class="muted">External catalog reference: ${escape(part.catalogId)}. Specifications are stored in this aircraft; this catalog is not installed.</small>` : ""}</div>`;
     const bind = (key: string, edit: Edit) => this.register(id(key), edit);
     bind("mass", (out, v) => {
       const p = out.parts[partIndex];

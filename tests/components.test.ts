@@ -11,6 +11,7 @@ import {
 import { parseAircraft } from "../src/core/schema";
 import { massProperties } from "../src/core/aircraft";
 import { surfaceActuation } from "../src/core/actuation";
+import { componentDifferences } from "../src/core/component-reference";
 import { powertrain } from "../src/core/powertrain";
 import { findTrim } from "../src/core/trim";
 import {
@@ -20,6 +21,66 @@ import {
 } from "../src/core/simulation";
 const catalog = ComponentCatalogSchema.parse(catalogData);
 const get = (id: string) => catalog.entries.find((e) => e.id === id)!;
+
+it("separates edited product specifications from installation and charge settings", () => {
+  const entry = get("orange-3s-1500-40c");
+  const a = replaceComponent(parseAircraft(raptor), "battery", entry);
+  moveComponent(a, "battery", 0, 0.2);
+  a.parts.find((p) => p.id === "battery")!.orientationDeg = [0, 0, 90];
+  a.battery!.initialSoc = 0.5;
+  a.battery!.avionicsCurrentA = 0.3;
+  expect(componentDifferences(a, "battery", entry)).toEqual([]);
+  a.battery!.capacityMah = 1800;
+  a.parts.find((p) => p.id === "battery")!.massKg += 0.02;
+  expect(
+    componentDifferences(
+      parseAircraft(JSON.parse(JSON.stringify(a))),
+      "battery",
+      entry,
+    ),
+  ).toEqual(["Mass", "Capacity"]);
+  expect(
+    componentDifferences(
+      replaceComponent(a, "battery", entry),
+      "battery",
+      entry,
+    ),
+  ).toEqual([]);
+});
+
+it("tracks the complete motor and prop package while allowing installation changes", () => {
+  const entry = get("emax-mt2213-1045-3s");
+  const a = replaceComponent(parseAircraft(quad), "motor-1", entry);
+  moveComponent(a, "motor-1", 1, 0.2);
+  a.motors[0].spin = a.motors[0].spin === "cw" ? "ccw" : "cw";
+  a.motors[0].yawMix *= -1;
+  expect(componentDifferences(a, "motor-1", entry)).toEqual([]);
+  a.parts.find((p) => p.id === "prop-1")!.massKg += 0.001;
+  a.motors[0].performance!.points[1].currentA += 0.1;
+  expect(componentDifferences(a, "motor-1", entry)).toEqual([
+    "Propeller: Mass",
+    "Propulsion model",
+  ]);
+  expect(componentDifferences(a, "prop-1", entry)).toEqual([
+    "Propeller: Mass",
+    "Propulsion model",
+  ]);
+});
+
+it("recognizes servo specification changes but not the airframe's linkage geometry", () => {
+  const entry = get("towerpro-mg90s");
+  const a = replaceComponent(parseAircraft(raptor), "servo-left-elevon", entry);
+  a.surfaces.find(
+    (s) => s.control?.linkage?.servoPartId === "servo-left-elevon",
+  )!.control!.linkage!.servoArmM *= 0.8;
+  expect(componentDifferences(a, "servo-left-elevon", entry)).toEqual([]);
+  a.parts.find(
+    (p) => p.id === "servo-left-elevon",
+  )!.servo!.speedSecondsPer60Deg *= 1.2;
+  expect(componentDifferences(a, "servo-left-elevon", entry)).toEqual([
+    "Servo specification",
+  ]);
+});
 
 it("swaps a Robu battery as one physical and electrical component", () => {
   const a = parseAircraft(raptor),

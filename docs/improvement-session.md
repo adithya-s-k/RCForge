@@ -266,3 +266,19 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
 - Verification: 180 tests in 32 files, seven aircraft/eight catalog definitions
   and production build pass. No radio was connected; this verifies the UI and
   existing automated transport behavior, not physical wiring or signal reception.
+
+## Pass 10 · catalog specifications versus custom setups
+
+- Installed catalog components now identify matching or modified model
+  specifications, naming changed fields. Source links and assumptions are
+  available on the installed part, not only while browsing replacements.
+- Comparison is derived from saved aircraft data. Position, orientation, starting
+  charge, avionics load, spin and linkage settings are excluded from product
+  differences. Motor packages compare both physical parts and propulsion data.
+  External catalog IDs remain readable without claiming a local match.
+- Browser: replaced the Bronco pack, changed 1500 to 1800 mAh, applied and opened
+  a fresh document. Modified capacity and 20.0 Wh persisted. Restored the original
+  830 g / 2200 mAh reference through the UI afterward.
+- Verification: 183 tests in 32 files, definitions/catalog, production build and
+  documentation links pass. Added saved-data, servo and complete motor-package
+  comparison cases. A catalog match is not physical validation.

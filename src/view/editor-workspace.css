@@ -140,3 +140,23 @@
     margin-top: 7px;
   }
 }
+/* Catalog identity remains visible when its modeled specifications are edited. */
+.component-reference {
+  display: grid;
+  gap: 4px;
+  margin: 14px 0 10px;
+  padding-left: 10px;
+  border-left: 2px solid #62666a;
+  font-size: 11px;
+  color: var(--ui-muted);
+}
+.component-reference strong {
+  color: var(--ui-text);
+  font-size: 12px;
+}
+.component-reference.modified {
+  border-color: #d5ab68;
+}
+.component-reference.modified strong {
+  color: #d5ab68;
+}
