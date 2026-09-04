@@ -1,0 +1,39 @@
+name: Controller or hardware report
+description: Share a tested setup or a hardware connection problem.
+title: "[Hardware]: "
+body:
+  - type: dropdown
+    id: result
+    attributes:
+      label: Result
+      options:
+        - Working setup
+        - Partially working
+        - Connection or calibration problem
+    validations:
+      required: true
+  - type: textarea
+    id: hardware
+    attributes:
+      label: Exact hardware
+      description: Transmitter/gamepad, receiver, adapter, board, firmware, and PPM/PWM mode if applicable. Do not include serial numbers unless necessary.
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: OS, browser and RCForge revision
+    validations:
+      required: true
+  - type: textarea
+    id: observations
+    attributes:
+      label: What did you physically test?
+      description: Axis order/direction, endpoints/neutral, shortcuts, radio power-off, signal/USB removal, reconnect and manual resume. Describe tests not yet performed.
+    validations:
+      required: true
+  - type: textarea
+    id: setup
+    attributes:
+      label: Wiring, setup and supporting evidence
+      description: Link a relevant manual or documented pinout. Remove private data from photos and logs. An exported calibration profile can help.

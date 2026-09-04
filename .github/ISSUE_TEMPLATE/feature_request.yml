@@ -1,0 +1,25 @@
+name: Feature proposal
+description: Propose a focused extension to the open foundation.
+title: "[Proposal]: "
+body:
+  - type: textarea
+    id: workflow
+    attributes:
+      label: What would this let someone do?
+      description: Describe a concrete aircraft-building, flying or experimentation workflow.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed first step
+      description: Suggest a bounded implementation. Include alternatives or existing extension points where relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: How would we verify it?
+      description: Useful tests, measurements, acceptance criteria, data sources and reuse terms.
+    validations:
+      required: true

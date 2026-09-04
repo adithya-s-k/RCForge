@@ -1,0 +1,30 @@
+name: Bug report
+description: Report a reproducible problem in the simulator or tools.
+title: "[Bug]: "
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened?
+      description: Describe the expected behavior and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include the aircraft, launch mode, scenery and input source. Attach a minimal definition or recording if useful; remove private data.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Commit or version, OS, browser and relevant commands/output.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence or observations
+      description: Screenshots, console errors, telemetry or comparisons. If this is a physics issue, distinguish measured behavior from an expectation.

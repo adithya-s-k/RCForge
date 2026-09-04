@@ -1,0 +1,29 @@
+name: Aircraft or component data
+description: Propose a model or share evidence that improves one.
+title: "[Aircraft]: "
+body:
+  - type: input
+    id: design
+    attributes:
+      label: Aircraft or component and exact variant
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: References and reuse terms
+      description: Link plans, specifications or measured datasets, credit their creators and describe their licenses. Do not upload third-party plans without permission.
+    validations:
+      required: true
+  - type: textarea
+    id: data
+    attributes:
+      label: Known parameters and uncertainty
+      description: Dimensions, mass, CG, parts list, thrust/current curves or flight data. Identify what is measured, sourced, calculated or estimated.
+    validations:
+      required: true
+  - type: textarea
+    id: change
+    attributes:
+      label: Intended change and validation
+      description: What should be added or corrected, and what comparison would demonstrate it?

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation and agent workflow
+    url: https://github.com/adithya-s-k/RCForge/blob/main/docs/README.md
+    about: Setup, aircraft definitions, controllers, numerical verification and coding-agent guidance.
+  - name: Report a security vulnerability privately
+    url: https://github.com/adithya-s-k/RCForge/security/advisories/new
+    about: Keep exploit details and private data out of public issues.
