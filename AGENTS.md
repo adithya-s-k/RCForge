@@ -53,7 +53,7 @@ Investigate failed trim, reversed torques and unstable integration. Do not hide 
 Use the checks appropriate to your change:
 
 - **Runtime, aircraft, physics or schema:** `npm run check` (validates all bundled definitions, runs tests, typechecks and builds).
-- **Dynamics:** also `npm run physics:validate`; add meaningful invariant, sign, convergence or measured-data regression coverage.
+- **Dynamics:** also `npm run physics:validate`; add meaningful invariant, sign, convergence or measured-data regression coverage. Run `npm run physics:envelope` for new/modified aircraft and inspect unsuccessful trim and data coverage; it is a survey, not calibrated flight evidence. Read [the realism plan](docs/realism-plan.md) before expanding model fidelity.
 - **Input:** exercise missing devices, mapping, calibration, signal loss and explicit recovery. Keep disconnection from silently selecting another controller or resuming flight.
 - **Browser/UI:** check launch/pause/reset, design apply, Bronco and Tiny Trainer, experiment results, empty-controller behavior and desktop/narrow layouts. Validate changes with the rendered application, not DOM structure alone.
 - **Firmware:** with Arduino CLI and `arduino:avr`, run `bash scripts/check-arduino.sh`. It compiles both modes for classic Uno, Nano and Nano Old Bootloader; it never uploads.

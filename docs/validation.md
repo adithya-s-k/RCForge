@@ -37,7 +37,7 @@ Rigid-body 6-DOF dynamics, uniform-box mass components, quasi-steady surface lif
 
 ## What is not modeled
 
-Structural flexibility or failure, foamboard fold mechanics, CFD, Reynolds-number interpolation of airfoil tables, dynamic stall, validated wing/wake/downwash interactions, P-factor/gyroscopic effects, detailed electrical/thermal systems, suspension and tire deformation, radio latency or RF behavior, terrain collision beyond a flat plane, and validated real-aircraft flight characteristics.
+Structural flexibility or failure, foamboard fold mechanics, CFD, automatic conversion of section polars into finite-wing data, dynamic stall, validated wing/wake/downwash interactions, P-factor/gyroscopic effects, detailed electrical/thermal systems, suspension and tire deformation, radio latency or RF behavior, terrain collision beyond a flat plane, and validated real-aircraft flight characteristics.
 
 Reference geometry is intentionally simplified. Visual meshes represent the same dimensions used in flight calculations, but are not manufacturing drawings. Component mass allocations are estimates even when the total reference mass is published.
 
@@ -60,3 +60,15 @@ Selectable field scenery, temperature/elevation density, surface friction, optio
 ## Landscape rendering
 
 Alpine and mesa shapes are derived from offline elevation tiles, with a deliberately flattened airfield and estimated surface materials. The photographic asphalt, paint, shoulders and markers are cosmetic. Surface friction still follows the selected scenery everywhere; hills, buildings, plants and markers have no collision. Real elevation sources do not establish physical flight-model accuracy. The data transformations, source coordinates, licenses and regeneration command are documented in [the scenery manifest](../public/scenery/README.md).
+
+## Version 0.6 additions
+
+Reynolds-dependent finite-wing tables and temperature-dependent viscosity are
+supported, with explicit data-coverage diagnostics. Nine regression cases cover
+interpolation, angular fallback, invalid data, local-flow loads, geometry edits,
+viscosity and replay. `physics:validate` discovers every aircraft definition and
+accepts an ID/path; its equilibrium checks hold SOC fixed while separate cases
+verify depletion. `physics:envelope` surveys speed, density, mass and charge and
+reports unsuccessful trim points. Neither command is measured-aircraft validation.
+See the [research and implementation plan](realism-plan.md) for prioritized work
+and the evidence needed before increasing fidelity claims.

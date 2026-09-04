@@ -77,7 +77,7 @@ Start, pause and reset remain available in the bottom bar when setup is closed. 
 | Physics     | Six-degree-of-freedom rigid body, surface forces, approximate stall and propwash, ground contact, multirotor control, optional battery/motor tables |
 | Experiments | Headless scenarios, baseline comparisons, telemetry CSV, recordings, replay and numerical verification reports                                      |
 
-The aircraft presets combine referenced dimensions with estimated aerodynamic and component data. The optional electrical model is simplified; scenery collision remains a flat surface. **A convincing picture or a passing test is not flight validation.** See [component models](docs/component-models.md), [reconstruction notes](docs/flite-test-reconstruction.md) and [physics verification](docs/physics-validation.md).
+The aircraft presets combine referenced dimensions with estimated aerodynamic and component data. The optional electrical model is simplified; scenery collision remains a flat surface. **A convincing picture or a passing test is not flight validation.** The [realism plan](docs/realism-plan.md) documents simulator research, Reynolds-dependent data support, operating-point surveys and the remaining measurement work. See [component models](docs/component-models.md), [reconstruction notes](docs/flite-test-reconstruction.md) and [physics verification](docs/physics-validation.md).
 
 ### Use your radio
 
@@ -116,6 +116,7 @@ npm run simulate -- ft-bronco --scenario glide --duration 20
 npm run simulate -- ft-bronco --scenario pitch-pulse --battery-shift 0.05 --out results/battery-forward
 npm run replay -- results/ft-bronco-glide/recording.json
 npm run physics:validate
+npm run physics:envelope
 ```
 
 Scenario runs write a recording, telemetry CSV and summary under `results/`. Numerical verification writes an HTML/JSON report under `results/validation/`. Both are local generated outputs, excluded from Git.

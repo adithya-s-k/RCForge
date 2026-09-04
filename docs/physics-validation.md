@@ -9,9 +9,10 @@ Run:
 ```sh
 npm run check
 npm run physics:validate
+npm run physics:envelope
 ```
 
-The second command writes `results/validation/report.json` and `report.html`, including the simulator version and a SHA-256 digest of aircraft definitions. It checks equilibrium residuals, ten-second equilibrium drift, recorded-input replay, timestep convergence against 480 Hz, an analytical free-fall case, analytical quadratic-drag descent, exact first-order actuator response, torque-free angular momentum/energy conservation, and yaw-coordinate invariance. A separately implemented 1 kHz RK4 integrator also compares airplane trajectories using the shared force model. Tests additionally cover force/control signs, mass/inertia, landing/takeoff, input normalization and multirotor control behavior.
+`physics:validate` discovers all `aircraft/*.json` files or accepts an aircraft ID/JSON path. It writes `results/validation/report.json` and `report.html`, including the simulator version and a SHA-256 digest of aircraft definitions. It checks equilibrium residuals, ten-second equilibrium drift at fixed battery SOC, recorded-input replay, timestep convergence against 480 Hz, an analytical free-fall case, analytical quadratic-drag descent, exact first-order actuator response, torque-free angular momentum/energy conservation, and yaw-coordinate invariance. A separately implemented 1 kHz RK4 integrator also compares airplane trajectories using the shared force model. Tests additionally cover force/control signs, mass/inertia, landing/takeoff, input normalization and multirotor control behavior.
 
 The convergence reference and replay use the same implementation, so they detect integration/serialization problems, not shared errors in aerodynamic assumptions. The free-fall, quadratic drag and actuator cases compare against analytical solutions. RK4 agreement checks the integrator but does not independently validate aerodynamic coefficients. The report explicitly records external validation as pending.
 
@@ -39,4 +40,15 @@ Verify transmitter → USB adapter → browser axis mapping → calibration → 
 
 Expanded verification runs in CI through `npm run physics:validate`. Current reports remain reproducible snapshots tied to definition hashes; their passing status is not an aerodynamic calibration label. The assumed surface polars, stall blend, propwash, thrust/speed curves and contact properties remain the largest gaps.
 
-Version 0.5 also checks the resistive battery circuit against V = Voc − IR, one-step coulomb counting, and deterministic electrical-state replay using the 6S example. A declining battery is deliberately not treated as a constant-throttle hover equilibrium. These checks validate the implemented approximation, not the bench curves.
+Version 0.5 also checks the resistive battery circuit against V = Voc − IR, one-step coulomb counting, and deterministic electrical-state replay for every electrical definition. A declining battery is deliberately not treated as a constant-throttle hover equilibrium. These checks validate the implemented approximation, not the bench curves.
+
+## Operating-point survey
+
+`npm run physics:envelope` discovers all bundled aircraft. Use
+`npm run physics:envelope -- aircraft/my-aircraft.json` for a custom build.
+It writes `results/validation/envelope.json` and `envelope.html`, including
+component properties, definition hashes, source evidence, trim results and polar
+coverage across atmospheres, mass changes, speed and battery charge. Untrimmed
+points are visible; the command does not treat them as test failures or claim
+that a converged point is dynamically stable. Nonfinite load cases do fail it.
+See [the realism plan](realism-plan.md) for the sweep definitions and limits.
