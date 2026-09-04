@@ -141,3 +141,32 @@ it.each([bronco, tiny])(
     expect(launchTrim(a, "hand").converged).toBe(true);
   },
 );
+
+it("keeps the Bronco nose broad and curved at the original side-panel dimensions", () => {
+  const a = parseAircraft(bronco);
+  const fuselage = a.parts.find((p) => p.id === "fuselage")!;
+  const sections = fuselage.bodyLoft!;
+  const noseRoot = sections.find(
+    (s) =>
+      Math.abs(
+        fuselage.positionM[0] +
+          s.x * fuselage.sizeM[0] -
+          (0.327 - ((712.96 - 139.420044) * 0.0254) / 72),
+      ) < 1e-7,
+  )!;
+  expect(noseRoot).toBeDefined();
+  expect((noseRoot.bottom - noseRoot.top) * fuselage.sizeM[2]).toBeCloseTo(
+    ((1716.5 - 1344.86) * 0.0254) / 72,
+    6,
+  );
+  const tip = sections.at(-1)!;
+  expect((tip.x - noseRoot.x) * fuselage.sizeM[0]).toBeCloseTo(
+    ((712.96 - 139.5) * 0.0254) / 72,
+    7,
+  );
+  expect(tip.width * fuselage.sizeM[1]).toBeCloseTo(0.068, 7);
+  expect((tip.bottom - tip.top) * fuselage.sizeM[2]).toBeLessThan(0.003);
+  const properties = massProperties(a);
+  expect(properties.mass).toBeCloseTo(0.83, 9);
+  expect(a.reference.leadingEdgeXM - properties.cg[0]).toBeCloseTo(0.051, 6);
+});

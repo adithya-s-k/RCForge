@@ -368,3 +368,20 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
 - Verification: 192 tests in 34 files, definitions/catalog and build pass. Tests
   compare rotated fixed-wing bounds, quad battery transforms after batching, and
   editor mass/CG/inertia behavior. No new geometry or simulation-version change.
+
+## Pass 16 · Bronco nose and cockpit reconstruction
+
+- The central fuselage still used a generic narrow pointed nose. Revisited the
+  original sheet-1 Nose part 05 and assembly photo. Sampled the upper/lower cut
+  curves: 202.33 mm projected nose length, 131.66 mm rear height and about 68 mm
+  parallel core width. The broader curved bow and cockpit rise now follow those
+  readings. Rear-core join, vertical registration and paint remain estimates.
+- Roof/side paint and white mullions conform to the folded profile. Fuselage mass
+  center/allocation and total 830 g / 51 mm CG remain; its larger outer envelope
+  changes the calculated box inertia. No source artwork is bundled.
+- Browser compared original photograph with perspective/top/side editor views.
+  Numerical validation passes; Bronco survey remains 81/135 and zero nonfinite
+  loads. Added source-station, bow-width and mass/CG regression coverage.
+- Continue within the authorized window: existing flight/controller/editor UX,
+  model assembly consistency and efficient rendering. Do not duplicate the active
+  continuation automation or claim physical calibration.

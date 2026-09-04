@@ -278,6 +278,122 @@ function rod(parent: T.Object3D, a: Vec3, b: Vec3, r: number, m: T.Material) {
   v.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), delta.normalize());
   return v;
 }
+/** Paint on the Bronco's folded cabin; photo-guided, not separate structure. */
+function broncoCabin(parent: T.Group, part: Aircraft["parts"][number]) {
+  const glass = new T.MeshStandardMaterial({
+    color: "#23262a",
+    roughness: 0.67,
+    metalness: 0,
+    side: T.DoubleSide,
+    polygonOffset: true,
+    polygonOffsetFactor: -1,
+    polygonOffsetUnits: -1,
+  });
+  const sx = part.sizeM[0] / 0.447,
+    sz = part.sizeM[2] / 0.132;
+  const px = (x: number) => part.positionM[0] + (x - 0.1035) * sx;
+  const pz = (z: number) => part.positionM[2] + (z - 0.045) * sz;
+  const panes = [
+    [
+      [0.077, -0.033],
+      [0.128, -0.037],
+      [0.128, 0.022],
+      [0.077, 0.018],
+    ],
+    [
+      [0.133, -0.037],
+      [0.17, -0.03],
+      [0.19, -0.014],
+      [0.207, 0.006],
+      [0.197, 0.022],
+      [0.133, 0.022],
+    ],
+  ];
+  for (const side of [-1, 1])
+    for (const pane of panes) {
+      const shape = new T.Shape(
+        pane.map(([x, z]) => new T.Vector2(px(x), pz(z))),
+      );
+      const geometry = new T.ShapeGeometry(shape);
+      const pos = geometry.getAttribute("position");
+      for (let i = 0; i < pos.count; i++)
+        pos.setXYZ(
+          i,
+          pos.getX(i),
+          part.positionM[1] + side * (part.sizeM[1] / 2 + 0.0003),
+          pos.getY(i),
+        );
+      geometry.computeVertexNormals();
+      mesh(geometry, glass, parent).name = "cockpit-window";
+    }
+  // Narrow white roof mullion follows each curved station instead of floating
+  // a flat rectangle above the skin. Paint adds no hidden component mass.
+  const positions: number[] = [],
+    indices: number[] = [];
+  const firstPaint = part.bodyLoft!.findIndex((s) => s.topColor);
+  const lastPaint = part.bodyLoft!.reduce(
+    (last, s, i) => (s.topColor ? i : last),
+    -1,
+  );
+  const stations = part.bodyLoft!.slice(firstPaint, lastPaint + 2);
+  for (const side of [-1, 0, 1]) {
+    const first = positions.length / 3;
+    for (const s of stations) {
+      const x = part.positionM[0] + s.x * part.sizeM[0];
+      const z = part.positionM[2] + s.top * part.sizeM[2] - 0.0004;
+      const centerY =
+        part.positionM[1] + side * ((s.width * part.sizeM[1]) / 2 - 0.0015);
+      positions.push(x, centerY - 0.0015, z, x, centerY + 0.0015, z);
+    }
+    for (let i = 0; i < stations.length - 1; i++) {
+      const n = first + i * 2;
+      indices.push(n, n + 1, n + 2, n + 1, n + 3, n + 2);
+    }
+  }
+  const roofHeight = (x: number) => {
+    const local = (x - part.positionM[0]) / part.sizeM[0];
+    const sections = part.bodyLoft!;
+    const i = Math.max(
+      1,
+      sections.findIndex((s) => s.x >= local),
+    );
+    const a = sections[i - 1],
+      b = sections[i];
+    return (
+      part.positionM[2] +
+      T.MathUtils.lerp(a.top, b.top, (local - a.x) / (b.x - a.x)) *
+        part.sizeM[2] -
+      0.0005
+    );
+  };
+  for (const center of [0.08, 0.131]) {
+    const x0 = px(center - 0.0014),
+      x1 = px(center + 0.0014);
+    const y0 = part.positionM[1] - part.sizeM[1] * 0.5;
+    const y1 = part.positionM[1] + part.sizeM[1] * 0.5;
+    const n = positions.length / 3;
+    positions.push(
+      x0,
+      y0,
+      roofHeight(x0),
+      x0,
+      y1,
+      roofHeight(x0),
+      x1,
+      y0,
+      roofHeight(x1),
+      x1,
+      y1,
+      roofHeight(x1),
+    );
+    indices.push(n, n + 1, n + 2, n + 1, n + 3, n + 2);
+  }
+  const roof = new T.BufferGeometry();
+  roof.setAttribute("position", new T.Float32BufferAttribute(positions, 3));
+  roof.setIndex(indices);
+  roof.computeVertexNormals();
+  mesh(roof, foam, parent).name = "cockpit-mullion";
+}
 export function buildAircraft(a: Aircraft): AircraftVisual {
   if (a.vehicleType === "multirotor") return buildQuad(a);
   const group = new T.Group(),
@@ -310,6 +426,7 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
         baseColor,
         y,
       );
+      if (isBronco && p.id === "fuselage") broncoCabin(group, p);
     } else if (p.kind === "body" && isTiny) {
       const [x, y, z] = p.positionM,
         [l, w, h] = p.sizeM;

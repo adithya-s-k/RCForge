@@ -57,6 +57,11 @@
       "status": "estimated",
       "note": "Wing skin has 5 mm board and estimated 21 mm folded height. A-tail central trailing-edge relief and hinge station follow sheet 3. Nacelles split 40 g from the original fuselage allocation; boom taper and component stations use estimated folded geometry. Servo positions now follow the wing and rear booms; total mass and 51 mm CG target retained. Battery height is estimated to fit beneath the sloping nose skin; it is not a measured installation.",
       "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf"
+    },
+    "noseReconstruction": {
+      "status": "estimated",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf",
+      "note": "Sheet 1 Nose part 05: right-side cut outline runs Y=139.420 to 712.960 pt; inner fold station X=1344.86 pt. Its 573.54 pt projected length is 202.33 mm and rear height 371.64 pt is 131.66 mm. Sampled curvature replaces generic pointed loft. Parallel 68 mm width follows the 192.84 pt core fold separation (including board overlap); rear-core transition and X/Z registration remain photo-guided estimates. Nose apex retained near body X=327 mm. Cockpit paint and hatch markings are estimated from original assembly photographs. Fuselage mass and mass center retained; updated outer envelope changes its box-inertia estimate."
     }
   },
   "parts": [
@@ -89,12 +94,167 @@
       "kind": "body",
       "massKg": 0.084,
       "positionM": [0.1035, 0, 0.045],
-      "sizeM": [0.447, 0.063, 0.11],
+      "sizeM": [0.447, 0.068, 0.132],
       "color": "#e7e5d9",
       "material": {
         "name": "Foamboard assembly",
         "finish": "foam"
-      }
+      },
+      "bodyLoft": [
+        {
+          "x": -0.49999999999999994,
+          "width": 0.7352941176470588,
+          "top": -0.25,
+          "bottom": 0.07575757575757577
+        },
+        {
+          "x": -0.39932885906040266,
+          "width": 0.926470588235294,
+          "top": -0.3409090909090909,
+          "bottom": 0.2878787878787879
+        },
+        {
+          "x": -0.2315436241610738,
+          "width": 1.0,
+          "top": -0.43181818181818177,
+          "bottom": 0.3409090909090909
+        },
+        {
+          "x": -0.12416107382550334,
+          "width": 1.0,
+          "top": -0.49242424242424243,
+          "bottom": 0.3409090909090909
+        },
+        {
+          "x": -0.06375838926174496,
+          "width": 1.0,
+          "top": -0.6439393939393938,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": -0.019015659955257256,
+          "width": 1.0,
+          "top": -0.6515151515151514,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.047355366567238356,
+          "width": 1.0,
+          "top": -0.6523207047057097,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.08125991541138457,
+          "width": 1.0,
+          "top": -0.6462575290995118,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.11282839664429531,
+          "width": 1.0,
+          "top": -0.6321921319773726,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.14439687787720612,
+          "width": 1.0,
+          "top": -0.60665145699795,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.16876774538901324,
+          "width": 1.0,
+          "top": -0.5777422160143337,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.19174959972657224,
+          "width": 1.0,
+          "top": -0.539778783500991,
+          "bottom": 0.3394174633499517,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.21542596065125533,
+          "width": 1.0,
+          "top": -0.4840647326139855,
+          "bottom": 0.33697171738533327,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.2442953367387522,
+          "width": 1.0,
+          "top": -0.36015638511698833,
+          "bottom": 0.3320618259523528
+        },
+        {
+          "x": 0.2627786825006214,
+          "width": 1.0,
+          "top": -0.3609582811349171,
+          "bottom": 0.3278517912879286
+        },
+        {
+          "x": 0.29434716373353226,
+          "width": 1.0,
+          "top": -0.35704856678896957,
+          "bottom": 0.31858313127465193
+        },
+        {
+          "x": 0.33380776527467076,
+          "width": 1.0,
+          "top": -0.34173572819657794,
+          "bottom": 0.30234801517075865
+        },
+        {
+          "x": 0.3732683668158092,
+          "width": 1.0,
+          "top": -0.3141974722723571,
+          "bottom": 0.27860267185403803
+        },
+        {
+          "x": 0.4127289683569476,
+          "width": 1.0,
+          "top": -0.27146514583492826,
+          "bottom": 0.24465118121095772
+        },
+        {
+          "x": 0.4442974495898584,
+          "width": 1.0,
+          "top": -0.22205406335784678,
+          "bottom": 0.20547827437502836
+        },
+        {
+          "x": 0.46797381051454146,
+          "width": 1.0,
+          "top": -0.16964268762486934,
+          "bottom": 0.16289577915057468
+        },
+        {
+          "x": 0.48375805113099685,
+          "width": 1.0,
+          "top": -0.12030647022407258,
+          "bottom": 0.12038077943873851
+        },
+        {
+          "x": 0.49559623159333843,
+          "width": 1.0,
+          "top": -0.06002367764353735,
+          "bottom": 0.06715989938336515
+        },
+        {
+          "x": 0.49993689776286365,
+          "width": 1.0,
+          "top": -0.003210271442494184,
+          "bottom": 0.01049122035297334
+        }
+      ]
     },
     {
       "id": "left-boom",

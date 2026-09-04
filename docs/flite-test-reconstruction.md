@@ -29,6 +29,21 @@ forward to represent this taper. Tail servos sit on the rear booms. These are
 assembly estimates, not weighed or scanned parts. Battery position is solved
 again so total mass remains 830 g and the longitudinal CG remains 51 mm aft of LE.
 
+The central nose now also uses the original sheet-1 **Nose / part 05** outline.
+The right-side cut path runs from Y = 139.420 to 712.960 pt; its inner fold is
+at X = 1344.86 pt. This gives a 202.33 mm projected nose length and a
+131.66 mm rear height (371.64 pt). Sampled upper/lower curves replace the
+previous generic pointed profile. The approximately 68 mm parallel section
+follows the core fold separation, including foam overlap; the front retains
+its broad width rather than tapering to a narrow point.
+
+The nose apex stays near body X = 327 mm. Joining it to the rear fuselage,
+vertical registration and the cockpit paint are photo-guided estimates. The
+84 g fuselage allocation and its mass center are unchanged; its updated outer
+68 × 132 mm cross-section changes the cuboid inertia estimate. Curved roof
+paint and side panes follow the skin, with thin white mullions. This is a
+procedural reconstruction of the build's silhouette, not a scan or a CAD fit.
+
 ## Tiny Trainer Sport
 
 The plan specifies 193 g without battery, 16° throws, 30% expo and a minimum 5×3 propeller. The preset assumes a 60 g battery for 253 g total. The source recommends a 250-size 2200 kv motor, minimum 12 A ESC, 500–1000 mAh 3S battery and 5 g servos. The preset uses an estimated 3S 650 mAh pack and simplified battery discharge. Motor-current data remains estimated; ESC electronics are not simulated.
