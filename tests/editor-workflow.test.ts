@@ -20,6 +20,7 @@ function setup() {
         parentElement: {},
         classList: { add: () => {}, remove: () => {} },
         querySelectorAll: () => [],
+        querySelector: () => null,
         toggleAttribute: () => {},
         setAttribute: (k: string, v: string) => attributes.set(k, v),
         removeAttribute: (k: string) => attributes.delete(k),

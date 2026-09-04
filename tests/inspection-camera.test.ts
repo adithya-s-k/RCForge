@@ -30,3 +30,31 @@ it.each(["top", "side"] as const)(
     }
   },
 );
+
+it("fits the assembled perspective corners after narrowing the component workspace", async () => {
+  const { inspectionDistance } = await import("../src/view/inspection-camera");
+  const size = new T.Vector3(0.95, 1.1, 0.25);
+  for (const aspect of [0.65, 1, 2.3])
+    for (const yaw of [0.2, 0.65, 1.5]) {
+      const backward = new T.Vector3(
+        Math.cos(yaw) * Math.cos(0.35),
+        Math.sin(0.35),
+        Math.sin(yaw) * Math.cos(0.35),
+      );
+      const camera = new T.PerspectiveCamera(42, aspect, 0.001, 100);
+      camera.position
+        .copy(backward)
+        .multiplyScalar(inspectionDistance(size, backward, aspect));
+      camera.lookAt(0, 0, 0);
+      camera.updateMatrixWorld();
+      for (const x of [-0.5, 0.5])
+        for (const y of [-0.5, 0.5])
+          for (const z of [-0.5, 0.5]) {
+            const p = new T.Vector3(x * size.x, y * size.z, z * size.y).project(
+              camera,
+            );
+            expect(Math.abs(p.x)).toBeLessThan(0.79);
+            expect(Math.abs(p.y)).toBeLessThan(0.79);
+          }
+    }
+});

@@ -1,0 +1,142 @@
+/* The aircraft stays visible while its installed components are edited. */
+.editor-sections {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: -5px 0 14px;
+  border-bottom: 1px solid var(--ui-border);
+}
+.editor-sections button {
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 10px 16px;
+  color: var(--ui-muted);
+}
+.editor-sections button[aria-selected="true"] {
+  border-bottom-color: var(--ui-text);
+  color: var(--ui-text);
+}
+.editor-sections > span {
+  margin-left: auto;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.editor-page[data-workspace="components"] .editor-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(500px, 47%);
+}
+.editor-page[data-workspace="components"] .editor-view {
+  position: sticky;
+  top: calc(var(--ui-header-height) + 90px);
+  height: min(calc(100vh - 170px), 720px);
+}
+.editor-page[data-workspace="components"] #component-workshop {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  padding: 16px;
+}
+.editor-page[data-workspace="components"] .workshop-layout {
+  grid-template-columns: minmax(120px, 30%) minmax(0, 1fr);
+  gap: 14px;
+}
+.editor-page[data-workspace="components"] .workshop-heading {
+  margin-bottom: 14px;
+}
+.editor-page[data-workspace="components"] .workshop-heading > span {
+  display: none;
+}
+.editor-page[data-workspace="components"] .workshop-parts {
+  max-height: 520px;
+}
+.editor-page[data-workspace="components"] .workshop-parts button {
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 10px;
+}
+.editor-page[data-workspace="components"] .workshop-parts small {
+  max-width: 130px;
+}
+.editor-page[data-workspace="components"] .workshop-parts strong {
+  color: var(--ui-muted);
+  font-weight: 400;
+}
+.editor-page[data-workspace="components"] .component-detail-heading {
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.editor-page[data-workspace="components"] .component-fields {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.editor-page[data-workspace="components"] .component-details,
+.editor-page[data-workspace="components"] #quad-config {
+  display: none;
+}
+.component-focus-label {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 58px;
+  font-size: 11px;
+  color: var(--ui-muted);
+  pointer-events: none;
+  z-index: 2;
+  line-height: 1.5;
+}
+@media (max-width: 1050px) {
+  .editor-page[data-workspace="components"] .editor-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .editor-page[data-workspace="components"] #component-workshop {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .editor-page[data-workspace="components"] .editor-view {
+    position: relative;
+    top: auto;
+    height: 350px;
+    min-height: 300px;
+  }
+  .editor-page[data-workspace="components"] .workshop-layout {
+    grid-template-columns: minmax(125px, 27%) minmax(0, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .editor-page[data-workspace="components"] .workshop-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .editor-page[data-workspace="components"] .editor-view {
+    height: 280px;
+    min-height: 280px;
+  }
+}
+@media (min-width: 1051px) {
+  .editor-page > .page-heading {
+    position: sticky;
+    top: var(--ui-header-height);
+    z-index: 15;
+    background: var(--ui-bg);
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+}
+.compact-part-picker {
+  display: none;
+}
+@media (max-width: 600px) {
+  .editor-page[data-workspace="components"] .workshop-parts {
+    display: none;
+  }
+  .compact-part-picker {
+    display: block;
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  .compact-part-picker select {
+    display: block;
+    margin-top: 7px;
+  }
+}

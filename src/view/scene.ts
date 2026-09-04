@@ -11,7 +11,12 @@ import { createField } from "./field";
 import type { Placement } from "../core/placement";
 import { renderBudget, renderPixelRatio } from "./render-budget";
 import { followAircraftShadow } from "./aircraft-shadow";
-import { fitInspectionCamera, type InspectionView } from "./inspection-camera";
+import {
+  fitInspectionCamera,
+  inspectionDistance,
+  type InspectionView,
+} from "./inspection-camera";
+import { ComponentFocus } from "./component-focus";
 const studioSun: [number, number, number] = [-3, 6, 4];
 const toWorld = (v: Vec3) => new T.Vector3(v[0], -v[2], v[1]);
 const conversion = new T.Quaternion().setFromAxisAngle(
@@ -28,6 +33,10 @@ export class FlightScene {
   private inspectionView: InspectionView = "perspective";
   private modelSize = new T.Vector3(1, 1, 1);
   private modelCenter = new T.Vector3();
+  private componentFocus = new ComponentFocus();
+  private componentFocusLabel = document.createElement("div");
+  private selectedComponent?: Aircraft["parts"][number];
+  private inspectComponents = false;
   onInspectionView?: (view: InspectionView) => void;
   mode: CameraMode = "ground";
   showForces = false;
@@ -104,6 +113,10 @@ export class FlightScene {
     );
     this.axisGuide.innerHTML = `<svg viewBox="0 0 146 86" role="img" aria-label="Aircraft orientation axes">${["X", "Y", "Z"].map((a, i) => `<g stroke="${["#ef8c84", "#a7d08d", "#8ebfec"][i]}"><line id="axis-line-${a}" x1="73" y1="43"/><text id="axis-text-${a}" fill="${["#ef8c84", "#a7d08d", "#8ebfec"][i]}" stroke="none">${a}</text></g>`).join("")}<circle cx="73" cy="43" r="2" fill="#dce4e8"/></svg><small>X Forward · Y Right · Z Down</small>`;
     container.append(this.axisGuide);
+    this.componentFocusLabel.className = "component-focus-label";
+    this.componentFocusLabel.hidden = true;
+    container.append(this.componentFocusLabel);
+    this.scene.add(this.componentFocus.group);
     this.scene.add(this.hemisphere);
     const sun = (this.sun = new T.DirectionalLight("#fff4dc", 3.2));
     sun.position.set(25, 60, -35);
@@ -267,6 +280,17 @@ export class FlightScene {
     });
     this.snap = true;
   }
+  setComponentInspection(
+    part: Aircraft["parts"][number] | undefined,
+    active: boolean,
+  ) {
+    this.selectedComponent = part;
+    this.inspectComponents = active;
+    this.componentFocus.set(part);
+    this.componentFocusLabel.textContent = part
+      ? `${part.id.replaceAll("-", " ")} · ${(part.massKg * 1000).toFixed(1)} g · installation envelope`
+      : "";
+  }
   setCamera(mode: CameraMode) {
     this.mode = mode;
     this.snap = true;
@@ -293,6 +317,8 @@ export class FlightScene {
     if (this.scenery === id) return;
     this.scenery = id;
     this.field.dispose();
+    this.componentFocus.dispose();
+    this.componentFocusLabel.remove();
     this.field = createField(this.scene, sceneries[id]);
     const p = sceneries[id];
     this.sun.position.set(...p.sun);
@@ -488,20 +514,19 @@ export class FlightScene {
       target.addScaledVector(this.chaseForward, 0.6);
       this.camera.fov = 52;
     } else {
-      const distance =
-        this.span *
-        2.1 *
-        this.orbitZoom *
-        Math.max(1, 0.85 / this.camera.aspect);
-      desired = target
-        .clone()
-        .add(
-          new T.Vector3(
-            Math.cos(this.orbitYaw) * Math.cos(this.orbitPitch),
-            Math.sin(this.orbitPitch),
-            Math.sin(this.orbitYaw) * Math.cos(this.orbitPitch),
-          ).multiplyScalar(distance),
-        );
+      const backward = new T.Vector3(
+        Math.cos(this.orbitYaw) * Math.cos(this.orbitPitch),
+        Math.sin(this.orbitPitch),
+        Math.sin(this.orbitYaw) * Math.cos(this.orbitPitch),
+      );
+      const distance = this.studio
+        ? inspectionDistance(this.modelSize, backward, this.camera.aspect) *
+          this.orbitZoom
+        : this.span *
+          2.1 *
+          this.orbitZoom *
+          Math.max(1, 0.85 / this.camera.aspect);
+      desired = target.clone().add(backward.multiplyScalar(distance));
       this.camera.position.copy(desired);
       this.camera.fov = 42;
     }
@@ -569,6 +594,9 @@ export class FlightScene {
         label.setAttribute("y", String(y - 3));
       });
     }
+    this.componentFocus.group.visible =
+      this.studio && this.inspectComponents && !!this.selectedComponent;
+    this.componentFocusLabel.hidden = !this.componentFocus.group.visible;
     this.axisGuide.hidden = !this.studio;
     this.axisGuide.style.right = this.studio ? "14px" : "auto";
     this.axisGuide.style.left = this.studio ? "auto" : "14px";
@@ -588,6 +616,8 @@ export class FlightScene {
     this.observer.disconnect();
     this.disposeVisual();
     this.field.dispose();
+    this.componentFocus.dispose();
+    this.componentFocusLabel.remove();
     this.placementRing.geometry.dispose();
     this.placementRing.material.dispose();
     this.placementArrow.dispose();

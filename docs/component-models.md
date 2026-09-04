@@ -8,7 +8,7 @@ The schema remains aircraft format 1 with optional extensions. Simulation versio
 
 By default, local component inertia is a uniform cuboid derived from `sizeM`. Supply `inertiaDiagonalKgM2: [Ixx,Iyy,Izz]` for measured/CAD principal moments and `orientationDeg: [roll,pitch,yaw]` for the principal frame relative to the body (Rz Ry Rx). RCForge rotates the tensor then applies the parallel-axis theorem about the total CG. Position is the component CG, not a CAD mesh origin. Principal moments must be positive and satisfy the triangle inequalities. Total-mass edits scale supplied inertia; span edits discard affected structural-component inertia overrides and recalculate a box estimate. Material names alone never alter flight physics.
 
-Component positions affect CG and torque arms in all three axes. The editor's Build & powertrain section exposes component masses, material descriptions and the calculated CG. The editor's longitudinal CG control moves the battery. The model is rigid; it does not simulate foam flex, carbon laminate failure, fastener failure or crush damage.
+Component positions affect CG and torque arms in all three axes. The editor's Components workspace exposes component masses, material descriptions and the calculated CG beside the assembled model. Its selected installation envelope uses `positionM`, `sizeM` and component orientation; it is a mass envelope, not collision geometry. The editor's longitudinal CG control moves the battery. The model is rigid; it does not simulate foam flex, carbon laminate failure, fastener failure or crush damage.
 
 ## Battery + motor/prop combination
 

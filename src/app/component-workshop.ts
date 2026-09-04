@@ -37,6 +37,9 @@ export class ComponentWorkshop {
     private commitPending: () => void,
     private replace: (a: Aircraft) => void,
     private notify: (message: string) => void,
+    private selected: (
+      part: Aircraft["parts"][number] | undefined,
+    ) => void = () => {},
   ) {}
   private navigate(fn: () => void) {
     try {
@@ -56,10 +59,14 @@ export class ComponentWorkshop {
       typeof window !== "undefined" && host.contains?.(focused);
     const scrollY = restoreScroll ? window.scrollY : 0;
     const focusId = restoreScroll ? focused?.id : undefined;
+    const listScroll =
+      host.querySelector<HTMLElement>(".workshop-parts")?.scrollTop ?? 0;
     const openDetails = [
       ...host.querySelectorAll<HTMLDetailsElement>("details[open]"),
     ].map((d) => d.id);
     const restoreView = () => {
+      const list = host.querySelector<HTMLElement>(".workshop-parts");
+      if (list) list.scrollTop = listScroll;
       for (const id of openDetails) {
         const detail = $<HTMLDetailsElement>(id);
         if (detail) detail.open = true;
@@ -86,6 +93,7 @@ export class ComponentWorkshop {
     );
     let part = visible.find((p) => p.id === this.partId) ?? visible[0];
     if (part) this.partId = part.id;
+    this.selected(part);
     const total = massProperties(a);
     $("component-workshop").innerHTML =
       `<div class="workshop-heading"><div><h2>Components</h2><span>${a.parts.length} parts · ${(total.mass * 1000).toFixed(0)} g assembled</span></div><span class="small muted">Changes apply with the aircraft</span></div><div class="workshop-layout"><div class="workshop-inventory"><label class="sr-only" for="component-filter">Component type</label><select id="component-filter">${[
@@ -102,10 +110,16 @@ export class ComponentWorkshop {
         )
         .join(
           "",
-        )}</select><div class="workshop-parts" role="group" aria-label="Installed components">${visible.map((p) => `<button data-component-id="${escape(p.id)}" aria-pressed="${p.id === part?.id}" class="${p.id === part?.id ? "active" : ""}"><span><b>${escape(p.id.replaceAll("-", " "))}</b><small>${escape(p.model ?? p.material?.name ?? p.kind)}</small></span><strong>${(p.massKg * 1000).toFixed(1)}<small>g</small></strong></button>`).join("") || '<p class="muted">No components of this type.</p>'}</div></div><div id="component-detail" class="component-detail"></div></div>`;
+        )}</select><label class="compact-part-picker">Installed part<select id="component-picker">${visible.map((p) => `<option value="${escape(p.id)}" ${p.id === part?.id ? "selected" : ""}>${escape(p.id.replaceAll("-", " "))} · ${(p.massKg * 1000).toFixed(1)} g</option>`).join("")}</select></label><div class="workshop-parts" role="group" aria-label="Installed components">${visible.map((p) => `<button data-component-id="${escape(p.id)}" aria-pressed="${p.id === part?.id}" class="${p.id === part?.id ? "active" : ""}"><span><b>${escape(p.id.replaceAll("-", " "))}</b><small>${escape(p.model ?? p.material?.name ?? p.kind)}</small></span><strong>${(p.massKg * 1000).toFixed(1)}<small>g</small></strong></button>`).join("") || '<p class="muted">No components of this type.</p>'}</div></div><div id="component-detail" class="component-detail"></div></div>`;
     $("component-filter").onchange = () =>
       this.navigate(() => {
         this.category = $<HTMLSelectElement>("component-filter").value;
+        this.candidate = "";
+        this.browse = false;
+      });
+    $("component-picker").onchange = () =>
+      this.navigate(() => {
+        this.partId = $<HTMLSelectElement>("component-picker").value;
         this.candidate = "";
         this.browse = false;
       });
@@ -197,7 +211,7 @@ export class ComponentWorkshop {
           }</div>`
         : ""
     }
-    <div class="component-fields">${f("mass", "Mass · g", part.massKg * 1000, 0.1, 100000, 0.1)}${b ? f("capacity", "Capacity · mAh", b.capacityMah, 1, 100000, 50) + f("cells", "Cells · S", b.cells, 1, 24) + f("charge", "Starting charge · %", b.initialSoc * 100, 0, 100) + f("resistance", "Pack resistance · mΩ", b.resistanceOhm * 1000, 0, 10000, 1) : ""}${part.servo ? f("speed", "Speed · s / 60°", part.servo.speedSecondsPer60Deg, 0.001, 5, 0.01) + f("range", "Rated total travel · °", part.servo.travelDeg, 1, 270) : ""}${motor ? f("thrust", "Static thrust · N", motor.maxThrustN, 0.01, 1000, 0.1) + f("lag", "Motor response · s", motor.responseSeconds, 0.001, 5, 0.01) : ""}</div>
+    <div class="component-installed" ${this.browse ? "hidden" : ""}><div class="component-fields">${f("mass", "Mass · g", part.massKg * 1000, 0.1, 100000, 0.1)}${b ? f("capacity", "Capacity · mAh", b.capacityMah, 1, 100000, 50) + f("cells", "Cells · S", b.cells, 1, 24) + f("charge", "Starting charge · %", b.initialSoc * 100, 0, 100) + f("resistance", "Pack resistance · mΩ", b.resistanceOhm * 1000, 0, 10000, 1) : ""}${part.servo ? f("speed", "Speed · s / 60°", part.servo.speedSecondsPer60Deg, 0.001, 5, 0.01) + f("range", "Rated total travel · °", part.servo.travelDeg, 1, 270) : ""}${motor ? f("thrust", "Static thrust · N", motor.maxThrustN, 0.01, 1000, 0.1) + f("lag", "Motor response · s", motor.responseSeconds, 0.001, 5, 0.01) : ""}</div>
     ${part.kind === "battery" && !b ? `<p class="component-note">This saved design has no electrical model. Restore the original aircraft to use its latest battery setup, or add battery and motor-current data in the JSON.</p>` : ""}
     ${b ? `<div class="component-effects"><span>Nominal energy<strong>${((b.capacityMah * b.cells * 3.7) / 1000).toFixed(1)} Wh</strong></span><span>Voltage model<strong>${b.cells}S · ${(b.cells * 3.7).toFixed(1)} V nominal</strong></span></div><p class="small muted">Capacity sets stored charge. Mass sets weight, CG and inertia. Resistance causes voltage sag under load.</p>${a.motors.some((m) => m.performance && Math.abs(m.performance.referenceVoltage - b.cells * 3.7) > 1) ? '<p class="component-note">Motor curves use a different reference voltage. Output is extrapolated; supply matching bench data for this pack.</p>' : ""}` : ""}
     ${
@@ -216,7 +230,7 @@ export class ComponentWorkshop {
     }
     ${motor ? `<p class="small muted">${escape(motor.propeller ?? "Configured propeller")} · ${(motor.propDiameterM * 1000).toFixed(0)} mm · ${motor.performance ? motor.performance.referenceVoltage + " V curve" : "No current curve"}. Editing thrust scales the existing force curve; it does not invent measured current data.</p>` : ""}
     <details id="part-installation-${partIndex}" class="component-position"><summary>Installation position & dimensions</summary><p class="small muted">Body axes: X forward · Y right · Z down. Millimeters from the aircraft datum.</p><div class="component-fields">${part.positionM.map((v, i) => f(`pos-${i}`, `${["X", "Y", "Z"][i]} position · mm`, v * 1000, -10000, 10000, 0.5)).join("")}${part.sizeM.map((v, i) => f(`size-${i}`, `${["Length X", "Width Y", "Height Z"][i]} · mm`, v * 1000, 0.1, 10000, 0.5)).join("")}</div></details>
-    ${part.catalogId ? `<small class="muted">Catalog reference: ${escape(part.catalogId)} · values may have been edited</small>` : ""}`;
+    ${part.catalogId ? `<small class="muted">Catalog reference: ${escape(part.catalogId)} · values may have been edited</small>` : ""}</div>`;
     const bind = (key: string, edit: Edit) => this.register(id(key), edit);
     bind("mass", (out, v) => {
       const p = out.parts[partIndex];

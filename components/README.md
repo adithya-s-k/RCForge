@@ -13,6 +13,14 @@ No prices, inventory promises, vendor endorsement or purchases are included.
 4. **Use this component** changes the draft. **Apply to flight** rebuilds the
    simulation; **Export** saves a standalone aircraft JSON.
 
+Airframe and Components share one draft. On desktop the model stays beside the
+component panel; a muted outline identifies the selected installation envelope,
+including components enclosed by the fuselage. It shows the authored mass
+position and dimensions, not exact collision geometry. Top and Side views make
+installation changes easier to compare. Narrow screens use an installed-part
+selector instead of a long side list. Replacement browsing shows its mass/CG
+preview before changing the draft.
+
 A battery's grams and mAh are independent inputs. More capacity slows charge
 consumption at the same current. More mass changes CG/inertia and increases the
 thrust needed to sustain flight; supplying that thrust can increase current.

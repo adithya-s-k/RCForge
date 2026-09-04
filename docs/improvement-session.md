@@ -222,3 +222,31 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
 - Next: continue existing editor/controller UX playtests. In particular, review
   original-versus-saved definition clarity, inspection framing and component
   changes before launch. No measured physical calibration has been added.
+
+## Pass 8 · component editing beside the model
+
+- Added Airframe / Components workspace tabs over the same draft. Desktop
+  installation editing now sits beside a sticky aircraft view; Apply stays
+  accessible in the heading. Catalog browsing temporarily hides installed fields,
+  keeping the replacement decision and mass/CG preview together.
+- Selected components have one reusable installation-envelope outline using the
+  authored mass position, dimensions and orientation. Enclosed components remain
+  locatable. This is not a collision/CAD mesh. Highlighting is limited to the
+  component workspace and has no effect on physics or normal flight rendering.
+- Perspective inspection now fits assembled bounds for its actual aspect ratio
+  and orbit angle. Bronco battery height was adjusted to an estimated 63 mm down
+  from datum to fit beneath the sloping nose skin; mass/longitudinal CG unchanged.
+- Browser checked battery replacement 830 to 760 g, expected 23.7 mm aft CG shift,
+  capacity edit and Apply. Restored the reference build after the swap test.
+  Actual keyboard-clear of capacity blocks Apply, retains the empty field and
+  allows recovery after changing tabs. Browser fill('') was a no-op; keyboard
+  interaction, not that tool result, provided the empty-field evidence.
+- Verified actual 745 px and 375 px document widths with equal scroll widths.
+  Phone layout uses an Installed part selector; confirmed ruddervator servo
+  selection and its details. Viewport override reset afterward. Closed the owned
+  reference-image tab after review (viewport overrides target the focused tab).
+- Verification: 179 tests in 32 files, definitions/catalog and build pass; docs
+  resolve. Numerical 93/93 and Bronco envelope 81/135 with zero nonfinite loads.
+  No physical radio, servo, battery or flight calibration claim.
+- Next: continue controller/transmitter and catalog/playtesting passes within the
+  authorized window. Main remains untouched.

@@ -19,6 +19,8 @@ import { placedLaunch, type Placement } from "./core/placement";
 import { placementUI } from "./app/placement";
 import "./style.css";
 import "./workbench.css";
+import "./view/editor-workspace.css";
+import { setupEditorWorkspace } from "./app/editor-workspace";
 import "./view/position-panel.css";
 import "./view/flight-feedback.css";
 import { ZodError } from "zod";
@@ -311,6 +313,8 @@ function fillSelects() {
     $<HTMLSelectElement>(id).value = aircraft.id;
   }
 }
+let editorComponent: Aircraft["parts"][number] | undefined;
+let componentsWorkspace = false;
 const editor = new AircraftEditor(
   aircraft,
   (a) => {
@@ -328,7 +332,15 @@ const editor = new AircraftEditor(
     if (page === "aircraft") scene?.setAircraft(a);
   },
   message,
+  (part) => {
+    editorComponent = part;
+    scene?.setComponentInspection(part, componentsWorkspace);
+  },
 );
+setupEditorWorkspace((components) => {
+  componentsWorkspace = components;
+  scene?.setComponentInspection(editorComponent, components);
+});
 const invalidate = setupExperiments(
   () => ({ baseline, aircraft, environment }),
   () => pause(),
@@ -360,6 +372,7 @@ function route() {
     $("editor-stage").append($("viewport"));
     scene?.setStudio(true);
     scene?.setAircraft(editor.draft);
+    scene?.setComponentInspection(editorComponent, componentsWorkspace);
     if (scene) scene.showCG = $<HTMLInputElement>("show-cg").checked;
   }
   if (page === "controllers") controller.refresh();
@@ -531,6 +544,7 @@ function applyDraft() {
     if (page === "aircraft") {
       scene?.setStudio(true);
       scene?.setAircraft(editor.draft);
+      scene?.setComponentInspection(editorComponent, componentsWorkspace);
     }
     invalidate();
     updateExperimentInfo();

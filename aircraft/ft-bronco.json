@@ -55,7 +55,7 @@
     },
     "foldedReconstruction": {
       "status": "estimated",
-      "note": "Wing skin has 5 mm board and estimated 21 mm folded height. A-tail central trailing-edge relief and hinge station follow sheet 3. Nacelles split 40 g from the original fuselage allocation; boom taper and component stations use estimated folded geometry. Servo positions now follow the wing and rear booms; total mass and 51 mm CG target retained.",
+      "note": "Wing skin has 5 mm board and estimated 21 mm folded height. A-tail central trailing-edge relief and hinge station follow sheet 3. Nacelles split 40 g from the original fuselage allocation; boom taper and component stations use estimated folded geometry. Servo positions now follow the wing and rear booms; total mass and 51 mm CG target retained. Battery height is estimated to fit beneath the sloping nose skin; it is not a measured installation.",
       "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf"
     }
   },
@@ -204,7 +204,7 @@
       "id": "battery",
       "kind": "battery",
       "massKg": 0.19,
-      "positionM": [0.2544, 0, 0.04],
+      "positionM": [0.2544, 0, 0.063],
       "sizeM": [0.075, 0.034, 0.027],
       "color": "#df743d"
     },

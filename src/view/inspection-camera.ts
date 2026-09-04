@@ -2,6 +2,40 @@ import * as T from "three";
 
 export type InspectionView = "perspective" | "top" | "side";
 
+/** Fit every assembled corner at the current orbit angle, including narrow panels. */
+export function inspectionDistance(
+  bodySize: T.Vector3,
+  backward: T.Vector3,
+  aspect: number,
+  fovDeg = 42,
+) {
+  const right = new T.Vector3()
+    .crossVectors(new T.Vector3(0, 1, 0), backward)
+    .normalize();
+  const up = new T.Vector3().crossVectors(backward, right).normalize();
+  const tanV = Math.tan(T.MathUtils.degToRad(fovDeg / 2));
+  let distance = 0;
+  for (const x of [-0.5, 0.5])
+    for (const y of [-0.5, 0.5])
+      for (const z of [-0.5, 0.5]) {
+        const corner = new T.Vector3(
+          x * bodySize.x,
+          y * bodySize.z,
+          z * bodySize.y,
+        );
+        distance = Math.max(
+          distance,
+          corner.dot(backward) +
+            1.28 *
+              Math.max(
+                Math.abs(corner.dot(right)) / (tanV * aspect),
+                Math.abs(corner.dot(up)) / tanV,
+              ),
+        );
+      }
+  return Math.max(distance, 0.1);
+}
+
 /** Exact orthographic drawing views in the renderer's X-forward, Y-up, Z-right frame. */
 export function fitInspectionCamera(
   camera: T.OrthographicCamera,

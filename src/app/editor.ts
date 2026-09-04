@@ -99,6 +99,7 @@ export class AircraftEditor {
     a: Aircraft,
     private changed: (a: Aircraft) => void,
     private notify: (s: string) => void,
+    selected: (part: Aircraft["parts"][number] | undefined) => void = () => {},
   ) {
     this.draft = structuredClone(a);
     this.workshop = new ComponentWorkshop(
@@ -132,6 +133,7 @@ export class AircraftEditor {
         this.changed(out);
       },
       this.notify,
+      selected,
     );
     const action = (id: string, fn: (value: number) => Aircraft) => {
       $(id).oninput = () => this.track(id, $<HTMLInputElement>(id).value);
@@ -214,12 +216,10 @@ export class AircraftEditor {
       cg = a.reference.leadingEdgeXM - p.cg[0];
     $("editor-model-name").textContent = a.name;
     $("component-summary").innerHTML =
-      `<button id="open-components" class="wide">Components & battery ↓</button><small class="muted">${a.battery ? `${a.battery.cells}S · ${a.battery.capacityMah} mAh · ` : ""}${a.parts.length} installed parts</small>`;
-    $("open-components").onclick = () =>
-      $("component-workshop").scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+      `<button id="open-components" class="wide">Edit components →</button><small class="muted">${a.battery ? `${a.battery.cells}S · ${a.battery.capacityMah} mAh · ` : ""}${a.parts.length} installed parts</small>`;
+    $("open-components").onclick = () => $("editor-components-tab").click();
+    $("editor-component-status").textContent =
+      `${(p.mass * 1000).toFixed(0)} g · ${a.parts.length} parts`;
     this.workshop.render();
     const quad = a.vehicleType === "multirotor";
     $("mass-scope").textContent = quad
