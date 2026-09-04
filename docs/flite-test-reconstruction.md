@@ -19,11 +19,38 @@ Ruler-based readings from the plan give approximately 192 mm wing chord, 254 mm 
 
 Battery mass is assumed to be 190 g; its position is solved to meet the published CG. Four 9 g servo masses are accounted for. Remaining component allocations, folded nose cross-sections, thrust curves, aerodynamic polars and inertia distribution are estimated. The PDF length uses inconsistent imperial/metric values (36 in versus 927 mm); do not treat either as a precise assembled measurement.
 
+The updated wing skin uses 5 mm board and an estimated 21 mm folded height, with
+a straight aileron hinge at 76.5% root chord. The sheet-3 tail hinge is approximately
+192.42 / 288.06 = 66.8% chord; its inner trailing-edge relief is retained so the
+moving panels do not form an unbroken corner at the apex. Two nacelles now have
+their own 20 g allocations, split from the former 124 g fuselage allocation.
+The 60 g booms taper toward the tail; their estimated mass centers move 40 mm
+forward to represent this taper. Tail servos sit on the rear booms. These are
+assembly estimates, not weighed or scanned parts. Battery position is solved
+again so total mass remains 830 g and the longitudinal CG remains 51 mm aft of LE.
+
 ## Tiny Trainer Sport
 
 The plan specifies 193 g without battery, 16° throws, 30% expo and a minimum 5×3 propeller. The preset assumes a 60 g battery for 253 g total. The source recommends a 250-size 2200 kv motor, minimum 12 A ESC, 500–1000 mAh 3S battery and 5 g servos. The preset uses an estimated 3S 650 mAh pack and simplified battery discharge. Motor-current data remains estimated; ESC electronics are not simulated.
 
-Vector/ruler readings put the flat sport half-wing around 478.5 mm with 139.5 mm root chord and approximately 32 mm aileron chord. The assembled approximation uses 5° dihedral and 953 mm projected span, an equivalent aerodynamic chord/area, tapered tips and a conventional foamboard tail. Wing shape and fuselage/nose overlap are approximations rather than a complete fold simulation. The nominal 35 mm CG target is estimated, not a verified published text specification. The 2.8 N motor thrust and aerodynamic coefficients remain estimates requiring bench and flight data.
+Vector/ruler readings put the flat sport half-wing around 478.5 mm with 139.5 mm root chord and approximately 32 mm aileron chord. The assembled approximation uses 5° dihedral and 953 mm projected span. Integrating the sampled tapered outline gives 0.12566 m² wing area and 131.3 mm equivalent chord. The nominal 35 mm CG target is estimated, not a verified published text specification. The 2.8 N motor thrust and aerodynamic coefficients remain estimates requiring bench and flight data.
+
+The aileron runs approximately 31–373 mm outboard on each half, leaving the swept,
+rounded tip fixed. Its hinge follows the plan's 90 pt trailing strip. The folded
+section assumes 5 mm board and 14 mm height. The horizontal tail and rudder
+outlines are sampled from the diagonal drawings on sheet 2, rotated into their
+assembled hinge axes; the resulting horizontal span is about 286 mm. Mounting
+tabs are omitted. Tail area and quarter-chord locations follow these outlines,
+but aerodynamic effectiveness remains estimated.
+
+Main fuselage and removable powered nose divide the existing 49 g allocation
+into 37 g and 12 g. Horizontal tail and fin divide the 20 g tail allocation into
+14 g and 6 g. Crossed retaining bands and dowels follow the assembled wing root;
+their mass is included in the structure. The assumed battery is placed beneath
+the nose to clear the motor envelope and balanced longitudinally to the nominal
+CG. Nose overlap, band placement, battery installation, folded heights and all
+individual mass centers remain estimates. The total is still 253 g. These
+presets do not simulate folding, fastener loads or structural flexibility.
 
 ## FT-22 Raptor
 

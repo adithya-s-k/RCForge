@@ -192,3 +192,33 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   and 12,000 triangles for the corrected model.
 - Next: apply the same plan/assembly review to Bronco and Tiny Trainer, then
   continue the controller/editor/playtest passes within the remaining window.
+
+## Pass 7 · folded Bronco and Tiny Trainer assemblies
+
+- Added generic JSON-authored folded wing skins with bounded ailerons and tapered
+  tips. Tiny sport-wing ailerons now end at the plan's approximately 373 mm
+  station; the outer 105 mm remains fixed. Bronco retains its outer-span controls.
+- Reconstructed Tiny tail and rudder outlines/hinges from rotated sheet-2 vectors,
+  separated its powered nose from the fuselage and retained the folded root's
+  crossed bands/dowels. Bronco has tapered booms, separate nacelles and the
+  A-tail's center relief and measured hinge fraction. Subtle hinge creases keep
+  white tail panels legible; visible servos correspond to installed components.
+- Split existing structural mass allocations rather than adding free geometry
+  mass. Reference totals remain 830 g Bronco and 253 g Tiny. Component centers,
+  battery placement and aerodynamic centers were updated with explicit estimates;
+  longitudinal CG targets are retained. The Tiny battery sits under its nose,
+  clear of the motor envelope. Fixed-wing batteries render at their authored
+  position and are naturally hidden only when enclosed by the airframe.
+- Browser: reviewed perspective, top and side for both models. Trainer release
+  reached 12.7 s, 8.5 m/s, 16.6 m AGL at 37% power; Bronco reached 19.2 s,
+  8.5 m/s, 24.3 m AGL at 32% power. Both paused correctly. These are controlled
+  simulator checks, not physical flight evidence. Updated the two local original
+  profiles through Restore/Apply without clearing other saved profiles.
+- Verification: 177 tests in 31 files, seven aircraft/eight catalog definitions
+  and production build pass. Numerical checks 93/93. Bronco and Tiny envelope
+  each solve 81/135 surveyed points, zero nonfinite loads. Geometry regressions
+  check mirrored face winding, finite bounds, actual aileron endpoints, control
+  authority and render budget below 100 meshes / 15,000 triangles per model.
+- Next: continue existing editor/controller UX playtests. In particular, review
+  original-versus-saved definition clarity, inspection framing and component
+  changes before launch. No measured physical calibration has been added.

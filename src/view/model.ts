@@ -1,6 +1,7 @@
 import { surfaceActuation } from "../core/actuation";
 import { buildQuad } from "./quad-model";
 import { buildPanel } from "./planform";
+import { buildFoamWing } from "./foam-wing";
 import { disposeModel } from "./dispose-model";
 import type { SurfaceControl } from "../core/surface-control";
 import * as T from "three";
@@ -292,7 +293,7 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     roughness: 0.7,
   });
   for (const p of a.parts) {
-    if (p.kind === "body" && p.bodyLoft) {
+    if ((p.kind === "body" || p.kind === "boom") && p.bodyLoft) {
       const [x, y, z] = p.positionM,
         [l, w, h] = p.sizeM;
       loft(
@@ -326,25 +327,6 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
         baseColor,
         y,
       );
-      for (const dx of [-0.055, 0.05]) {
-        rod(group, [dx, -0.031, -0.026], [dx, 0.031, -0.026], 0.0014, aluminum);
-      }
-      for (const sy of [-1, 1]) {
-        rod(
-          group,
-          [-0.054, sy * 0.025, -0.026],
-          [0.048, -sy * 0.025, -0.026],
-          0.0008,
-          new T.MeshStandardMaterial({ color: "#bfa77a", roughness: 0.9 }),
-        );
-        rod(
-          group,
-          [-0.08, sy * 0.021, 0],
-          [-0.35, sy * 0.006, -0.025],
-          0.0005,
-          aluminum,
-        );
-      }
     } else if (p.kind === "body") {
       const [x, y, z] = p.positionM,
         [l, w, h] = p.sizeM;
@@ -367,13 +349,13 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
           },
           {
             x: x + l * 0.46,
-            width: w * 0.48,
+            width: w * (isBronco ? 0.78 : 0.48),
             top: z + h * 0.02,
             bottom: z + h * 0.28,
           },
           {
             x: x + l * 0.5,
-            width: w * 0.12,
+            width: w * (isBronco ? 0.5 : 0.12),
             top: z + h * 0.12,
             bottom: z + h * 0.18,
           },
@@ -382,9 +364,9 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
         y,
       );
       const glass = new T.MeshStandardMaterial({
-        color: "#1d2f3b",
-        roughness: 0.2,
-        metalness: 0.3,
+        color: "#191b1e",
+        roughness: 0.42,
+        metalness: 0,
       });
       if (isBronco)
         for (const side of [-1, 1]) {
@@ -523,9 +505,53 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
         });
       }
     } else if (p.kind === "battery") {
-      const battery = box(group, p.sizeM, p.positionM, orange);
+      const battery = box(
+        group,
+        p.sizeM,
+        p.positionM,
+        new T.MeshStandardMaterial({ color: p.color, roughness: 0.66 }),
+      );
       battery.name = "battery";
-      battery.visible = false;
+    }
+  }
+  if (isTiny) {
+    // Retention hardware is included in the structural mass allocation.
+    // These assembly positions are visual estimates around the measured wing chord.
+    const wing = a.surfaces.find((s) => s.foamWing);
+    if (wing?.foamWing) {
+      const leading = wing.positionM[0] + wing.chordM / 4;
+      const trailing = leading - wing.foamWing.rootChordM;
+      const rootZ =
+        wing.positionM[2] -
+        ((Math.sign(wing.positionM[1]) * wing.spanM) / 2) *
+          Math.sin(radians(wing.rollDeg));
+      const dowelZ = rootZ + 0.005;
+      const band = new T.MeshStandardMaterial({
+        color: "#aa9871",
+        roughness: 0.95,
+      });
+      for (const x of [leading + 0.009, trailing - 0.009])
+        rod(group, [x, -0.029, dowelZ], [x, 0.029, dowelZ], 0.0013, aluminum);
+      for (const side of [-1, 1]) {
+        const points: Vec3[] = [
+          [leading + 0.009, side * 0.025, dowelZ],
+          [leading - 0.003, side * 0.021, rootZ - 0.003],
+          [
+            leading - wing.foamWing.rootChordM * 0.25,
+            side * 0.012,
+            rootZ - wing.foamWing.foldHeightM - 0.003,
+          ],
+          [
+            leading - wing.foamWing.rootChordM * 0.48,
+            -side * 0.001,
+            rootZ - wing.foamWing.foldHeightM - 0.003,
+          ],
+          [trailing, -side * 0.021, rootZ - 0.004],
+          [trailing - 0.009, -side * 0.025, dowelZ],
+        ];
+        for (let j = 1; j < points.length; j++)
+          rod(group, points[j - 1], points[j], 0.0007, band);
+      }
     }
   }
   for (const s of a.surfaces) {
@@ -534,8 +560,10 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     surface.rotation.x = radians(s.rollDeg);
     surface.rotation.y = radians(s.incidenceDeg);
     group.add(surface);
-    if (s.panel) {
-      const panel = buildPanel(s, baseColor);
+    if (s.panel || s.foamWing) {
+      const panel = s.foamWing
+        ? buildFoamWing(s, baseColor)
+        : buildPanel(s, baseColor);
       surface.add(panel.group);
       if (s.control && panel.pivot)
         controls.push({

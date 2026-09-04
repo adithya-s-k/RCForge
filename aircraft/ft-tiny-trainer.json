@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "ft-tiny-trainer",
-  "name": "FT Tiny Trainer · Sport",
+  "name": "FT Tiny Trainer \u00b7 Sport",
   "description": "FT Tiny Trainer with four-channel sport wing. Plan-derived dimensions, 193 g dry reference plus estimated 60 g battery. Estimated aerodynamics.",
   "provenance": {
     "plans": {
@@ -12,11 +12,11 @@
     "geometry": {
       "status": "estimated",
       "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-Mini%20TinyTrainer-plans.pdf",
-      "note": "Vector/ruler readings: sport wing flat half span about 478.5 mm, root chord 139.5 mm; tapered tips and 32 mm aileron chord. Assembly approximation uses 5 degree dihedral, 0.953 m projected span, 0.128 m2 area, 0.58 m fuselage, 0.30 m tail span. Foam thickness 5 mm; not manufacturing CAD."
+      "note": "Vector/ruler readings: sport wing flat half span about 478.5 mm, root chord 139.5 mm, 32 mm aileron chord, rounded swept tips. Assembled approximation uses 5 degree dihedral, 953 mm projected span, 0.12566 m\u00b2 integrated wing area and 286 mm horizontal tail span. Powered nose and main fuselage overlap; 5 mm foam board. Not manufacturing CAD."
     },
     "mass": {
       "status": "estimated",
-      "note": "Published dry reference 193 g plus assumed 60 g battery =253 g. Component allocations and box inertia approximate. Battery position solves nominal 35 mm aft leading-edge CG; CG target estimated from plan marker, not a flight-tested measurement."
+      "note": "Published dry reference 193 g plus assumed 60 g battery =253 g. Component allocations and box inertia approximate. Battery position solves nominal 35 mm aft leading-edge CG; CG target estimated from plan marker, not a flight-tested measurement. The assumed pack is carried under the powered nose; its outer envelope and longitudinal balance are not a measured installation."
     },
     "aerodynamics": {
       "status": "estimated",
@@ -32,12 +32,17 @@
     },
     "servoAssembly": {
       "status": "estimated",
-      "note": "Individual positional servos replace the previous combined equipment allocation without changing total mass or longitudinal CG. Positions, horn ratios, travel setup and response lag are estimates. Servo speed is a no-load reference; torque under aerodynamic hinge load and dynamic servo current are not modeled."
+      "note": "Individual servo masses are included once. Installation positions, horn ratios, travel setup and response lag are estimates. Battery position is recalculated to retain the reference longitudinal CG when the structural allocation changes. Servo speed is a no-load reference; hinge-load torque and dynamic servo current are not modeled."
     },
     "electricalEstimate": {
       "status": "estimated",
       "note": "3S 650 mAh pack, 0.065 ohm DC resistance and OCV curve are illustrative. Component battery mass remains unchanged. Static motor current is ideal induced power T^(3/2)/sqrt(2*rho*A), divided by an assumed 0.45 overall factor and nominal voltage, plus 0.2 A at full command. Thrust commands retain the prior estimated linear thrust curve. This is NOT a bench motor/prop test, efficiency map or endurance validation; replace with measured curves. Forward-flight current and servo loads are not resolved.",
       "url": "https://www.grc.nasa.gov/WWW/K-12/BGP/propth.html"
+    },
+    "foldedReconstruction": {
+      "status": "estimated",
+      "note": "Sport-wing tips taper toward the trailing edge; ailerons occupy measured 31 to 373 mm outboard span, rather than reaching the tips. Tail outlines/hinges are rotated from sheet-2 vectors; root-tab details omitted. Main fuselage and removable power nose split the original 49 g body allocation. Tail split retains 20 g. Fold heights, assembled stations and individual mass distributions remain estimates.",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-Mini%20TinyTrainer-plans.pdf"
     }
   },
   "parts": [
@@ -45,7 +50,7 @@
       "id": "left-wing",
       "kind": "wing",
       "massKg": 0.032,
-      "positionM": [-0.032, -0.23825, -0.041],
+      "positionM": [-0.033403978638, -0.23825, -0.041],
       "sizeM": [0.1395, 0.4785, 0.014],
       "color": "#e9e7df",
       "material": {
@@ -57,7 +62,7 @@
       "id": "right-wing",
       "kind": "wing",
       "massKg": 0.032,
-      "positionM": [-0.032, 0.23825, -0.041],
+      "positionM": [-0.033403978638, 0.23825, -0.041],
       "sizeM": [0.1395, 0.4785, 0.014],
       "color": "#e9e7df",
       "material": {
@@ -68,14 +73,40 @@
     {
       "id": "body",
       "kind": "body",
-      "massKg": 0.049,
-      "positionM": [-0.105, 0, 0.005],
-      "sizeM": [0.58, 0.04, 0.05],
+      "massKg": 0.037,
+      "positionM": [-0.14, 0, 0.005],
+      "sizeM": [0.49, 0.04, 0.05],
       "color": "#e9e7df",
       "material": {
         "name": "Foamboard assembly",
         "finish": "foam"
-      }
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5204081632653061,
+          "width": 0.3,
+          "top": -0.3,
+          "bottom": 0.18000000000000002
+        },
+        {
+          "x": -0.4183673469387754,
+          "width": 0.42500000000000004,
+          "top": -0.37999999999999995,
+          "bottom": 0.25999999999999995
+        },
+        {
+          "x": 0.08163265306122451,
+          "width": 1.0,
+          "top": -0.5,
+          "bottom": 0.49999999999999994
+        },
+        {
+          "x": 0.4795918367346939,
+          "width": 1.0,
+          "top": -0.5,
+          "bottom": 0.49999999999999994
+        }
+      ]
     },
     {
       "id": "motor",
@@ -89,16 +120,16 @@
       "id": "battery",
       "kind": "battery",
       "massKg": 0.06,
-      "positionM": [0.14002291666666666, 0, 0.005],
+      "positionM": [0.16418541703007417, 0, 0.041],
       "sizeM": [0.05, 0.025, 0.02],
-      "color": "#e9e7df"
+      "color": "#343a40"
     },
     {
       "id": "tail",
       "kind": "tail",
-      "massKg": 0.02,
-      "positionM": [-0.355, 0, -0.025],
-      "sizeM": [0.115, 0.3, 0.12],
+      "massKg": 0.014,
+      "positionM": [-0.3744694512849892, 0, -0.02],
+      "sizeM": [0.13260927696482527, 0.28556372542676534, 0.005],
       "color": "#e9e7df",
       "material": {
         "name": "Foamboard assembly",
@@ -136,7 +167,7 @@
       "id": "servo-left-wing",
       "kind": "equipment",
       "massKg": 0.005,
-      "positionM": [0.0, -0.16, 0.005],
+      "positionM": [-0.025, -0.148, -0.027],
       "sizeM": [0.02, 0.009, 0.022],
       "color": "#2d3942",
       "material": {
@@ -154,7 +185,7 @@
       "id": "servo-right-wing",
       "kind": "equipment",
       "massKg": 0.005,
-      "positionM": [0.0, 0.16, 0.005],
+      "positionM": [-0.025, 0.148, -0.027],
       "sizeM": [0.02, 0.009, 0.022],
       "color": "#2d3942",
       "material": {
@@ -172,7 +203,7 @@
       "id": "servo-elevator",
       "kind": "equipment",
       "massKg": 0.005,
-      "positionM": [0.11, 0, 0.005],
+      "positionM": [-0.105, -0.018, 0],
       "sizeM": [0.02, 0.009, 0.022],
       "color": "#2d3942",
       "material": {
@@ -190,7 +221,7 @@
       "id": "servo-fin",
       "kind": "equipment",
       "massKg": 0.005,
-      "positionM": [0.11, 0, 0.005],
+      "positionM": [-0.105, 0.018, 0],
       "sizeM": [0.02, 0.009, 0.022],
       "color": "#2d3942",
       "material": {
@@ -203,14 +234,58 @@
         "travelDeg": 150,
         "ratedVoltage": 4.8
       }
+    },
+    {
+      "id": "powered-nose",
+      "kind": "body",
+      "massKg": 0.012,
+      "positionM": [0.12, 0, 0.005],
+      "sizeM": [0.15, 0.043, 0.05],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Folded paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5667,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.3,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.4333,
+          "width": 0.94,
+          "top": -0.45,
+          "bottom": 0.45
+        }
+      ]
+    },
+    {
+      "id": "fin-structure",
+      "kind": "tail",
+      "massKg": 0.006,
+      "positionM": [-0.3703871784971, 0, -0.08093079434012591],
+      "sizeM": [0.13869350136084077, 0.005, 0.14119216339202365],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Paper-faced foamboard",
+        "finish": "foam"
+      }
     }
   ],
   "surfaces": [
     {
       "id": "left-wing",
-      "positionM": [0, -0.23825, -0.041],
+      "positionM": [0.0020485679625000044, -0.23825, -0.041],
       "spanM": 0.4785,
-      "chordM": 0.1343,
+      "chordM": 0.13130572815,
       "aspectRatio": 7.1,
       "rollDeg": 5.0,
       "incidenceDeg": 2,
@@ -233,13 +308,28 @@
           "surfaceArmM": 0.015
         }
       },
-      "kind": "wing"
+      "kind": "wing",
+      "foamWing": {
+        "rootChordM": 0.1395,
+        "boardThicknessM": 0.005,
+        "foldHeightM": 0.014,
+        "hingeFraction": 0.7723327069109924,
+        "controlSpan": [0.06416549324329311, 0.7798242445242292],
+        "tipStations": [
+          [0, 0, 1],
+          [0.7798, 0, 1],
+          [0.927, 0.253, 1],
+          [0.95, 0.34, 1],
+          [0.985, 0.8, 1],
+          [1, 0.95, 0.97]
+        ]
+      }
     },
     {
       "id": "right-wing",
-      "positionM": [0, 0.23825, -0.041],
+      "positionM": [0.0020485679625000044, 0.23825, -0.041],
       "spanM": 0.4785,
-      "chordM": 0.1343,
+      "chordM": 0.13130572815,
       "aspectRatio": 7.1,
       "rollDeg": -5.0,
       "incidenceDeg": 2,
@@ -262,14 +352,29 @@
           "surfaceArmM": 0.015
         }
       },
-      "kind": "wing"
+      "kind": "wing",
+      "foamWing": {
+        "rootChordM": 0.1395,
+        "boardThicknessM": 0.005,
+        "foldHeightM": 0.014,
+        "hingeFraction": 0.7723327069109924,
+        "controlSpan": [0.06416549324329311, 0.7798242445242292],
+        "tipStations": [
+          [0, 0, 1],
+          [0.7798, 0, 1],
+          [0.927, 0.253, 1],
+          [0.95, 0.34, 1],
+          [0.985, 0.8, 1],
+          [1, 0.95, 0.97]
+        ]
+      }
     },
     {
       "id": "elevator",
-      "positionM": [-0.35, 0, -0.012],
-      "spanM": 0.3,
-      "chordM": 0.105,
-      "aspectRatio": 2.86,
+      "positionM": [-0.3489972311857783, 0, -0.02],
+      "spanM": 0.28556372542676534,
+      "chordM": 0.1018888803968437,
+      "aspectRatio": 2.802697647815271,
       "rollDeg": 0,
       "incidenceDeg": 0,
       "liftSlope": 3.2,
@@ -291,14 +396,37 @@
           "surfaceArmM": 0.015
         }
       },
-      "kind": "horizontal-tail"
+      "kind": "horizontal-tail",
+      "panel": {
+        "outline": [
+          [-0.6148818386479667, -0.49988262868780503],
+          [-0.21726994134207972, -0.49987590732737813],
+          [-0.1175592548809748, -0.4893704402252222],
+          [-0.053281652166620286, -0.45825298305958295],
+          [0.5262217597107477, -0.038724785624766375],
+          [0.5262403290974446, 0.03895286690218961],
+          [-0.053279870621452396, 0.45847846337111897],
+          [-0.10322080439294508, 0.48287051767802264],
+          [-0.22224221629606825, 0.5001119978501887],
+          [-0.6148836970135182, 0.5001173713121948],
+          [-0.72506187020972, 0.48463607683659776],
+          [-0.7752534651410694, 0.442899712294116],
+          [-0.7752684954997999, -0.44149219305218],
+          [-0.7294906583580962, -0.4823916064155807]
+        ],
+        "thicknessM": 0.005,
+        "controlHinge": [
+          [-0.3631678812261047, -1],
+          [-0.3631678812261047, 1]
+        ]
+      }
     },
     {
       "id": "fin",
-      "positionM": [-0.355, 0, -0.068],
-      "spanM": 0.112,
-      "chordM": 0.1,
-      "aspectRatio": 1.12,
+      "positionM": [-0.3454899972429339, 0, -0.08093079434012591],
+      "spanM": 0.14119216339202365,
+      "chordM": 0.09958872501666434,
+      "aspectRatio": 1.4177524952588534,
       "rollDeg": 90,
       "incidenceDeg": 0,
       "liftSlope": 3.2,
@@ -320,7 +448,26 @@
           "surfaceArmM": 0.015
         }
       },
-      "kind": "vertical-tail"
+      "kind": "vertical-tail",
+      "panel": {
+        "outline": [
+          [0.5031562002004463, 0.4315451571554294],
+          [0.5031532192635642, 0.2057378651133302],
+          [-0.16435599582444665, -0.5207013014385656],
+          [-0.2540040455272408, -0.5663981342750958],
+          [-0.6175074939774695, -0.5684548428445706],
+          [-0.6828727510846596, -0.5574006126343792],
+          [-0.7141572662642159, -0.5154512560336736],
+          [-0.8895064866411913, 0.25370059863247835],
+          [-0.8664454145956051, 0.28412774814861474],
+          [-0.4067680001633374, 0.4315451571554294]
+        ],
+        "thicknessM": 0.005,
+        "controlHinge": [
+          [-0.4067729830890746, -1],
+          [-0.4067729830890746, 1]
+        ]
+      }
     }
   ],
   "motors": [
@@ -375,7 +522,7 @@
   "angularDamping": [0.005, 0.008, 0.006],
   "reference": {
     "spanM": 0.953,
-    "areaM2": 0.128,
+    "areaM2": 0.12565958183954998,
     "cgFromLeadingEdgeM": 0.035,
     "leadingEdgeXM": 0.034875
   },

@@ -72,15 +72,14 @@ export function buildPanel(surface: Surface, material: T.Material) {
       [-0.5, 0.5],
     ]
   ).map(toMeters) as [Point, Point];
-  add(splitPanel(points, hinge, false), group);
+  const fixed = splitPanel(points, hinge, false);
+  const moving = splitPanel(points, hinge, true);
+  add(fixed, group);
   const pivot = new T.Group();
   pivot.position.set(hinge[0][0], hinge[0][1], 0);
   group.add(pivot);
   add(
-    splitPanel(points, hinge, true).map(([x, y]) => [
-      x - hinge[0][0],
-      y - hinge[0][1],
-    ]),
+    moving.map(([x, y]) => [x - hinge[0][0], y - hinge[0][1]]),
     pivot,
   );
   const hingeAxis = new T.Vector3(
@@ -88,5 +87,26 @@ export function buildPanel(surface: Surface, material: T.Material) {
     hinge[1][1] - hinge[0][1],
     0,
   ).normalize();
+  // A paper hinge has a visible fold. Clip a narrow strip to the real moving
+  // outline rather than drawing the author's possibly extended hinge line.
+  if (fixed.length >= 3 && moving.length >= 3) {
+    const offset = 0.00045;
+    const shifted: [Point, Point] = hinge.map(([x, y]) => [
+      x - hingeAxis.y * offset,
+      y + hingeAxis.x * offset,
+    ]) as [Point, Point];
+    const crease = splitPanel(moving, shifted, false);
+    if (crease.length >= 3) {
+      const geometry = panelGeometry(crease, panel.thicknessM + 0.0002);
+      if (geometry) {
+        geometry.translate(-hinge[0][0], -hinge[0][1], 0);
+        const material = new T.MeshStandardMaterial({
+          color: "#9a958b",
+          roughness: 1,
+        });
+        pivot.add(new T.Mesh(geometry, material));
+      }
+    }
+  }
   return { group, pivot, hingeAxis };
 }

@@ -60,12 +60,25 @@ run from smaller to larger Y. Geometry aft of the line moves around that hinge;
 a hinge at the leading edge produces a fully moving elevon. Omit the hinge to
 use X = -0.5. The physical control mix and servo state drive its animation.
 
-`parts[].bodyLoft` supplies cross-sections for a body component. Each section has
+`parts[].bodyLoft` supplies cross-sections for a body or boom component. Each section has
 `x`, `width`, `top` and `bottom`, in fractions of that part's corresponding
 `sizeM` dimension, relative to its `positionM`. Sections must increase in X;
 `top < bottom` because Z points down. Optional `topColor` colors the top face
 between this section and the next, without adding mass. Sections render as flat
 foam facets, grouped by finish to limit draw calls. The FT-22's folded nose is an example.
+
+For a folded wing, use `surface.foamWing` instead of `panel`. The Bronco and Tiny
+Trainer are examples. `rootChordM`, `boardThicknessM` and `foldHeightM` describe
+the folded section. `tipStations` contains increasing `[outboardFraction,
+leadingEdgeFraction, trailingEdgeFraction]` triples, from span fraction 0 to 1;
+chord fractions run from the root leading edge toward the trailing edge. The
+surface's Y position chooses the left or right half. Use separate half-wings.
+`hingeFraction` specifies a straight hinge at that fraction of root chord;
+`controlSpan: [start,end]` bounds its outboard span. The hinge must remain inside
+the wing throughout the moving region. Ailerons follow a tapered trailing edge
+without extending beyond the tip. The folded skin is one mesh per half-wing;
+only the control panel moves. Fold height is a visual cross-section, not an
+airfoil coefficient or automatic aerodynamic calculation.
 
 These fields describe appearance only. Set surface area (`spanM * chordM`),
 aerodynamic center, coefficients, component mass and inertia separately, with

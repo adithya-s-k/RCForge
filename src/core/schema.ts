@@ -157,6 +157,30 @@ export const AircraftSchema = z
           rollDeg: finite.min(-180).max(180),
           incidenceDeg: finite.min(-20).max(20),
           panel: panel.optional(),
+          foamWing: z
+            .object({
+              rootChordM: positive.max(5),
+              boardThicknessM: positive.max(0.03),
+              foldHeightM: positive.max(0.3),
+              hingeFraction: finite.min(0.4).max(0.95),
+              controlSpan: z.tuple([
+                finite.min(0).max(1),
+                finite.min(0).max(1),
+              ]),
+              // Outboard span fraction, leading-edge fraction, trailing-edge fraction.
+              tipStations: z
+                .array(
+                  z.tuple([
+                    finite.min(0).max(1),
+                    finite.min(0).max(1),
+                    finite.min(0).max(1),
+                  ]),
+                )
+                .min(2)
+                .max(20),
+            })
+            .strict()
+            .optional(),
           reynoldsPolars: z
             .object({
               // A 2-D section table must first be converted to finite-wing data.
@@ -344,7 +368,7 @@ export const AircraftSchema = z
         );
       if (
         p.bodyLoft &&
-        (p.kind !== "body" ||
+        ((p.kind !== "body" && p.kind !== "boom") ||
           p.bodyLoft.some(
             (s, j) =>
               s.top >= s.bottom || (j > 0 && s.x <= p.bodyLoft![j - 1].x),
@@ -411,6 +435,45 @@ export const AircraftSchema = z
         );
     });
     a.surfaces.forEach((s, i) => {
+      if (s.foamWing) {
+        const w = s.foamWing,
+          stations = w.tipStations;
+        if (
+          s.kind !== "wing" ||
+          s.panel ||
+          w.controlSpan[0] >= w.controlSpan[1] ||
+          stations[0][0] !== 0 ||
+          stations.at(-1)![0] !== 1 ||
+          stations.some(
+            (p, j) => p[1] >= p[2] || (j > 0 && p[0] <= stations[j - 1][0]),
+          )
+        )
+          issue(
+            ["surfaces", i, "foamWing"],
+            "Foam wings need ordered full-span tip stations, a nonzero control span and no flat panel",
+          );
+        if (s.control) {
+          const [start, end] = w.controlSpan;
+          for (let j = 1; j < stations.length; j++) {
+            const a = stations[j - 1],
+              b = stations[j];
+            if (b[0] <= a[0] || b[0] < start || a[0] > end) continue;
+            for (const f of [Math.max(start, a[0]), Math.min(end, b[0])]) {
+              const t = (f - a[0]) / (b[0] - a[0]);
+              const leading = a[1] + (b[1] - a[1]) * t;
+              const trailing = a[2] + (b[2] - a[2]) * t;
+              if (
+                leading >= w.hingeFraction ||
+                trailing <= w.hingeFraction + 0.0006 / w.rootChordM
+              )
+                issue(
+                  ["surfaces", i, "foamWing", "controlSpan"],
+                  "The entire aileron hinge must lie inside the wing outline",
+                );
+            }
+          }
+        }
+      }
       const linkage = s.control?.linkage;
       if (linkage) {
         const servo = a.parts.find((p) => p.id === linkage.servoPartId)?.servo;

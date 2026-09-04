@@ -6,7 +6,7 @@
   "provenance": {
     "dimensions": {
       "status": "sourced",
-      "note": "Published span 1.086 m and wing area 0.208 m². Simplified rectangular wing and component geometry.",
+      "note": "Published span 1.086 m and wing area 0.208 m\u00b2. The procedural folded wing and assembly reconstruction use the separate geometry assumptions below.",
       "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf"
     },
     "mass": {
@@ -46,12 +46,17 @@
     },
     "servoAssembly": {
       "status": "estimated",
-      "note": "Individual positional servos replace the previous combined equipment allocation without changing total mass or longitudinal CG. Positions, horn ratios, travel setup and response lag are estimates. Servo speed is a no-load reference; torque under aerodynamic hinge load and dynamic servo current are not modeled."
+      "note": "Individual servo masses are included once. Installation positions, horn ratios, travel setup and response lag are estimates. Battery position is recalculated to retain the reference longitudinal CG when the structural allocation changes. Servo speed is a no-load reference; hinge-load torque and dynamic servo current are not modeled."
     },
     "electricalEstimate": {
       "status": "estimated",
       "note": "3S 2200 mAh pack, 0.04 ohm DC resistance and OCV curve are illustrative. Component battery mass remains unchanged. Static motor current is ideal induced power T^(3/2)/sqrt(2*rho*A), divided by an assumed 0.45 overall factor and nominal voltage, plus 0.2 A at full command. Thrust commands retain the prior estimated linear thrust curve. This is NOT a bench motor/prop test, efficiency map or endurance validation; replace with measured curves. Forward-flight current and servo loads are not resolved.",
       "url": "https://www.grc.nasa.gov/WWW/K-12/BGP/propth.html"
+    },
+    "foldedReconstruction": {
+      "status": "estimated",
+      "note": "Wing skin has 5 mm board and estimated 21 mm folded height. A-tail central trailing-edge relief and hinge station follow sheet 3. Nacelles split 40 g from the original fuselage allocation; boom taper and component stations use estimated folded geometry. Servo positions now follow the wing and rear booms; total mass and 51 mm CG target retained.",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf"
     }
   },
   "parts": [
@@ -82,7 +87,7 @@
     {
       "id": "fuselage",
       "kind": "body",
-      "massKg": 0.124,
+      "massKg": 0.084,
       "positionM": [0.1035, 0, 0.045],
       "sizeM": [0.447, 0.063, 0.11],
       "color": "#e7e5d9",
@@ -95,25 +100,77 @@
       "id": "left-boom",
       "kind": "boom",
       "massKg": 0.06,
-      "positionM": [-0.271, -0.17960512242138307, 0.005],
+      "positionM": [-0.231, -0.17960512242138307, 0.005],
       "sizeM": [0.658, 0.05, 0.045],
       "color": "#e7e5d9",
       "material": {
         "name": "Foamboard assembly",
         "finish": "foam"
-      }
+      },
+      "bodyLoft": [
+        {
+          "x": -0.560790273556231,
+          "width": 0.35999999999999993,
+          "top": -0.17777777777777778,
+          "bottom": 0.20000000000000004
+        },
+        {
+          "x": -0.10486322188449844,
+          "width": 0.7199999999999999,
+          "top": -0.39999999999999997,
+          "bottom": 0.4444444444444445
+        },
+        {
+          "x": 0.16869300911854104,
+          "width": 1.0,
+          "top": -0.5111111111111111,
+          "bottom": 0.5555555555555556
+        },
+        {
+          "x": 0.43920972644376904,
+          "width": 1.0,
+          "top": -0.5111111111111111,
+          "bottom": 0.5555555555555556
+        }
+      ]
     },
     {
       "id": "right-boom",
       "kind": "boom",
       "massKg": 0.06,
-      "positionM": [-0.271, 0.17960512242138307, 0.005],
+      "positionM": [-0.231, 0.17960512242138307, 0.005],
       "sizeM": [0.658, 0.05, 0.045],
       "color": "#e7e5d9",
       "material": {
         "name": "Foamboard assembly",
         "finish": "foam"
-      }
+      },
+      "bodyLoft": [
+        {
+          "x": -0.560790273556231,
+          "width": 0.35999999999999993,
+          "top": -0.17777777777777778,
+          "bottom": 0.20000000000000004
+        },
+        {
+          "x": -0.10486322188449844,
+          "width": 0.7199999999999999,
+          "top": -0.39999999999999997,
+          "bottom": 0.4444444444444445
+        },
+        {
+          "x": 0.16869300911854104,
+          "width": 1.0,
+          "top": -0.5111111111111111,
+          "bottom": 0.5555555555555556
+        },
+        {
+          "x": 0.43920972644376904,
+          "width": 1.0,
+          "top": -0.5111111111111111,
+          "bottom": 0.5555555555555556
+        }
+      ]
     },
     {
       "id": "left-motor",
@@ -147,7 +204,7 @@
       "id": "battery",
       "kind": "battery",
       "massKg": 0.19,
-      "positionM": [0.22218947368421055, 0, 0.04],
+      "positionM": [0.2544, 0, 0.04],
       "sizeM": [0.075, 0.034, 0.027],
       "color": "#df743d"
     },
@@ -155,7 +212,7 @@
       "id": "servo-left-wing",
       "kind": "equipment",
       "massKg": 0.009,
-      "positionM": [0.020000000000000004, -0.23, 0.015],
+      "positionM": [-0.065, -0.29, -0.008],
       "sizeM": [0.023, 0.0122, 0.029],
       "color": "#2d3942",
       "material": {
@@ -173,7 +230,7 @@
       "id": "servo-right-wing",
       "kind": "equipment",
       "massKg": 0.009,
-      "positionM": [0.020000000000000004, 0.23, 0.015],
+      "positionM": [-0.065, 0.29, -0.008],
       "sizeM": [0.023, 0.0122, 0.029],
       "color": "#2d3942",
       "material": {
@@ -191,7 +248,7 @@
       "id": "servo-left-ruddervator",
       "kind": "equipment",
       "massKg": 0.009,
-      "positionM": [-0.18, -0.18, 0.015],
+      "positionM": [-0.445, -0.17960512242138307, -0.008],
       "sizeM": [0.023, 0.0122, 0.029],
       "color": "#2d3942",
       "material": {
@@ -209,7 +266,7 @@
       "id": "servo-right-ruddervator",
       "kind": "equipment",
       "massKg": 0.009,
-      "positionM": [-0.18, 0.18, 0.015],
+      "positionM": [-0.445, 0.17960512242138307, -0.008],
       "sizeM": [0.023, 0.0122, 0.029],
       "color": "#2d3942",
       "material": {
@@ -222,6 +279,82 @@
         "travelDeg": 150,
         "ratedVoltage": 4.8
       }
+    },
+    {
+      "id": "left-nacelle",
+      "kind": "body",
+      "massKg": 0.02,
+      "positionM": [-0.012, -0.17960512242138307, 0.005],
+      "sizeM": [0.21, 0.06, 0.075],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Folded paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 0.6,
+          "top": -0.17,
+          "bottom": 0.15
+        },
+        {
+          "x": -0.12,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.25,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.5,
+          "width": 0.82,
+          "top": -0.35,
+          "bottom": 0.35
+        }
+      ]
+    },
+    {
+      "id": "right-nacelle",
+      "kind": "body",
+      "massKg": 0.02,
+      "positionM": [-0.012, 0.17960512242138307, 0.005],
+      "sizeM": [0.21, 0.06, 0.075],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Folded paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 0.6,
+          "top": -0.17,
+          "bottom": 0.15
+        },
+        {
+          "x": -0.12,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.25,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.5,
+          "width": 0.82,
+          "top": -0.35,
+          "bottom": 0.35
+        }
+      ]
     }
   ],
   "surfaces": [
@@ -252,7 +385,19 @@
           "surfaceArmM": 0.015
         }
       },
-      "kind": "wing"
+      "kind": "wing",
+      "foamWing": {
+        "rootChordM": 0.192,
+        "boardThicknessM": 0.005,
+        "foldHeightM": 0.021,
+        "hingeFraction": 0.765,
+        "controlSpan": [0.39, 0.998],
+        "tipStations": [
+          [0, 0, 1],
+          [0.985, 0, 1],
+          [1, 0.015, 0.995]
+        ]
+      }
     },
     {
       "id": "right-wing",
@@ -281,7 +426,19 @@
           "surfaceArmM": 0.015
         }
       },
-      "kind": "wing"
+      "kind": "wing",
+      "foamWing": {
+        "rootChordM": 0.192,
+        "boardThicknessM": 0.005,
+        "foldHeightM": 0.021,
+        "hingeFraction": 0.765,
+        "controlSpan": [0.39, 0.998],
+        "tipStations": [
+          [0, 0, 1],
+          [0.985, 0, 1],
+          [1, 0.015, 0.995]
+        ]
+      }
     },
     {
       "id": "left-ruddervator",
@@ -313,7 +470,21 @@
           "surfaceArmM": 0.015
         }
       },
-      "kind": "horizontal-tail"
+      "kind": "horizontal-tail",
+      "panel": {
+        "outline": [
+          [0.25, -0.5],
+          [0.25, 0.5],
+          [-0.4179858362841079, 0.5],
+          [-0.75, 0.42208333333333314],
+          [-0.75, -0.5]
+        ],
+        "thicknessM": 0.005,
+        "controlHinge": [
+          [-0.4179858362841079, -0.5],
+          [-0.4179858362841079, 0.5]
+        ]
+      }
     },
     {
       "id": "right-ruddervator",
@@ -345,7 +516,21 @@
           "surfaceArmM": 0.015
         }
       },
-      "kind": "horizontal-tail"
+      "kind": "horizontal-tail",
+      "panel": {
+        "outline": [
+          [0.25, -0.5],
+          [0.25, 0.5],
+          [-0.75, 0.5],
+          [-0.75, -0.42208333333333314],
+          [-0.4179858362841079, -0.5]
+        ],
+        "thicknessM": 0.005,
+        "controlHinge": [
+          [-0.4179858362841079, -0.5],
+          [-0.4179858362841079, 0.5]
+        ]
+      }
     }
   ],
   "motors": [
