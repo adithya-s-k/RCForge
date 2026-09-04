@@ -2,7 +2,7 @@ import * as T from "three";
 import type { Scenery } from "../core/scenery";
 import { seededRandom, surfaceTexture, terrainNoise } from "./terrain-material";
 import { renderBudget } from "./render-budget";
-import { landscapeHeight } from "./landscape";
+import { landscapeSurfaceHeight } from "./landscape";
 
 /** Crossed foliage cards retain parallax without thousands of solid canopy blobs. */
 function plantGeometry(kind: number) {
@@ -179,7 +179,7 @@ export function addVegetation(field: T.Group, profile: Scenery) {
           : kind === 2
             ? 12 + rand() * 12
             : 7 + rand() * 11;
-      const ground = Math.max(0, landscapeHeight(x, z, profile));
+      const ground = Math.max(0, landscapeSurfaceHeight(x, z, profile));
       dummy.position.set(x, ground - 0.06, z);
       dummy.rotation.set(0, rand() * Math.PI * 2, 0);
       dummy.scale.set(height * (0.8 + rand() * 0.35), height, height);

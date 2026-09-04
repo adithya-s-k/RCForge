@@ -333,3 +333,20 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
 - Verification: 189 tests in 33 files, definitions/catalog and build pass.
   The new regression checks the mass-weighted CG against the measured drawing
   offset. This establishes a plan-based starting balance, not flight calibration.
+
+## Pass 14 · terrain continuity and grounded vegetation
+
+- Browser review found a sharp color seam where flat ground met distant hills.
+  Both now use the same field surface and standard lighting at the intersection;
+  slope/altitude layers emerge gradually. Ground/strip share one material and
+  hills reuse their texture. No added image assets, triangles or shadow passes.
+  Hill fragments perform more shading; pixel/mesh budgets are unchanged.
+- Alpine inspection exposed source-DEM tree positions disagreeing with the
+  actual coarse triangles. Vegetation now samples that exact distributed mesh.
+  Regression raycasts all three sites and covers source/render disagreement
+  above five metres, keeping tree roots within 2 mm of the rendered surface.
+- Inspected airborne club, desert and Alpine views and ground launch/pause/reset.
+  Fixed a Three.js vec4 vertex-color GLSL mismatch caught by actual browser
+  compilation; no new browser errors after correction. Flight contact stays flat.
+- Verification: 190 tests in 34 files, definitions/catalog and production build
+  pass. Terrain changes are visual; no aircraft dynamics or replay change.

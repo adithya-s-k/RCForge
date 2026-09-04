@@ -1,9 +1,13 @@
 import * as T from "three";
 import type { Scenery } from "../core/scenery";
-import { terrainNoise, noiseGLSL } from "./terrain-material";
+import { terrainNoise, terrainMaterial } from "./terrain-material";
 
-/** Baked slope/height plus filtered world-space strata; no extra image maps. */
-export function mountainMaterial(geometry: T.BufferGeometry, profile: Scenery) {
+/** Shared field shading at the foothills; baked slope/height colors at altitude. */
+export function mountainMaterial(
+  geometry: T.BufferGeometry,
+  profile: Scenery,
+  fieldMap: T.Texture,
+) {
   const dry = profile.surface === "dirt",
     alpine = profile.surface === "grass";
   const low = new T.Color(dry ? "#827157" : alpine ? "#66715b" : "#68745a");
@@ -37,32 +41,5 @@ export function mountainMaterial(geometry: T.BufferGeometry, profile: Scenery) {
     color.toArray(colors, i * 3);
   }
   geometry.setAttribute("color", new T.BufferAttribute(colors, 3));
-  const material = new T.MeshLambertMaterial({ vertexColors: true });
-  material.onBeforeCompile = (shader) => {
-    shader.vertexShader = "varying vec3 terrainPoint;\n" + shader.vertexShader;
-    shader.vertexShader = shader.vertexShader.replace(
-      "#include <begin_vertex>",
-      "#include <begin_vertex>\nterrainPoint = position;",
-    );
-    shader.fragmentShader =
-      "varying vec3 terrainPoint;\n" + noiseGLSL + shader.fragmentShader;
-    shader.fragmentShader = shader.fragmentShader.replace(
-      "#include <color_fragment>",
-      `
-      #include <color_fragment>
-      vec2 p = terrainPoint.xz;
-      float large = fieldNoise(p * 0.008);
-      float ridge = fieldNoise(p * 0.037 + vec2(large * 4.0, terrainPoint.y * 0.018));
-      float footprint = max(length(dFdx(p)), length(dFdy(p)));
-      float detail = 1.0 - smoothstep(4.0, 35.0, footprint);
-      float strata = sin(terrainPoint.y * 0.12 + large * 8.0 + ridge) * 0.5 + 0.5;
-      diffuseColor.rgb *= 0.83 + large * 0.23 + (ridge - 0.5) * 0.24 * detail;
-      diffuseColor.rgb *= ${dry ? "0.90 + strata * 0.15 * detail" : "1.0"};
-      diffuseColor.rgb = mix(diffuseColor.rgb, diffuseColor.rgb * vec3(0.88, 0.94, 0.88),
-        ${dry ? "0.0" : "smoothstep(0.42, 0.75, ridge) * 0.38"});
-    `,
-    );
-  };
-  material.customProgramCacheKey = () => `landscape-strata-v2-${dry}`;
-  return material;
+  return terrainMaterial(dry, false, { map: fieldMap, mountain: true });
 }

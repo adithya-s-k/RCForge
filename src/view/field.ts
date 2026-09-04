@@ -45,17 +45,18 @@ export function createField(scene: T.Scene, profile: Scenery = sceneries.club) {
   scene.add(field);
   addFieldDetails(field);
   addVegetation(field, profile);
-  addLandscape(field, profile);
+  const groundMaterial = terrainMaterial(profile.surface === "dirt");
+  addLandscape(field, profile, groundMaterial.map!);
   const ground = new T.Mesh(
     patch(6000, 6000, { x: 58, width: 220, height: 22 }),
-    terrainMaterial(profile.surface === "dirt"),
+    groundMaterial,
   );
   ground.rotation.x = -Math.PI / 2;
   ground.receiveShadow = true;
   field.add(ground);
   const strip = new T.Mesh(
     patch(220, 22, { x: -10, width: 172, height: 8.4 }),
-    terrainMaterial(profile.surface === "dirt"),
+    groundMaterial,
   );
   strip.rotation.x = -Math.PI / 2;
   strip.position.set(58, 0, 0);
