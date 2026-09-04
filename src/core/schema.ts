@@ -105,6 +105,16 @@ export const AircraftSchema = z
               .optional(),
             manufacturer: z.string().optional(),
             model: z.string().optional(),
+            catalogId: z.string().min(1).optional(),
+            servo: z
+              .object({
+                speedSecondsPer60Deg: positive.max(5),
+                travelDeg: positive.max(270),
+                ratedVoltage: positive.max(24),
+                stallTorqueNm: positive.max(20).optional(),
+              })
+              .strict()
+              .optional(),
             inertiaDiagonalKgM2: z
               .tuple([positive, positive, positive])
               .optional(),
@@ -205,6 +215,15 @@ export const AircraftSchema = z
               effectiveness: finite.min(0).max(1),
               responseSeconds: positive.max(2).optional(),
               rateLimitDegS: positive.max(2000).optional(),
+              linkage: z
+                .object({
+                  servoPartId: z.string().min(1),
+                  servoTravelDeg: positive.max(135),
+                  servoArmM: positive.max(0.2),
+                  surfaceArmM: positive.max(0.2),
+                })
+                .strict()
+                .optional(),
             })
             .strict()
             .optional(),
@@ -313,6 +332,11 @@ export const AircraftSchema = z
         );
     }
     a.parts.forEach((p, i) => {
+      if (p.servo && p.kind !== "equipment")
+        issue(
+          ["parts", i, "servo"],
+          "A servo must be an equipment mass component",
+        );
       if (
         p.bodyLoft &&
         (p.kind !== "body" ||
@@ -371,6 +395,20 @@ export const AircraftSchema = z
         );
     });
     a.surfaces.forEach((s, i) => {
+      const linkage = s.control?.linkage;
+      if (linkage) {
+        const servo = a.parts.find((p) => p.id === linkage.servoPartId)?.servo;
+        if (!servo)
+          issue(
+            ["surfaces", i, "control", "linkage"],
+            "Linkage must reference a servo mass component",
+          );
+        else if (linkage.servoTravelDeg * 2 > servo.travelDeg + 1e-6)
+          issue(
+            ["surfaces", i, "control", "linkage", "servoTravelDeg"],
+            "Commanded servo travel exceeds its rated range",
+          );
+      }
       if (s.panel) {
         const points = s.panel.outline;
         const twiceArea = points.reduce((sum, p, j) => {

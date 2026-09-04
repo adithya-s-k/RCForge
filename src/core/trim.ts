@@ -1,4 +1,5 @@
 import type { Aircraft } from "./schema";
+import { surfaceCommand } from "./surface-control";
 import {
   Simulation,
   initialState,
@@ -79,6 +80,9 @@ export function findTrim(
   const controls: Controls = { roll: 0, pitch: x[1], yaw: 0, throttle: x[2] };
   const state = initialState(a, speed, 18, x[0]);
   state.motors.fill(x[2]);
+  state.surfaceCommands = a.surfaces.map((s) =>
+    s.control ? surfaceCommand(s.control, controls) : 0,
+  );
   return {
     controls,
     state,

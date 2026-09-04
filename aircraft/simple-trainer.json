@@ -7,6 +7,10 @@
     "design": {
       "status": "estimated",
       "note": "Original RCForge example. All geometry, mass allocation and flight coefficients are estimates. Not a validated real aircraft."
+    },
+    "servoAssembly": {
+      "status": "estimated",
+      "note": "Individual positional servos replace the previous combined equipment allocation without changing total mass or longitudinal CG. Positions, horn ratios, travel setup and response lag are estimates. Servo speed is a no-load reference; torque under aerodynamic hinge load and dynamic servo current are not modeled."
     }
   },
   "parts": [
@@ -59,12 +63,103 @@
       "color": "#e5c16c"
     },
     {
-      "id": "equipment",
+      "id": "esc",
       "kind": "equipment",
-      "massKg": 0.04,
+      "massKg": 0.012,
       "positionM": [0, 0, 0.02],
-      "sizeM": [0.03, 0.05, 0.04],
-      "color": "#253b3e"
+      "sizeM": [0.03, 0.02, 0.01],
+      "color": "#253b3e",
+      "model": "Estimated equipment allocation"
+    },
+    {
+      "id": "receiver",
+      "kind": "equipment",
+      "massKg": 0.004,
+      "positionM": [0, 0, 0.02],
+      "sizeM": [0.03, 0.02, 0.01],
+      "color": "#253b3e",
+      "model": "Estimated equipment allocation"
+    },
+    {
+      "id": "wiring",
+      "kind": "equipment",
+      "massKg": 0.004,
+      "positionM": [0, 0, 0.02],
+      "sizeM": [0.03, 0.02, 0.01],
+      "color": "#253b3e",
+      "model": "Estimated equipment allocation"
+    },
+    {
+      "id": "servo-left-wing",
+      "kind": "equipment",
+      "massKg": 0.005,
+      "positionM": [-0.055, -0.16, 0.02],
+      "sizeM": [0.02, 0.009, 0.022],
+      "color": "#2d3942",
+      "material": {
+        "name": "Positional micro servo",
+        "finish": "plastic"
+      },
+      "model": "5 g micro servo (estimated)",
+      "servo": {
+        "speedSecondsPer60Deg": 0.12,
+        "travelDeg": 150,
+        "ratedVoltage": 4.8
+      }
+    },
+    {
+      "id": "servo-right-wing",
+      "kind": "equipment",
+      "massKg": 0.005,
+      "positionM": [-0.055, 0.16, 0.02],
+      "sizeM": [0.02, 0.009, 0.022],
+      "color": "#2d3942",
+      "material": {
+        "name": "Positional micro servo",
+        "finish": "plastic"
+      },
+      "model": "5 g micro servo (estimated)",
+      "servo": {
+        "speedSecondsPer60Deg": 0.12,
+        "travelDeg": 150,
+        "ratedVoltage": 4.8
+      }
+    },
+    {
+      "id": "servo-elevator",
+      "kind": "equipment",
+      "massKg": 0.005,
+      "positionM": [0.055, 0, 0.02],
+      "sizeM": [0.02, 0.009, 0.022],
+      "color": "#2d3942",
+      "material": {
+        "name": "Positional micro servo",
+        "finish": "plastic"
+      },
+      "model": "5 g micro servo (estimated)",
+      "servo": {
+        "speedSecondsPer60Deg": 0.12,
+        "travelDeg": 150,
+        "ratedVoltage": 4.8
+      }
+    },
+    {
+      "id": "servo-fin",
+      "kind": "equipment",
+      "massKg": 0.005,
+      "positionM": [0.055, 0, 0.02],
+      "sizeM": [0.02, 0.009, 0.022],
+      "color": "#2d3942",
+      "material": {
+        "name": "Positional micro servo",
+        "finish": "plastic"
+      },
+      "model": "5 g micro servo (estimated)",
+      "servo": {
+        "speedSecondsPer60Deg": 0.12,
+        "travelDeg": 150,
+        "ratedVoltage": 4.8
+      }
     }
   ],
   "surfaces": [
@@ -86,7 +181,14 @@
         "axis": "roll",
         "gain": 1,
         "maxDeg": 12,
-        "effectiveness": 0.55
+        "effectiveness": 0.55,
+        "linkage": {
+          "servoPartId": "servo-left-wing",
+          "servoTravelDeg": 45,
+          "servoArmM": 0.01,
+          "surfaceArmM": 0.015
+        },
+        "responseSeconds": 0.06
       },
       "kind": "wing"
     },
@@ -108,7 +210,14 @@
         "axis": "roll",
         "gain": -1,
         "maxDeg": 12,
-        "effectiveness": 0.55
+        "effectiveness": 0.55,
+        "linkage": {
+          "servoPartId": "servo-right-wing",
+          "servoTravelDeg": 45,
+          "servoArmM": 0.01,
+          "surfaceArmM": 0.015
+        },
+        "responseSeconds": 0.06
       },
       "kind": "wing"
     },
@@ -130,7 +239,14 @@
         "axis": "pitch",
         "gain": -1,
         "maxDeg": 12,
-        "effectiveness": 0.55
+        "effectiveness": 0.55,
+        "linkage": {
+          "servoPartId": "servo-elevator",
+          "servoTravelDeg": 45,
+          "servoArmM": 0.01,
+          "surfaceArmM": 0.015
+        },
+        "responseSeconds": 0.06
       },
       "kind": "horizontal-tail"
     },
@@ -152,7 +268,14 @@
         "axis": "yaw",
         "gain": -1,
         "maxDeg": 12,
-        "effectiveness": 0.55
+        "effectiveness": 0.55,
+        "linkage": {
+          "servoPartId": "servo-fin",
+          "servoTravelDeg": 45,
+          "servoArmM": 0.01,
+          "surfaceArmM": 0.015
+        },
+        "responseSeconds": 0.06
       },
       "kind": "vertical-tail"
     }

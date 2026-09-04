@@ -2,6 +2,7 @@ import type { Aircraft } from "./schema";
 import { massProperties } from "./aircraft";
 import { calmEnvironment, initialState, type State } from "./simulation";
 import { findTrim } from "./trim";
+import { surfaceCommand } from "./surface-control";
 import { radians, axisQ } from "./math";
 export type LaunchMode = "ground" | "hand" | "airborne";
 /** Trim the release operating point; this is initialization, never an autopilot. */
@@ -74,6 +75,9 @@ export function launchState(
     s.position = [-5, -10, -1.7];
     s.velocity = [8.35, 0, -1.2];
     s.motors.fill(0.65);
+    s.surfaceCommands = a.surfaces.map((surface) =>
+      surface.control ? surfaceCommand(surface.control, trim.controls) : 0,
+    );
     return s;
   }
   if (!a.contactPoints.some((p) => p.kind === "wheel"))

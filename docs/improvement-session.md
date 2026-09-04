@@ -87,6 +87,21 @@ pause the automation, and report the outcome. Do not start more work.
   tray/standoffs within its illustrative frame allocation. Browser checked Top and
   Side on the large quad. 156 tests and the build pass.
 
+## Pass 4 · component actuation
+
+- Added optional positional-servo metadata to mass parts and physical horn/travel
+  links on surfaces. Effective travel and speed feed physics and animation.
+- Split fixed-wing servo allocations into individual parts without changing total
+  mass or longitudinal CG. FT-22 initial setup uses 20° effective elevon travel,
+  retaining the published 40° maximum. Larger throws remain configurable.
+- Corrected first-step servo teleportation; trimmed launches initialize actuator
+  state explicitly. Simulation version is now 0.7.0; old recordings are rejected.
+- Verification: 159 tests, aircraft validation and production build pass. Numerical
+  verification remains 78/78; FT-22 envelope is 22/45 with zero nonfinite loads.
+  Servo horns now animate from the same actuator state as the control surfaces.
+- Next: component catalog and editor, battery fields/discharge on plane presets,
+  motor/prop selection and source-aware component swaps. These remain unfinished.
+
 ## User's added priority
 
 The user explicitly added interchangeable physical components, a compact component

@@ -2,6 +2,7 @@ import { surfacePolar, STANDARD_AIR_VISCOSITY } from "./aerodynamics";
 import { powertrain } from "./powertrain";
 import { rotorCommands } from "./multirotor";
 import { surfaceCommand } from "./surface-control";
+import { surfaceActuation } from "./actuation";
 import { resolveGroundContacts } from "./ground";
 import type { Aircraft } from "./schema";
 import { massProperties } from "./aircraft";
@@ -23,7 +24,7 @@ import {
   type Vec3,
   type Quat,
 } from "./math";
-export const SIM_VERSION = "0.6.0";
+export const SIM_VERSION = "0.7.0";
 export const FIXED_DT = 1 / 120;
 export const GRAVITY = 9.80665;
 export interface Controls {
@@ -120,6 +121,7 @@ export function cleanControls(c: Controls): Controls {
 }
 export class Simulation {
   readonly properties: ReturnType<typeof massProperties>;
+  readonly actuations: ReturnType<typeof surfaceActuation>[];
   state: State;
   lastForces: Forces = {
     force: [0, 0, 0],
@@ -133,6 +135,9 @@ export class Simulation {
     state?: State,
   ) {
     this.properties = massProperties(aircraft);
+    this.actuations = aircraft.surfaces.map((s) =>
+      surfaceActuation(aircraft, s),
+    );
     this.state = structuredClone(state ?? initialState(aircraft));
     if (aircraft.battery && this.state.batterySoc === undefined)
       this.state.batterySoc = aircraft.battery.initialSoc;
@@ -197,7 +202,7 @@ export class Simulation {
       const deflect = wing.control
         ? (s.surfaceCommands?.[surfaceIndex] ??
             surfaceCommand(wing.control, c)) *
-          radians(wing.control.maxDeg) *
+          radians(this.actuations[surfaceIndex].maxDeg) *
           wing.control.effectiveness
         : 0;
       const alpha =
@@ -341,21 +346,24 @@ export class Simulation {
     });
     if (
       this.aircraft.surfaces.some(
-        (w) => w.control?.responseSeconds || w.control?.rateLimitDegS,
+        (w) =>
+          w.control?.responseSeconds ||
+          w.control?.rateLimitDegS ||
+          w.control?.linkage,
       )
     ) {
       s.surfaceCommands = this.aircraft.surfaces.map((w, i) => {
         if (!w.control) return 0;
         const target = surfaceCommand(w.control, c),
-          previous = s.surfaceCommands?.[i] ?? target;
+          previous = s.surfaceCommands?.[i] ?? 0;
+        const actuator = this.actuations[i];
         const change =
           (target - previous) *
           (w.control.responseSeconds
             ? 1 - Math.exp(-dt / w.control.responseSeconds)
             : 1);
         const limit =
-          ((w.control.rateLimitDegS ?? Infinity) * dt) /
-          Math.max(0.001, w.control.maxDeg);
+          (actuator.rateLimitDegS * dt) / Math.max(0.001, actuator.maxDeg);
         return previous + clamp(change, -limit, limit);
       });
     }

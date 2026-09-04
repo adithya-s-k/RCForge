@@ -1,6 +1,6 @@
-# Component fidelity in RCForge 0.6
+# Component fidelity in RCForge 0.7
 
-The schema remains aircraft format 1 with optional extensions. Simulation version 0.6.0 rejects recordings from earlier physics versions. These features support measured inputs; their existence does not make an aircraft flight-test calibrated.
+The schema remains aircraft format 1 with optional extensions. Simulation version 0.7.0 rejects recordings from earlier physics versions. These features support measured inputs; their existence does not make an aircraft flight-test calibrated.
 
 ## Mass, materials and inertia
 
@@ -98,6 +98,36 @@ Changing wing span in the editor removes that wing's finite-wing tables and adds
 an estimated-data provenance note. Mass/CG-only changes preserve aerodynamic
 tables. Supply new tables for modified geometry before claiming calibrated loads.
 
-Simulation version 0.6.0 records viscosity and these aircraft fields. Old 0.5.0
+Simulation version 0.7.0 records viscosity and these aircraft fields. Older
 recordings are rejected; do not relabel their version to bypass the check.
 Aircraft schema version 1 remains compatible because the fields are optional.
+
+## Individual servos and pushrods (0.7)
+
+A positional servo is an equipment part in the mass ledger with a `servo` object:
+`speedSecondsPer60Deg`, full `travelDeg`, `ratedVoltage` and optional
+`stallTorqueNm`. The latter two describe the speed reference and torque rating;
+voltage-dependent speed and hinge-load torque saturation are not implemented.
+
+A surface control can provide `linkage` with `servoPartId`, the commanded
+one-sided `servoTravelDeg`, `servoArmM` and `surfaceArmM`. A rigid, small-angle
+pushrod approximation gives surface angle = servo angle × servo arm / surface
+arm. Effective surface travel is the smaller of this mechanical result and
+`control.maxDeg`. Surface speed is 60 / servo speed × the same horn ratio,
+optionally further capped by the existing `rateLimitDegS`. The same effective
+travel drives aerodynamic deflection and surface animation. Existing response
+lag still applies. Longer servo horns increase both speed and travel; longer
+surface horns reduce both. Linkage geometry is not a nonlinear four-bar solver.
+
+The FT-22 retains the published 40° limit but starts with ±25° servo command and
+10/12.5 mm horns, yielding ±20° effective elevon travel. This reduced initial setup
+is an estimate intended to make initial control less sensitive. The two 9 g servos
+are now separate components. The other fixed-wing presets also split their servo
+allocations into individual parts while preserving total mass and longitudinal
+CG; transverse inertia reflects their newly specified positions.
+
+In 0.7, a servo starts from neutral when no initial deflection is supplied, so the
+first control step obeys its speed limit. Trimmed and hand launches explicitly
+initialize the trimmed deflections. Recordings preserve these states. Simulation
+version **0.7.0** rejects older recordings instead of silently replaying them under
+new actuator behavior. Aircraft format remains version 1 with optional fields.

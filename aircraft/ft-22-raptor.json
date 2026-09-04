@@ -30,6 +30,14 @@
     "propulsion": {
       "status": "estimated",
       "note": "9x4.7-inch pusher with assumed 4.8 N static thrust, 24 m/s zero-thrust speed and 90 ms response. No measured motor/prop thrust-current table, electrical depletion, P-factor or propeller gyroscopic model."
+    },
+    "servoAssembly": {
+      "status": "estimated",
+      "note": "Individual positional servos replace the previous combined equipment allocation without changing total mass or longitudinal CG. Positions, horn ratios, travel setup and response lag are estimates. Servo speed is a no-load reference; torque under aerodynamic hinge load and dynamic servo current are not modeled."
+    },
+    "initialControlTravel": {
+      "status": "estimated",
+      "note": "Published build calls for 40 degree surface throws. Initial radio/servo travel is reduced to +/-25 degrees with a 10/12.5 mm horn ratio, giving +/-20 degrees effective elevon deflection for less sensitive first flights. Adjust linkage/travel deliberately; sourced plan throw remains the upper surface limit."
     }
   },
   "parts": [
@@ -180,18 +188,6 @@
       }
     },
     {
-      "id": "servos",
-      "kind": "equipment",
-      "massKg": 0.018,
-      "positionM": [-0.095, 0, 0.012],
-      "sizeM": [0.024, 0.16, 0.025],
-      "color": "#e9e7df",
-      "material": {
-        "name": "Electronics assembly",
-        "finish": "plastic"
-      }
-    },
-    {
       "id": "receiver",
       "kind": "equipment",
       "massKg": 0.006,
@@ -215,6 +211,42 @@
         "finish": "plastic"
       },
       "model": "3S 1000 mAh pack (estimated)"
+    },
+    {
+      "id": "servo-left-elevon",
+      "kind": "equipment",
+      "massKg": 0.009,
+      "positionM": [-0.095, -0.085, 0.012],
+      "sizeM": [0.023, 0.0122, 0.029],
+      "color": "#2d3942",
+      "material": {
+        "name": "Positional micro servo",
+        "finish": "plastic"
+      },
+      "model": "SG90-class reference",
+      "servo": {
+        "speedSecondsPer60Deg": 0.1,
+        "travelDeg": 150,
+        "ratedVoltage": 4.8
+      }
+    },
+    {
+      "id": "servo-right-elevon",
+      "kind": "equipment",
+      "massKg": 0.009,
+      "positionM": [-0.095, 0.085, 0.012],
+      "sizeM": [0.023, 0.0122, 0.029],
+      "color": "#2d3942",
+      "material": {
+        "name": "Positional micro servo",
+        "finish": "plastic"
+      },
+      "model": "SG90-class reference",
+      "servo": {
+        "speedSecondsPer60Deg": 0.1,
+        "travelDeg": 150,
+        "ratedVoltage": 4.8
+      }
     }
   ],
   "surfaces": [
@@ -293,7 +325,12 @@
         "maxDeg": 40,
         "effectiveness": 0.6,
         "responseSeconds": 0.06,
-        "rateLimitDegS": 400
+        "linkage": {
+          "servoPartId": "servo-left-elevon",
+          "servoTravelDeg": 25,
+          "servoArmM": 0.01,
+          "surfaceArmM": 0.0125
+        }
       }
     },
     {
@@ -396,7 +433,12 @@
         "maxDeg": 40,
         "effectiveness": 0.6,
         "responseSeconds": 0.06,
-        "rateLimitDegS": 400
+        "linkage": {
+          "servoPartId": "servo-right-elevon",
+          "servoTravelDeg": 25,
+          "servoArmM": 0.01,
+          "surfaceArmM": 0.0125
+        }
       }
     },
     {

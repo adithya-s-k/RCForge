@@ -72,3 +72,13 @@ verify depletion. `physics:envelope` surveys speed, density, mass and charge and
 reports unsuccessful trim points. Neither command is measured-aircraft validation.
 See the [research and implementation plan](realism-plan.md) for prioritized work
 and the evidence needed before increasing fidelity claims.
+
+## Version 0.7 actuator changes
+
+Linked servo components constrain surface speed and travel through the configured
+horn ratio. The first step no longer jumps an uninitialized servo straight to its
+target. Trimmed launch states include servo positions. Tests cover rate limits,
+travel geometry, component mass changes, invalid references and deterministic
+replay. These are numerical checks of a rigid no-load linkage approximation, not
+servo bench validation or calibrated FT-22 handling. Older simulation recordings
+are rejected; aircraft JSON remains schema version 1.

@@ -1,3 +1,4 @@
+import { surfaceActuation } from "../core/actuation";
 import { buildQuad } from "./quad-model";
 import { buildPanel } from "./planform";
 import { disposeModel } from "./dispose-model";
@@ -454,6 +455,39 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
         baseColor,
         y,
       );
+    } else if (p.servo) {
+      const housing = new T.Group();
+      housing.position.set(...p.positionM);
+      group.add(housing);
+      box(housing, p.sizeM, [0, 0, 0], dark);
+      const surface = a.surfaces.find(
+        (s) => s.control?.linkage?.servoPartId === p.id,
+      );
+      if (surface?.control?.linkage) {
+        const control = surface.control,
+          linkage = control.linkage!;
+        const horn = new T.Group();
+        horn.position.z = -p.sizeM[2] / 2 - 0.002;
+        housing.add(horn);
+        box(
+          horn,
+          [linkage.servoArmM + 0.003, 0.003, 0.002],
+          [linkage.servoArmM / 2, 0, 0],
+          baseColor,
+        );
+        controls.push({
+          surfaceId: surface.id,
+          pivot: horn,
+          axis: control.axis,
+          gain: control.gain,
+          control,
+          hingeAxis: new T.Vector3(0, 0, 1),
+          max: radians(
+            (surfaceActuation(a, surface).maxDeg * linkage.surfaceArmM) /
+              linkage.servoArmM,
+          ),
+        });
+      }
     } else if (p.kind === "battery") {
       const battery = box(group, p.sizeM, p.positionM, orange);
       battery.name = "battery";
@@ -477,7 +511,7 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
           axis: s.control.axis,
           gain: s.control.gain,
           control: s.control,
-          max: radians(s.control.maxDeg),
+          max: radians(surfaceActuation(a, s).maxDeg),
         });
       continue;
     }
@@ -572,7 +606,7 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
         axis: s.control.axis,
         gain: s.control.gain,
         control: s.control,
-        max: radians(s.control.maxDeg),
+        max: radians(surfaceActuation(a, s).maxDeg),
       });
     }
   }

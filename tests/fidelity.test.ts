@@ -73,6 +73,9 @@ it("material names add no hidden mass and principal inertias rotate into body ax
     },
   ];
   const p = massProperties(a);
+  // This inertia fixture replaces the entire assembly with one test cuboid.
+  for (const surface of a.surfaces)
+    if (surface.control) delete surface.control.linkage;
   expect(p.mass).toBe(2);
   expect(p.cg).toEqual([0, 0, 0]);
   expect(p.inertia[0][0]).toBeCloseTo(2, 10);
