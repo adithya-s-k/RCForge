@@ -1,4 +1,5 @@
 import { buildQuad } from "./quad-model";
+import { disposeModel } from "./dispose-model";
 import type { SurfaceControl } from "../core/surface-control";
 import * as T from "three";
 import type { Aircraft } from "../core/schema";
@@ -41,6 +42,16 @@ const orange = new T.MeshStandardMaterial({
   color: "#ad3c25",
   roughness: 0.55,
 });
+const sharedPalette = new Set<T.Material>([
+  foam,
+  underside,
+  dark,
+  aluminum,
+  orange,
+]);
+export function disposeAircraft(root: T.Object3D) {
+  disposeModel(root, sharedPalette);
+}
 function mesh(
   g: T.BufferGeometry,
   m: T.Material,

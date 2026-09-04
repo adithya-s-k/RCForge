@@ -92,9 +92,13 @@ function asphaltMaterial() {
       "#include <map_fragment>",
       `
       vec2 roadUV = mat2(0.8, -0.6, 0.6, 0.8) * vRunwayPosition.xz / 3.0;
-      vec3 asphalt = naturalSurface(map, roadUV);
+      vec3 sampleColor = naturalSurface(map, roadUV);
+      // Compress the source's deep fissures: small RC wheels should read against
+      // fine aggregate, not oversized black cracks. No additional texture fetch.
+      float aggregate = dot(sampleColor, vec3(0.299, 0.587, 0.114));
+      vec3 asphalt = vec3(0.105, 0.109, 0.111) + (sampleColor - vec3(0.14)) * 0.32;
       float weather = fieldNoise(vRunwayPosition.xz * 0.07);
-      asphalt *= 0.8 + weather * 0.25;
+      asphalt *= 0.94 + weather * 0.12;
       float paint = texture2D(runwayPaint, vRunwayUV).r;
       float edgeDust = smoothstep(2.85, 3.5, abs(vRunwayPosition.z)) * (0.13 + weather * 0.15);
       asphalt = mix(asphalt, vec3(0.22, 0.20, 0.15), edgeDust);
@@ -104,7 +108,7 @@ function asphaltMaterial() {
       asphalt *= 1.0 - touchdown * wheelTrack * weather * 0.14;
       diffuseColor.rgb *= mix(asphalt, vec3(0.64, 0.65, 0.61), paint * (0.88 + 0.08 * weather));
       float roadFootprint = max(length(dFdx(vRunwayPosition.xz)), length(dFdy(vRunwayPosition.xz)));
-      float roadHeight = dot(asphalt, vec3(0.299, 0.587, 0.114)) * 0.009
+      float roadHeight = aggregate * 0.002
         * (1.0 - smoothstep(0.025, 0.16, roadFootprint)) * (1.0 - paint * 0.8);
     `,
     );
@@ -113,7 +117,7 @@ function asphaltMaterial() {
       "#include <normal_fragment_maps>\nnormal = surfaceRelief(-vViewPosition, normal, roadHeight);",
     );
   };
-  material.customProgramCacheKey = () => "runway-asphalt-natural-v2";
+  material.customProgramCacheKey = () => "runway-asphalt-natural-v3";
   return material;
 }
 

@@ -6,7 +6,7 @@ import type { Aircraft } from "../core/schema";
 import type { Simulation, Controls } from "../core/simulation";
 import { massProperties } from "../core/aircraft";
 import { type Vec3 } from "../core/math";
-import { buildAircraft, type AircraftVisual } from "./model";
+import { buildAircraft, disposeAircraft, type AircraftVisual } from "./model";
 import { createField } from "./field";
 import type { Placement } from "../core/placement";
 import { renderBudget, renderPixelRatio } from "./render-budget";
@@ -110,13 +110,13 @@ export class FlightScene {
     this.scene.add(this.placementMarker);
     const floor = new T.Mesh(
       new T.PlaneGeometry(200, 200),
-      new T.MeshStandardMaterial({ color: "#242a31", roughness: 0.94 }),
+      new T.MeshStandardMaterial({ color: "#252627", roughness: 0.94 }),
     );
     floor.rotation.x = -Math.PI / 2;
     floor.position.y = -0.27;
     floor.receiveShadow = true;
     this.studioGroup.add(floor);
-    const grid = new T.GridHelper(8, 40, "#505b65", "#303a43");
+    const grid = new T.GridHelper(8, 40, "#44474a", "#2e3134");
     grid.position.y = -0.268;
     this.studioGroup.add(grid);
     canvas.addEventListener("pointerdown", (e) => {
@@ -210,9 +210,7 @@ export class FlightScene {
   private disposeVisual() {
     if (!this.visual) return;
     this.scene.remove(this.visual.group);
-    this.visual.group.traverse((o) => {
-      if (o instanceof T.Mesh) o.geometry.dispose();
-    });
+    disposeAircraft(this.visual.group);
   }
   setAircraft(a: Aircraft) {
     this.disposeVisual();
@@ -225,6 +223,7 @@ export class FlightScene {
     // The rotor diagonal excludes propeller tips; frame the full rendered model.
     const size = bounds.getSize(new T.Vector3());
     this.span = Math.max(a.reference.spanM, size.x, size.y, size.z);
+    this.arrows.forEach((arrow) => arrow.dispose());
     this.forces.clear();
     this.arrows = a.surfaces.map(() => {
       const arrow = new T.ArrowHelper(
@@ -494,25 +493,27 @@ export class FlightScene {
       -0.9,
       -0.6 + Math.hypot(...wind) * 0.12,
     );
-    const inverseView = this.camera.quaternion.clone().invert();
-    [
-      new T.Vector3(1, 0, 0),
-      new T.Vector3(0, 1, 0),
-      new T.Vector3(0, 0, 1),
-    ].forEach((v, i) => {
-      v.applyQuaternion(this.visual!.group.quaternion).applyQuaternion(
-        inverseView,
-      );
-      const key = ["X", "Y", "Z"][i],
-        x = 73 + v.x * 31,
-        y = 43 - v.y * 31;
-      const line = this.axisGuide.querySelector(`#axis-line-${key}`)!,
-        label = this.axisGuide.querySelector(`#axis-text-${key}`)!;
-      line.setAttribute("x2", String(x));
-      line.setAttribute("y2", String(y));
-      label.setAttribute("x", String(x + 4));
-      label.setAttribute("y", String(y - 3));
-    });
+    if (this.studio) {
+      const inverseView = this.camera.quaternion.clone().invert();
+      [
+        new T.Vector3(1, 0, 0),
+        new T.Vector3(0, 1, 0),
+        new T.Vector3(0, 0, 1),
+      ].forEach((v, i) => {
+        v.applyQuaternion(this.visual!.group.quaternion).applyQuaternion(
+          inverseView,
+        );
+        const key = ["X", "Y", "Z"][i],
+          x = 73 + v.x * 31,
+          y = 43 - v.y * 31;
+        const line = this.axisGuide.querySelector(`#axis-line-${key}`)!,
+          label = this.axisGuide.querySelector(`#axis-text-${key}`)!;
+        line.setAttribute("x2", String(x));
+        line.setAttribute("y2", String(y));
+        label.setAttribute("x", String(x + 4));
+        label.setAttribute("y", String(y - 3));
+      });
+    }
     this.axisGuide.hidden = !this.studio;
     this.axisGuide.style.right = this.studio ? "14px" : "auto";
     this.axisGuide.style.left = this.studio ? "auto" : "14px";
@@ -535,6 +536,7 @@ export class FlightScene {
     this.placementRing.geometry.dispose();
     this.placementRing.material.dispose();
     this.placementArrow.dispose();
+    this.arrows.forEach((arrow) => arrow.dispose());
     this.sun.shadow.dispose();
     this.renderer.dispose();
   }
