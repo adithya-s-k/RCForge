@@ -55,19 +55,19 @@ export function createField(scene: T.Scene, profile: Scenery = sceneries.club) {
   field.add(ground);
   const strip = new T.Mesh(
     patch(220, 22, { x: -10, width: 172, height: 8.4 }),
-    terrainMaterial(profile.surface === "dirt", true),
+    terrainMaterial(profile.surface === "dirt"),
   );
   strip.rotation.x = -Math.PI / 2;
   strip.position.set(58, 0, 0);
   strip.receiveShadow = true;
   field.add(strip);
-  const shoulderMaterial = terrainMaterial(profile.surface !== "grass", true);
+  const shoulderMaterial = terrainMaterial(profile.surface !== "grass");
   shoulderMaterial.color.set(
     profile.surface === "asphalt"
       ? "#b3b5ab"
       : profile.surface === "grass"
-        ? "#cbd3af"
-        : "#d4b79c",
+        ? "#d1d8b5"
+        : "#fff3dd",
   );
   const shoulder = new T.Mesh(
     patch(172, 8.4, { x: 0, width: 170, height: 7 }),

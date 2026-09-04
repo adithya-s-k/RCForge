@@ -6,6 +6,7 @@ import {
   surfaceTexture,
   terrainMaterial,
 } from "./terrain-material";
+import { surfaceDetailGLSL } from "./surface-detail";
 
 // View dimensions in metres. +X is north; 36 and 18 face opposing approaches.
 export const runwayLayout = { x: 48, length: 170, width: 7 };
@@ -85,12 +86,13 @@ function asphaltMaterial() {
     shader.fragmentShader =
       "varying vec3 vRunwayPosition; varying vec2 vRunwayUV; uniform sampler2D runwayPaint;\n" +
       noiseGLSL +
+      surfaceDetailGLSL +
       shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace(
       "#include <map_fragment>",
       `
-      vec2 roadUV = vRunwayPosition.xz / 3.0;
-      vec3 asphalt = texture2D(map, roadUV).rgb;
+      vec2 roadUV = mat2(0.8, -0.6, 0.6, 0.8) * vRunwayPosition.xz / 3.0;
+      vec3 asphalt = naturalSurface(map, roadUV);
       float weather = fieldNoise(vRunwayPosition.xz * 0.07);
       asphalt *= 0.8 + weather * 0.25;
       float paint = texture2D(runwayPaint, vRunwayUV).r;
@@ -101,10 +103,17 @@ function asphaltMaterial() {
       float wheelTrack = exp(-pow((abs(vRunwayPosition.z) - 0.32) / 0.11, 2.0));
       asphalt *= 1.0 - touchdown * wheelTrack * weather * 0.14;
       diffuseColor.rgb *= mix(asphalt, vec3(0.64, 0.65, 0.61), paint * (0.88 + 0.08 * weather));
+      float roadFootprint = max(length(dFdx(vRunwayPosition.xz)), length(dFdy(vRunwayPosition.xz)));
+      float roadHeight = dot(asphalt, vec3(0.299, 0.587, 0.114)) * 0.009
+        * (1.0 - smoothstep(0.025, 0.16, roadFootprint)) * (1.0 - paint * 0.8);
     `,
     );
+    shader.fragmentShader = shader.fragmentShader.replace(
+      "#include <normal_fragment_maps>",
+      "#include <normal_fragment_maps>\nnormal = surfaceRelief(-vViewPosition, normal, roadHeight);",
+    );
   };
-  material.customProgramCacheKey = () => "runway-asphalt-lite-v1";
+  material.customProgramCacheKey = () => "runway-asphalt-natural-v2";
   return material;
 }
 
@@ -112,9 +121,7 @@ export function addRunway(field: T.Group, profile: Scenery) {
   const paved = profile.surface === "asphalt";
   const material = paved
     ? asphaltMaterial()
-    : terrainMaterial(profile.surface === "dirt", true, true);
-  if (!paved)
-    material.color.set(profile.surface === "grass" ? "#dfdfbf" : "#f4ead6");
+    : terrainMaterial(profile.surface === "dirt", true);
   const runway = new T.Mesh(
     new T.PlaneGeometry(runwayLayout.length, runwayLayout.width),
     material,

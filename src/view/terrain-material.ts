@@ -1,4 +1,5 @@
 import * as T from "three";
+import { surfaceDetailGLSL } from "./surface-detail";
 
 /** Local CC0 scans; see public/scenery/README.md. All distances are metres. */
 export function surfaceTexture(name: string, color = false) {
@@ -20,7 +21,7 @@ export const noiseGLSL = /* glsl */ `
   }
 `;
 
-export function terrainMaterial(dry: boolean, mown = false, prepared = false) {
+export function terrainMaterial(dry: boolean, prepared = false) {
   const material = new T.MeshStandardMaterial({
     map: surfaceTexture(`lite/${dry ? "dry-ground" : "turf"}-color.jpg`, true),
     color: dry ? "#fff3dd" : "#d1d8b5",
@@ -37,26 +38,52 @@ export function terrainMaterial(dry: boolean, mown = false, prepared = false) {
     `,
     );
     shader.fragmentShader =
-      `varying vec3 vFieldPosition;\n${noiseGLSL}\n` + shader.fragmentShader;
+      `varying vec3 vFieldPosition;\n${noiseGLSL}\n${surfaceDetailGLSL}\n` +
+      shader.fragmentShader;
     shader.fragmentShader = shader.fragmentShader.replace(
       "#include <map_fragment>",
       `
-      vec2 fieldUV = vec2(vFieldPosition.x, -vFieldPosition.z) / ${dry ? "4.0" : "1.4"};
-      vec4 fieldAlbedo = texture2D(map, fieldUV);
-      // Sub-pixel detail fades to a quiet base tone instead of shimmering.
-      // This prevents repeating highlights and shimmer in grazing/chase views.
-      float distanceFade = smoothstep(25.0, 180.0, length(vViewPosition));
-      fieldAlbedo.rgb = mix(fieldAlbedo.rgb, vec3(${dry ? "0.31285, 0.18295, 0.08432" : "0.12, 0.155, 0.075"}), distanceFade * 0.96);
-      ${prepared ? (dry ? "fieldAlbedo.rgb = mix(fieldAlbedo.rgb, vec3(0.36, 0.27, 0.16), 0.65);" : "fieldAlbedo.rgb *= 1.3;") : ""}
-      fieldAlbedo.rgb = mix(vec3(dot(fieldAlbedo.rgb, vec3(0.299,0.587,0.114))), fieldAlbedo.rgb, 0.68);
-      float macro = fieldNoise(vFieldPosition.xz * 0.011) * 0.12 + fieldNoise(vFieldPosition.xz * 0.047) * 0.06;
-      diffuseColor *= vec4(fieldAlbedo.rgb * (0.9 + macro), 1.0);
-      ${mown && !dry ? "diffuseColor.rgb *= 0.98 + 0.035 * sin(vFieldPosition.x * 0.85);" : ""}
+      vec2 fieldPoint = vFieldPosition.xz;
+      // Rotate the sampling frame away from the runway. Adjacent meshes use
+      // the identical world coordinates, so their texture patches join exactly.
+      vec2 fieldUV = mat2(0.8, -0.6, 0.6, 0.8) * fieldPoint / ${dry ? "4.0" : "1.4"};
+      vec3 fieldAlbedo = naturalSurface(map, fieldUV);
+      float footprint = max(length(dFdx(fieldPoint)), length(dFdy(fieldPoint)));
+      float fineDetail = 1.0 - smoothstep(0.035, 0.24, footprint);
+      // Match the source's linear-light mean at distance, rather than changing
+      // its hue at a fixed camera radius. Mipmaps still filter each detail tap.
+      vec3 fieldMean = vec3(${dry ? "0.30894, 0.18086, 0.08330" : "0.12445, 0.15838, 0.03478"});
+      fieldAlbedo = mix(fieldMean, fieldAlbedo, 0.25 + 0.75 * fineDetail);
+      vec2 broadPoint = mat2(0.932, 0.362, -0.362, 0.932) * fieldPoint;
+      float broad = fieldNoise(broadPoint * 0.008 + vec2(7.3, 19.1));
+      float patches = fieldNoise(broadPoint * 0.061 + vec2(broad * 2.7, 31.7));
+      float grain = fieldNoise(broadPoint * 0.73 + vec2(12.4, 4.9));
+      float variation = (broad - 0.5) * 0.38 + (patches - 0.5) * 0.26;
+      // Continuous maintenance zone; no separate rectangular lawn tile.
+      float clearing = 1.0 - smoothstep(0.0, 8.0,
+        max(abs(fieldPoint.x - 48.0) - 92.0, abs(fieldPoint.y) - 4.0));
+      float preparedStrip = ${prepared ? "1.0" : "0.0"}
+        * (1.0 - smoothstep(2.7, 3.5, abs(fieldPoint.y)))
+        * (1.0 - smoothstep(83.8, 85.0, abs(fieldPoint.x - 48.0)));
+      fieldAlbedo *= 1.0 + variation * (1.0 - preparedStrip * 0.5);
+      ${
+        dry
+          ? "fieldAlbedo *= mix(vec3(0.90, 0.94, 1.0), vec3(1.07, 1.03, 0.94), patches); vec3 packedSoil = fieldMean * vec3(1.18, 1.37, 1.70) + (fieldAlbedo - fieldMean) * 0.25; fieldAlbedo = mix(fieldAlbedo, packedSoil, preparedStrip * 0.85);"
+          : "fieldAlbedo *= mix(vec3(0.88, 0.98, 0.92), vec3(1.13, 1.02, 0.87), patches); fieldAlbedo *= 1.0 + clearing * 0.06 + preparedStrip * 0.14;"
+      }
+      fieldAlbedo = mix(vec3(dot(fieldAlbedo, vec3(0.299,0.587,0.114))), fieldAlbedo, 0.72);
+      diffuseColor.rgb *= fieldAlbedo;
+      float fieldHeight = ((grain - 0.5) * ${dry ? "0.035" : "0.018"}
+        + dot(fieldAlbedo - fieldMean, vec3(0.299, 0.587, 0.114)) * 0.025)
+        * fineDetail * (1.0 - preparedStrip * 0.65);
     `,
     );
+    shader.fragmentShader = shader.fragmentShader.replace(
+      "#include <normal_fragment_maps>",
+      "#include <normal_fragment_maps>\nnormal = surfaceRelief(-vViewPosition, normal, fieldHeight);",
+    );
   };
-  material.customProgramCacheKey = () =>
-    `field-lite-v1-${dry}-${mown}-${prepared}`;
+  material.customProgramCacheKey = () => `field-natural-v2-${dry}-${prepared}`;
   return material;
 }
 
