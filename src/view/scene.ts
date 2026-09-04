@@ -135,6 +135,8 @@ export class FlightScene {
       }
     });
     canvas.addEventListener("pointermove", (e) => {
+      // Capture can be lost to a panel, tab switch or system gesture without pointerup.
+      if (e.buttons === 0) this.dragging = false;
       if (this.dragging && this.mode === "ground") {
         this.lookYaw -= e.movementX * 0.004;
         this.lookPitch = T.MathUtils.clamp(
@@ -161,6 +163,10 @@ export class FlightScene {
     });
     canvas.addEventListener("pointerup", () => (this.dragging = false));
     canvas.addEventListener("pointercancel", () => (this.dragging = false));
+    canvas.addEventListener(
+      "lostpointercapture",
+      () => (this.dragging = false),
+    );
     canvas.addEventListener("dblclick", (e) => {
       if (this.studio || !this.onGroundPick) return;
       const rect = canvas.getBoundingClientRect();
@@ -315,6 +321,7 @@ export class FlightScene {
     this.resize();
   }
   setInspectionView(view: InspectionView) {
+    this.dragging = false;
     this.inspectionView = view;
     this.onInspectionView?.(view);
     this.mode = "orbit";

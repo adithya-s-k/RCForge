@@ -119,9 +119,10 @@ travel drives aerodynamic deflection and surface animation. Existing response
 lag still applies. Longer servo horns increase both speed and travel; longer
 surface horns reduce both. Linkage geometry is not a nonlinear four-bar solver.
 
-The FT-22 retains the published 40° limit but starts with ±25° servo command and
-10/12.5 mm horns, yielding ±20° effective elevon travel. This reduced initial setup
-is an estimate intended to make initial control less sensitive. The two 9 g servos
+The reconstructed FT-22 uses the published 40° limit with ±50° servo command and
+10/12.5 mm horns, yielding ±40° effective elevon travel. These horn dimensions are
+estimates. Reducing travel also reduces available trim and recovery authority;
+check the new operating point after changing it. The two 9 g servos
 are now separate components. The other fixed-wing presets also split their servo
 allocations into individual parts while preserving total mass and longitudinal
 CG; transverse inertia reflects their newly specified positions.

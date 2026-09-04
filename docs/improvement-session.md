@@ -159,3 +159,36 @@ The continuation prompt was updated with this scope. Deadline remains unchanged.
 
 Update this log after each completed pass with evidence, limitations and the next
 concrete task. Keep task output and temporary reference downloads in `results/`.
+
+## Pass 6 · FT-22 plan reconstruction and release behavior
+
+- Inspected the original two-sheet vector plans, enlarged assembly inset and
+  current FT-22 project photos (the article also includes an older F-22, which
+  was excluded). Reconstructed matching main-plate/elevon edges, original prop
+  opening, fin outline/outward cant and sampled foam nose profile.
+- Registered the assembly to the interpreted plan circle-cross CG station and
+  400 mm nose-to-CG target; wing-root CG reference is now 8.7 mm. Structural mass
+  positions and aerodynamic centers follow polygon geometry. Positions, folded
+  intake/rail assembly, inertias and coefficients remain explicit estimates.
+  Added intake floor/walls/rails by splitting the existing fuselage allocation;
+  all-up mass remains 320 g. Detailed assumptions are in the reconstruction guide.
+- Full published 40-degree elevon travel is now available through the modeled
+  linkage. The earlier reduced 20-degree setup left little low-speed trim margin
+  with the corrected geometry. Pusher prop/hub rendering uses the authored
+  motor mass position to place the prop on the correct side.
+- Hand launch now solves an 8-degree climb at 8.5 m/s, including velocity,
+  attitude, control deflection and throttle. Universal 65% power had caused the
+  reconstructed FT-22 to pitch up excessively. No in-flight stabilization added.
+- Fixed a captured-pointer edge case that reverted Top/Side to Perspective.
+  Verified Side stays selected and renders an exact side elevation. Loft faces
+  are grouped by finish, not per section, keeping the extra construction cheap.
+- Browser: corrected FT-22 hand launch held 8.5 m/s, 1.2 m/s climb, 20.6 m AGL
+  after 16.2 s at 38% power; keyboard pause worked. Updated stale launch copy and
+  kept setup collapsed after starting/pausing. No physical-controller claim.
+- Verification: 171 tests, all aircraft/catalog validation and production build
+  pass; numerical checks 93/93. Updated FT-22 envelope solves 54/135 points with
+  zero nonfinite loads. This is a narrower numerical operating envelope, not
+  flight-test calibration. Rendering budget test stays below 100 draw groups
+  and 12,000 triangles for the corrected model.
+- Next: apply the same plan/assembly review to Bronco and Tiny Trainer, then
+  continue the controller/editor/playtest passes within the remaining window.

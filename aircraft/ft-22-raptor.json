@@ -12,11 +12,11 @@
     "dimensions": {
       "status": "estimated",
       "url": "https://store.flitetest.com/ft-22-mkr2/",
-      "note": "Manufacturer lists span as both 25.5 inches and 635 mm; these disagree. This model uses 635 mm, scales simplified sheet-1 wing outline to it, and uses 400 mm nose-to-CG within the published 394-406 mm range. Assembly nose/fin/elevon stations and fold heights are approximations checked against build photos, not manufacturing CAD. Wing-root leading edge is estimated 90 mm ahead of CG; wing/tail assembly placement gives a positive modeled static margin. This is an assembly estimate, not a measured stability derivative."
+      "note": "635 mm span scale retained because published 25.5 in / 635 mm values disagree. Main plate, prop cutout and separate sheet-2 tail outlines reconstructed from vector coordinates. Plan circle-cross stations define the reconstruction datum; source nose-to-CG target is 400 mm. Folded body side profile sampled from sheet 2; thickness/width, side-plate registration and fin cant 72 degrees remain assembly estimates. Area-weighted quarter-chord uses polygon strips; aerodynamic centers are estimates, not measured pressure centers."
     },
     "mass": {
       "status": "estimated",
-      "note": "Dry allocations sum to published 235 g; assumed 85 g 3S 1000 mAh pack gives 320 g. Component positions and cuboid inertia estimated. Battery position solves CG at datum X=0, 400 mm behind nose. No measured component inertias."
+      "note": "Dry allocations retain 235 g and the battery 85 g. Structural positions follow reconstructed polygon centroids; body mass center and cuboid inertias remain approximations. Battery position balances the 400 mm nose-to-CG target; verify installation against a physical build."
     },
     "aerodynamics": {
       "status": "estimated",
@@ -29,7 +29,7 @@
     },
     "propulsion": {
       "status": "estimated",
-      "note": "9x4.7-inch pusher with assumed 4.8 N static thrust, 24 m/s zero-thrust speed and 90 ms response. No measured motor/prop thrust-current table, electrical depletion, P-factor or propeller gyroscopic model."
+      "note": "9x4.7-inch pusher in the plan motor opening with estimated 4.8 N static thrust, 24 m/s falloff and 90 ms response. Electrical current is an induced-power estimate, not bench data."
     },
     "servoAssembly": {
       "status": "estimated",
@@ -37,7 +37,7 @@
     },
     "initialControlTravel": {
       "status": "estimated",
-      "note": "Published build calls for 40 degree surface throws. Initial radio/servo travel is reduced to +/-25 degrees with a 10/12.5 mm horn ratio, giving +/-20 degrees effective elevon deflection for less sensitive first flights. Adjust linkage/travel deliberately; sourced plan throw remains the upper surface limit."
+      "note": "Published 40 degree throws are available through +/-50 degree servo travel and 10/12.5 mm horn ratio. Reducing travel reduces trim and recovery authority as well as sensitivity. Linkage, no-load speed and aerodynamic control effectiveness remain estimates; use the component editor to reproduce a measured setup."
     },
     "electricalEstimate": {
       "status": "estimated",
@@ -48,15 +48,19 @@
       "status": "sourced",
       "note": "Orange 3S 1000 mAh 30C product mass 85 g and 75 x 34 x 17 mm from indexed Robu specifications. Resistance/OCV/current remain estimates. Does not establish that this battery was used in the original Flite Test build.",
       "url": "https://robu.in/product/orange-1000mah-3s-30c60c-lithium-polymer-battery-pack-lipo/"
+    },
+    "foldedAssembly": {
+      "status": "estimated",
+      "note": "Nose side profile, separate elevon outline and fixed fin outline follow full-size vector plans. Foam intake floor/walls and side rails use estimated folded registration, with a prop-clearance interruption. Their 20 g allocation is removed from the original 60 g fuselage allocation; total structure mass is unchanged. Canopy top color is a visual marking, not a mass component."
     }
   },
   "parts": [
     {
       "id": "fuselage",
       "kind": "body",
-      "massKg": 0.06,
-      "positionM": [0.1, 0, 0.008],
-      "sizeM": [0.6, 0.05, 0.065],
+      "massKg": 0.04,
+      "positionM": [0.16186094489806999, 0, 0],
+      "sizeM": [0.47627811020386007, 0.046, 0.1],
       "color": "#e9e7df",
       "material": {
         "name": "Paper-faced foamboard",
@@ -64,40 +68,92 @@
       },
       "bodyLoft": [
         {
-          "x": -0.5,
-          "width": 0.78,
-          "top": -0.35,
-          "bottom": 0.2
-        },
-        {
-          "x": -0.3,
+          "x": -0.5000333224431726,
           "width": 1,
-          "top": -0.35,
-          "bottom": 0.5
+          "top": -0.25531206942575757,
+          "bottom": 0.0001
         },
         {
-          "x": 0.05,
+          "x": -0.36022394130613833,
           "width": 1,
-          "top": -0.8,
-          "bottom": 0.5
+          "top": -0.25531206942575757,
+          "bottom": 0.0001
         },
         {
-          "x": 0.2,
-          "width": 0.95,
-          "top": -0.85,
-          "bottom": 0.35
+          "x": -0.20737534327549473,
+          "width": 1,
+          "top": -0.25531206942575757,
+          "bottom": 0.048402283404873056
         },
         {
-          "x": 0.38,
-          "width": 0.7,
-          "top": -0.35,
-          "bottom": 0.22
+          "x": -0.13855725411477843,
+          "width": 1,
+          "top": -0.25531206942575757,
+          "bottom": 0.31406484213167485
+        },
+        {
+          "x": -0.11247882032755964,
+          "width": 1,
+          "top": -0.25531206942575757,
+          "bottom": 0.3899684303393325
+        },
+        {
+          "x": -0.040763127412707906,
+          "width": 1,
+          "top": -0.34156614693445947,
+          "bottom": 0.5072739757511671,
+          "topColor": "#202225"
+        },
+        {
+          "x": 0.030952565502143883,
+          "width": 1,
+          "top": -0.42437006134281324,
+          "bottom": 0.5072739757511671,
+          "topColor": "#202225"
+        },
+        {
+          "x": 0.10194385747846177,
+          "width": 1,
+          "top": -0.46922218164733825,
+          "bottom": 0.5072739757511671,
+          "topColor": "#202225"
+        },
+        {
+          "x": 0.18307676259425362,
+          "width": 1,
+          "top": -0.3898684303393325,
+          "bottom": 0.5072739757511671,
+          "topColor": "#202225"
+        },
+        {
+          "x": 0.2786976864807226,
+          "width": 1,
+          "top": -0.18285864431844798,
+          "bottom": 0.5072739757511671
+        },
+        {
+          "x": 0.32071294091568625,
+          "width": 1,
+          "top": -0.14490685021461913,
+          "bottom": 0.5072739757511671
+        },
+        {
+          "x": 0.3859090253837333,
+          "width": 1,
+          "top": -0.05865277270591728,
+          "bottom": 0.43482055064385744
+        },
+        {
+          "x": 0.4511051098517803,
+          "width": 1,
+          "top": 0.04485212030452498,
+          "bottom": 0.320965168332371
         },
         {
           "x": 0.5,
-          "width": 0.04,
-          "top": 0.08,
-          "bottom": 0.12
+          "width": 0.98,
+          "top": 0.17533728875968896,
+          "bottom": 0.17543728875968895
         }
       ]
     },
@@ -105,8 +161,8 @@
       "id": "left-wing",
       "kind": "wing",
       "massKg": 0.04,
-      "positionM": [-0.045692399774822305, -0.12527480822689332, 0],
-      "sizeM": [0.39, 0.3175, 0.005],
+      "positionM": [-0.12764531488282568, -0.12527480822689338, 0],
+      "sizeM": [0.4661118596123745, 0.31750056927691156, 0.005],
       "color": "#e9e7df",
       "material": {
         "name": "Paper-faced foamboard",
@@ -117,8 +173,8 @@
       "id": "left-elevon",
       "kind": "tail",
       "massKg": 0.008,
-      "positionM": [-0.27499999999999997, -0.098, 0],
-      "sizeM": [0.14, 0.18, 0.005],
+      "positionM": [-0.3674528634081902, -0.10943915834415599, 0],
+      "sizeM": [0.14122552618654777, 0.1961003702975839, 0.005],
       "color": "#e9e7df",
       "material": {
         "name": "Paper-faced foamboard",
@@ -129,20 +185,23 @@
       "id": "left-fin",
       "kind": "tail",
       "massKg": 0.007,
-      "positionM": [-0.17, -0.093, -0.067],
-      "sizeM": [0.15, 0.005, 0.13],
+      "positionM": [
+        -0.25805685260425604, -0.08314979714483076, -0.05585933187571602
+      ],
+      "sizeM": [0.15165191907579964, 0.1341526918308342, 0.005],
       "color": "#e9e7df",
       "material": {
         "name": "Paper-faced foamboard",
         "finish": "foam"
-      }
+      },
+      "orientationDeg": [72, 0, 0]
     },
     {
       "id": "right-wing",
       "kind": "wing",
       "massKg": 0.04,
-      "positionM": [-0.045692399774822305, 0.12527480822689332, 0],
-      "sizeM": [0.39, 0.3175, 0.005],
+      "positionM": [-0.12764531488282568, 0.12527480822689338, 0],
+      "sizeM": [0.4661118596123745, 0.31750056927691156, 0.005],
       "color": "#e9e7df",
       "material": {
         "name": "Paper-faced foamboard",
@@ -153,8 +212,8 @@
       "id": "right-elevon",
       "kind": "tail",
       "massKg": 0.008,
-      "positionM": [-0.27499999999999997, 0.098, 0],
-      "sizeM": [0.14, 0.18, 0.005],
+      "positionM": [-0.3674528634081902, 0.10943915834415599, 0],
+      "sizeM": [0.14122552618654777, 0.1961003702975839, 0.005],
       "color": "#e9e7df",
       "material": {
         "name": "Paper-faced foamboard",
@@ -165,19 +224,22 @@
       "id": "right-fin",
       "kind": "tail",
       "massKg": 0.007,
-      "positionM": [-0.17, 0.093, -0.067],
-      "sizeM": [0.15, 0.005, 0.13],
+      "positionM": [
+        -0.25805685260425604, 0.08314979714483076, -0.05585933187571602
+      ],
+      "sizeM": [0.15165191907579964, 0.1341526918308342, 0.005],
       "color": "#e9e7df",
       "material": {
         "name": "Paper-faced foamboard",
         "finish": "foam"
-      }
+      },
+      "orientationDeg": [-72, 0, 0]
     },
     {
       "id": "motor",
       "kind": "motor",
       "massKg": 0.024,
-      "positionM": [-0.053, 0, -0.013],
+      "positionM": [-0.0996024258069592, 0, -0.012],
       "sizeM": [0.028, 0.028, 0.026],
       "color": "#e9e7df",
       "material": {
@@ -189,7 +251,7 @@
       "id": "esc",
       "kind": "equipment",
       "massKg": 0.017,
-      "positionM": [0.095, 0, 0.027],
+      "positionM": [0.035, 0, 0.02],
       "sizeM": [0.045, 0.022, 0.012],
       "color": "#e9e7df",
       "material": {
@@ -201,7 +263,7 @@
       "id": "receiver",
       "kind": "equipment",
       "massKg": 0.006,
-      "positionM": [0.06, 0, 0.025],
+      "positionM": [0.085, 0, 0.02],
       "sizeM": [0.03, 0.02, 0.012],
       "color": "#e9e7df",
       "material": {
@@ -213,14 +275,14 @@
       "id": "battery",
       "kind": "battery",
       "massKg": 0.085,
-      "positionM": [0.06402814096453863, 0, 0.017],
+      "positionM": [0.20692573370659886, 0, 0.025],
       "sizeM": [0.075, 0.034, 0.017],
       "color": "#252729",
       "material": {
         "name": "plastic",
         "finish": "plastic"
       },
-      "model": "Orange 3S · 1000 mAh",
+      "model": "Orange 3S \u00b7 1000 mAh",
       "manufacturer": "Orange",
       "catalogId": "orange-3s-1000-30c"
     },
@@ -228,7 +290,7 @@
       "id": "servo-left-elevon",
       "kind": "equipment",
       "massKg": 0.009,
-      "positionM": [-0.095, -0.085, 0.012],
+      "positionM": [-0.13, -0.047, -0.013],
       "sizeM": [0.023, 0.0122, 0.029],
       "color": "#2d3942",
       "material": {
@@ -246,7 +308,7 @@
       "id": "servo-right-elevon",
       "kind": "equipment",
       "massKg": 0.009,
-      "positionM": [-0.095, 0.085, 0.012],
+      "positionM": [-0.13, 0.047, -0.013],
       "sizeM": [0.023, 0.0122, 0.029],
       "color": "#2d3942",
       "material": {
@@ -259,15 +321,227 @@
         "travelDeg": 150,
         "ratedVoltage": 4.8
       }
+    },
+    {
+      "id": "intake-floor",
+      "kind": "body",
+      "massKg": 0.006,
+      "positionM": [0.063, 0, 0.032],
+      "sizeM": [0.18, 0.224, 0.005],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Folded paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.37,
+          "width": 0.8,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.5,
+          "width": 0.7,
+          "top": -0.5,
+          "bottom": 0.5
+        }
+      ]
+    },
+    {
+      "id": "intake-left",
+      "kind": "body",
+      "massKg": 0.002,
+      "positionM": [0.063, -0.106, 0.016],
+      "sizeM": [0.18, 0.005, 0.032],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Folded paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.4,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.5,
+          "width": 1,
+          "top": 0.1,
+          "bottom": 0.5
+        }
+      ]
+    },
+    {
+      "id": "rail-left-front",
+      "kind": "body",
+      "massKg": 0.002,
+      "positionM": [0.016, -0.025, -0.014],
+      "sizeM": [0.186, 0.005, 0.028],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Folded paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.42,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.5,
+          "width": 1,
+          "top": 0.35,
+          "bottom": 0.5
+        }
+      ]
+    },
+    {
+      "id": "rail-left-rear",
+      "kind": "body",
+      "massKg": 0.003,
+      "positionM": [-0.238, -0.025, -0.014],
+      "sizeM": [0.128, 0.005, 0.028],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Folded paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 1,
+          "top": -0.25,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.5,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        }
+      ]
+    },
+    {
+      "id": "intake-right",
+      "kind": "body",
+      "massKg": 0.002,
+      "positionM": [0.063, 0.106, 0.016],
+      "sizeM": [0.18, 0.005, 0.032],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Folded paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.4,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.5,
+          "width": 1,
+          "top": 0.1,
+          "bottom": 0.5
+        }
+      ]
+    },
+    {
+      "id": "rail-right-front",
+      "kind": "body",
+      "massKg": 0.002,
+      "positionM": [0.016, 0.025, -0.014],
+      "sizeM": [0.186, 0.005, 0.028],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Folded paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.42,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.5,
+          "width": 1,
+          "top": 0.35,
+          "bottom": 0.5
+        }
+      ]
+    },
+    {
+      "id": "rail-right-rear",
+      "kind": "body",
+      "massKg": 0.003,
+      "positionM": [-0.238, 0.025, -0.014],
+      "sizeM": [0.128, 0.005, 0.028],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Folded paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 1,
+          "top": -0.25,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.5,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.5
+        }
+      ]
     }
   ],
   "surfaces": [
     {
       "id": "left-wing",
       "kind": "wing",
-      "positionM": [0.01953322832697065, -0.12527480822689332, 0],
-      "spanM": 0.3175,
-      "chordM": 0.2609025124071718,
+      "positionM": [-0.07506180683907486, -0.12527480822689338, 0],
+      "spanM": 0.31750056927691156,
+      "chordM": 0.2609020446102894,
       "aspectRatio": 2.433859276176693,
       "rollDeg": 0,
       "incidenceDeg": 0,
@@ -279,22 +553,22 @@
       "cm": 0,
       "panel": {
         "outline": [
-          [-0.9289523285384194, 0.39456632512407347],
-          [-0.9289523285384194, -0.017864541893220304],
-          [-0.7566640299775604, -0.4513354271621485],
-          [-0.5274399928854991, -0.6054354678740732],
-          [-0.32032640866166967, -0.6054354678740732],
-          [0.27260928853077565, 0.04039159788934996],
-          [0.7757940026988858, 0.1177404512697517],
-          [0.857584164774252, 0.3207947747125995],
-          [0.4926294528977835, 0.3207947747125995],
-          [0.4926294528977835, 0.39456632512407347],
-          [-0.1308403565391275, 0.39456632512407347],
-          [-0.1308403565391275, 0.3340955609640201],
-          [-0.10050460362063268, 0.04023946471327154],
-          [-0.35432519713309524, 0.04023946471327154],
-          [-0.3112679994423282, 0.3340955609640201],
-          [-0.3112679994423282, 0.39456632512407347]
+          [-0.8804985668366978, 0.39456561766865245],
+          [-0.8804985668366978, -0.017864509862187055],
+          [-0.708209959363239, -0.45133461792001484],
+          [-0.4789855112729041, -0.6054343823313476],
+          [-0.2718715556948019, -0.6054343823313476],
+          [0.3210652046302496, 0.04039152546741983],
+          [0.8242508210076197, 0.11774024016171948],
+          [0.9060411297325951, 0.32079419952919447],
+          [0.5410857634930042, 0.32079419952919447],
+          [0.5410857634930042, 0.39456561766865245],
+          [-0.08238516382411948, 0.39456561766865245],
+          [-0.08238516382411948, 0.33409496193237276],
+          [-0.05204935651367587, 0.040239392564115434],
+          [-0.3058704051259922, 0.040239392564115434],
+          [-0.26281313023374947, 0.33409496193237276],
+          [-0.26281313023374947, 0.39456561766865245]
         ],
         "thicknessM": 0.005
       }
@@ -302,9 +576,9 @@
     {
       "id": "left-elevon",
       "kind": "horizontal-tail",
-      "positionM": [-0.24976319444444445, -0.103, 0],
-      "spanM": 0.18,
-      "chordM": 0.11105277777777778,
+      "positionM": [-0.34088804065903083, -0.10943915834415599, 0],
+      "spanM": 0.1961003702975839,
+      "chordM": 0.09306852850153623,
       "aspectRatio": 2.2,
       "rollDeg": 0,
       "incidenceDeg": 0,
@@ -316,16 +590,29 @@
       "cm": 0,
       "panel": {
         "outline": [
-          [0.25, 0.47222222222222227],
-          [0.25, -0.3055555555555556],
-          [-0.4343592886265289, -0.5277777777777778],
-          [-0.9746429375422098, -0.15555555555555556],
-          [-0.8215625703494334, 0.47222222222222227]
+          [0.37931573673961355, 0.5580772651172519],
+          [0.106731118874503, 0.5492803334870044],
+          [0.03488711106509382, 0.5326013511160554],
+          [-0.11058032270380204, 0.4447200041298843],
+          [-0.1272623678607855, 0.4131038318507752],
+          [-0.07636359452625577, 0.3647207078844147],
+          [-0.10646541823174623, 0.3391920122934369],
+          [-0.35098712902166435, 0.3391920122934369],
+          [-0.45434166657204234, 0.31617923914870966],
+          [-1.113245379061431, -0.003694788790345089],
+          [-1.1381201619510661, -0.029117921201760058],
+          [-1.1366743847041276, -0.05554390381902318],
+          [-0.9109107069129513, -0.4131039868620578],
+          [-0.8786216817313226, -0.4337767761931391],
+          [-0.83098517500527, -0.44192273488274814],
+          [-0.28425894839373045, -0.44192273488274814],
+          [-0.17897670784743425, -0.41970872313004753],
+          [0.37931573673961355, -0.10820233655768403]
         ],
         "thicknessM": 0.005,
         "controlHinge": [
-          [0.25, -0.6],
-          [0.25, 0.6]
+          [0.37931573673961355, -2],
+          [0.37931573673961355, 2]
         ]
       },
       "control": {
@@ -339,7 +626,7 @@
         "responseSeconds": 0.06,
         "linkage": {
           "servoPartId": "servo-left-elevon",
-          "servoTravelDeg": 25,
+          "servoTravelDeg": 50,
           "servoArmM": 0.01,
           "surfaceArmM": 0.0125
         }
@@ -348,9 +635,11 @@
     {
       "id": "left-fin",
       "kind": "vertical-tail",
-      "positionM": [-0.163, -0.092, -0.06],
-      "spanM": 0.135,
-      "chordM": 0.13,
+      "positionM": [
+        -0.23029031043540438, -0.08314979714483076, -0.05585933187571602
+      ],
+      "spanM": 0.1341526918308342,
+      "chordM": 0.10510748471989846,
       "aspectRatio": 1.05,
       "rollDeg": 72,
       "incidenceDeg": 0,
@@ -362,10 +651,16 @@
       "cm": 0,
       "panel": {
         "outline": [
-          [0.4, 0.5],
-          [0.1, -0.5],
-          [-0.45, -0.5],
-          [-0.7, 0.5]
+          [0.48583303080371015, 0.43781437805636525],
+          [0.0010720377904846895, -0.5220652608603852],
+          [-0.07698603651784734, -0.5621856219436348],
+          [-0.5027603350264164, -0.5621856219436348],
+          [-0.5808184093347484, -0.5220652608603852],
+          [-0.9569939903160294, 0.16553600447407987],
+          [-0.9487548916400869, 0.20377893840407502],
+          [-0.9290926601385345, 0.22494500069350742],
+          [-0.655035947606884, 0.40052301679308827],
+          [-0.5257707261492678, 0.43781437805636525]
         ],
         "thicknessM": 0.005
       }
@@ -373,9 +668,9 @@
     {
       "id": "right-wing",
       "kind": "wing",
-      "positionM": [0.01953322832697065, 0.12527480822689332, 0],
-      "spanM": 0.3175,
-      "chordM": 0.2609025124071718,
+      "positionM": [-0.07506180683907486, 0.12527480822689338, 0],
+      "spanM": 0.31750056927691156,
+      "chordM": 0.2609020446102894,
       "aspectRatio": 2.433859276176693,
       "rollDeg": 0,
       "incidenceDeg": 0,
@@ -387,22 +682,22 @@
       "cm": 0,
       "panel": {
         "outline": [
-          [-0.9289523285384194, -0.39456632512407347],
-          [-0.9289523285384194, 0.017864541893220304],
-          [-0.7566640299775604, 0.4513354271621485],
-          [-0.5274399928854991, 0.6054354678740732],
-          [-0.32032640866166967, 0.6054354678740732],
-          [0.27260928853077565, -0.04039159788934996],
-          [0.7757940026988858, -0.1177404512697517],
-          [0.857584164774252, -0.3207947747125995],
-          [0.4926294528977835, -0.3207947747125995],
-          [0.4926294528977835, -0.39456632512407347],
-          [-0.1308403565391275, -0.39456632512407347],
-          [-0.1308403565391275, -0.3340955609640201],
-          [-0.10050460362063268, -0.04023946471327154],
-          [-0.35432519713309524, -0.04023946471327154],
-          [-0.3112679994423282, -0.3340955609640201],
-          [-0.3112679994423282, -0.39456632512407347]
+          [-0.8804985668366978, -0.39456561766865245],
+          [-0.8804985668366978, 0.017864509862187055],
+          [-0.708209959363239, 0.45133461792001484],
+          [-0.4789855112729041, 0.6054343823313476],
+          [-0.2718715556948019, 0.6054343823313476],
+          [0.3210652046302496, -0.04039152546741983],
+          [0.8242508210076197, -0.11774024016171948],
+          [0.9060411297325951, -0.32079419952919447],
+          [0.5410857634930042, -0.32079419952919447],
+          [0.5410857634930042, -0.39456561766865245],
+          [-0.08238516382411948, -0.39456561766865245],
+          [-0.08238516382411948, -0.33409496193237276],
+          [-0.05204935651367587, -0.040239392564115434],
+          [-0.3058704051259922, -0.040239392564115434],
+          [-0.26281313023374947, -0.33409496193237276],
+          [-0.26281313023374947, -0.39456561766865245]
         ],
         "thicknessM": 0.005
       }
@@ -410,9 +705,9 @@
     {
       "id": "right-elevon",
       "kind": "horizontal-tail",
-      "positionM": [-0.24976319444444445, 0.103, 0],
-      "spanM": 0.18,
-      "chordM": 0.11105277777777778,
+      "positionM": [-0.34088804065903083, 0.10943915834415599, 0],
+      "spanM": 0.1961003702975839,
+      "chordM": 0.09306852850153623,
       "aspectRatio": 2.2,
       "rollDeg": 0,
       "incidenceDeg": 0,
@@ -424,16 +719,29 @@
       "cm": 0,
       "panel": {
         "outline": [
-          [0.25, -0.47222222222222227],
-          [0.25, 0.3055555555555556],
-          [-0.4343592886265289, 0.5277777777777778],
-          [-0.9746429375422098, 0.15555555555555556],
-          [-0.8215625703494334, -0.47222222222222227]
+          [0.37931573673961355, -0.5580772651172519],
+          [0.106731118874503, -0.5492803334870044],
+          [0.03488711106509382, -0.5326013511160554],
+          [-0.11058032270380204, -0.4447200041298843],
+          [-0.1272623678607855, -0.4131038318507752],
+          [-0.07636359452625577, -0.3647207078844147],
+          [-0.10646541823174623, -0.3391920122934369],
+          [-0.35098712902166435, -0.3391920122934369],
+          [-0.45434166657204234, -0.31617923914870966],
+          [-1.113245379061431, 0.003694788790345089],
+          [-1.1381201619510661, 0.029117921201760058],
+          [-1.1366743847041276, 0.05554390381902318],
+          [-0.9109107069129513, 0.4131039868620578],
+          [-0.8786216817313226, 0.4337767761931391],
+          [-0.83098517500527, 0.44192273488274814],
+          [-0.28425894839373045, 0.44192273488274814],
+          [-0.17897670784743425, 0.41970872313004753],
+          [0.37931573673961355, 0.10820233655768403]
         ],
         "thicknessM": 0.005,
         "controlHinge": [
-          [0.25, -0.6],
-          [0.25, 0.6]
+          [0.37931573673961355, -2],
+          [0.37931573673961355, 2]
         ]
       },
       "control": {
@@ -447,7 +755,7 @@
         "responseSeconds": 0.06,
         "linkage": {
           "servoPartId": "servo-right-elevon",
-          "servoTravelDeg": 25,
+          "servoTravelDeg": 50,
           "servoArmM": 0.01,
           "surfaceArmM": 0.0125
         }
@@ -456,9 +764,11 @@
     {
       "id": "right-fin",
       "kind": "vertical-tail",
-      "positionM": [-0.163, 0.092, -0.06],
-      "spanM": 0.135,
-      "chordM": 0.13,
+      "positionM": [
+        -0.23029031043540438, 0.08314979714483076, -0.05585933187571602
+      ],
+      "spanM": 0.1341526918308342,
+      "chordM": 0.10510748471989846,
       "aspectRatio": 1.05,
       "rollDeg": -72,
       "incidenceDeg": 0,
@@ -470,10 +780,16 @@
       "cm": 0,
       "panel": {
         "outline": [
-          [0.4, -0.5],
-          [0.1, 0.5],
-          [-0.45, 0.5],
-          [-0.7, -0.5]
+          [0.48583303080371015, -0.43781437805636525],
+          [0.0010720377904846895, 0.5220652608603852],
+          [-0.07698603651784734, 0.5621856219436348],
+          [-0.5027603350264164, 0.5621856219436348],
+          [-0.5808184093347484, 0.5220652608603852],
+          [-0.9569939903160294, -0.16553600447407987],
+          [-0.9487548916400869, -0.20377893840407502],
+          [-0.9290926601385345, -0.22494500069350742],
+          [-0.655035947606884, -0.40052301679308827],
+          [-0.5257707261492678, -0.43781437805636525]
         ],
         "thicknessM": 0.005
       }
@@ -482,7 +798,7 @@
   "motors": [
     {
       "id": "pusher",
-      "positionM": [-0.065, 0, -0.013],
+      "positionM": [-0.1116024258069592, 0, -0.012],
       "maxThrustN": 4.8,
       "zeroThrustSpeedMps": 24,
       "responseSeconds": 0.09,
@@ -534,39 +850,39 @@
   "angularDamping": [0.004, 0.006, 0.008],
   "reference": {
     "spanM": 0.635,
-    "areaM2": 0.2056520953785541,
-    "cgFromLeadingEdgeM": 0.09,
-    "leadingEdgeXM": 0.09
+    "areaM2": 0.20217464118295908,
+    "cgFromLeadingEdgeM": 0.0087047615021782,
+    "leadingEdgeXM": 0.0087047615021782
   },
   "contactPoints": [
     {
-      "id": "left-tip",
-      "positionM": [-0.09, -0.3175, 0.0025],
-      "spanLinked": true
-    },
-    {
-      "id": "left-tail",
-      "positionM": [-0.35, -0.1, 0.01],
-      "spanLinked": false
-    },
-    {
-      "id": "right-tip",
-      "positionM": [-0.09, 0.3175, 0.0025],
-      "spanLinked": true
-    },
-    {
-      "id": "right-tail",
-      "positionM": [-0.35, 0.1, 0.01],
-      "spanLinked": false
-    },
-    {
       "id": "nose",
-      "positionM": [0.4, 0, 0.015],
+      "positionM": [0.4, 0, 0.02],
       "spanLinked": false
     },
     {
       "id": "belly",
-      "positionM": [0.1, 0, 0.041],
+      "positionM": [0.16, 0, 0.053],
+      "spanLinked": false
+    },
+    {
+      "id": "left-tip",
+      "positionM": [-0.17370536161322456, -0.3175, 0.003],
+      "spanLinked": true
+    },
+    {
+      "id": "left-tail",
+      "positionM": [-0.44681120938974667, -0.11, 0.003],
+      "spanLinked": false
+    },
+    {
+      "id": "right-tip",
+      "positionM": [-0.17370536161322456, 0.3175, 0.003],
+      "spanLinked": true
+    },
+    {
+      "id": "right-tail",
+      "positionM": [-0.44681120938974667, 0.11, 0.003],
       "spanLinked": false
     }
   ],

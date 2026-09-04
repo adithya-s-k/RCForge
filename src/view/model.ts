@@ -57,7 +57,7 @@ export function disposeAircraft(root: T.Object3D) {
 }
 function mesh(
   g: T.BufferGeometry,
-  m: T.Material,
+  m: T.Material | T.Material[],
   parent: T.Object3D,
   pos: Vec3 = [0, 0, 0],
 ) {
@@ -74,12 +74,21 @@ function box(parent: T.Object3D, d: Vec3, p: Vec3, m: T.Material) {
 /** Sections follow assembled fuselage cross sections in the body frame. */
 function loft(
   parent: T.Object3D,
-  sections: { x: number; width: number; top: number; bottom: number }[],
+  sections: {
+    x: number;
+    width: number;
+    top: number;
+    bottom: number;
+    topColor?: string;
+  }[],
   material: T.Material,
   y = 0,
 ) {
   const vertices: number[] = [],
     indices: number[] = [];
+  const materials: T.Material[] = [material];
+  const colors = new Map<string, number>();
+  const groups: { start: number; material: number }[] = [];
   for (const s of sections) {
     vertices.push(
       s.x,
@@ -102,6 +111,18 @@ function loft(
         b = i * 4 + ((j + 1) % 4),
         c = (i + 1) * 4 + j,
         d = (i + 1) * 4 + ((j + 1) % 4);
+      let materialIndex = 0;
+      const color = sections[i].topColor;
+      if (j === 0 && color) {
+        if (!colors.has(color)) {
+          colors.set(color, materials.length);
+          materials.push(
+            new T.MeshStandardMaterial({ color, roughness: 0.55 }),
+          );
+        }
+        materialIndex = colors.get(color)!;
+      }
+      groups.push({ start: indices.length, material: materialIndex });
       indices.push(a, b, c, b, d, c);
     }
   indices.push(0, 2, 1, 0, 3, 2);
@@ -109,9 +130,21 @@ function loft(
   indices.push(n, n + 1, n + 2, n, n + 2, n + 3);
   const g = new T.BufferGeometry();
   g.setAttribute("position", new T.Float32BufferAttribute(vertices, 3));
-  g.setIndex(indices);
-  g.computeVertexNormals();
-  return mesh(g, material, parent);
+  // One draw group per finish, rather than one per face/section.
+  const ordered: number[] = [];
+  for (let index = 0; index < materials.length; index++) {
+    const start = ordered.length;
+    for (const entry of groups)
+      if (entry.material === index)
+        ordered.push(...indices.slice(entry.start, entry.start + 6));
+    if (index === 0) ordered.push(...indices.slice(-12));
+    g.addGroup(start, ordered.length - start, index);
+  }
+  g.setIndex(ordered);
+  const flat = g.toNonIndexed();
+  g.dispose();
+  flat.computeVertexNormals();
+  return mesh(flat, materials.length === 1 ? material : materials, parent);
 }
 function airfoil(chord: number, span: number, thickness = 0.105, cutoff = 1) {
   const v: number[] = [],
@@ -269,6 +302,7 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
           width: s.width * w,
           top: z + s.top * h,
           bottom: z + s.bottom * h,
+          topColor: s.topColor,
         })),
         baseColor,
         y,
@@ -540,12 +574,13 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
           dark,
         );
       }
-      box(
-        surface,
-        [isTiny ? 0.019 : 0.028, isTiny ? 0.009 : 0.014, 0.009],
-        [-s.chordM * 0.3, -side * s.spanM * 0.16, -0.014],
-        dark,
-      );
+      if (!s.control?.linkage)
+        box(
+          surface,
+          [isTiny ? 0.019 : 0.028, isTiny ? 0.009 : 0.014, 0.009],
+          [-s.chordM * 0.3, -side * s.spanM * 0.16, -0.014],
+          dark,
+        );
     } else {
       mesh(
         planModel
@@ -612,6 +647,9 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
   }
   for (const motor of a.motors) {
     const [x, y, z] = motor.positionM;
+    const motorPart = a.parts.find((p) => p.id === motor.partId);
+    // A pusher's mass sits ahead of its prop disk; use the authored installation.
+    const shaft = motorPart && motorPart.positionM[0] > x + 0.001 ? -1 : 1;
     const engine = mesh(
       new T.CylinderGeometry(
         isTiny ? 0.012 : 0.017,
@@ -621,21 +659,29 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
       ),
       orange,
       group,
-      [x - 0.012, y, z],
+      [x - shaft * 0.012, y, z],
     );
     engine.rotation.z = Math.PI / 2;
     for (let i = 0; i < 8; i++) {
       const ang = (i * Math.PI) / 4;
       rod(
         group,
-        [x - 0.025, y + Math.cos(ang) * 0.018, z + Math.sin(ang) * 0.018],
-        [x - 0.005, y + Math.cos(ang) * 0.018, z + Math.sin(ang) * 0.018],
+        [
+          x - shaft * 0.025,
+          y + Math.cos(ang) * 0.018,
+          z + Math.sin(ang) * 0.018,
+        ],
+        [
+          x - shaft * 0.005,
+          y + Math.cos(ang) * 0.018,
+          z + Math.sin(ang) * 0.018,
+        ],
         0.0012,
         dark,
       );
     }
     const prop = new T.Group();
-    prop.position.set(x + 0.008, y, z);
+    prop.position.set(x + shaft * 0.008, y, z);
     group.add(prop);
     propellers.push(prop);
     const radius = motor.propDiameterM / 2;
@@ -656,9 +702,9 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
       new T.ConeGeometry(isTiny ? 0.006 : 0.01, isTiny ? 0.01 : 0.018, 20),
       aluminum,
       prop,
-      [0.009, 0, 0],
+      [shaft * 0.009, 0, 0],
     );
-    hub.rotation.z = -Math.PI / 2;
+    hub.rotation.z = (-shaft * Math.PI) / 2;
   }
   for (const contact of a.contactPoints.filter((p) => p.kind === "wheel")) {
     const [x, y, z] = contact.positionM,

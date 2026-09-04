@@ -35,19 +35,55 @@ Its two servos operate mixed elevons; the canted fins are fixed. There is no
 rudder command. Roll to turn and use elevator to manage the turn.
 
 The [manufacturer's listing](https://store.flitetest.com/ft-22-mkr2/) gives both
-25.5 inches and 635 mm for span; these disagree. This preset chooses 635 mm,
-scales a simplified wing outline to that width, and places CG 400 mm aft of the
-nose, within its published 394–406 mm range. The editor uses a wing-root leading
-edge 90 mm ahead of CG; that datum is not the nose. Fold heights, fin/elevon
-stations and the nose loft remain approximate. Source artwork is not bundled.
+25.5 inches and 635 mm for span; these disagree. The reconstruction chooses 635 mm
+and applies one scale to the drawings. The [project article](https://www.flitetest.com/articles/ft-22-raptor-pr)
+contains an older F-22 photograph as well as the FT-22: the newer foam nose,
+intakes and side rails are the relevant assembly. The PDF's assembly inset was
+also inspected. No source artwork is bundled.
 
-The 9×4.7-inch prop follows the original plan; 4.8 N thrust, speed falloff,
-servo dynamics and all aerodynamic coefficients are estimates. The wing's
-low-aspect-ratio/vortex behavior is not independently validated. At the initial
-definition, 12 m/s trim converged, numerical/replay checks passed, and 22 of 45
-surveyed mass/speed/site combinations trimmed. Unsolved points are retained.
-Ground mode adds the same explicitly estimated removable gear modification;
-hand launch preserves the reference gearless build.
+The current reconstruction uses these PDF vector stations (points, before scaling):
+
+| Feature                       | Measured station                                    | Interpretation                                                        |
+| ----------------------------- | --------------------------------------------------- | --------------------------------------------------------------------- |
+| Main plate span               | Y = 36.906 to 1877.399                              | 635 mm model span; centerline Y = 957.152                             |
+| Circle-cross datum            | X = 1296.53                                         | Interpreted as the plan CG station; verify on a real build            |
+| Main-plate trailing edge      | X = 2179.925                                        | Aft of the prop opening                                               |
+| Main-plate half-width at tail | 379.538 pt                                          | Matches separate tail's 378.706 pt hinge edge                         |
+| Separate elevon               | Sheet 2, X = 355.37 to 923.75; Y = 464.67 to 876.11 | About 196 mm outboard reach and 142 mm depth; rounded corners sampled |
+| Fuselage side outline         | Sheet 2, X = 307.046 to 1687.497                    | 476 mm side profile at the selected scale                             |
+| Fin root and height           | About 308 and 389 pt                                | 106 mm root, 134 mm height before cant                                |
+
+Body X points forward, so increasing sheet-1 X points aft. The main plate's
+front bevel lines are intake folds, **not elevon hinges**. A symmetric propeller
+opening is retained. The separate elevons join the main trailing edge with a
+0.8 mm visualization gap; the two fixed fins lean outward by an assumed 18°.
+The nose side curve is sampled into a light faceted loft; widths, foam overlap,
+intake registration, side rails and canopy marking remain assembly estimates.
+No detailed glue beads, decals or photogrammetry are claimed.
+
+The 400 mm nose-to-CG target is retained. This places the CG approximately
+8.7 mm behind the reconstructed main-wing root leading edge; the nose and wing
+leading edge are different references. The earlier 90 mm root reference was an
+assembly approximation and has been replaced. Wing/elevon mass positions follow
+polygon centroids; inertia remains a cuboid approximation. The intake and rail
+masses are split from the existing 60 g fuselage allocation; total mass stays
+320 g. The battery is positioned to balance the mass ledger, not assumed to be
+at a measured installation station.
+
+Aerodynamic centers use area-weighted quarter-chord estimates from spanwise
+polygon strips. The 9×4.7-inch prop follows the plan; 4.8 N thrust, speed falloff,
+current draw, servo response and all aerodynamic coefficients remain estimates.
+The two servos now provide the published ±40° surface limit through an assumed
+50° servo command and 10/12.5 mm horn ratio. Smaller throws may leave insufficient
+trim authority at low speed. Delta vortex lift, separated flow and actual
+control response have not been measured.
+
+Hand launches now solve a steady 8° climb at 8.5 m/s: body pitch, motor command
+and elevon trim follow that operating point, instead of imposing 65% power on
+every aircraft. This only prepares the release; controls remain fixed unless
+the pilot moves them. Battery discharge, weather and later throttle changes can
+move the aircraft away from trim. Ground mode adds the separate removable gear
+modification; it is not in the original FT-22 build.
 
 ## Verification boundary
 

@@ -10,18 +10,18 @@ import {
 import { findTrim } from "../src/core/trim";
 import { createRecording, replayRecording } from "../src/core/experiment";
 import { massProperties } from "../src/core/aircraft";
-it("reduces FT-22 elevon sensitivity through physical travel and horn ratio", () => {
+it("sets FT-22 elevon authority through physical travel and horn ratio", () => {
   const a = parseAircraft(raptor),
     w = a.surfaces.find((s) => s.control)!,
     c = w.control!,
     servo = a.parts.find((p) => p.id === c.linkage!.servoPartId)!;
   expect(c.maxDeg).toBe(40);
-  expect(surfaceActuation(a, w).maxDeg).toBeCloseTo(20, 10);
+  expect(surfaceActuation(a, w).maxDeg).toBeCloseTo(40, 10);
   expect(surfaceActuation(a, w).rateLimitDegS).toBeCloseTo(480, 10);
   servo.servo!.speedSecondsPer60Deg = 0.2;
   expect(surfaceActuation(a, w).rateLimitDegS).toBeCloseTo(240, 10);
   c.linkage!.surfaceArmM *= 2;
-  expect(surfaceActuation(a, w).maxDeg).toBeCloseTo(10, 10);
+  expect(surfaceActuation(a, w).maxDeg).toBeCloseTo(20, 10);
   expect(surfaceActuation(a, w).rateLimitDegS).toBeCloseTo(120, 10);
 });
 it("limits the first control step instead of teleporting a servo to its target", () => {

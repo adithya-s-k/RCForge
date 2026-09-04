@@ -63,7 +63,9 @@ use X = -0.5. The physical control mix and servo state drive its animation.
 `parts[].bodyLoft` supplies cross-sections for a body component. Each section has
 `x`, `width`, `top` and `bottom`, in fractions of that part's corresponding
 `sizeM` dimension, relative to its `positionM`. Sections must increase in X;
-`top < bottom` because Z points down. The FT-22's folded nose is an example.
+`top < bottom` because Z points down. Optional `topColor` colors the top face
+between this section and the next, without adding mass. Sections render as flat
+foam facets, grouped by finish to limit draw calls. The FT-22's folded nose is an example.
 
 These fields describe appearance only. Set surface area (`spanM * chordM`),
 aerodynamic center, coefficients, component mass and inertia separately, with

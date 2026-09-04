@@ -128,6 +128,10 @@ export const AircraftSchema = z
                     width: positive.max(2),
                     top: finite.min(-2).max(2),
                     bottom: finite.min(-2).max(2),
+                    topColor: z
+                      .string()
+                      .regex(/^#[0-9a-fA-F]{6}$/)
+                      .optional(),
                   })
                   .strict(),
               )

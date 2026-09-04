@@ -7,12 +7,21 @@ import {
   type Controls,
   GRAVITY,
 } from "./simulation";
-import { rotate, invert, matVec, clamp, type Vec3, type Mat3 } from "./math";
+import {
+  rotate,
+  invert,
+  matVec,
+  clamp,
+  radians,
+  type Vec3,
+  type Mat3,
+} from "./math";
 /** Solve longitudinal steady flight only; not an autopilot or a fidelity guarantee. */
 export function findTrim(
   a: Aircraft,
   speed = 12,
   environment = calmEnvironment(),
+  flightPathDeg = 0,
 ) {
   const sim = new Simulation(a, environment);
   if (a.vehicleType === "multirotor") {
@@ -44,14 +53,21 @@ export function findTrim(
       pitchDeg: 0,
     };
   }
+  const flightPath = radians(flightPathDeg);
+  const velocity: Vec3 = [
+    speed * Math.cos(flightPath),
+    0,
+    -speed * Math.sin(flightPath),
+  ];
   const residual = (x: Vec3): Vec3 => {
     const s = initialState(a, speed, 18, x[0]);
+    s.velocity = [...velocity];
     s.motors.fill(x[2]);
     const f = sim.forces(s, { roll: 0, pitch: x[1], yaw: 0, throttle: x[2] });
     const world = rotate(s.orientation, f.force);
     return [world[0], world[2] + sim.properties.mass * GRAVITY, f.torque[1]];
   };
-  let x: Vec3 = [3, 0.1, 0.5];
+  let x: Vec3 = [3 + flightPathDeg, 0.1, 0.5];
   for (let n = 0; n < 25; n++) {
     const r = residual(x);
     if (Math.hypot(...r) < 1e-5) break;
@@ -69,7 +85,7 @@ export function findTrim(
     try {
       const dx = matVec(invert(jac), r);
       x = [
-        clamp(x[0] - dx[0], -10, 15),
+        clamp(x[0] - dx[0], -10 + flightPathDeg, 15 + flightPathDeg),
         clamp(x[1] - dx[1], -1, 1),
         clamp(x[2] - dx[2], 0, 1),
       ];
@@ -79,6 +95,7 @@ export function findTrim(
   }
   const controls: Controls = { roll: 0, pitch: x[1], yaw: 0, throttle: x[2] };
   const state = initialState(a, speed, 18, x[0]);
+  state.velocity = [...velocity];
   state.motors.fill(x[2]);
   state.surfaceCommands = a.surfaces.map((s) =>
     s.control ? surfaceCommand(s.control, controls) : 0,

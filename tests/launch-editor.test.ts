@@ -46,8 +46,9 @@ describe("launch and wheel contact", () => {
       const trim = launchTrim(model, "hand");
       expect(trim.converged).toBe(true);
       const sim = new Simulation(model, calmEnvironment(), initial);
-      for (let i = 0; i < 600; i++)
-        sim.step({ ...trim.controls, throttle: 0.65 });
+      expect(Math.hypot(...initial.velocity)).toBeCloseTo(8.5, 9);
+      expect(initial.motors[0]).toBeCloseTo(trim.controls.throttle, 9);
+      for (let i = 0; i < 600; i++) sim.step(trim.controls);
       expect(sim.state.status).toBe("flying");
       expect(-sim.state.position[2]).toBeGreaterThan(1.7);
       expect(sim.state.position[0]).toBeGreaterThan(20);

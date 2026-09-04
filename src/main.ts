@@ -184,7 +184,7 @@ function updateFlightInfo() {
       mode === "ground"
         ? "Start stationary on the ground. Build airspeed, then rotate."
         : mode === "hand"
-          ? `Release at ${placement?.altitudeM ?? 1.7} m and 8.5 m/s with 65% power.`
+          ? `Release at ${placement?.altitudeM ?? 1.7} m and 8.5 m/s, trimmed for a gentle climb.`
           : `Start at ${placement?.altitudeM ?? 22} m and 12 m/s with calculated trim.`;
   $("flight-mass").textContent =
     (massProperties(a).mass * 1000).toFixed(0) + " g";
@@ -230,8 +230,7 @@ function reset() {
     roll: 0,
     pitch: pitchTrim,
     yaw: 0,
-    throttle:
-      mode === "ground" ? 0 : mode === "hand" ? 0.65 : trim.controls.throttle,
+    throttle: mode === "ground" ? 0 : trim.controls.throttle,
   };
   input.throttle = controls.throttle;
   sim.lastForces = sim.forces(sim.state, controls);
@@ -284,6 +283,7 @@ async function launch() {
   accumulator = 0;
   input.clear();
   document.body.dataset.running = "true";
+  $("page-fly").classList.add("setup-collapsed");
   $("pause").hidden = false;
   $("toggle-flight-setup").setAttribute("aria-expanded", "false");
   stats();
