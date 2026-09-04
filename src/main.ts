@@ -1064,6 +1064,15 @@ function frame(now: number) {
 }
 try {
   scene = new FlightScene($("viewport"));
+  scene.onInspectionView = (view) => {
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-inspect]")
+      .forEach((button) => {
+        const selected = button.dataset.inspect === view;
+        button.classList.toggle("active", selected);
+        button.setAttribute("aria-pressed", String(selected));
+      });
+  };
   scene.onGroundPick = (north, east) => positioning.pickGround(north, east);
 } catch (e) {
   message("3D rendering unavailable: " + errorText(e), true);

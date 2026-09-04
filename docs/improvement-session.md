@@ -74,9 +74,33 @@ pause the automation, and report the outcome. Do not start more work.
   range-fill operation was unreliable; use keyboard/click interactions and verify
   settled state rather than treating range-fill output as evidence.
 
+## Pass 3 · inspection
+
+- Added real orthographic Top and Side views with aspect-aware fitting. Top keeps
+  the nose up; Side shows body X horizontally. Dragging returns to Perspective
+  and updates the selected view button. Added projection/bounds regressions.
+- Studio lighting is neutral and independent of scenery; stronger ambient fill
+  and lighter shadows make black components legible. Reuses existing lights and
+  shadow map. The floor now follows the airframe's underside instead of leaving
+  every model floating 27 cm above it.
+- Side inspection exposed the larger quad's unsupported battery. Added a visible
+  tray/standoffs within its illustrative frame allocation. Browser checked Top and
+  Side on the large quad. 156 tests and the build pass.
+
+## User's added priority
+
+The user explicitly added interchangeable physical components, a compact component
+catalog (including Robu.in parts), battery weight/capacity/discharge and FT-22
+servo travel/speed/linkage sensitivity to this same five-hour session. Implement
+these next. Keep parts as the single mass ledger; no double counting. Existing
+battery sag/current/discharge and servo lag/rate models should be extended, not
+replaced with labels. Component catalog entries must distinguish source facts
+from guessed command maps, electrical resistance, linkage and aero parameters.
+The continuation prompt was updated with this scope. Deadline remains unchanged.
+
 ## Next passes
 
-1. Improve studio lighting and inspection views; check both new catalog previews.
+1. Implement component catalog, physical servo links and battery editor workflow.
 2. Improve new preset geometry and catalog previews where playtests show faults.
 3. Playtest both presets, aircraft selection and editor behavior.
 4. Review input selection, mapping, calibration and Arduino bridge workflows.

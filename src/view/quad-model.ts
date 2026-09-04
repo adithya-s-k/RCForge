@@ -150,6 +150,21 @@ export function buildQuad(a: Aircraft): AircraftVisual {
   if (battery) {
     const [x, y, z] = battery.positionM,
       [l, w, h] = battery.sizeM;
+    // A raised pack needs a visible tray and standoffs, rather than floating
+    // above the controller. This cosmetic structure belongs to the frame ledger.
+    const underside = z + h / 2;
+    if (underside < -0.02) {
+      box([l + 0.006, w + 0.008, 0.002], [x, y, underside + 0.001], carbon);
+      const supportHeight = -0.003 - (underside + 0.002);
+      for (const dx of [-0.4, 0.4])
+        for (const dy of [-0.42, 0.42])
+          cylinder(
+            0.0025,
+            supportHeight,
+            [x + l * dx, y + w * dy, -0.003 - supportHeight / 2],
+            black,
+          );
+    }
     box([l, w, h], [x, y, z], mat(battery.color, 0.48), 0.004);
     // Shrink-wrap seams, label and two full retention straps follow edited battery dimensions.
     for (const side of [-1, 1])

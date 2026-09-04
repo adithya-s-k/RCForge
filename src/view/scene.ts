@@ -11,6 +11,8 @@ import { createField } from "./field";
 import type { Placement } from "../core/placement";
 import { renderBudget, renderPixelRatio } from "./render-budget";
 import { followAircraftShadow } from "./aircraft-shadow";
+import { fitInspectionCamera, type InspectionView } from "./inspection-camera";
+const studioSun: [number, number, number] = [-3, 6, 4];
 const toWorld = (v: Vec3) => new T.Vector3(v[0], -v[2], v[1]);
 const conversion = new T.Quaternion().setFromAxisAngle(
   new T.Vector3(1, 0, 0),
@@ -22,6 +24,11 @@ export class FlightScene {
   renderer: T.WebGLRenderer;
   scene = new T.Scene();
   camera = new T.PerspectiveCamera(55, 1, 0.15, 10000);
+  private drawingCamera = new T.OrthographicCamera();
+  private inspectionView: InspectionView = "perspective";
+  private modelSize = new T.Vector3(1, 1, 1);
+  private modelCenter = new T.Vector3();
+  onInspectionView?: (view: InspectionView) => void;
   mode: CameraMode = "ground";
   showForces = false;
   showCG = false;
@@ -62,6 +69,8 @@ export class FlightScene {
   private axisGuide = document.createElement("div");
   private scenery: SceneryId = "club";
   private sun = new T.DirectionalLight();
+  private hemisphere = new T.HemisphereLight("#d6e3f1", "#788266", 2.1);
+  private studioFloorHeight = -0.27;
   private field: ReturnType<typeof createField>;
   private studioGroup = new T.Group();
   private arrows: T.ArrowHelper[] = [];
@@ -95,7 +104,7 @@ export class FlightScene {
     );
     this.axisGuide.innerHTML = `<svg viewBox="0 0 146 86" role="img" aria-label="Aircraft orientation axes">${["X", "Y", "Z"].map((a, i) => `<g stroke="${["#ef8c84", "#a7d08d", "#8ebfec"][i]}"><line id="axis-line-${a}" x1="73" y1="43"/><text id="axis-text-${a}" fill="${["#ef8c84", "#a7d08d", "#8ebfec"][i]}" stroke="none">${a}</text></g>`).join("")}<circle cx="73" cy="43" r="2" fill="#dce4e8"/></svg><small>X Forward · Y Right · Z Down</small>`;
     container.append(this.axisGuide);
-    this.scene.add(new T.HemisphereLight("#d6e3f1", "#788266", 2.1));
+    this.scene.add(this.hemisphere);
     const sun = (this.sun = new T.DirectionalLight("#fff4dc", 3.2));
     sun.position.set(25, 60, -35);
     sun.castShadow = true;
@@ -135,6 +144,13 @@ export class FlightScene {
         );
       }
       if (this.dragging && this.mode === "orbit") {
+        if (
+          this.inspectionView !== "perspective" &&
+          (e.movementX || e.movementY)
+        ) {
+          this.inspectionView = "perspective";
+          this.onInspectionView?.("perspective");
+        }
         this.orbitYaw -= e.movementX * 0.006;
         this.orbitPitch = T.MathUtils.clamp(
           this.orbitPitch + e.movementY * 0.004,
@@ -222,6 +238,12 @@ export class FlightScene {
     this.cg = massProperties(a).cg;
     // The rotor diagonal excludes propeller tips; frame the full rendered model.
     const size = bounds.getSize(new T.Vector3());
+    this.modelSize.copy(size);
+    const center = bounds.getCenter(new T.Vector3());
+    this.modelCenter.set(center.x, -center.z, center.y);
+    this.studioFloorHeight = -bounds.max.z - 0.02;
+    this.studioGroup.children[0].position.y = this.studioFloorHeight;
+    this.studioGroup.children[1].position.y = this.studioFloorHeight + 0.002;
     this.span = Math.max(a.reference.spanM, size.x, size.y, size.z);
     this.arrows.forEach((arrow) => arrow.dispose());
     this.forces.clear();
@@ -277,14 +299,24 @@ export class FlightScene {
     this.field.field.visible = !value;
     this.field.sky.visible = !value;
     this.studioGroup.visible = value;
-    this.scene.background = value ? new T.Color("#20262d") : null;
+    const site = sceneries[this.scenery];
+    this.sun.color.set(value ? "#ffffff" : site.sunColor);
+    this.sun.intensity = value ? 2.6 : site.sunIntensity;
+    this.sun.shadow.intensity = value ? 0.45 : 1;
+    this.sun.shadow.normalBias = value ? 0.001 : 0.006;
+    this.hemisphere.color.set(value ? "#e7edf5" : "#d6e3f1");
+    this.hemisphere.groundColor.set(value ? "#73777d" : "#788266");
+    this.hemisphere.intensity = value ? 3 : 2.1;
+    this.scene.background = value ? new T.Color("#1d2024") : null;
     this.scene.fog = value
-      ? new T.Fog("#20262d", 8, 50)
+      ? new T.Fog("#1d2024", 8, 50)
       : new T.Fog(sceneries[this.scenery].fog, 1800, 13000);
     if (value) this.setCamera("orbit");
     this.resize();
   }
-  setInspectionView(view: "perspective" | "top" | "side") {
+  setInspectionView(view: InspectionView) {
+    this.inspectionView = view;
+    this.onInspectionView?.(view);
     this.mode = "orbit";
     this.orbitYaw = view === "side" ? Math.PI / 2 : 0.65;
     this.orbitPitch = view === "top" ? 1.35 : view === "side" ? 0.02 : 0.35;
@@ -362,9 +394,9 @@ export class FlightScene {
     followAircraftShadow(
       this.sun,
       pos,
-      sceneries[this.scenery].sun,
+      this.studio ? studioSun : sceneries[this.scenery].sun,
       this.shadowRadius,
-      this.studio ? -0.27 : 0,
+      this.studio ? this.studioFloorHeight : 0,
       this.studio ? 1 : 16,
     );
     this.visual.group.quaternion
@@ -407,7 +439,7 @@ export class FlightScene {
             : 1)),
     );
     let desired: T.Vector3,
-      target = pos.clone();
+      target = this.studio ? this.modelCenter.clone() : pos.clone();
     if (this.mode === "ground") {
       desired = this.pilotPosition;
       this.camera.position.copy(desired);
@@ -454,7 +486,7 @@ export class FlightScene {
         2.1 *
         this.orbitZoom *
         Math.max(1, 0.85 / this.camera.aspect);
-      desired = pos
+      desired = target
         .clone()
         .add(
           new T.Vector3(
@@ -469,6 +501,18 @@ export class FlightScene {
     this.camera.up.set(0, 1, 0);
     this.camera.lookAt(target);
     this.camera.updateProjectionMatrix();
+    let viewCamera: T.Camera = this.camera;
+    if (this.studio && this.inspectionView !== "perspective") {
+      fitInspectionCamera(
+        this.drawingCamera,
+        this.inspectionView,
+        this.modelSize,
+        this.modelCenter,
+        this.camera.aspect,
+        this.orbitZoom,
+      );
+      viewCamera = this.drawingCamera;
+    }
     this.snap = false;
     this.forces.visible = this.showForces;
     sim.lastForces.surfaces.forEach((f, i) => {
@@ -498,7 +542,7 @@ export class FlightScene {
       -0.6 + Math.hypot(...wind) * 0.12,
     );
     if (this.studio) {
-      const inverseView = this.camera.quaternion.clone().invert();
+      const inverseView = viewCamera.quaternion.clone().invert();
       [
         new T.Vector3(1, 0, 0),
         new T.Vector3(0, 1, 0),
@@ -523,7 +567,7 @@ export class FlightScene {
     this.axisGuide.style.left = this.studio ? "auto" : "14px";
     this.axisGuide.style.top = this.studio ? "58px" : "90px";
     if (!this.studio) this.field.update(this.camera);
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene, viewCamera);
   }
   private resizeIfNeeded() {
     const size = this.renderer.getSize(new T.Vector2());
