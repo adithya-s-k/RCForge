@@ -1491,6 +1491,13 @@ onHostAccessChange(() => {
     if (available.length) loadAircraft(available[0]);
   }
   fillSelects();
+  // Losing access is a state change, not a fresh request to sign in.
+  const requestedPage = location.hash.replace(/^#\//, "");
+  if (
+    (requestedPage === "aircraft" || requestedPage === "experiments") &&
+    !hostAllows({ kind: "workspace", id: requestedPage })
+  )
+    history.replaceState(null, "", "#/fly");
   route();
 });
 mountHost({
