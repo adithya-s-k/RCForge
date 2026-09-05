@@ -86,19 +86,19 @@ If you do not have the correct bind plug, obtain one. Do not short unidentified 
 Unplug USB first. Keep the normal-operation power leads from step 4. Add the signal circuit:
 
 ```text
-FS-iA6B receiver                          Classic Nano
+FS-iA6B receiver                         Classic Nano
 
-B/VCC  +  ──────────────────────────────  5V
-B/VCC  −  ────────────────────────┬─────  GND
-                                 │
-PPM/CH1 S ─────[ 1 kΩ ]─────●───────────  D2
-                           │     │
-                        [ 47 kΩ ]│
-                           │     │
-                           └─────┘
+B/VCC +  ----------------------------->  5V
+B/VCC -  ----------------------------->  GND
 
-● = one shared electrical junction: resistor output + D2 + top of 47 kΩ.
-PPM/CH1 + and − stay unused here; power/ground already come through B/VCC.
+PPM/CH1 S ----[ 1 kΩ ]----o------------>  D2
+                         |
+                      [ 47 kΩ ]
+                         |
+                         +------------>  GND (same ground)
+
+o = junction: resistor output + D2 + top of 47 kΩ.
+PPM/CH1 + and - stay unused; power already comes through B/VCC.
 ```
 
 | Connection | Physical action                                                      |
