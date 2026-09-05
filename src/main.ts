@@ -71,7 +71,7 @@ import {
   launchAirspeed,
   type LaunchMode,
 } from "./core/launch";
-import { aircraftChannels } from "./app/aircraft-channels";
+import { aircraftChannels, keyboardTurnAxis } from "./app/aircraft-channels";
 import {
   createRecording,
   parseRecording,
@@ -586,11 +586,12 @@ $("toggle-flight-setup").onclick = () => {
   $("page-fly").classList.toggle("setup-collapsed", closed);
   $("toggle-flight-setup").setAttribute("aria-expanded", String(!closed));
 };
-$("close-flight-setup").onclick = () => {
+function closeFlightSetup() {
   $("page-fly").classList.add("setup-collapsed");
   $("toggle-flight-setup").setAttribute("aria-expanded", "false");
   scene?.renderer.domElement.focus();
-};
+}
+$("close-flight-setup").onclick = closeFlightSetup;
 document.querySelectorAll<HTMLButtonElement>("[data-controller-tab]").forEach(
   (button) =>
     (button.onclick = () => {
@@ -926,6 +927,15 @@ window.addEventListener("keydown", (e) => {
     return;
   }
   if (
+    page === "fly" &&
+    e.code === "Escape" &&
+    !document.querySelector("dialog[open]")
+  ) {
+    e.preventDefault();
+    closeFlightSetup();
+    return;
+  }
+  if (
     page === "aircraft" &&
     !ownsKeyboard(e.target) &&
     e.code === "KeyC" &&
@@ -1206,7 +1216,15 @@ function frame(now: number) {
   previous = now;
   try {
     arduino.poll();
-    controllerActions.update(document.hasFocus());
+    const inputAircraft = page === "aircraft" ? editor.draft : aircraft;
+    const turnAxis = keyboardTurnAxis(inputAircraft);
+    input.setKeyboardTurnAxis(turnAxis);
+    controllerActions.update(document.hasFocus(), {
+      turnAxis,
+      yaw: aircraftChannels(inputAircraft).includes("yaw"),
+      vtol: !!inputAircraft.vtol,
+      walking: input.walking,
+    });
     if (!running && page === "fly" && input.source === "keyboard" && !replay)
       input.read(dt);
     if (running && page === "fly") {
@@ -1258,7 +1276,7 @@ function frame(now: number) {
       previewStatus = !connected
         ? "Controller unavailable. Connect it in Input setup; motors off."
         : input.source === "keyboard"
-          ? `${aircraftChannels(editor.draft).includes("roll") ? "Arrow keys: pitch / roll" : "↑ / ↓: pitch"}${aircraftChannels(editor.draft).includes("yaw") ? " · Q / E: yaw" : ""}. Click the model to test. Motors off.`
+          ? `${aircraftChannels(editor.draft).includes("roll") ? "Arrow keys: pitch / roll" : "↑ / ↓: pitch · ← / →: rudder"}${aircraftChannels(editor.draft).includes("yaw") ? " · Q / E: yaw" : ""}. Click the model to test. Motors off.`
           : "Live controller · motors off · deflections after rates and servo limits";
       const trim = $<HTMLInputElement>("test-trim").checked
         ? previewPitchTrim
@@ -1338,27 +1356,34 @@ function frame(now: number) {
         "input-offline",
         hardware && !input.selected(),
       );
-      const bindings = hardware
-        ? !input.selected()
-          ? "<span>Connect your controller or choose Keyboard.</span>"
+      const editingControls =
+        !hardware && running && ownsKeyboard(document.activeElement);
+      const bindings = editingControls
+        ? '<span class="power-hint">Editing controls · <kbd>Esc</kbd> back to flight</span>'
+        : hardware
+          ? !input.selected()
+            ? "<span>Connect your controller or choose Keyboard.</span>"
+            : aircraftChannels(aircraft)
+                .map(
+                  (ch) =>
+                    `<span><kbd>A${input.profile.bindings[ch].axis + 1}</kbd> ${ch}</span>`,
+                )
+                .join("")
           : aircraftChannels(aircraft)
               .map(
                 (ch) =>
-                  `<span><kbd>A${input.profile.bindings[ch].axis + 1}</kbd> ${ch}</span>`,
+                  ({
+                    pitch: "<span><kbd>↑ ↓</kbd> Pitch</span>",
+                    roll: "<span><kbd>← →</kbd> Roll</span>",
+                    yaw:
+                      keyboardTurnAxis(aircraft) === "yaw"
+                        ? "<span><kbd>← →</kbd> / <kbd>Q E</kbd> Rudder</span>"
+                        : "<span><kbd>Q E</kbd> Yaw</span>",
+                    throttle:
+                      '<span class="power-hint"><kbd>Space</kbd> Power + <kbd>Shift</kbd> −</span>',
+                  })[ch],
               )
-              .join("")
-        : aircraftChannels(aircraft)
-            .map(
-              (ch) =>
-                ({
-                  pitch: "<span><kbd>↑ ↓</kbd> Pitch</span>",
-                  roll: "<span><kbd>← →</kbd> Roll</span>",
-                  yaw: "<span><kbd>Q E</kbd> Yaw</span>",
-                  throttle:
-                    '<span class="power-hint"><kbd>Space</kbd> Power + <kbd>Shift</kbd> −</span>',
-                })[ch],
-            )
-            .join("");
+              .join("");
       if ($("flight-input-guide").innerHTML !== bindings)
         $("flight-input-guide").innerHTML = bindings;
       const resetHint = hardware ? controllerActions.hint("reset") : "R";

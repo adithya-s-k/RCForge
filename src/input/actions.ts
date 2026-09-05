@@ -15,6 +15,10 @@ export const actionNames = {
   increase: "Increase value",
 } as const;
 export type Action = keyof typeof actionNames;
+/** VTOL switch bindings are retained, but neither shown nor dispatched on other aircraft. */
+export function actionAvailable(action: string, vtol: boolean) {
+  return vtol || !action.startsWith("vtol");
+}
 export type ActionBindings = Partial<Record<Action, string>>;
 export function validActions(value: unknown): value is ActionBindings {
   return (

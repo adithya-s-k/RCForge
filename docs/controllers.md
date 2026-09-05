@@ -6,11 +6,13 @@ RCForge reads keyboard input, browser Gamepad API axes, and the RCForge Arduino 
 
 ![Keyboard with flight, power, session and view keys highlighted](images/diagram-keyboard.svg)
 
-W/S or arrows pitch down/up; A/D or arrows roll; Q/E yaw. Space increases throttle, Shift decreases it, and X cuts power; +/− and keypad +/− also work. Tap for 5% steps or hold for a continuous change. Releasing holds the selected throttle.
+W/S or arrows pitch down/up; A/D or left/right arrows roll; Q/E yaw. On rudder-only aircraft such as the Simple Trainer, left/right arrows and A/D steer the rudder instead. The keyboard diagram and flight hints follow the selected aircraft; walking mode reserves WASD for the observer. Radio and gamepad channel assignments stay unchanged. Space increases throttle, Shift decreases it, and X cuts power; +/− and keypad +/− also work. Tap for 5% steps or hold for a continuous change. Releasing holds the selected throttle.
+
+VTOL mode and assistance shortcuts appear only when a VTOL aircraft is selected. Switching to a fixed-wing plane or quad disables those actions without deleting your saved bindings. H sets VTOL throttle to 50%; it does not enable an autopilot on a fixed-wing plane.
 
 P pauses, R resets. Enter starts or resumes. V cycles Pilot/Chase/FPV when a camera is mounted; C cycles control response, and F recenters the view and briefly marks the aircraft.
 
-Flight shortcuts are suppressed while a button, link, form field or dialog owns keyboard focus. On Controllers, click the keyboard diagram to try live inputs. Launch focuses the flight canvas. Losing focus pauses and clears held keys.
+Flight shortcuts are suppressed while a button, link, form field or dialog owns keyboard focus. On Controllers, click the keyboard diagram to try live inputs. Launch focuses the flight canvas. While flying, the bottom input bar says **Editing controls** when a menu owns the keys. Press **Esc** to close flight setup and return focus to the aircraft view, or click the field. Open dialogs keep their normal Escape behavior. Losing focus pauses and clears held keys.
 
 ## Flight setup
 

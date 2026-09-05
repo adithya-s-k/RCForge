@@ -77,7 +77,7 @@ rudder airflow, with the simulator's approximate contact friction.
 ## Flying and editing
 
 - **Pitch:** ↑/↓. **Rudder/turn:** Q/E. **Power:** Space/Shift. There is no aileron,
-  so the roll channel intentionally has no effect. On a radio/gamepad, map **yaw**
+  so the roll channel intentionally has no effect. On the keyboard, left/right arrows (or A/D) automatically steer the rudder; Q/E also work. On a radio/gamepad, map **yaw**
   to the horizontal stick you want to steer with. RCForge keeps physical channels
   explicit instead of silently rewiring an existing controller profile.
 - Use **Control test** to inspect elevator and rudder travel. The preset starts

@@ -142,6 +142,13 @@ export class InputManager {
   deviceIndex = -1;
   extraDevices: () => InputDevice[] = () => [];
   private keyboard = { roll: 0, pitch: 0, yaw: 0 };
+  private turnAxis: "roll" | "yaw" = "roll";
+  /** Only keyboard steering changes for rudder-only trainers. HID mappings stay explicit. */
+  setKeyboardTurnAxis(axis: "roll" | "yaw") {
+    if (axis === this.turnAxis) return;
+    this.turnAxis = axis;
+    this.clear(); // A held key must not become a different command after an aircraft switch.
+  }
   constructor(private onInterrupt: (reason: string) => void) {
     window.addEventListener("keydown", (e) => {
       if (!this.active || ownsKeyboard(e.target)) return;
@@ -242,9 +249,15 @@ export class InputManager {
         ? 1
         : 0;
     const target = {
-      roll: has("ArrowRight", "KeyD") - has("ArrowLeft", "KeyA"),
+      roll:
+        this.turnAxis === "roll"
+          ? has("ArrowRight", "KeyD") - has("ArrowLeft", "KeyA")
+          : 0,
       pitch: has("ArrowDown", "KeyS") - has("ArrowUp", "KeyW"),
-      yaw: has("KeyE") - has("KeyQ"),
+      yaw:
+        this.turnAxis === "yaw"
+          ? has("KeyE", "ArrowRight", "KeyD") - has("KeyQ", "ArrowLeft", "KeyA")
+          : has("KeyE") - has("KeyQ"),
     };
     for (const ch of ["roll", "pitch", "yaw"] as const)
       this.keyboard[ch] +=

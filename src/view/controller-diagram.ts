@@ -1,4 +1,4 @@
-import { keyboardDiagram } from "./keyboard-diagram";
+import { keyboardDiagram, type KeyboardLayout } from "./keyboard-diagram";
 import { buttonName } from "../input/presentation";
 
 const well = (x: number, y: number, radius: number) =>
@@ -29,8 +29,9 @@ export function controllerDiagram(
   kind: string,
   style: string,
   standard: boolean,
+  keyboard: KeyboardLayout = {},
 ) {
-  if (kind === "keyboard") return keyboardDiagram();
+  if (kind === "keyboard") return keyboardDiagram(keyboard);
   const rc = kind === "transmitter",
     stick = kind === "joystick";
   let body: string;

@@ -20,3 +20,11 @@ export function aircraftChannels(
   );
   return a.motors.length ? [...axes, "throttle"] : axes;
 }
+
+/** Rudder-only trainers steer with left/right keys; other devices retain their mappings. */
+export function keyboardTurnAxis(a: Aircraft): "roll" | "yaw" {
+  const channels = aircraftChannels(a);
+  return !channels.includes("roll") && channels.includes("yaw")
+    ? "yaw"
+    : "roll";
+}

@@ -1,3 +1,4 @@
+import type { KeyboardLayout } from "../view/keyboard-diagram";
 import { controllerDiagram } from "../view/controller-diagram";
 import {
   buttonName,
@@ -11,6 +12,7 @@ import { InputManager, channels } from "../input/controls";
 import { ownsKeyboard } from "../input/ui-focus";
 import {
   ActionEdges,
+  actionAvailable,
   actionNames,
   validActions,
   type ActionBindings,
@@ -89,7 +91,8 @@ export class ControllerActions {
       $("action-status").textContent = "Standard shortcuts applied.";
     };
   }
-  update(enabled: boolean) {
+  update(enabled: boolean, keyboard: KeyboardLayout = {}) {
+    const vtol = !!keyboard.vtol;
     const d = this.input.selected(),
       id = d?.id ?? "";
     if (id !== this.id) {
@@ -139,7 +142,12 @@ export class ControllerActions {
         : d
           ? `${kind === "transmitter" ? "RC transmitter" : kind === "joystick" ? "Flight stick" : this.style === "playstation" ? "PlayStation" : this.style === "xbox" ? "Xbox" : "Controller"} · ${d.id}`
           : "Preview only";
-    const visualSignature = [kind, this.style, this.standard].join(":");
+    const visualSignature = JSON.stringify([
+      kind,
+      this.style,
+      this.standard,
+      keyboard,
+    ]);
     if (this.visualSignature !== visualSignature) {
       this.visualSignature = visualSignature;
       for (const id of [
@@ -150,7 +158,20 @@ export class ControllerActions {
           kind,
           this.style,
           this.standard || !d,
+          keyboard,
         );
+      const turnLabel = $("keyboard-turn-label");
+      turnLabel.textContent =
+        keyboard.turnAxis === "yaw"
+          ? "Rudder left / right"
+          : "Roll left / right";
+      $("keyboard-yaw-guide").hidden = keyboard.yaw === false;
+      $("keyboard-aircraft-note").textContent =
+        keyboard.turnAxis === "yaw"
+          ? "Rudder-only aircraft · ← / → or Q / E steer. No ailerons installed."
+          : keyboard.yaw === false
+            ? "Arrow keys pitch and roll. This aircraft has no yaw control."
+            : "Arrow keys pitch and roll · Q / E yaw.";
     }
     document
       .querySelectorAll<SVGGElement>("[data-pad-button]")
@@ -189,7 +210,10 @@ export class ControllerActions {
     });
     const legend =
       this.input.source === "keyboard"
-        ? "<span><kbd>Enter</kbd> Start</span><span><kbd>P</kbd> Pause</span><span><kbd>R</kbd> Restart</span><span><kbd>T</kbd> VTOL mode</span><span><kbd>H</kbd> VTOL hold height</span><span><kbd>B</kbd> VTOL assistance</span>"
+        ? "<span><kbd>Enter</kbd> Start</span><span><kbd>P</kbd> Pause</span><span><kbd>R</kbd> Restart</span>" +
+          (vtol
+            ? "<span><kbd>T</kbd> VTOL mode</span><span><kbd>H</kbd> Hover throttle 50%</span><span><kbd>B</kbd> VTOL assistance</span>"
+            : "<span><kbd>V</kbd> Camera</span><span><kbd>C</kbd> Control response</span>")
         : !d
           ? '<div class="shortcut-empty"><strong>Flight shortcuts</strong><p>Connect hardware to see your button bindings.</p></div>'
           : (
@@ -203,6 +227,7 @@ export class ControllerActions {
                 "settings",
               ] as Action[]
             )
+              .filter((a) => actionAvailable(a, vtol))
               .map(
                 (a) =>
                   `<span data-shortcut-action="${a}"><b>${escape(this.hint(a) || "Unassigned")}</b> ${actionNames[a]}</span>`,
@@ -224,7 +249,7 @@ export class ControllerActions {
       });
     const occupied = channels.map((c) => this.input.profile.bindings[c].axis);
     if (d?.mapping === "Arduino USB") occupied.push(5); // CH6 is the firmware RUN guard.
-    const radio = kind === "transmitter" && !!d && d.axes.length >= 5;
+    const radio = vtol && kind === "transmitter" && !!d && d.axes.length >= 5;
     $("vtol-radio-shortcuts").hidden = !radio;
     $("vtol-radio-shortcuts-note").hidden = !radio;
     $("vtol-radio-shortcuts").toggleAttribute("disabled", occupied.includes(4));
@@ -236,10 +261,12 @@ export class ControllerActions {
       this.style,
       this.standard,
       this.input.source,
+      vtol,
     ]);
     if (signature !== this.signature) {
       this.signature = signature;
       $("controller-actions").innerHTML = Object.entries(actionNames)
+        .filter(([action]) => actionAvailable(action, vtol))
         .map(
           ([action, label]) =>
             `<label>${label}<select data-action="${action}" ${!d || this.input.source === "keyboard" ? "disabled" : ""}><option value="none">Unassigned</option>${d?.buttons.map((_, i) => `<option value="b${i}">${escape(buttonName(i, this.style, this.standard))}</option>`).join("") ?? ""}${d?.axes.flatMap((_, i) => (occupied.includes(i) ? [] : [`<option value="a${i}+">Axis ${i + 1} high</option>`, `<option value="a${i}-">Axis ${i + 1} low</option>`])).join("") ?? ""}</select></label>`,
@@ -281,8 +308,9 @@ export class ControllerActions {
       : "Connect a controller to assign shortcuts.";
     const safeBindings = Object.fromEntries(
       Object.entries(this.bindings).filter(
-        ([, v]) =>
-          !v.startsWith("a") || !occupied.includes(Number(v.slice(1, -1))),
+        ([action, v]) =>
+          actionAvailable(action, vtol) &&
+          (!v.startsWith("a") || !occupied.includes(Number(v.slice(1, -1)))),
       ),
     ) as ActionBindings;
     for (const action of this.edges.read(
