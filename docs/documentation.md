@@ -40,8 +40,9 @@ The wiring diagrams describe logical connections, not physical connector faces;
 check the firmware and manufacturer references when changing pin assignments.
 `docs:check` rejects stale generated diagrams. View each affected drawing at normal
 and enlarged sizes, including narrow screens. Local images get an enlarged viewer
-with zoom and an ordinary source link as a fallback. They are external images,
-not executable inline SVG, and ship inside each documentation snapshot.
+with zoom and an ordinary source link as a fallback. Most diagrams are external images and ship inside each documentation snapshot.
+The registered balance illustration has a trusted, generated inline SVG enhancement
+in development docs; arbitrary Markdown still cannot introduce inline SVG or scripts.
 
 An `agent-prompt` code fence adds a copyable setup form. Fields use
 `{{Field label}}` for text or `{{Field label|Option one|Option two}}` for a choice.
@@ -92,3 +93,9 @@ The dropdown gains release entries as maintainers create them.
 Run `npm run build` to produce the simulator and docs in a single `dist/`.
 `npm run preview` checks the production output. See [hosting](deployment.md) for
 directory URLs, caching and the release acceptance checks.
+
+## Theme and interactive illustrations
+
+The header sun/moon button switches between dark and light views. The choice stays in this browser and is shared with the simulator. It changes editor studio lighting and UI colors, without changing scenery or physics.
+
+The balance guide uses `site/balance-visual.ts` to project the actual Bronco VTOL definition into SVG. The development docs add a keyboard-accessible battery slider using `site/client.js`; calculations use the part mass / assembled mass ratio. The static SVG remains available in Markdown, downloads and without JavaScript. Frozen documentation keeps its own saved illustration and aircraft data. Run `npm run docs:diagrams` after changes to the source drawing or preset, then `npm run docs:check`.

@@ -1,3 +1,4 @@
+import { staticBalanceDiagram } from "./balance-visual";
 import { hardwareIllustration as hardware } from "./hardware-illustrations";
 import { componentIcon } from "../src/view/component-icon";
 import { uiIcon } from "../src/view/icons";
@@ -499,62 +500,7 @@ function workflow(calibration = false) {
   );
 }
 function balance() {
-  let body = rect(24, 102, 912, 392, "#171c21", "#303942", 8);
-  // Top-view trainer, nose left. Translucent skin exposes the installed battery.
-  body +=
-    text(45, 130, "TOP VIEW / NOSE LEFT", 12, color.muted) +
-    line("M92 310H875", "#47525b", false, true);
-  body += `<g stroke="#a0abb2" stroke-width="1.5"><path d="M91 310Q124 278 180 281L406 280 778 305 864 303v14l-86-2-372 26-226-2Q124 342 91 310Z" fill="#303a40"/><path d="M369 154h62l28 118v76l-28 119h-62l-13-119v-76Z" fill="#536068"/><path d="M770 245h29l32 57v16l-32 59h-29v-59Z" fill="#46545d"/><path d="M395 155v311M785 247v129" stroke="#788790"/><path d="m189 283 100-2-17 58-83-2Z" fill="#151f24"/></g>`;
-  body +=
-    rect(149, 294, 88, 32, "#466152", color.green, 4) +
-    text(193, 315, "BATTERY", 11, "#d6e7d8", "middle") +
-    rect(268, 294, 88, 32, "none", color.green, 4);
-  body +=
-    line("M323 361H191", color.green, true) +
-    text(250, 386, "Move the battery forward", 14, color.green, "middle");
-  body +=
-    line("M404 237v150M375 310h57", color.signal) +
-    dot(404, 310, color.signal) +
-    text(414, 237, "CG", 18, color.signal) +
-    line("M420 212h-27", color.signal, true);
-  body +=
-    text(510, 193, "The whole aircraft responds", 19) +
-    text(
-      510,
-      219,
-      "A heavier or more distant part has more influence.",
-      14,
-      color.muted,
-    );
-  body +=
-    line("M380 414v27m-2-14h-70", color.muted) +
-    text(311, 448, "Wing leading edge", 12, color.muted, "middle");
-  const stats = [
-    ["battery", "190 g battery", "Move 50 mm forward"],
-    ["structure", "1,287 g aircraft", "Total mass stays constant"],
-    ["balance", "7.4 mm CG shift", "Calculated toward the nose"],
-  ];
-  stats.forEach(([kind, title, sub], i) => {
-    const x = 32 + i * 304;
-    body +=
-      rect(x, 514, 288, 82, "#1b2126", "#303941", 7) +
-      `<svg x="${x + 15}" y="536" width="34" height="34" viewBox="0 0 24 24" color="#b8c3cb" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${inner(kind === "balance" ? uiIcon("balance") : componentIcon(kind))}</svg>` +
-      text(x + 62, 545, title, 16) +
-      text(x + 62, 569, sub, 12, color.muted);
-  });
-  return svg(
-    "Balance comes from the installed parts",
-    "Illustrative layout; the example uses the 1,287 g VTOL mass ledger and a 190 g battery.",
-    674,
-    body +
-      text(
-        32,
-        626,
-        "CG shift = moved mass ÷ total mass × movement. Count each physical part once.",
-        15,
-        color.signal,
-      ),
-  );
+  return staticBalanceDiagram();
 }
 function vtolLayout() {
   let body =

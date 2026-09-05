@@ -97,6 +97,7 @@ describe("same-site documentation artifact", () => {
       expect(html).toContain('<main id="content"');
       expect(html).toContain("Development documentation");
       expect(html.match(/<script[^>]*src="([^"]+)"/g)).toEqual([
+        '<script src="/theme.js"',
         '<script src="/docs/assets/docs.js"',
       ]);
     }

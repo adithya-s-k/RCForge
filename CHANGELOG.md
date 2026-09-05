@@ -4,6 +4,9 @@ Application releases are separate from physics/replay and aircraft format versio
 
 ## 0.8.0 — Unreleased
 
+- Add shared light/dark appearance across the simulator and documentation, with a two-row navigation layout on small screens.
+- Replace the balance illustration with a component-derived Bronco view and an interactive battery/CG demonstration; retain a downloadable static diagram and frozen documentation snapshots.
+- Correct VTOL motor supports, pivot/servo alignment and wiring. The revised preset includes its support-plate mass (1,323 g assembled), updated trim and documented flight-envelope limits; legacy component orientations retain their previous convention.
 - Add the Bronco tricopter VTOL with two front conversion servos and a separate rear yaw-tilt servo, component-derived mass/CG, battery-limited thrust, configurable hover/cruise assistance and deterministic transition experiments.
 - Add VTOL keyboard/gamepad shortcuts, explicit CH5 Hover/Cruise binding, mechanical control-test animation and ArduPilot-referenced setup documentation; CH6 remains the Arduino RUN guard.
 - Add cancelable 3D component placement with live CG feedback, a hover-load check, component icons and richer radio/aircraft diagrams.

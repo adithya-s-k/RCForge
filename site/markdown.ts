@@ -26,6 +26,7 @@ export function renderMarkdown(
   pages: readonly DocPage[],
   downloads: Set<string>,
   sourceRef: string,
+  diagrams: ReadonlyMap<string, (url: string) => string> = new Map(),
 ) {
   const headings: { id: string; text: string; depth: number }[] = [];
   const slugs = new Map<string, number>();
@@ -79,6 +80,11 @@ export function renderMarkdown(
       },
       image({ href, text }) {
         const url = link(href, true);
+        // Only registered, repository-owned diagrams receive trusted progressive enhancement.
+        const diagram = diagrams.get(
+          posix.normalize(posix.join(posix.dirname(page.file), href)),
+        );
+        if (url && diagram) return diagram(url);
         return url
           ? `<span class="doc-figure"><a class="expand-diagram" href="${escapeHtml(url)}" aria-label="Enlarge: ${escapeHtml(text)}"><img src="${escapeHtml(url)}" alt="${escapeHtml(text)}" loading="lazy"/><span class="figure-action">Enlarge diagram ↗</span></a></span>`
           : `<span>${escapeHtml(text)}</span>`;

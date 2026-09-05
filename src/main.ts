@@ -45,6 +45,7 @@ import { placementUI } from "./app/placement";
 import "./style.css";
 import "./workbench.css";
 import "./view/editor-workspace.css";
+import "./view/light-theme.css";
 import { setupEditorWorkspace } from "./app/editor-workspace";
 import "./view/position-panel.css";
 import "./view/flight-feedback.css";
@@ -1376,6 +1377,10 @@ function frame(now: number) {
 }
 try {
   scene = new FlightScene($("viewport"));
+  const applyTheme = () =>
+    scene?.setTheme(document.documentElement.dataset.theme === "light");
+  applyTheme();
+  window.addEventListener("rcforge-themechange", applyTheme);
   scene.onInspectionView = (view) => {
     cameraPlacer?.inspectionView(view);
     document

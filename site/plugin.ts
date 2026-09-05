@@ -17,7 +17,7 @@ export function documentationPlugin(): Plugin {
     configureServer(server) {
       server.watcher.on("all", (_event, path) => {
         if (
-          /\.(md|json|css|js|svg|png|ino)$/.test(path) &&
+          /\.(md|json|css|js|ts|svg|png|ino)$/.test(path) &&
           !/[\/](node_modules|dist|results|\.git)[\/]/.test(path)
         )
           cached = undefined;

@@ -16,7 +16,7 @@ export function validateDocs(files: Map<string, SiteFile>) {
     const text = data.toString();
     if (
       [...text.matchAll(/<script[^>]*src="([^"]+)"/g)].some(
-        (m) => m[1] !== "/docs/assets/docs.js",
+        (m) => !["/docs/assets/docs.js", "/theme.js"].includes(m[1]),
       )
     )
       throw Error(`${path}: unexpected documentation runtime`);

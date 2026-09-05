@@ -71,6 +71,13 @@ describe("documentation release snapshots", () => {
         `/docs/${current.version}/files/docs/images/diagram-receiver-ppm.svg`,
       )!.data,
     ).toEqual(current.files.get("docs/images/diagram-receiver-ppm.svg"));
+    const frozenBalance = files
+      .get(`/docs/${current.version}/aircraft-editor/index.html`)!
+      .data.toString();
+    expect(frozenBalance).not.toContain("data-balance-lab");
+    expect(frozenBalance).toContain(
+      `/docs/${current.version}/files/docs/images/diagram-mass-cg.svg`,
+    );
     const radio = files
       .get(`/docs/${current.version}/radio-setup/index.html`)!
       .data.toString();

@@ -255,3 +255,51 @@ for (const [id, factor] of [
 window.addEventListener("resize", () => {
   if (viewer.open) sizeDiagram();
 });
+
+// Lightweight balance lab: geometry is authored at build time; only the battery and CG move.
+// Values come from this documentation version's mass ledger, never the user's aircraft draft.
+document.querySelectorAll("[data-balance-lab]").forEach((lab) => {
+  const slider = lab.querySelector('input[type="range"]');
+  const ratio = Number(lab.dataset.ratio),
+    aft = Number(lab.dataset.aft);
+  const cgx = Number(lab.dataset.cgx),
+    cgy = Number(lab.dataset.cgy);
+  if (!slider || ![ratio, aft, cgx, cgy].every(Number.isFinite)) return;
+  const update = () => {
+    const mm = Number(slider.value),
+      shift = mm * ratio;
+    const phrase =
+      mm === 0
+        ? "Original position"
+        : `${Math.abs(mm)} mm ${mm > 0 ? "forward" : "aft"}`;
+    lab.querySelector("[data-balance-position]").textContent = phrase;
+    slider.setAttribute("aria-valuetext", phrase);
+    lab
+      .querySelector("[data-balance-battery]")
+      .setAttribute("transform", `translate(${-mm * 0.48} ${mm * 0.22})`);
+    lab
+      .querySelector("[data-balance-cg]")
+      .setAttribute(
+        "transform",
+        `translate(${cgx - shift * 0.48} ${cgy + shift * 0.22})`,
+      );
+    lab.querySelector("[data-balance-aft]").textContent = (aft - shift).toFixed(
+      1,
+    );
+    lab.querySelector("[data-balance-shift]").textContent =
+      mm === 0
+        ? "Move the battery to compare"
+        : `${Math.abs(shift).toFixed(1)} mm ${mm > 0 ? "toward the nose" : "toward the tail"}`;
+    lab.querySelector("[data-balance-gauge]").style.left =
+      `${Math.max(0, Math.min(100, aft - shift))}%`;
+    lab.querySelector("[data-balance-reset]").disabled = mm === 0;
+  };
+  slider.addEventListener("input", update);
+  lab.querySelector("[data-balance-reset]").addEventListener("click", () => {
+    slider.value = "0";
+    update();
+    slider.focus();
+  });
+  lab.querySelector(".balance-controls").hidden = false;
+  update();
+});
