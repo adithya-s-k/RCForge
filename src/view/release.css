@@ -1,0 +1,108 @@
+.header-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ui-muted);
+  text-decoration: none;
+  font-size: 11px;
+  white-space: nowrap;
+  min-height: 34px;
+}
+.header-github .ui-icon {
+  width: 20px;
+  height: 20px;
+}
+.header-github:hover {
+  color: var(--ui-text);
+}
+.header-meta .release-button {
+  background: transparent;
+  border: 1px solid var(--ui-border);
+  color: var(--ui-muted);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  padding: 5px 7px;
+  min-height: 28px;
+}
+.header-meta .release-button:hover {
+  color: var(--ui-text);
+  background: var(--ui-panel);
+}
+#aircraft-history {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+#aircraft-history .ui-icon {
+  width: 16px;
+  height: 16px;
+}
+.release-dialog {
+  width: min(480px, calc(100vw - 32px));
+  background: var(--ui-bg);
+  color: var(--ui-text);
+  padding: 24px;
+  border: 1px solid var(--ui-border-strong);
+  border-radius: 10px;
+}
+.release-dialog header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.release-dialog h2 {
+  margin: 0;
+  font-size: 24px;
+}
+.release-dialog p {
+  color: var(--ui-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.release-dialog dl {
+  margin: 20px 0;
+}
+.release-dialog dl > div {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--ui-border);
+  font-size: 12px;
+}
+.release-dialog dt {
+  color: var(--ui-muted);
+}
+.release-dialog dd {
+  font-variant-numeric: tabular-nums;
+}
+.release-dialog nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 24px;
+}
+.release-dialog nav a {
+  color: var(--ui-text);
+  font-size: 12px;
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1000px) {
+  .header-github > span {
+    display: none;
+  }
+}
+@media (max-width: 540px) {
+  .app-header .header-meta {
+    gap: 6px;
+  }
+  .header-meta .release-button {
+    font-size: 9px;
+    padding: 4px;
+  }
+  .header-github .ui-icon {
+    width: 19px;
+    height: 19px;
+  }
+}

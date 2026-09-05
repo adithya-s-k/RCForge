@@ -9,13 +9,16 @@ export const responseMetrics = {
   batteryVoltageV: "Pack voltage · V",
   batteryCurrentA: "Current draw · A",
   batteryUsedMah: "Charge used · mAh",
+  vtolTiltDeg: "Front motor tilt · degrees",
+  vtolRearTiltDeg: "Rear yaw tilt · degrees",
+  vtolRearMotor: "Rear motor command · %",
 } as const;
 export type ResponseMetric = keyof typeof responseMetrics;
 export function metricValue(sample: Sample, metric: ResponseMetric) {
   const value = sample[metric];
   return value === undefined
     ? undefined
-    : metric === "batterySoc"
+    : metric === "batterySoc" || metric === "vtolRearMotor"
       ? value * 100
       : value;
 }
@@ -51,7 +54,8 @@ export function responseChart(
     height = width < 500 ? 220 : 270,
     left = width < 500 ? 45 : 60,
     right = width - 18,
-    plotWidth = right - left;
+    plotWidth = right - left,
+    duration = Math.max(1, base.at(-1)?.time ?? 0, edited.at(-1)?.time ?? 0);
   const path = (samples: Sample[]) => {
     let connected = false;
     return samples
@@ -63,7 +67,7 @@ export function responseChart(
         }
         const command = connected ? "L" : "M";
         connected = true;
-        return `${command}${(left + (s.time / 20) * plotWidth).toFixed(1)},${(height - 32 - ((value - min) / (max - min)) * (height - 64)).toFixed(1)}`;
+        return `${command}${(left + (s.time / duration) * plotWidth).toFixed(1)},${(height - 32 - ((value - min) / (max - min)) * (height - 64)).toFixed(1)}`;
       })
       .join(" ");
   };
@@ -76,5 +80,5 @@ export function responseChart(
     })
     .join(
       "",
-    )}${[0, 5, 10, 15, 20].map((t) => `<text x="${left + (t / 20) * plotWidth}" y="${height - 8}" fill="var(--ui-muted)" text-anchor="middle" font-size="12">${t}s</text>`).join("")}<path d="${path(base)}" fill="none" stroke="var(--ui-muted)" stroke-width="2" stroke-dasharray="6 5"/><path d="${path(edited)}" fill="none" stroke="var(--ui-text)" stroke-width="2.5"/></svg>`;
+    )}${[0, 0.25, 0.5, 0.75, 1].map((fraction) => `<text x="${left + fraction * plotWidth}" y="${height - 8}" fill="var(--ui-muted)" text-anchor="middle" font-size="12">${Number((fraction * duration).toFixed(1))}s</text>`).join("")}<path d="${path(base)}" fill="none" stroke="var(--ui-muted)" stroke-width="2" stroke-dasharray="6 5"/><path d="${path(edited)}" fill="none" stroke="var(--ui-text)" stroke-width="2.5"/></svg>`;
 }

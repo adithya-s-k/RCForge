@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import bronco from "../aircraft/ft-bronco.json";
-import trainer from "../aircraft/simple-trainer.json";
+import trainer from "./fixtures/generic-trainer.json";
 import { parseAircraft } from "../src/core/schema";
 import {
   massProperties,

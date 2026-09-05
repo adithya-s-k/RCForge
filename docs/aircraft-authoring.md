@@ -1,6 +1,6 @@
 # Add an aircraft
 
-1. Copy `aircraft/simple-trainer.json` to a new lowercase, hyphenated ID, and update `id`, `name`, `description` and `provenance`.
+1. Copy `aircraft/ft-tiny-trainer.json` to a new lowercase, hyphenated ID, and update `id`, `name`, `description`, `credit` and `provenance`.
 2. Establish a fixed datum and use meters, kilograms, seconds and Newtons. Angular definition fields ending in `Deg` use degrees. Physical state uses radians.
 3. Add `parts` with mass, position, cuboid dimensions and a visual color. Account for the battery, motors, servos, structure and payload exactly once. Wing/tail parts contribute mass; their visible lifting surfaces come from `surfaces`.
 4. Add wing halves and tail surfaces, assigning `kind` (`wing`, `horizontal-tail`, `vertical-tail` or `other`) independently of control assignments. `positionM` is the aerodynamic center (normally near quarter chord), not the leading edge. The renderer constructs the chord around that point. `rollDeg: 0` is horizontal and `rollDeg: 90` is a vertical surface. `aspectRatio` on a half-wing should describe the full wing, not that half alone.
@@ -27,7 +27,7 @@ portable copy: clearing browser data also removes local aircraft. The local impo
 registry is bounded to 32 aircraft and 2 million JSON characters; storage quota or
 validation failures are reported without preventing flight.
 
-For a bundled example, add an explicit import to `src/main.ts` and register it in the `originals` array. This keeps the default aircraft list deliberate; the CLI discovers local JSON automatically.
+For a bundled example, add an explicit import and registry entry in `src/app/bundled-aircraft.ts`. This keeps the default aircraft list deliberate; the CLI discovers local JSON automatically.
 
 ## Sources and assumptions
 
@@ -101,3 +101,59 @@ housings use its position and body X/Y/Z dimensions; quad housings use its envel
 around the authored rotor assembly. It never adds mass. `propBlades` sets 2–6 rendered blades, with existing
 defaults preserved when omitted. These appearance fields do not generate new
 thrust/current or torque curves. See the [450 mm quad example](multirotors.md).
+
+## Camera mounts and pilot controls
+
+See [FPV and control setup](fpv-and-control-setup.md) for optional `fpv` and `pilotResponse` fields, the camera mass/pose contract, configurable surface mixers, and live servo/linkage testing in the editor.
+
+## Polyhedral trainers and installed gear
+
+The [Vortex RC Simple Trainer](vortex-simple-trainer.md) uses four wing panels
+and only elevator/rudder control. `reference.trimSpeedMps` optionally selects the
+airborne/default experiment operating point; omission retains 12 m/s. Hand
+release remains 8.5 m/s. Record an estimate or measurement for that choice.
+Explicit speed arguments to `findTrim` and the envelope survey take precedence.
+
+Span edits preserve panel heights about each side's innermost root. Give each
+structural wing component the same ID as its aerodynamic panel to preserve its
+vertical offset during a resize. Wingtip contacts with `spanLinked` follow the
+same root-height scaling. This is a span change at fixed panel angles, not a new
+polyhedral design. Review unconventional wings rather than assuming this rule
+fits every multi-wing arrangement.
+
+`contactPoints[].strutAnchorM` optionally locates a visible wheel strut or skid
+anchor at the aircraft datum; `wheelColor` sets tire appearance. These visual
+fields add no mass or forces. Account for gear in `parts` and use the contact's
+`positionM` for its ground-touch point. Two aligned main wheels ahead of CG and
+a rear skid initialize at their common ground-support pitch. Existing tricycle
+and multirotor launch defaults remain unchanged. Optional fields retain aircraft
+format 1 and need an updated app; older strict parsers reject them.
+
+## Creator links and catalog identity
+
+Set optional `credit: { "name": "Original designer", "url": "https://example.org/design" }`
+to credit the original design in the editor and flight setup. Use the original
+build or product page, not a reference for an unrelated physics equation. HTTP
+and HTTPS links are accepted; other protocols are rejected. Files without credit
+remain valid. Keep each configuration under its own ID, for example `ft-bronco`
+(V-tail) and `ft-bronco-conventional` (fixed fins and elevator), so their local
+histories stay separate.
+
+The only bundled **Simple Trainer** is `vt-simple-trainer`, the Vortex RC design.
+The earlier generic `simple-trainer` now lives under `tests/fixtures/` to preserve
+numerical regression inputs. It is not a catalog preset; use the Tiny Trainer
+or Vortex definition as an authoring starting point. Older exported definitions
+can still be imported as custom aircraft.
+
+## Preserve design references
+
+Set the original designer's `credit` link and record parameter evidence in
+`provenance`. Use [Plans & design credits](plans.md) and the reference manifest
+for reviewed PDFs. `npm run references:fetch` keeps original plans locally;
+`npm run references:check` verifies identity and preset attribution without a
+network call. Do not commit upstream plans or reference photos without reviewed
+redistribution rights. Document assembly choices and missing data beside the model.
+
+## Tricopter VTOL definitions
+
+Use `vehicleType: "vtol"` and the validated `vtol` block in [bronco-tri-vtol.json](../aircraft/bronco-tri-vtol.json). Three motors and three dedicated tilt servos are linked by ID; no array ordering or transmitter channel is implied. Keep component mass centers distinct from motor tilt-axis force stations. The [VTOL guide](bronco-vtol.md) describes schema settings, provenance, controls, validation commands and the fixed-inertia approximation.

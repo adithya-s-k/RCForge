@@ -1,6 +1,7 @@
 import { expect, it } from "vitest";
 import * as T from "three";
 import bronco from "../aircraft/ft-bronco.json";
+import conventional from "../aircraft/ft-bronco-conventional.json";
 import tiny from "../aircraft/ft-tiny-trainer.json";
 import { parseAircraft } from "../src/core/schema";
 import { buildFoamWing } from "../src/view/foam-wing";
@@ -108,7 +109,7 @@ it("rejects crossed, incomplete and out-of-outline foam wing controls", () => {
   }
 });
 
-it.each([bronco, tiny])(
+it.each([bronco, conventional, tiny])(
   "keeps $id assembled geometry finite, outward-facing and within a modest render budget",
   (raw) => {
     const a = parseAircraft(raw),

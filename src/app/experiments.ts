@@ -51,18 +51,22 @@ export function setupExperiments(
   resize.observe($("experiment-results"));
   const scenarioHelp = () => {
     const scenario = $<HTMLSelectElement>("scenario").value;
-    $("scenario-help").textContent = (
-      {
-        cruise: "Hold the calculated trim for 20 seconds.",
-        glide: "Cut power and retain the trimmed elevator position.",
-        "pitch-pulse":
-          "At 2 seconds, add 25% pitch input for one second, then release.",
-        "roll-pulse":
-          "At 2 seconds, apply 25% right roll for one second, then release.",
-        stall:
-          "Cut power, then progressively increase pitch input after 2 seconds.",
-      } as Record<string, string>
-    )[scenario];
+    $("experiment-duration").textContent =
+      scenario === "vtol-transition" ? "50 seconds" : "20 seconds";
+    $("scenario-help").textContent =
+      (
+        {
+          cruise: "Hold the calculated trim for 20 seconds.",
+          glide: "Cut power and retain the trimmed elevator position.",
+          "pitch-pulse":
+            "At 2 seconds, add 25% pitch input for one second, then release.",
+          "roll-pulse":
+            "At 2 seconds, apply 25% right roll for one second, then release.",
+          stall:
+            "Cut power, then progressively increase pitch input after 2 seconds.",
+        } as Record<string, string>
+      )[scenario] ??
+      "50 seconds: hover, convert to cruise at 3 s, return to hover at 24 s. Starts at 15 m. Inspect altitude loss, tilt and rear motor power.";
   };
   $("run-experiment").onclick = () => {
     pause();
@@ -79,8 +83,9 @@ export function setupExperiments(
       try {
         const { baseline, aircraft, environment } = get(),
           scenario = $<HTMLSelectElement>("scenario").value as Scenario,
-          base = runExperiment(baseline, environment, scenario),
-          edited = runExperiment(aircraft, environment, scenario);
+          duration = scenario === "vtol-transition" ? 50 : 20,
+          base = runExperiment(baseline, environment, scenario, duration),
+          edited = runExperiment(aircraft, environment, scenario, duration);
         latest = edited;
         comparison = { base, edited };
         const metric: Metric =
@@ -179,7 +184,7 @@ export function setupExperiments(
             )
             .join(
               "",
-            )}</tbody></table>${scenario === "cruise" ? '<p class="small muted">Each aircraft uses its own calculated trim. Matching altitude can be expected even when weight or required power differs.</p>' : ""}<p class="small muted">Runs stop at ground contact, landing or impact, up to 20 seconds. These estimates use the same model; they are not independent validation.</p>`;
+            )}</tbody></table>${scenario === "cruise" ? '<p class="small muted">Each aircraft uses its own calculated trim. Matching altitude can be expected even when weight or required power differs.</p>' : ""}<p class="small muted">Runs stop at ground contact, landing or impact, up to ${duration} seconds. These estimates use the same model; they are not independent validation.</p>`;
         $("response-metric").onchange = renderChart;
         renderChart();
         $("export-experiment").removeAttribute("disabled");

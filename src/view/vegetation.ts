@@ -5,7 +5,7 @@ import { renderBudget } from "./render-budget";
 import { landscapeSurfaceHeight } from "./landscape";
 
 /** Crossed foliage cards retain parallax without thousands of solid canopy blobs. */
-function plantGeometry(kind: number) {
+function plantGeometry(kind: number, cards = 3) {
   // Independent silhouettes with transparent gutters. Bounds avoid adjacent crowns.
   const rect = [
     [0, 0, 634, 622],
@@ -21,7 +21,7 @@ function plantGeometry(kind: number) {
     uv: number[] = [],
     normals: number[] = [],
     indices: number[] = [];
-  for (let p = 0; p < 3; p++) {
+  for (let p = 0; p < cards; p++) {
     const angle = (p * Math.PI) / 3,
       dx = (Math.cos(angle) * width) / 2,
       dz = (Math.sin(angle) * width) / 2;
@@ -107,7 +107,7 @@ export function addVegetation(field: T.Group, profile: Scenery) {
   // bright opaque backing; the new atlas has foliage-colored transparent RGB.
   const foliage = new T.MeshBasicMaterial({
     map: atlas,
-    alphaTest: 0.38,
+    alphaTest: 0.68,
     side: T.DoubleSide,
     color: dry ? "#ded5c3" : "#d5dbcd",
     alphaToCoverage: true,
@@ -129,7 +129,43 @@ export function addVegetation(field: T.Group, profile: Scenery) {
        diffuseColor.rgb *= mix(0.7, 1.0, smoothstep(0.0, 0.8, plantHeight));`,
     );
   };
-  foliage.customProgramCacheKey = () => "foliage-v3";
+  foliage.customProgramCacheKey = () => "foliage-v4";
+  // A single projected canopy card per plant adds directional grounding without
+  // submitting distant vegetation to the aircraft's moving shadow map.
+  const sunDirection = new T.Vector3(...profile.sun).normalize();
+  const canopyShadow = new T.MeshBasicMaterial({
+    map: atlas,
+    color: "#1b2216",
+    transparent: true,
+    opacity: 0.16,
+    alphaTest: 0.015,
+    depthWrite: false,
+    side: T.DoubleSide,
+    polygonOffset: true,
+    polygonOffsetFactor: -1,
+    polygonOffsetUnits: -2,
+  });
+  canopyShadow.onBeforeCompile = (shader) => {
+    shader.uniforms.canopySun = { value: sunDirection };
+    shader.fragmentShader = shader.fragmentShader.replace(
+      "#include <map_fragment>",
+      `#include <map_fragment>
+      diffuseColor.a = opacity * smoothstep(0.60,0.90,diffuseColor.a / max(opacity,0.001));`,
+    );
+    shader.vertexShader = "uniform vec3 canopySun;\n" + shader.vertexShader;
+    shader.vertexShader = shader.vertexShader.replace(
+      "#include <project_vertex>",
+      `
+      vec4 projectedPlant = modelMatrix * instanceMatrix * vec4(transformed,1.0);
+      float plantY = max(0.0, projectedPlant.y);
+      projectedPlant.xz -= canopySun.xz * plantY / max(0.2,canopySun.y);
+      projectedPlant.y = 0.008;
+      vec4 mvPosition = viewMatrix * projectedPlant;
+      gl_Position = projectionMatrix * mvPosition;
+    `,
+    );
+  };
+  canopyShadow.customProgramCacheKey = () => "projected-canopy-v1";
   const variants = dry ? [5, 4] : alpine ? [2, 2, 1, 4] : [0, 1, 3, 4];
   const counts = new Map<number, number>();
   for (let i = 0; i < profile.treeCount; i++) {
@@ -168,6 +204,16 @@ export function addVegetation(field: T.Group, profile: Scenery) {
   let plantIndex = 0;
   for (const [kind, count] of counts) {
     const plants = new T.InstancedMesh(plantGeometry(kind), foliage, count);
+    plants.name = `foliage:${kind}`;
+    plants.userData.collision = "foliage";
+    const shadows = new T.InstancedMesh(
+      plantGeometry(kind, 1),
+      canopyShadow,
+      count,
+    );
+    shadows.name = `canopy-shadow:${kind}`;
+    // Shader projection moves these vertices beyond their source bounds.
+    shadows.frustumCulled = false;
     for (let i = 0; i < count; i++) {
       const cluster = clusters[plantIndex % clusters.length];
       const spread = dry ? 180 : 85;
@@ -195,6 +241,10 @@ export function addVegetation(field: T.Group, profile: Scenery) {
           0.82 + rand() * 0.15,
         ),
       );
+      dummy.rotation.y = Math.atan2(sunDirection.x, sunDirection.z);
+      if (ground > 0.05) dummy.scale.setScalar(0);
+      dummy.updateMatrix();
+      shadows.setMatrixAt(i, dummy.matrix);
       // Small static contact occlusion on the flat field only; no extra shadow pass.
       dummy.position.set(x, 0.012, z);
       dummy.rotation.set(0, 0, 0);
@@ -203,7 +253,7 @@ export function addVegetation(field: T.Group, profile: Scenery) {
       shades.setMatrixAt(plantIndex++, dummy.matrix);
     }
     plants.computeBoundingSphere();
-    field.add(plants);
+    field.add(plants, shadows);
   }
   shades.computeBoundingSphere();
   field.add(shades);

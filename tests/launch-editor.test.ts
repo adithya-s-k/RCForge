@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import bronco from "../aircraft/ft-bronco.json";
 import tiny from "../aircraft/ft-tiny-trainer.json";
 import raptor from "../aircraft/ft-22-raptor.json";
-import trainer from "../aircraft/simple-trainer.json";
+import trainer from "./fixtures/generic-trainer.json";
 import { parseAircraft } from "../src/core/schema";
 import { fitLandingGear, launchState, launchTrim } from "../src/core/launch";
 import { setTotalMass, setLongitudinalCG } from "../src/core/editor";

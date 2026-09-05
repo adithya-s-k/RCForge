@@ -11,11 +11,13 @@ export function flightSetupMarkup() {
       <label for="flight-aircraft">Aircraft</label><select id="flight-aircraft"></select>
       <button data-open-catalog="flight" class="wide browse-aircraft">Browse aircraft <span>↗</span></button>
       <p class="muted small" id="flight-model-info"></p>
+      <p class="aircraft-credit" id="flight-aircraft-credit"></p>
       <label>Launch from</label><div class="segmented launch-options" role="group" aria-label="Launch mode"><button data-launch="ground" class="active">Ground</button><button data-launch="hand">Hand throw</button><button data-launch="airborne">In flight</button></div>
       <p class="small muted" id="launch-description"></p>
+      <div id="flight-vtol" class="vtol-flight-panel" hidden></div>
       <div class="setup-divider"></div><div class="setup-line"><span>All-up weight</span><strong id="flight-mass"></strong></div><div class="setup-line"><span>Landing gear</span><strong id="flight-gear"></strong></div>
       <div id="battery-telemetry" class="battery-telemetry" hidden></div><p id="flight-control-note" class="small muted"></p>
-      <a class="setup-text-link" href="#/aircraft">Edit this aircraft ↗</a>
+      <button id="setup-fpv-camera" class="wide">Set up FPV camera</button><a class="setup-text-link" href="#/aircraft">Edit this aircraft ↗</a>
     </section>
     <section id="setup-field" role="tabpanel" aria-labelledby="setup-tab-field" data-setup-panel="field" hidden>
       <label for="scenery-select">Flying site</label><select id="scenery-select"><option value="club">Northfield club · asphalt</option><option value="valley">Alpine meadow · grass</option><option value="mesa">Desert mesa · dirt</option></select><p id="scenery-conditions" class="small muted"></p>
@@ -26,7 +28,7 @@ export function flightSetupMarkup() {
     <section id="setup-input" role="tabpanel" aria-labelledby="setup-tab-input" data-setup-panel="input" hidden>
       <label for="flight-input-type">Input device</label><select id="flight-input-type"><option value="keyboard">Keyboard</option><option value="gamepad">Gamepad</option><option value="joystick">Flight stick</option><option value="transmitter">RC transmitter</option></select>
       <p id="flight-input-status" class="small muted" role="status"></p>
-      <div id="flight-controller-diagram" class="controller-diagram compact"></div><div id="flight-shortcut-legend" class="shortcut-legend"></div>
+      <div id="flight-response"></div><div class="setup-divider"></div><div id="flight-controller-diagram" class="controller-diagram compact"></div><div id="flight-shortcut-legend" class="shortcut-legend"></div>
       <div class="setup-line"><span>Mapping & calibration</span><a href="#/controllers" id="source-summary">Keyboard ↗</a></div>
     </section>
     <div class="setup-footer"><button id="launch" class="primary wide">Start flight</button></div>

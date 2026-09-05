@@ -1,0 +1,259 @@
+:root[data-theme="light"] {
+  --ui-bg: #f6f7f9;
+  --ui-panel: #fff;
+  --ui-raised: #f0f2f5;
+  --ui-hover: #e6e9ed;
+  --ui-border: #d9dde3;
+  --ui-border-strong: #a5adb9;
+  --ui-text: #20252d;
+  --ui-muted: #58616f;
+  --ui-faint: #616c7a;
+  --ui-accent: #252b34;
+  --ui-selection: #e3e8ef;
+  --ui-inverse: #fff;
+  --ink: #20252d;
+  --muted: #58616f;
+  --paper: #fff;
+  --panel: #fff;
+  --line: #d9dde3;
+}
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  padding: 6px;
+  flex: none;
+}
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+.theme-moon,
+[data-theme="light"] .theme-sun {
+  display: none;
+}
+[data-theme="light"] .theme-moon {
+  display: block;
+}
+[data-theme="light"] .brand-mark {
+  filter: brightness(0.25);
+}
+[data-theme="light"] .catalog-preview {
+  background: radial-gradient(ellipse at center, #bdc8d4, #e3e8ee);
+}
+[data-theme="light"] button.primary:hover {
+  background: #394451;
+  border-color: #394451;
+  color: #fff;
+}
+[data-theme="light"] .keyboard-key.mapped.power rect {
+  fill: #fff0d2;
+  stroke: #9a6a1e;
+}
+[data-theme="light"] .keyboard-color-legend .power,
+[data-theme="light"] .component-reference.modified strong,
+[data-theme="light"] .component-balance-output strong {
+  color: #875808;
+}
+[data-theme="light"] .keyboard-key.pressed rect {
+  fill: #394658 !important;
+  stroke: #18202c !important;
+}
+[data-theme="light"] .controller-diagram .keyboard-key.pressed text {
+  fill: #fff;
+}
+[data-theme="light"] .axis-guide {
+  background: #fffffff2;
+  border-color: var(--ui-border);
+}
+[data-theme="light"] .axis-guide text {
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 0.6;
+}
+[data-theme="light"] .axis-guide small {
+  color: var(--ui-muted);
+}
+[data-theme="light"] .camera-placement-settings input,
+[data-theme="light"] .camera-placement-settings select {
+  color: var(--ui-text);
+  background: var(--ui-panel);
+}
+[data-theme="light"] .camera-placement-stage {
+  background: #dbe0e6;
+}
+[data-theme="light"] .camera-placement-tools,
+[data-theme="light"] .camera-placement-hint {
+  background: #ffffffed;
+  color: var(--ui-text);
+}
+[data-theme="light"] .flight-status,
+[data-theme="light"] .ready-pill {
+  color: #35603b;
+}
+[data-theme="light"] #battery-hud.low-battery strong {
+  color: #94581c;
+}
+[data-theme="light"] .trim-limited,
+[data-theme="light"] .editor-error {
+  color: #964a14;
+}
+@media (max-width: 720px) {
+  .header-meta .theme-toggle {
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+  }
+}
+[data-theme="light"] .keyboard-body {
+  fill: #e9edf1;
+  stroke: #acb5c1;
+}
+[data-theme="light"] .keyboard-key rect {
+  fill: #f5f6f8;
+  stroke: #d5dbe3;
+}
+[data-theme="light"] .keyboard-key.mapped.flight rect {
+  fill: #d5dfe8;
+  stroke: #8295a8;
+}
+[data-theme="light"] .keyboard-key.mapped.session rect {
+  fill: #e2e6eb;
+  stroke: #95a0ac;
+}
+[data-theme="light"] .keyboard-key.mapped.view rect {
+  fill: #e7e5ee;
+  stroke: #aaa4bd;
+}
+[data-theme="light"] .controller-diagram .keyboard-key .key-letter {
+  fill: #647184;
+}
+[data-theme="light"] .controller-diagram .keyboard-key .key-function,
+[data-theme="light"] .controller-diagram .keyboard-key.mapped .key-letter {
+  fill: #263341;
+}
+[data-theme="light"] .controller-diagram .keyboard-key.pressed text {
+  fill: #fff;
+}
+[data-theme="light"] .axis-guide g:nth-child(1) {
+  stroke: #ad3c35;
+}
+[data-theme="light"] #axis-text-X {
+  fill: #ad3c35;
+}
+[data-theme="light"] .axis-guide g:nth-child(2) {
+  stroke: #507a2e;
+}
+[data-theme="light"] #axis-text-Y {
+  fill: #507a2e;
+}
+[data-theme="light"] .axis-guide g:nth-child(3) {
+  stroke: #286896;
+}
+[data-theme="light"] #axis-text-Z {
+  fill: #286896;
+}
+[data-theme="light"] .axis-guide text {
+  stroke: none;
+}
+[data-theme="light"] .axis-guide circle {
+  fill: #414e5b;
+}
+[data-theme="light"] .field-label,
+[data-theme="light"] .flight-key-guide {
+  background: #fffffff2;
+}
+[data-theme="light"] .field-label[data-tone="impact"] #flight-cue-title,
+[data-theme="light"] #quick-input.input-offline {
+  color: #a84430;
+}
+[data-theme="light"] .vtol-servo-summary {
+  color: var(--ui-muted);
+}
+[data-theme="light"] .vtol-editor-profiles fieldset,
+[data-theme="light"] .vtol-bench,
+[data-theme="light"] .vtol-flight-panel {
+  border-color: var(--ui-border);
+}
+[data-theme="light"] .position-mode.active {
+  color: #805516;
+  background: #fff0d2;
+}
+[data-theme="light"] .nav-map-heading > span:last-child {
+  color: #8c5a17;
+}
+[data-theme="light"] #nav-trail {
+  stroke: #99691f;
+}
+[data-theme="light"] #nav-sightline {
+  stroke: #396e90;
+}
+[data-theme="light"] .camera-position-fields label:nth-child(1) {
+  color: #ad3c35;
+}
+[data-theme="light"] .camera-position-fields label:nth-child(2) {
+  color: #507a2e;
+}
+[data-theme="light"] .camera-position-fields label:nth-child(3) {
+  color: #286896;
+}
+/* Keep navigation and appearance controls distinct on phone-width screens. */
+@media (max-width: 540px) {
+  :root {
+    --ui-header-height: 100px;
+  }
+  .app-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: 44px 48px;
+    gap: 0 12px;
+    padding: 4px 12px;
+    height: var(--ui-header-height);
+  }
+  .app-header .brand {
+    grid-row: 1;
+    grid-column: 1;
+    min-width: 0;
+    width: auto;
+    gap: 8px;
+  }
+  .app-header .brand-mark {
+    width: 25px;
+    height: 25px;
+  }
+  .app-header .brand-wordmark {
+    display: block;
+    font-size: 16px;
+  }
+  .app-header .header-meta {
+    grid-row: 1;
+    grid-column: 2;
+    margin: 0;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  .app-header nav {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    gap: 3px;
+    justify-content: space-between;
+  }
+  .app-header nav a {
+    flex: 1;
+    min-width: 0;
+    height: 44px;
+    padding: 4px 0;
+    font-size: 9px;
+    gap: 4px;
+  }
+  .app-header nav .ui-icon {
+    width: 18px;
+    height: 18px;
+  }
+}

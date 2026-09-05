@@ -1,0 +1,916 @@
+{
+  "schemaVersion": 1,
+  "id": "ft-bronco-conventional",
+  "name": "FT Bronco · Conventional",
+  "description": "Flite Test Bronco with a horizontal elevator, twin fixed fins and differential motor thrust for yaw. High-mounted wing over the cabin and booms. Reconstructed from plans and photos; flight coefficients are estimates.",
+  "provenance": {
+    "dimensions": {
+      "status": "sourced",
+      "note": "Published span 1.086 m and wing area 0.208 m². The procedural folded wing and assembly reconstruction use the separate geometry assumptions below.",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf"
+    },
+    "mass": {
+      "status": "sourced",
+      "note": "PDF specifies 640 g without battery and reference AUW 830 g; uses estimated 190 g battery. Reference mass is retained with three 9 g servos and an estimated 39 g conventional tail; this variant has not been weighed.",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf"
+    },
+    "cg": {
+      "status": "calculated",
+      "note": "Battery position calculated to balance at published 51 mm aft leading edge. This is a simulated setup, not a measured battery location.",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf"
+    },
+    "aerodynamics": {
+      "status": "estimated",
+      "note": "Low-order quasi-steady surface model, estimated polars, damping and stall. No flight-test calibration."
+    },
+    "propulsion": {
+      "status": "estimated",
+      "note": "Two 4.2 N static thrust sources with approximate speed falloff. No measured motor/propeller curves."
+    },
+    "geometry": {
+      "status": "estimated",
+      "note": "Plan-derived procedural reconstruction: 192 mm wing chord, approximately 61% outer-span ailerons, 658 mm booms, 63 mm fuselage core width; Conventional tail parts 13/14, sheet 3. Folded assembly locations and nose cross-sections inferred from build photos. Not a manufacturing template."
+    },
+    "servos": {
+      "status": "estimated",
+      "note": "First-order 0.06 s control-surface response and 400 deg/s travel rate. Illustrative micro-servo response, not bench-measured."
+    },
+    "servoAssembly": {
+      "status": "estimated",
+      "note": "Individual servo masses are included once. Installation positions, horn ratios, travel setup and response lag are estimates. Battery position is recalculated to retain the reference longitudinal CG when the structural allocation changes. Servo speed is a no-load reference; hinge-load torque and dynamic servo current are not modeled."
+    },
+    "electricalEstimate": {
+      "status": "estimated",
+      "note": "3S 2200 mAh pack, 0.04 ohm DC resistance and OCV curve are illustrative. Component battery mass remains unchanged. Static motor current is ideal induced power T^(3/2)/sqrt(2*rho*A), divided by an assumed 0.45 overall factor and nominal voltage, plus 0.2 A at full command. Thrust commands retain the prior estimated linear thrust curve. This is NOT a bench motor/prop test, efficiency map or endurance validation; replace with measured curves. Forward-flight current and servo loads are not resolved.",
+      "url": "https://www.grc.nasa.gov/WWW/K-12/BGP/propth.html"
+    },
+    "noseReconstruction": {
+      "status": "estimated",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf",
+      "note": "Sheet 1 Nose part 05: right-side cut outline runs Y=139.420 to 712.960 pt; inner fold station X=1344.86 pt. Its 573.54 pt projected length is 202.33 mm and rear height 371.64 pt is 131.66 mm. Sampled curvature replaces generic pointed loft. Parallel 68 mm width follows the 192.84 pt core fold separation (including board overlap); rear-core transition and X/Z registration remain photo-guided estimates. Nose apex retained near body X=327 mm. Cockpit paint and hatch markings are estimated from original assembly photographs. Fuselage mass and mass center retained; updated outer envelope changes its box-inertia estimate."
+    },
+    "motorInstallation": {
+      "status": "estimated",
+      "note": "Motor housing geometry now uses the motor component center and dimensions, instead of independent renderer constants. Housing stations are aligned with the existing reconstructed mount/prop assembly; housing dimensions and mass allocations remain estimates, not bench measurements. Battery moves aft to retain the same mass-weighted CG. Component box inertia changes with these revised dimensions and stations."
+    },
+    "propellerMass": {
+      "status": "estimated",
+      "note": "Separate 6 g mass entry per propeller, reallocated from the existing estimated left-nacelle, right-nacelle structural allocation. Published dry mass, existing motor masses, total aircraft mass and longitudinal CG are retained; battery station is rebalanced. Prop dimensions/inertia and the allocation are estimates, not weighed components. Propeller center follows the reconstructed rotor disk. This allows replacement of both motor and prop masses with a matching performance curve without adding the old prop mass again."
+    },
+    "wingMount": {
+      "status": "estimated",
+      "url": "https://www.flitetest.com/articles/ft-bronco-build",
+      "note": "Assembly correction from the build photographs: the wing underside sits above the fuselage and boom saddles, not through the cockpit. Wing reference plane raised 23 mm; mass centers, wing servos and tip contacts follow it. Fuselage/boom/pod upper stations meet the 2-degree-incidence lower wing skin; bands and dowels add no separate mass. Vertical registration and installed part masses remain estimates. Longitudinal CG and 830 g reference mass are retained."
+    },
+    "conventionalTail": {
+      "status": "calculated",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf",
+      "note": "Sheet 3 H-tail part 14: span X=868.88..1937.96 pt (377.15 mm), chord Y=456.76..783.76 pt (115.36 mm), hinge Y=562.90 pt. Fin part 13 polygon rotated by 17.74 degrees to its root fold; mounting tabs omitted. H-tail slots set 343.03 mm boom spacing. Tail root stations and vertical installation are photo-guided estimates. Two unhinged fixed fins, one elevator servo and differential motor yaw match the plan topology; no moving rudders are authored. Fin orientation places the long root fillet forward and the upper fin swept aft, as in the conventional assembly photograph."
+    },
+    "tailMassAndAero": {
+      "status": "estimated",
+      "note": "The conventional tail uses an estimated 13 g stabilizer and two 13 g fins, with one 9 g elevator servo instead of two ruddervator servos. This preserves the shared 830 g reference total, not a weighed conventional variant. Battery is rebalanced to 51 mm CG. Tail areas and mass centers are integrated from traced outlines; inertia uses component cuboids. Tail lift slopes use 2*pi/(1+2/(0.8*AR)); drag, effectiveness and rate damping are estimates, not measured or flight calibrated. Battery lateral placement is calculated to balance the single elevator servo on the left boom; it is not a measured installation."
+    }
+  },
+  "parts": [
+    {
+      "id": "left-wing",
+      "kind": "wing",
+      "massKg": 0.12,
+      "positionM": [-0.048, -0.2715, -0.031],
+      "sizeM": [0.192, 0.543, 0.022],
+      "color": "#ebe9dd",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "right-wing",
+      "kind": "wing",
+      "massKg": 0.12,
+      "positionM": [-0.048, 0.2715, -0.031],
+      "sizeM": [0.192, 0.543, 0.022],
+      "color": "#ebe9dd",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "fuselage",
+      "kind": "body",
+      "massKg": 0.084,
+      "positionM": [0.1035, 0, 0.045],
+      "sizeM": [0.447, 0.068, 0.132],
+      "color": "#e7e5d9",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.49999999999999994,
+          "width": 0.7352941176470588,
+          "top": -0.4644659671287142,
+          "bottom": 0.07575757575757577
+        },
+        {
+          "x": -0.39932885906040266,
+          "width": 0.926470588235294,
+          "top": -0.47637077490999175,
+          "bottom": 0.2878787878787879
+        },
+        {
+          "x": -0.2315436241610738,
+          "width": 1.0,
+          "top": -0.4962121212121212,
+          "bottom": 0.3409090909090909
+        },
+        {
+          "x": -0.12416107382550334,
+          "width": 1.0,
+          "top": -0.5089105828454841,
+          "bottom": 0.3409090909090909
+        },
+        {
+          "x": -0.06375838926174496,
+          "width": 1.0,
+          "top": -0.6439393939393938,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": -0.019015659955257256,
+          "width": 1.0,
+          "top": -0.6515151515151514,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.047355366567238356,
+          "width": 1.0,
+          "top": -0.6523207047057097,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.08125991541138457,
+          "width": 1.0,
+          "top": -0.6462575290995118,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.11282839664429531,
+          "width": 1.0,
+          "top": -0.6321921319773726,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.14439687787720612,
+          "width": 1.0,
+          "top": -0.60665145699795,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.16876774538901324,
+          "width": 1.0,
+          "top": -0.5777422160143337,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.19174959972657224,
+          "width": 1.0,
+          "top": -0.539778783500991,
+          "bottom": 0.3394174633499517,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.21542596065125533,
+          "width": 1.0,
+          "top": -0.4840647326139855,
+          "bottom": 0.33697171738533327,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.2442953367387522,
+          "width": 1.0,
+          "top": -0.36015638511698833,
+          "bottom": 0.3320618259523528
+        },
+        {
+          "x": 0.2627786825006214,
+          "width": 1.0,
+          "top": -0.3609582811349171,
+          "bottom": 0.3278517912879286
+        },
+        {
+          "x": 0.29434716373353226,
+          "width": 1.0,
+          "top": -0.35704856678896957,
+          "bottom": 0.31858313127465193
+        },
+        {
+          "x": 0.33380776527467076,
+          "width": 1.0,
+          "top": -0.34173572819657794,
+          "bottom": 0.30234801517075865
+        },
+        {
+          "x": 0.3732683668158092,
+          "width": 1.0,
+          "top": -0.3141974722723571,
+          "bottom": 0.27860267185403803
+        },
+        {
+          "x": 0.4127289683569476,
+          "width": 1.0,
+          "top": -0.27146514583492826,
+          "bottom": 0.24465118121095772
+        },
+        {
+          "x": 0.4442974495898584,
+          "width": 1.0,
+          "top": -0.22205406335784678,
+          "bottom": 0.20547827437502836
+        },
+        {
+          "x": 0.46797381051454146,
+          "width": 1.0,
+          "top": -0.16964268762486934,
+          "bottom": 0.16289577915057468
+        },
+        {
+          "x": 0.48375805113099685,
+          "width": 1.0,
+          "top": -0.12030647022407258,
+          "bottom": 0.12038077943873851
+        },
+        {
+          "x": 0.49559623159333843,
+          "width": 1.0,
+          "top": -0.06002367764353735,
+          "bottom": 0.06715989938336515
+        },
+        {
+          "x": 0.49993689776286365,
+          "width": 1.0,
+          "top": -0.003210271442494184,
+          "bottom": 0.01049122035297334
+        }
+      ]
+    },
+    {
+      "id": "left-boom",
+      "kind": "boom",
+      "massKg": 0.06,
+      "positionM": [-0.231, -0.17151349999999999, 0.005],
+      "sizeM": [0.658, 0.05, 0.045],
+      "color": "#e7e5d9",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.560790273556231,
+          "width": 0.35999999999999993,
+          "top": -0.17777777777777778,
+          "bottom": 0.20000000000000004
+        },
+        {
+          "x": -0.10486322188449844,
+          "width": 0.7199999999999999,
+          "top": -0.39999999999999997,
+          "bottom": 0.4444444444444445
+        },
+        {
+          "x": 0.16869300911854104,
+          "width": 1.0,
+          "top": -0.4735446146886728,
+          "bottom": 0.5555555555555556
+        },
+        {
+          "x": 0.43920972644376904,
+          "width": 1.0,
+          "top": -0.6116756584560304,
+          "bottom": 0.5555555555555556
+        }
+      ]
+    },
+    {
+      "id": "right-boom",
+      "kind": "boom",
+      "massKg": 0.06,
+      "positionM": [-0.231, 0.17151349999999999, 0.005],
+      "sizeM": [0.658, 0.05, 0.045],
+      "color": "#e7e5d9",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.560790273556231,
+          "width": 0.35999999999999993,
+          "top": -0.17777777777777778,
+          "bottom": 0.20000000000000004
+        },
+        {
+          "x": -0.10486322188449844,
+          "width": 0.7199999999999999,
+          "top": -0.39999999999999997,
+          "bottom": 0.4444444444444445
+        },
+        {
+          "x": 0.16869300911854104,
+          "width": 1.0,
+          "top": -0.4735446146886728,
+          "bottom": 0.5555555555555556
+        },
+        {
+          "x": 0.43920972644376904,
+          "width": 1.0,
+          "top": -0.6116756584560304,
+          "bottom": 0.5555555555555556
+        }
+      ]
+    },
+    {
+      "id": "left-motor",
+      "kind": "motor",
+      "massKg": 0.045,
+      "positionM": [0.088, -0.17151349999999999, 0],
+      "sizeM": [0.027, 0.034, 0.034],
+      "color": "#253b3e"
+    },
+    {
+      "id": "right-motor",
+      "kind": "motor",
+      "massKg": 0.045,
+      "positionM": [0.088, 0.17151349999999999, 0],
+      "sizeM": [0.027, 0.034, 0.034],
+      "color": "#253b3e"
+    },
+    {
+      "id": "battery",
+      "kind": "battery",
+      "massKg": 0.19,
+      "positionM": [0.24768880168416973, 0.008124323684210524, 0.063],
+      "sizeM": [0.075, 0.034, 0.027],
+      "color": "#df743d"
+    },
+    {
+      "id": "servo-left-wing",
+      "kind": "equipment",
+      "massKg": 0.009,
+      "positionM": [-0.065, -0.29, -0.031],
+      "sizeM": [0.023, 0.0122, 0.029],
+      "color": "#2d3942",
+      "material": {
+        "name": "Positional micro servo",
+        "finish": "plastic"
+      },
+      "model": "SG90-class reference",
+      "servo": {
+        "speedSecondsPer60Deg": 0.1,
+        "travelDeg": 150,
+        "ratedVoltage": 4.8
+      }
+    },
+    {
+      "id": "servo-right-wing",
+      "kind": "equipment",
+      "massKg": 0.009,
+      "positionM": [-0.065, 0.29, -0.031],
+      "sizeM": [0.023, 0.0122, 0.029],
+      "color": "#2d3942",
+      "material": {
+        "name": "Positional micro servo",
+        "finish": "plastic"
+      },
+      "model": "SG90-class reference",
+      "servo": {
+        "speedSecondsPer60Deg": 0.1,
+        "travelDeg": 150,
+        "ratedVoltage": 4.8
+      }
+    },
+    {
+      "id": "servo-elevator",
+      "kind": "equipment",
+      "massKg": 0.009,
+      "positionM": [-0.46, -0.17151349999999999, -0.008],
+      "sizeM": [0.023, 0.0122, 0.029],
+      "color": "#2d3942",
+      "material": {
+        "name": "Positional micro servo",
+        "finish": "plastic"
+      },
+      "model": "SG90-class reference",
+      "servo": {
+        "speedSecondsPer60Deg": 0.1,
+        "travelDeg": 150,
+        "ratedVoltage": 4.8
+      }
+    },
+    {
+      "id": "left-nacelle",
+      "kind": "body",
+      "massKg": 0.014,
+      "positionM": [-0.012, -0.17151349999999999, 0.005],
+      "sizeM": [0.21, 0.06, 0.075],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Folded paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 0.6,
+          "top": -0.2855235995928736,
+          "bottom": 0.15
+        },
+        {
+          "x": -0.12,
+          "width": 1,
+          "top": -0.3226792983320932,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.25,
+          "width": 1,
+          "top": -0.3588572155255438,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.5,
+          "width": 0.82,
+          "top": -0.35,
+          "bottom": 0.35
+        }
+      ]
+    },
+    {
+      "id": "right-nacelle",
+      "kind": "body",
+      "massKg": 0.014,
+      "positionM": [-0.012, 0.17151349999999999, 0.005],
+      "sizeM": [0.21, 0.06, 0.075],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Folded paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 0.6,
+          "top": -0.2855235995928736,
+          "bottom": 0.15
+        },
+        {
+          "x": -0.12,
+          "width": 1,
+          "top": -0.3226792983320932,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.25,
+          "width": 1,
+          "top": -0.3588572155255438,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.5,
+          "width": 0.82,
+          "top": -0.35,
+          "bottom": 0.35
+        }
+      ]
+    },
+    {
+      "id": "left-propeller",
+      "kind": "equipment",
+      "massKg": 0.006,
+      "positionM": [0.10800000000000001, -0.17151349999999999, 0],
+      "sizeM": [0.01016, 0.028448, 0.2032],
+      "color": "#c8c6bc",
+      "material": {
+        "name": "Propeller assembly (estimated allocation)",
+        "finish": "plastic"
+      },
+      "model": "8-inch two-blade propeller"
+    },
+    {
+      "id": "right-propeller",
+      "kind": "equipment",
+      "massKg": 0.006,
+      "positionM": [0.10800000000000001, 0.17151349999999999, 0],
+      "sizeM": [0.01016, 0.028448, 0.2032],
+      "color": "#c8c6bc",
+      "material": {
+        "name": "Propeller assembly (estimated allocation)",
+        "finish": "plastic"
+      },
+      "model": "8-inch two-blade propeller"
+    },
+    {
+      "id": "horizontal-tail",
+      "kind": "tail",
+      "massKg": 0.013,
+      "positionM": [-0.5551681153783646, 0, -0.004],
+      "sizeM": [0.11535833333333333, 0.3771476666666666, 0.005],
+      "color": "#ebe9dd",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "left-fin",
+      "kind": "tail",
+      "massKg": 0.013,
+      "positionM": [
+        -0.5906802623105197, -0.17151349999999999, -0.07925055556168423
+      ],
+      "sizeM": [0.19922156272567337, 0.005, 0.1705336887279065],
+      "color": "#ebe9dd",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "right-fin",
+      "kind": "tail",
+      "massKg": 0.013,
+      "positionM": [
+        -0.5906802623105197, 0.17151349999999999, -0.07925055556168423
+      ],
+      "sizeM": [0.19922156272567337, 0.005, 0.1705336887279065],
+      "color": "#ebe9dd",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "left-wing",
+      "positionM": [0, -0.2715, -0.023],
+      "spanM": 0.543,
+      "chordM": 0.192,
+      "aspectRatio": 5.65,
+      "rollDeg": 0,
+      "incidenceDeg": 2,
+      "liftSlope": 4.6,
+      "zeroLiftDeg": -2,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": -0.025,
+      "control": {
+        "axis": "roll",
+        "gain": 1,
+        "maxDeg": 12,
+        "effectiveness": 0.55,
+        "responseSeconds": 0.06,
+        "linkage": {
+          "servoPartId": "servo-left-wing",
+          "servoTravelDeg": 45,
+          "servoArmM": 0.01,
+          "surfaceArmM": 0.015
+        }
+      },
+      "kind": "wing",
+      "foamWing": {
+        "rootChordM": 0.192,
+        "boardThicknessM": 0.005,
+        "foldHeightM": 0.021,
+        "hingeFraction": 0.765,
+        "controlSpan": [0.39, 0.998],
+        "tipStations": [
+          [0, 0, 1],
+          [0.985, 0, 1],
+          [1, 0.015, 0.995]
+        ]
+      }
+    },
+    {
+      "id": "right-wing",
+      "positionM": [0, 0.2715, -0.023],
+      "spanM": 0.543,
+      "chordM": 0.192,
+      "aspectRatio": 5.65,
+      "rollDeg": 0,
+      "incidenceDeg": 2,
+      "liftSlope": 4.6,
+      "zeroLiftDeg": -2,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": -0.025,
+      "control": {
+        "axis": "roll",
+        "gain": -1,
+        "maxDeg": 12,
+        "effectiveness": 0.55,
+        "responseSeconds": 0.06,
+        "linkage": {
+          "servoPartId": "servo-right-wing",
+          "servoTravelDeg": 45,
+          "servoArmM": 0.01,
+          "surfaceArmM": 0.015
+        }
+      },
+      "kind": "wing",
+      "foamWing": {
+        "rootChordM": 0.192,
+        "boardThicknessM": 0.005,
+        "foldHeightM": 0.021,
+        "hingeFraction": 0.765,
+        "controlSpan": [0.39, 0.998],
+        "tipStations": [
+          [0, 0, 1],
+          [0.985, 0, 1],
+          [1, 0.015, 0.995]
+        ]
+      }
+    },
+    {
+      "id": "elevator",
+      "kind": "horizontal-tail",
+      "positionM": [-0.5265840576891823, 0, -0.004],
+      "spanM": 0.3771476666666666,
+      "chordM": 0.11294658660717627,
+      "aspectRatio": 3.339168344930787,
+      "rollDeg": 0,
+      "incidenceDeg": 0,
+      "liftSlope": 3.5930824808780177,
+      "zeroLiftDeg": 0,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": 0,
+      "panel": {
+        "outline": [
+          [0.25307588788492147, -0.5000000000000001],
+          [0.25307588788492147, 0.5],
+          [-0.436759036219368, 0.4884386575373217],
+          [-0.7682770967302314, 0.4712088898866315],
+          [-0.7682770967302314, -0.4712088898866317],
+          [-0.436759036219368, -0.4884386575373219]
+        ],
+        "thicknessM": 0.005,
+        "controlHinge": [
+          [-0.436759036219368, -0.5],
+          [-0.436759036219368, 0.5]
+        ]
+      },
+      "control": {
+        "axis": "pitch",
+        "gain": -1,
+        "maxDeg": 12,
+        "effectiveness": 0.55,
+        "responseSeconds": 0.06,
+        "linkage": {
+          "servoPartId": "servo-elevator",
+          "servoTravelDeg": 45,
+          "servoArmM": 0.01,
+          "surfaceArmM": 0.015
+        }
+      }
+    },
+    {
+      "id": "left-fin",
+      "kind": "vertical-tail",
+      "positionM": [
+        -0.5649773104651009, -0.17151349999999999, -0.07925055556168423
+      ],
+      "spanM": 0.1705336887279065,
+      "chordM": 0.09863329205925872,
+      "aspectRatio": 1.7289668140190448,
+      "rollDeg": -90,
+      "incidenceDeg": 0,
+      "liftSlope": 2.5688115703422594,
+      "zeroLiftDeg": 0,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": 0,
+      "panel": {
+        "outline": [
+          [-0.35507979916007854, -0.4412650434234703],
+          [-0.801393808674542, -0.29919051155907295],
+          [-0.864575344505762, 0.5587349565765297],
+          [-0.21807388245434414, 0.5586139700359761],
+          [0.4906173675155225, -0.34366380003770736],
+          [1.1552453323300218, -0.4412650434234703]
+        ],
+        "thicknessM": 0.005
+      }
+    },
+    {
+      "id": "right-fin",
+      "kind": "vertical-tail",
+      "positionM": [
+        -0.5649773104651009, 0.17151349999999999, -0.07925055556168423
+      ],
+      "spanM": 0.1705336887279065,
+      "chordM": 0.09863329205925872,
+      "aspectRatio": 1.7289668140190448,
+      "rollDeg": -90,
+      "incidenceDeg": 0,
+      "liftSlope": 2.5688115703422594,
+      "zeroLiftDeg": 0,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": 0,
+      "panel": {
+        "outline": [
+          [-0.35507979916007854, -0.4412650434234703],
+          [-0.801393808674542, -0.29919051155907295],
+          [-0.864575344505762, 0.5587349565765297],
+          [-0.21807388245434414, 0.5586139700359761],
+          [0.4906173675155225, -0.34366380003770736],
+          [1.1552453323300218, -0.4412650434234703]
+        ],
+        "thicknessM": 0.005
+      }
+    }
+  ],
+  "motors": [
+    {
+      "id": "left",
+      "positionM": [0.1, -0.17151349999999999, 0],
+      "maxThrustN": 4.2,
+      "zeroThrustSpeedMps": 28,
+      "responseSeconds": 0.12,
+      "yawMix": 1,
+      "propDiameterM": 0.2032,
+      "performance": {
+        "referenceVoltage": 11.100000000000001,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0.0,
+            "currentA": 0.0
+          },
+          {
+            "command": 0.1,
+            "thrustN": 0.42,
+            "currentA": 0.213324
+          },
+          {
+            "command": 0.25,
+            "thrustN": 1.05,
+            "currentA": 0.814182
+          },
+          {
+            "command": 0.5,
+            "thrustN": 2.1,
+            "currentA": 2.261433
+          },
+          {
+            "command": 0.75,
+            "thrustN": 3.15,
+            "currentA": 4.120806
+          },
+          {
+            "command": 1,
+            "thrustN": 4.2,
+            "currentA": 6.313456
+          }
+        ]
+      },
+      "partId": "left-motor",
+      "propPartId": "left-propeller"
+    },
+    {
+      "id": "right",
+      "positionM": [0.1, 0.17151349999999999, 0],
+      "maxThrustN": 4.2,
+      "zeroThrustSpeedMps": 28,
+      "responseSeconds": 0.12,
+      "yawMix": -1,
+      "propDiameterM": 0.2032,
+      "performance": {
+        "referenceVoltage": 11.100000000000001,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0.0,
+            "currentA": 0.0
+          },
+          {
+            "command": 0.1,
+            "thrustN": 0.42,
+            "currentA": 0.213324
+          },
+          {
+            "command": 0.25,
+            "thrustN": 1.05,
+            "currentA": 0.814182
+          },
+          {
+            "command": 0.5,
+            "thrustN": 2.1,
+            "currentA": 2.261433
+          },
+          {
+            "command": 0.75,
+            "thrustN": 3.15,
+            "currentA": 4.120806
+          },
+          {
+            "command": 1,
+            "thrustN": 4.2,
+            "currentA": 6.313456
+          }
+        ]
+      },
+      "partId": "right-motor",
+      "propPartId": "right-propeller"
+    }
+  ],
+  "fuselageDragAreaM2": 0.006,
+  "angularDamping": [0.025, 0.04, 0.035],
+  "reference": {
+    "spanM": 1.086,
+    "areaM2": 0.208512,
+    "cgFromLeadingEdgeM": 0.051,
+    "leadingEdgeXM": 0.048
+  },
+  "contactPoints": [
+    {
+      "id": "contact-0",
+      "positionM": [0.327, 0, 0.11],
+      "spanLinked": false
+    },
+    {
+      "id": "contact-1",
+      "positionM": [-0.6, -0.17151349999999999, 0.025],
+      "spanLinked": false
+    },
+    {
+      "id": "contact-2",
+      "positionM": [-0.6, 0.17151349999999999, 0.025],
+      "spanLinked": false
+    },
+    {
+      "id": "contact-3",
+      "positionM": [0, -0.543, -0.0205],
+      "spanLinked": true
+    },
+    {
+      "id": "contact-4",
+      "positionM": [0, 0.543, -0.0205],
+      "spanLinked": true
+    }
+  ],
+  "battery": {
+    "partId": "battery",
+    "chemistry": "LiPo",
+    "cells": 3,
+    "capacityMah": 2200,
+    "resistanceOhm": 0.04,
+    "initialSoc": 0.95,
+    "avionicsCurrentA": 0.2,
+    "voltageCurve": [
+      {
+        "soc": 0,
+        "voltsPerCell": 3.3
+      },
+      {
+        "soc": 0.1,
+        "voltsPerCell": 3.65
+      },
+      {
+        "soc": 0.5,
+        "voltsPerCell": 3.8
+      },
+      {
+        "soc": 0.9,
+        "voltsPerCell": 4.1
+      },
+      {
+        "soc": 1,
+        "voltsPerCell": 4.2
+      }
+    ]
+  },
+  "credit": {
+    "name": "Flite Test",
+    "url": "https://www.flitetest.com/articles/ft-bronco-build"
+  }
+}

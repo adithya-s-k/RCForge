@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import trainer from "../aircraft/simple-trainer.json";
+import trainer from "./fixtures/generic-trainer.json";
 import { parseAircraft } from "../src/core/schema";
 import { surfacePolar, STANDARD_AIR_VISCOSITY } from "../src/core/aerodynamics";
 import { airDensity, airKinematicViscosity } from "../src/core/scenery";

@@ -1,4 +1,8 @@
 import { z } from "zod";
+import { VtolConfigSchema } from "./vtol-config";
+import { PilotResponseSchema } from "./pilot-response";
+import { AIRCRAFT_FORMAT_VERSION } from "./versions";
+export { AIRCRAFT_FORMAT_VERSION } from "./versions";
 const finite = z.number().finite();
 const vec = z.tuple([finite, finite, finite]);
 const positive = finite.positive();
@@ -39,8 +43,11 @@ const provenance = z
   .strict();
 export const AircraftSchema = z
   .object({
-    schemaVersion: z.literal(1),
-    vehicleType: z.enum(["fixed-wing", "multirotor"]).default("fixed-wing"),
+    schemaVersion: z.literal(AIRCRAFT_FORMAT_VERSION),
+    vehicleType: z
+      .enum(["fixed-wing", "multirotor", "vtol"])
+      .default("fixed-wing"),
+    vtol: VtolConfigSchema.optional(),
     multirotor: z
       .object({
         mode: z.enum(["angle", "rate"]),
@@ -54,6 +61,26 @@ export const AircraftSchema = z
     id: z.string().regex(/^[a-z0-9-]+$/),
     name: z.string().min(1),
     description: z.string(),
+    credit: z
+      .object({
+        name: z.string().min(1).max(120),
+        url: z
+          .string()
+          .url()
+          .refine((value) => /^https?:\/\//i.test(value), {
+            message: "Creator links must use HTTP or HTTPS",
+          }),
+      })
+      .strict()
+      .optional(),
+    pilotResponse: PilotResponseSchema.optional(),
+    fpv: z
+      .object({
+        partId: z.string().min(1),
+        fovDeg: finite.min(40).max(120).default(90),
+      })
+      .strict()
+      .optional(),
     provenance: z.record(z.string(), provenance),
     battery: z
       .object({
@@ -313,6 +340,12 @@ export const AircraftSchema = z
             kind: z.enum(["body", "wheel", "skid"]).default("body"),
             steering: z.boolean().default(false),
             wheelRadiusM: positive.max(0.3).default(0.032),
+            // Optional visual wire/strut anchor, in aircraft-datum coordinates.
+            strutAnchorM: vec.optional(),
+            wheelColor: z
+              .string()
+              .regex(/^#[0-9a-fA-F]{6}$/)
+              .optional(),
           })
           .strict(),
       )
@@ -320,6 +353,8 @@ export const AircraftSchema = z
       .max(128),
     reference: z
       .object({
+        // Authored operating point for airborne starts and default experiments.
+        trimSpeedMps: positive.max(100).optional(),
         spanM: positive,
         areaM2: positive,
         cgFromLeadingEdgeM: finite,
@@ -331,6 +366,16 @@ export const AircraftSchema = z
   .superRefine((a, ctx) => {
     const issue = (path: (string | number)[], message: string) =>
       ctx.addIssue({ code: "custom", path, message });
+    if (
+      a.fpv &&
+      !a.parts.some(
+        (p) => p.id === a.fpv!.partId && p.kind === "equipment" && !p.servo,
+      )
+    )
+      issue(
+        ["fpv", "partId"],
+        "FPV must reference an existing non-servo equipment mass component",
+      );
     if (a.battery) {
       if (
         !a.parts.some((p) => p.id === a.battery!.partId && p.kind === "battery")
@@ -517,6 +562,65 @@ export const AircraftSchema = z
           "Polar angles must be strictly increasing",
         );
     });
+    if (a.vehicleType === "vtol") {
+      const v = a.vtol;
+      if (!v || a.motors.length !== 3 || !a.surfaces.length || a.multirotor)
+        issue(
+          ["vtol"],
+          "VTOL needs three rotors, aerodynamic surfaces and tiltrotor settings",
+        );
+      if (v) {
+        const ids = [v.frontLeftMotorId, v.frontRightMotorId, v.rearMotorId];
+        const motors = ids.map((id) => a.motors.find((m) => m.id === id));
+        if (new Set(ids).size !== 3 || motors.some((m) => !m?.spin))
+          issue(
+            ["vtol"],
+            "Reference three distinct installed motors with spin directions",
+          );
+        const [left, right, rear] = motors;
+        if (
+          left &&
+          right &&
+          rear &&
+          (left.positionM[1] >= 0 ||
+            right.positionM[1] <= 0 ||
+            rear.positionM[0] >=
+              Math.min(left.positionM[0], right.positionM[0]) ||
+            left.spin === right.spin)
+        )
+          issue(
+            ["vtol"],
+            "Front motors must straddle the datum, counter-rotate, and sit ahead of the rear lift motor",
+          );
+        const servoIds = [
+          v.leftServoPartId,
+          v.rightServoPartId,
+          v.rearServoPartId,
+        ];
+        if (new Set(servoIds).size !== 3)
+          issue(
+            ["vtol"],
+            "Tricopter needs two front tilt servos and a separate rear yaw servo",
+          );
+        for (const id of servoIds) {
+          const servo = a.parts.find((p) => p.id === id)?.servo;
+          if (
+            !servo ||
+            servo.travelDeg < (id === v.rearServoPartId ? v.yawTiltDeg * 2 : 90)
+          )
+            issue(
+              ["vtol"],
+              "Front servos need 90 degrees; the rear servo must cover both yaw endpoints",
+            );
+          if (a.surfaces.some((s) => s.control?.linkage?.servoPartId === id))
+            issue(
+              ["vtol"],
+              "A tilt servo cannot also drive an aerodynamic surface",
+            );
+        }
+      }
+    } else if (a.vtol)
+      issue(["vtol"], "Tiltrotor settings require vehicleType vtol");
     if (a.vehicleType === "fixed-wing" && !a.surfaces.length)
       ctx.addIssue({
         code: "custom",

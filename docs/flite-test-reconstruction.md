@@ -1,10 +1,10 @@
 # Flite Test reference reconstruction
 
-Reference review: 2026-09-04. These presets are independent procedural reconstructions, not manufacturing CAD or flight-test calibrated digital twins. Images establish assembly topology; full-size drawings establish dimensions where measurable. Cut outlines are not automatically assembled dimensions: foam folds, overlap, dihedral and bevels must be interpreted.
+Reference review: 2026-09-05. These presets are independent procedural reconstructions, not manufacturing CAD or flight-test calibrated digital twins. Images establish assembly topology; full-size drawings establish dimensions where measurable. Cut outlines are not automatically assembled dimensions: foam folds, overlap, dihedral and bevels must be interpreted.
 
 ## Inspect and reproduce a preset
 
-In **Aircraft editor**, select FT Bronco, FT Tiny Trainer · Sport or FT-22 Raptor.
+In **Aircraft editor**, select FT Bronco · V-tail, FT Bronco · Conventional, FT Tiny Trainer · Sport or FT-22 Raptor.
 Use **Top** and **Side** for orthographic plan comparisons, and **Perspective** or
 drag to inspect the assembly. **Components** shows the selected part's installation
 envelope. Existing local builds keep their earlier definitions: export any custom
@@ -20,7 +20,7 @@ npm run replay -- results/ft-22-raptor-pitch-pulse/recording.json
 npm run physics:envelope -- ft-22-raptor
 ```
 
-The other IDs are `ft-bronco` and `ft-tiny-trainer`. For an external project, use
+The other IDs are `ft-bronco`, `ft-bronco-conventional` and `ft-tiny-trainer`. For an external project, use
 **Import JSON** with the relevant file from `aircraft/`, inspect it, then apply it.
 Unapplied imports are session drafts; applying retains the custom source and edited
 definition locally. **Export** produces the standalone JSON needed by the CLI.
@@ -29,11 +29,22 @@ Read the trim limitations below before interpreting a successful numerical run.
 ## Sources inspected
 
 - [FT Bronco build article and assembly images](https://www.flitetest.com/articles/ft-bronco-build)
-- [FT Bronco v1.0 full-size plan, five PDF pages](https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf): specifications and nose on sheet 1, booms on sheet 2, A-tail on sheet 3, wing on sheet 4.
+- [FT Bronco v1.0 full-size plan, five PDF pages](https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf): specifications and nose on sheet 1, booms on sheet 2, A-tail and conventional tails on sheet 3, wing on sheet 4.
 - [FT Tiny Trainer build article and assembly images](https://www.flitetest.com/articles/flite-test-tiny-trainer)
 - [Tiny Trainer two-sheet plan](https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-Mini%20TinyTrainer-plans.pdf): fuselage and polyhedral option on sheet 1; powered nose, tail and sport wing on sheet 2.
 
-The trainer preset selects the four-channel **sport wing**, not the three-channel polyhedral wing. The original Simple Trainer remains a separate generic RCForge design. Source images and PDF artwork are not bundled.
+The trainer preset selects the four-channel **sport wing**, not the three-channel polyhedral wing. The catalog’s Simple Trainer is the separate Vortex RC design; the old generic trainer is retained only as a numerical test fixture. Source images and PDF artwork are not bundled.
+
+## Bronco shared wing installation
+
+Both Bronco presets now seat the wing above the central fuselage and twin boom
+saddles, following the build photographs. The lower wing reference is raised
+23 mm; fuselage and pod roof stations meet its lower skin at the authored 2°
+incidence. Wing mass centers, wing servos and tip contacts move with it. Crossed
+retaining bands and dowels are drawn over the wing; their mass is already included
+in the structural allocations. Vertical registration is an assembly estimate,
+not a dimension printed on the flat plan. The total mass and longitudinal CG
+remain 830 g and 51 mm aft of the leading edge.
 
 ## Bronco A-tail
 
@@ -68,6 +79,42 @@ vertical registration and the cockpit paint are photo-guided estimates. The
 68 × 132 mm cross-section changes the cuboid inertia estimate. Curved roof
 paint and side panes follow the skin, with thin white mullions. This is a
 procedural reconstruction of the build's silhouette, not a scan or a CAD fit.
+
+## Bronco conventional tail
+
+`ft-bronco-conventional` uses the sheet-3 **H-tail / part 14** and two
+**vertical stabilizers / part 13**. The source build also shows an OV-10-style
+raised stabilizer; that third option is not this preset.
+
+| Feature               | Drawing interpretation                                            |
+| --------------------- | ----------------------------------------------------------------- |
+| Horizontal stabilizer | X = 868.88–1937.96 pt gives 377.15 mm span                        |
+| Chord and hinge       | Y = 456.76–783.76 pt gives 115.36 mm chord; hinge at 562.90 pt    |
+| Fin spacing           | Slot centers at X = 917.24 and 1889.60 pt give 343.03 mm          |
+| Fin assembly          | Rotate the root fold 17.74°; omit mounting tabs; 170.53 mm height |
+| Fin direction         | Long root fillet forward; upper panel sweeps aft                  |
+
+The traced stabilizer area is 0.04260 m²; each fin is 0.01682 m². Aerodynamic
+centers use area-weighted quarter-chords. Longitudinal registration to the boom
+remains photo-guided. Both fins are **fixed**: the drawing has no rudder hinges.
+The elevator has one 9 g servo, while yaw uses the twin motors’ differential
+thrust. A gliding conventional Bronco therefore has no powered yaw command;
+the fins still respond to sideslip. The V-tail retains its two mixed ruddervators.
+
+Estimated conventional tail masses are 13 g per fin and 13 g for the stabilizer,
+with three 9 g servos overall. This retains the shared 830 g reference mass; it
+is not a weighed conventional build. The battery is placed longitudinally for
+51 mm CG and approximately 8.1 mm to the right to balance the left-boom elevator
+servo. Tail lift slopes use `2π / (1 + 2 / (0.8 × AR))`; polars, efficiency,
+control effectiveness, component inertias and motor curves remain estimates.
+
+Default cruise and hand-release trim, lateral balance, control signs, fixed-fin
+behavior and model clearances have regression coverage. In the operating-point
+survey, the conventional version trims at 72/135 points and the V-tail at 81/135.
+Both fail at 6 m/s and at the power-limited 22 m/s point; the heavier conventional
+case also fails at 9 m/s with its authored elevator travel. These limits are
+reported rather than hidden by changing the aircraft’s throws. The survey uses
+analytical coefficients and is not flight validation.
 
 ## Tiny Trainer Sport
 

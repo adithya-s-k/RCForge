@@ -2406,3 +2406,23 @@ body {
   cursor: pointer;
   color: var(--ui-muted);
 }
+
+.aircraft-credit {
+  font-size: 11px;
+  color: var(--ui-muted);
+  margin: 7px 0 0;
+  letter-spacing: normal;
+}
+.aircraft-credit:empty {
+  display: none;
+}
+.aircraft-credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--ui-border-strong);
+  text-underline-offset: 3px;
+}
+.aircraft-credit a:hover,
+.aircraft-credit a:focus-visible {
+  color: var(--ui-text);
+}

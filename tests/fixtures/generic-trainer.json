@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "simple-trainer",
-  "name": "Simple Trainer",
+  "name": "Generic Trainer",
   "description": "Original high-wing single-motor reference aircraft for testing the component API.",
   "provenance": {
     "design": {

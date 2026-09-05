@@ -255,6 +255,7 @@ export class ControllerPage {
     for (const id of ["bindings", "mapping-tools", "mapping-help"])
       $(id).hidden = type === "keyboard";
     $("keyboard-guide").hidden = type !== "keyboard";
+    $("keyboard-aircraft-note").hidden = type !== "keyboard";
     document.querySelector<HTMLElement>(".calibration-card")!.hidden =
       type === "keyboard";
     document.querySelector<HTMLElement>(".action-card")!.hidden =

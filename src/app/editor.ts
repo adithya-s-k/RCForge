@@ -1,4 +1,7 @@
+import type { Vec3 } from "../core/math";
+import { renderVtolEditor } from "./vtol-editor";
 import { powertrain } from "../core/powertrain";
+import { aircraftCredit } from "./aircraft-credit";
 import { findTrim } from "../core/trim";
 import { $, escape } from "./dom";
 import {
@@ -9,8 +12,13 @@ import {
 import { setTotalMass, setLongitudinalCG } from "../core/editor";
 import { parseAircraft, type Aircraft } from "../core/schema";
 import { ZodError } from "zod";
+import { SurfaceMixer } from "./surface-mixer";
 import { ComponentWorkshop } from "./component-workshop";
 import { moveComponent } from "../core/components";
+import {
+  withCameraPlacement,
+  type CameraPlacement,
+} from "../core/camera-placement";
 function numericValue(field: HTMLInputElement) {
   const value = Number(field.value);
   if (!field.value.trim() || !Number.isFinite(value))
@@ -22,8 +30,11 @@ function numericValue(field: HTMLInputElement) {
   return value;
 }
 export class AircraftEditor {
+  onPlaceCamera?: () => void;
+  onPlaceComponent?: (partId: string) => void;
   draft: Aircraft;
   private workshop: ComponentWorkshop;
+  private mixer: SurfaceMixer;
   private pending = new Map<string, string>();
   private editError: unknown = null;
   private errors = new Map<string, string>();
@@ -95,6 +106,31 @@ export class AircraftEditor {
       if (this.editError) throw this.editError;
     }
   }
+  private registerNumber(
+    id: string,
+    edit: (out: Aircraft, value: number) => void,
+  ) {
+    const field = $<HTMLInputElement>(id);
+    field.oninput = () => this.track(id, field.value);
+    field.onchange = () => {
+      const raw = field.value;
+      try {
+        const out = structuredClone(this.draft);
+        edit(out, numericValue(field));
+        out.provenance.componentEdits = {
+          status: "estimated",
+          note: "User-edited component specifications. Mass, CG, inertia, battery and actuation recomputed. Edited values are not manufacturer measurements.",
+        };
+        this.draft = parseAircraft(out);
+        this.pending.delete(id);
+        this.errors.delete(id);
+        this.update();
+        this.changed(this.draft);
+      } catch (e) {
+        this.fail(id, raw, e);
+      }
+    };
+  }
   constructor(
     a: Aircraft,
     private changed: (a: Aircraft) => void,
@@ -104,28 +140,7 @@ export class AircraftEditor {
     this.draft = structuredClone(a);
     this.workshop = new ComponentWorkshop(
       () => this.draft,
-      (id, edit) => {
-        const field = $<HTMLInputElement>(id);
-        field.oninput = () => this.track(id, field.value);
-        field.onchange = () => {
-          const raw = field.value;
-          try {
-            const out = structuredClone(this.draft);
-            edit(out, numericValue(field));
-            out.provenance.componentEdits = {
-              status: "estimated",
-              note: "User-edited component specifications. Mass, CG, inertia, battery and actuation recomputed. Edited values are not manufacturer measurements.",
-            };
-            this.draft = parseAircraft(out);
-            this.pending.delete(id);
-            this.errors.delete(id);
-            this.update();
-            this.changed(this.draft);
-          } catch (e) {
-            this.fail(id, raw, e);
-          }
-        };
-      },
+      (id, edit) => this.registerNumber(id, edit),
       () => this.commitPending(),
       (out) => {
         this.draft = out;
@@ -134,6 +149,19 @@ export class AircraftEditor {
       },
       this.notify,
       selected,
+      () => this.onPlaceCamera?.(),
+      (id) => this.onPlaceComponent?.(id),
+    );
+    this.mixer = new SurfaceMixer(
+      () => this.draft,
+      (id, edit) => this.registerNumber(id, edit),
+      () => this.commitPending(),
+      (out) => {
+        this.draft = parseAircraft(out);
+        this.update();
+        this.changed(this.draft);
+      },
+      this.notify,
     );
     const action = (id: string, fn: (value: number) => Aircraft) => {
       $(id).oninput = () => this.track(id, $<HTMLInputElement>(id).value);
@@ -210,21 +238,78 @@ export class AircraftEditor {
     this.update();
     this.changed(this.draft);
   }
+  editFpv() {
+    $("editor-components-tab").click();
+    this.workshop.selectFpv();
+  }
+  placeComponent(id: string, position: Vec3) {
+    this.commitPending();
+    const out = structuredClone(this.draft);
+    position.forEach((value, axis) => moveComponent(out, id, axis, value));
+    out.provenance.componentPlacement = {
+      status: "estimated",
+      note: "User-adjusted installation positions. CG and inertia are recalculated from component masses; physical installation is not measured.",
+    };
+    this.draft = parseAircraft(out);
+    this.update();
+    this.changed(this.draft);
+  }
+  placeCamera(pose: CameraPlacement) {
+    this.commitPending();
+    this.draft = withCameraPlacement(this.draft, pose);
+    this.update();
+    this.changed(this.draft);
+  }
+  setPilotResponse(settings: NonNullable<Aircraft["pilotResponse"]>) {
+    this.commitPending();
+    this.draft = parseAircraft({
+      ...this.draft,
+      pilotResponse: structuredClone(settings),
+    });
+    this.update();
+    this.changed(this.draft);
+  }
   update() {
     const a = this.draft,
       p = massProperties(a),
       cg = a.reference.leadingEdgeXM - p.cg[0];
     $("editor-model-name").textContent = a.name;
+    $("editor-credit").innerHTML = aircraftCredit(a);
     $("component-summary").innerHTML =
       `<button id="open-components" class="wide">Edit components →</button><small class="muted">${a.battery ? `${a.battery.cells}S · ${a.battery.capacityMah} mAh · ` : ""}${a.parts.length} installed parts</small>`;
     $("open-components").onclick = () => $("editor-components-tab").click();
     $("editor-component-status").textContent =
       `${(p.mass * 1000).toFixed(0)} g · ${a.parts.length} parts`;
     this.workshop.render();
+    this.mixer.render();
+    renderVtolEditor(
+      a,
+      (id, edit) => this.registerNumber(id, edit),
+      (edit) => {
+        try {
+          this.commitPending();
+          const out = structuredClone(this.draft);
+          edit(out);
+          out.provenance.vtolTuning = {
+            status: "estimated",
+            note: "User-edited simulation assistance or calculated cruise trim; not hardware tuning.",
+          };
+          this.draft = parseAircraft(out);
+          this.update();
+          this.changed(this.draft);
+        } catch (e) {
+          this.notify(e instanceof Error ? e.message : "Check VTOL settings.");
+        }
+      },
+    );
     const quad = a.vehicleType === "multirotor";
-    $("mass-scope").textContent = quad
-      ? "Includes all components and battery."
-      : "Ground starts add removable gear to this mass.";
+    $("mass-scope").textContent = a.vtol
+      ? "Includes installed tilt servos, brackets, electronics and skids."
+      : quad
+        ? "Includes all components and battery."
+        : a.contactPoints.some((p) => p.kind === "wheel")
+          ? "Includes installed landing gear and battery."
+          : "Ground starts add removable gear to this mass.";
     $("mass-evidence").textContent = quad
       ? `Component total: ${(p.mass * 1000).toFixed(0)} g. Each listed component is counted once. Rendered detail adds no hidden mass; replace estimates with measured values.`
       : `Component total: ${(p.mass * 1000).toFixed(0)} g. Replace estimated component weights with measured values for your build.`;

@@ -4,16 +4,16 @@
   "entries": [
     {
       "id": "orange-3s-1000-30c",
-      "name": "Orange 3S \u00b7 1000 mAh",
+      "name": "Orange 3S · 1000 mAh",
       "type": "battery",
-      "description": "1000 mAh \u00b7 11.1 V nominal \u00b7 85 g \u00b7 XT60",
+      "description": "1000 mAh · 11.1 V nominal · 85 g · XT60",
       "part": {
         "kind": "battery",
         "massKg": 0.085,
         "sizeM": [0.075, 0.034, 0.017],
         "color": "#252729",
         "manufacturer": "Orange",
-        "model": "Orange 3S \u00b7 1000 mAh",
+        "model": "Orange 3S · 1000 mAh",
         "material": {
           "name": "plastic",
           "finish": "plastic"
@@ -59,16 +59,16 @@
     },
     {
       "id": "orange-3s-1500-40c",
-      "name": "Orange 3S \u00b7 1500 mAh",
+      "name": "Orange 3S · 1500 mAh",
       "type": "battery",
-      "description": "1500 mAh \u00b7 11.1 V nominal \u00b7 120 g \u00b7 XT60",
+      "description": "1500 mAh · 11.1 V nominal · 120 g · XT60",
       "part": {
         "kind": "battery",
         "massKg": 0.12,
         "sizeM": [0.074, 0.034, 0.024],
         "color": "#252729",
         "manufacturer": "Orange",
-        "model": "Orange 3S \u00b7 1500 mAh",
+        "model": "Orange 3S · 1500 mAh",
         "material": {
           "name": "plastic",
           "finish": "plastic"
@@ -114,16 +114,16 @@
     },
     {
       "id": "orange-3s-3300-35c",
-      "name": "Orange 3S \u00b7 3300 mAh",
+      "name": "Orange 3S · 3300 mAh",
       "type": "battery",
-      "description": "3300 mAh \u00b7 11.1 V nominal \u00b7 260 g \u00b7 XT60",
+      "description": "3300 mAh · 11.1 V nominal · 260 g · XT60",
       "part": {
         "kind": "battery",
         "massKg": 0.26,
         "sizeM": [0.134, 0.043, 0.02],
         "color": "#252729",
         "manufacturer": "Orange",
-        "model": "Orange 3S \u00b7 3300 mAh",
+        "model": "Orange 3S · 3300 mAh",
         "material": {
           "name": "plastic",
           "finish": "plastic"
@@ -171,7 +171,7 @@
       "id": "towerpro-sg90-digital",
       "name": "TowerPro SG90 Digital",
       "type": "servo",
-      "description": "9 g \u00b7 0.10 s / 60\u00b0 at 4.8 V",
+      "description": "9 g · 0.10 s / 60° at 4.8 V",
       "part": {
         "kind": "equipment",
         "massKg": 0.009,
@@ -196,17 +196,17 @@
           "url": "https://towerpro.com.tw/product/sg90-7/"
         },
         {
-          "title": "Robu TowerPro range \u2014 check exact variant",
+          "title": "Robu TowerPro range — check exact variant",
           "url": "https://robu.in/product-category/dc-motors/motors/servo-motors/towerpro-servo-motor/"
         }
       ],
-      "evidence": "Manufacturer mass, case dimensions, no-load speed and stall torque at 4.8 V. 150\u00b0 positional range used; verify your exact unit. Robu variants and clones may differ. Speed and linkage affect simulation; torque is recorded only, with no hinge-load, BEC, thermal or servo-current model."
+      "evidence": "Manufacturer mass, case dimensions, no-load speed and stall torque at 4.8 V. 150° positional range used; verify your exact unit. Robu variants and clones may differ. Speed and linkage affect simulation; torque is recorded only, with no hinge-load, BEC, thermal or servo-current model."
     },
     {
       "id": "towerpro-mg90s",
       "name": "TowerPro MG90S",
       "type": "servo",
-      "description": "13.4 g \u00b7 0.10 s / 60\u00b0 at 4.8 V",
+      "description": "13.4 g · 0.10 s / 60° at 4.8 V",
       "part": {
         "kind": "equipment",
         "massKg": 0.0134,
@@ -231,17 +231,17 @@
           "url": "https://towerpro.com.tw/product/mg90s-3/"
         },
         {
-          "title": "Robu TowerPro range \u2014 check exact variant",
+          "title": "Robu TowerPro range — check exact variant",
           "url": "https://robu.in/product-category/dc-motors/motors/servo-motors/towerpro-servo-motor/"
         }
       ],
-      "evidence": "Manufacturer mass, case dimensions, no-load speed and stall torque at 4.8 V. 150\u00b0 positional range used; verify your exact unit. Robu variants and clones may differ. Speed and linkage affect simulation; torque is recorded only, with no hinge-load, BEC, thermal or servo-current model."
+      "evidence": "Manufacturer mass, case dimensions, no-load speed and stall torque at 4.8 V. 150° positional range used; verify your exact unit. Robu variants and clones may differ. Speed and linkage affect simulation; torque is recorded only, with no hinge-load, BEC, thermal or servo-current model."
     },
     {
       "id": "emax-blheli-12a",
       "name": "EMAX BLHeli 12A ESC",
       "type": "equipment",
-      "description": "11 g including wires \u00b7 2\u20134S",
+      "description": "11 g including wires · 2–4S",
       "part": {
         "kind": "equipment",
         "massKg": 0.011,
@@ -266,7 +266,7 @@
       "id": "emax-blheli-20a",
       "name": "EMAX BLHeli 20A ESC",
       "type": "equipment",
-      "description": "28 g including wires \u00b7 2\u20134S",
+      "description": "28 g including wires · 2–4S",
       "part": {
         "kind": "equipment",
         "massKg": 0.028,
@@ -291,7 +291,7 @@
       "id": "emax-mt2213-1045-3s",
       "name": "EMAX MT2213 935KV + 1045",
       "type": "motor",
-      "description": "53 g motor \u00b7 10 \u00d7 4.5 in prop \u00b7 3S reference curve",
+      "description": "53 g motor · 10 × 4.5 in prop · 3S reference curve",
       "part": {
         "kind": "motor",
         "massKg": 0.053,
@@ -395,12 +395,77 @@
           "url": "https://emaxmodel.com/collections/mt-series/products/emax-mt2213-935kv-multicopter-brushless-motor"
         },
         {
-          "title": "Robu motor datasheet \u2014 older variant, specifications differ",
+          "title": "Robu motor datasheet — older variant, specifications differ",
           "url": "https://robu.in/wp-content/uploads/2017/04/EMAX-MT2213-935KV-BLDC-Motor-ROBU.IN_.pdf"
         }
       ],
       "evidence": "Motor mass and dimensions and 11.1 V / 1045 thrust-current-RPM samples from EMAX. Command is estimated RPM/max RPM, not measured PWM. Propeller mass, response time, torque ratio and air density are estimated. Robu datasheet describes an older 920KV variant; do not treat its maximum-thrust headline as this curve.",
       "shaftAxis": "z"
+    },
+    {
+      "id": "rds3115mg-180",
+      "name": "RDS3115MG · 180° tilt servo",
+      "type": "servo",
+      "description": "60 g · 0.14 s / 60° at 6 V · 180° travel",
+      "part": {
+        "kind": "equipment",
+        "massKg": 0.06,
+        "sizeM": [0.04, 0.02, 0.0405],
+        "color": "#343434",
+        "model": "RDS3115MG",
+        "material": {
+          "name": "metal gear servo",
+          "finish": "metal"
+        },
+        "servo": {
+          "speedSecondsPer60Deg": 0.14,
+          "travelDeg": 180,
+          "ratedVoltage": 6,
+          "stallTorqueNm": 1.4709975
+        }
+      },
+      "sources": [
+        {
+          "title": "Robocraze RDS3115MG specifications",
+          "url": "https://robocraze.com/products/rds3115mg-15kg-large-torque-180-degree"
+        }
+      ],
+      "evidence": "Retailer: 60 g, 40 × 20 × 40.5 mm, 180°, 0.14 s/60° at 6 V (0.16 at 4.8 V), 4.8–7.2 V supply. 15 kg·cm headline converted to 1.471 N·m. No loaded speed, current, backlash or linkage measurements; mount and BEC mass are separate estimates. Not bench verified."
+    },
+    {
+      "id": "towerpro-mg996r",
+      "name": "TowerPro MG996R · rear yaw servo",
+      "type": "servo",
+      "description": "55 g · 0.15 s / 60° at 6 V · 159° manufacturer travel",
+      "part": {
+        "kind": "equipment",
+        "massKg": 0.055,
+        "sizeM": [0.0407, 0.0197, 0.0429],
+        "color": "#242629",
+        "manufacturer": "TowerPro",
+        "model": "MG996R",
+        "material": {
+          "name": "metal gear servo",
+          "finish": "plastic"
+        },
+        "servo": {
+          "speedSecondsPer60Deg": 0.15,
+          "travelDeg": 159,
+          "ratedVoltage": 6,
+          "stallTorqueNm": 1.0787315
+        }
+      },
+      "sources": [
+        {
+          "title": "TowerPro MG996R manufacturer specifications",
+          "url": "https://towerpro.com.tw/product/mg996r/"
+        },
+        {
+          "title": "Robu MG996R product listing (variant specifications differ)",
+          "url": "https://robu.in/product/towerpro-mg996r-digital-high-torque-servo-motor/"
+        }
+      ],
+      "evidence": "Manufacturer main specifications: 55 g, 40.7 × 19.7 × 42.9 mm, 0.15 s/60° at 6 V, 11 kg·cm stall torque. Manufacturer reply lists 159° travel; retailer 180° is not substituted. An older table on the manufacturer page lists 0.14 s; this entry uses the current main specification. Photo suggests this servo for rear yaw; identification and installed performance remain unverified. Speed is a no-load reference; servo load, backlash and dynamic current are not modeled."
     }
   ]
 }

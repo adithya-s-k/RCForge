@@ -27,6 +27,7 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run docs:check
+      - run: npm run references:check
       - run: npm run format:check
       - run: npm run physics:validate
       - run: npm run physics:envelope

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "id": "ft-bronco",
-  "name": "FT Bronco",
-  "description": "Twin-motor foamboard FT Bronco with inverted-V (A-tail) ruddervators, matching the supplied build reference. Estimated flight model.",
+  "name": "FT Bronco · V-tail",
+  "description": "Flite Test twin-motor foamboard Bronco with the inverted-V / A-tail. Two ruddervators mix pitch and yaw; raised, band-retained wing over the cabin and booms. Reconstructed from plans and assembly photos; flight coefficients are estimates.",
   "provenance": {
     "dimensions": {
       "status": "sourced",
@@ -70,6 +70,11 @@
     "propellerMass": {
       "status": "estimated",
       "note": "Separate 6 g mass entry per propeller, reallocated from the existing estimated left-nacelle, right-nacelle structural allocation. Published dry mass, existing motor masses, total aircraft mass and longitudinal CG are retained; battery station is rebalanced. Prop dimensions/inertia and the allocation are estimates, not weighed components. Propeller center follows the reconstructed rotor disk. This allows replacement of both motor and prop masses with a matching performance curve without adding the old prop mass again."
+    },
+    "wingMount": {
+      "status": "estimated",
+      "url": "https://www.flitetest.com/articles/ft-bronco-build",
+      "note": "Assembly correction from the build photographs: the wing underside sits above the fuselage and boom saddles, not through the cockpit. Wing reference plane raised 23 mm; mass centers, wing servos and tip contacts follow it. Fuselage/boom/pod upper stations meet the 2-degree-incidence lower wing skin; bands and dowels add no separate mass. Vertical registration and installed part masses remain estimates. Longitudinal CG and 830 g reference mass are retained."
     }
   },
   "parts": [
@@ -77,7 +82,7 @@
       "id": "left-wing",
       "kind": "wing",
       "massKg": 0.12,
-      "positionM": [-0.048, -0.2715, 0],
+      "positionM": [-0.048, -0.2715, -0.031],
       "sizeM": [0.192, 0.543, 0.022],
       "color": "#ebe9dd",
       "material": {
@@ -89,7 +94,7 @@
       "id": "right-wing",
       "kind": "wing",
       "massKg": 0.12,
-      "positionM": [-0.048, 0.2715, 0],
+      "positionM": [-0.048, 0.2715, -0.031],
       "sizeM": [0.192, 0.543, 0.022],
       "color": "#ebe9dd",
       "material": {
@@ -112,25 +117,25 @@
         {
           "x": -0.49999999999999994,
           "width": 0.7352941176470588,
-          "top": -0.25,
+          "top": -0.4644659671287142,
           "bottom": 0.07575757575757577
         },
         {
           "x": -0.39932885906040266,
           "width": 0.926470588235294,
-          "top": -0.3409090909090909,
+          "top": -0.47637077490999175,
           "bottom": 0.2878787878787879
         },
         {
           "x": -0.2315436241610738,
           "width": 1.0,
-          "top": -0.43181818181818177,
+          "top": -0.4962121212121212,
           "bottom": 0.3409090909090909
         },
         {
           "x": -0.12416107382550334,
           "width": 1.0,
-          "top": -0.49242424242424243,
+          "top": -0.5089105828454841,
           "bottom": 0.3409090909090909
         },
         {
@@ -291,13 +296,13 @@
         {
           "x": 0.16869300911854104,
           "width": 1.0,
-          "top": -0.5111111111111111,
+          "top": -0.4735446146886728,
           "bottom": 0.5555555555555556
         },
         {
           "x": 0.43920972644376904,
           "width": 1.0,
-          "top": -0.5111111111111111,
+          "top": -0.6116756584560304,
           "bottom": 0.5555555555555556
         }
       ]
@@ -329,13 +334,13 @@
         {
           "x": 0.16869300911854104,
           "width": 1.0,
-          "top": -0.5111111111111111,
+          "top": -0.4735446146886728,
           "bottom": 0.5555555555555556
         },
         {
           "x": 0.43920972644376904,
           "width": 1.0,
-          "top": -0.5111111111111111,
+          "top": -0.6116756584560304,
           "bottom": 0.5555555555555556
         }
       ]
@@ -380,7 +385,7 @@
       "id": "servo-left-wing",
       "kind": "equipment",
       "massKg": 0.009,
-      "positionM": [-0.065, -0.29, -0.008],
+      "positionM": [-0.065, -0.29, -0.031],
       "sizeM": [0.023, 0.0122, 0.029],
       "color": "#2d3942",
       "material": {
@@ -398,7 +403,7 @@
       "id": "servo-right-wing",
       "kind": "equipment",
       "massKg": 0.009,
-      "positionM": [-0.065, 0.29, -0.008],
+      "positionM": [-0.065, 0.29, -0.031],
       "sizeM": [0.023, 0.0122, 0.029],
       "color": "#2d3942",
       "material": {
@@ -463,19 +468,19 @@
         {
           "x": -0.5,
           "width": 0.6,
-          "top": -0.17,
+          "top": -0.2855235995928736,
           "bottom": 0.15
         },
         {
           "x": -0.12,
           "width": 1,
-          "top": -0.5,
+          "top": -0.3226792983320932,
           "bottom": 0.5
         },
         {
           "x": 0.25,
           "width": 1,
-          "top": -0.5,
+          "top": -0.3588572155255438,
           "bottom": 0.5
         },
         {
@@ -501,19 +506,19 @@
         {
           "x": -0.5,
           "width": 0.6,
-          "top": -0.17,
+          "top": -0.2855235995928736,
           "bottom": 0.15
         },
         {
           "x": -0.12,
           "width": 1,
-          "top": -0.5,
+          "top": -0.3226792983320932,
           "bottom": 0.5
         },
         {
           "x": 0.25,
           "width": 1,
-          "top": -0.5,
+          "top": -0.3588572155255438,
           "bottom": 0.5
         },
         {
@@ -554,7 +559,7 @@
   "surfaces": [
     {
       "id": "left-wing",
-      "positionM": [0, -0.2715, 0],
+      "positionM": [0, -0.2715, -0.023],
       "spanM": 0.543,
       "chordM": 0.192,
       "aspectRatio": 5.65,
@@ -595,7 +600,7 @@
     },
     {
       "id": "right-wing",
-      "positionM": [0, 0.2715, 0],
+      "positionM": [0, 0.2715, -0.023],
       "spanM": 0.543,
       "chordM": 0.192,
       "aspectRatio": 5.65,
@@ -849,12 +854,12 @@
     },
     {
       "id": "contact-3",
-      "positionM": [0, -0.543, 0.012],
+      "positionM": [0, -0.543, -0.0205],
       "spanLinked": true
     },
     {
       "id": "contact-4",
-      "positionM": [0, 0.543, 0.012],
+      "positionM": [0, 0.543, -0.0205],
       "spanLinked": true
     }
   ],
@@ -888,5 +893,9 @@
         "voltsPerCell": 4.2
       }
     ]
+  },
+  "credit": {
+    "name": "Flite Test",
+    "url": "https://www.flitetest.com/articles/ft-bronco-build"
   }
 }

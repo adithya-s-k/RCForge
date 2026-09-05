@@ -2,8 +2,10 @@ import type { Aircraft } from "../core/schema";
 import type { Controls } from "../core/simulation";
 
 /** Show only commands wired to a physical surface or motor in this definition. */
-export function aircraftChannels(a: Aircraft): (keyof Controls)[] {
-  if (a.vehicleType === "multirotor")
+export function aircraftChannels(
+  a: Aircraft,
+): Exclude<keyof Controls, "vtol">[] {
+  if (a.vehicleType === "multirotor" || a.vtol)
     return ["pitch", "roll", "yaw", "throttle"];
   const axes = (["pitch", "roll", "yaw"] as const).filter(
     (axis) =>
@@ -17,4 +19,12 @@ export function aircraftChannels(a: Aircraft): (keyof Controls)[] {
       (axis === "yaw" && a.motors.some((m) => m.yawMix !== 0)),
   );
   return a.motors.length ? [...axes, "throttle"] : axes;
+}
+
+/** Rudder-only trainers steer with left/right keys; other devices retain their mappings. */
+export function keyboardTurnAxis(a: Aircraft): "roll" | "yaw" {
+  const channels = aircraftChannels(a);
+  return !channels.includes("roll") && channels.includes("yaw")
+    ? "yaw"
+    : "roll";
 }

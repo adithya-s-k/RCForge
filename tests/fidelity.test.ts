@@ -1,6 +1,6 @@
 import { it, expect } from "vitest";
 import quad from "../aircraft/quad-x-6s.json";
-import trainer from "../aircraft/simple-trainer.json";
+import trainer from "./fixtures/generic-trainer.json";
 import { parseAircraft } from "../src/core/schema";
 import { powertrain } from "../src/core/powertrain";
 import { massProperties } from "../src/core/aircraft";

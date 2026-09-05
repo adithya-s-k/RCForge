@@ -1,3 +1,4 @@
+import { collectFieldObstacles } from "./field-collisions";
 import { sceneries, type Scenery } from "../core/scenery";
 import { addFieldDetails } from "./field-details";
 import * as T from "three";
@@ -88,12 +89,14 @@ export function createField(scene: T.Scene, profile: Scenery = sceneries.club) {
   for (let x = -16; x <= 12; x += 4) {
     const p = new T.Mesh(new T.CylinderGeometry(0.025, 0.025, 0.8, 8), metal);
     p.position.set(x, 0.4, 11);
+    p.userData.collision = "solid";
     field.add(p);
   }
   for (const y of [0.3, 0.7]) {
     const rail = new T.Mesh(new T.CylinderGeometry(0.012, 0.012, 28, 8), metal);
     rail.rotation.z = Math.PI / 2;
     rail.position.set(-2, y, 11);
+    rail.userData.collision = "solid";
     field.add(rail);
   }
   const table = new T.Mesh(
@@ -102,15 +105,18 @@ export function createField(scene: T.Scene, profile: Scenery = sceneries.club) {
   );
   table.position.set(-12, 0.82, 16);
   table.castShadow = true;
+  table.userData.collision = "solid";
   field.add(table);
   for (const dx of [-0.65, 0.65])
     for (const dz of [-0.2, 0.2]) {
       const leg = new T.Mesh(new T.BoxGeometry(0.04, 0.8, 0.04), metal);
       leg.position.set(-12 + dx, 0.4, 16 + dz);
+      leg.userData.collision = "solid";
       field.add(leg);
     }
   const pole = new T.Mesh(new T.CylinderGeometry(0.025, 0.035, 4, 12), metal);
   pole.position.set(12, 2, 15);
+  pole.userData.collision = "solid";
   field.add(pole);
   const sock = new T.Group();
   sock.position.set(12, 4, 15);
@@ -138,6 +144,7 @@ export function createField(scene: T.Scene, profile: Scenery = sceneries.club) {
   scene.add(sky);
   return {
     field,
+    obstacles: collectFieldObstacles(field),
     sky,
     sock,
     update: (camera: T.Camera) => {

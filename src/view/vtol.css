@@ -1,0 +1,91 @@
+.vtol-flight-panel {
+  border-top: 1px solid var(--border, #343434);
+  margin-top: 14px;
+  padding-top: 12px;
+}
+.vtol-flight-panel > label {
+  display: block;
+  margin-top: 12px;
+}
+.vtol-tilt-meter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+.vtol-tilt-meter meter {
+  min-width: 30px;
+  flex: 1;
+  height: 6px;
+}
+.vtol-tilt-meter output {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.vtol-editor-profiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-block: 16px;
+}
+.vtol-editor-profiles fieldset {
+  min-width: 0;
+  border: 1px solid #343434;
+  padding: 16px;
+  border-radius: 5px;
+}
+.vtol-editor-profiles legend {
+  padding-inline: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+#vtol-config {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+#vtol-config .response-fields {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-block: 14px;
+}
+#vtol-config label {
+  min-width: 0;
+}
+#vtol-config input,
+#vtol-config select {
+  width: 100%;
+  min-width: 0;
+}
+#vtol-config input[type="checkbox"] {
+  width: auto;
+}
+.vtol-servo-summary {
+  display: grid;
+  gap: 8px;
+  font:
+    11px ui-monospace,
+    monospace;
+  color: #aaa;
+  margin-block: 16px;
+}
+.vtol-bench {
+  border-bottom: 1px solid #343434;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+}
+#quick-vtol {
+  white-space: nowrap;
+  border-color: #686868;
+}
+@media (max-width: 700px) {
+  .vtol-editor-profiles {
+    grid-template-columns: 1fr;
+  }
+  #vtol-config .response-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.editor-page[data-workspace="components"] #vtol-config,
+.editor-page[data-workspace="controls"] #vtol-config {
+  display: none;
+}

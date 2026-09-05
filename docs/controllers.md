@@ -1,30 +1,82 @@
-# Controller setup and verification
+# Set up your controls
 
-RCForge reads keyboard input, browser Gamepad API axes, and the RCForge Arduino USB serial bridge. That API can expose gamepads, joysticks, and RC simulator adapters recognized by the operating system. Device names and mappings vary; a name is not proof of compatibility.
+Start with a keyboard, or connect a gamepad, flight stick or RC transmitter. Open **Controllers** and select the input type you want to use.
+
+| Your input               | Start here                                                        |
+| ------------------------ | ----------------------------------------------------------------- |
+| Keyboard                 | [Learn the keys](#keyboard) — no connection or calibration needed |
+| Gamepad or joystick      | [Connect and calibrate](#gamepad-or-joystick)                     |
+| FlySky or other RC radio | [Choose a connection](radio-setup.md) before mapping channels     |
+
+If a device is missing or input stops, use [troubleshooting](troubleshooting.md).
 
 ## Keyboard
 
-W/S or arrows pitch down/up; A/D or arrows roll; Q/E yaw. Space increases throttle, Shift decreases it, and X cuts power; +/− and keypad +/− also work. Tap for 5% steps or hold for a continuous change. Releasing holds the selected throttle. P pauses, R resets. Enter starts or resumes. V switches Pilot/Chase, and F recenters the view and briefly marks the aircraft. Flight shortcuts are suppressed while a button, link, form field or dialog owns keyboard focus. On Controllers, click the keyboard diagram to try live inputs. Launch focuses the flight canvas. Losing focus pauses and clears held keys.
+![Keyboard with flight, power, session and view keys highlighted](images/diagram-keyboard.svg)
+
+Click the field before flying, or click the keyboard drawing on Controllers to test the keys.
+
+| Keys           | Action                                                   |
+| -------------- | -------------------------------------------------------- |
+| W / S or ↑ / ↓ | Nose down / nose up                                      |
+| A / D or ← / → | Roll left / right; rudder steering on the Simple Trainer |
+| Q / E          | Yaw left / right                                         |
+| Space / Shift  | Raise / lower throttle; release to hold it               |
+| X              | Cut throttle                                             |
+| Enter / P / R  | Start or resume / pause / reset                          |
+| V / F          | Change camera / locate aircraft                          |
+| C              | Cycle control response                                   |
+
+You can also use +/− or keypad +/− for power: tap for 5% steps or hold for a continuous change. Walking mode gives WASD to the pilot; arrows remain available for flight. The on-screen key diagram follows the selected aircraft.
+
+VTOL shortcuts appear only for a VTOL aircraft. **H** sets VTOL throttle to 50%; it does not enable a fixed-wing autopilot. Switching aircraft hides unavailable actions without deleting saved bindings.
+
+Buttons, menus and text fields keep normal keyboard behavior. If the input bar says **Editing controls**, click the field or press **Esc** to close flight setup. Losing window focus pauses flight and clears held keys.
 
 ## Flight setup
 
-**Flight setup** has three sections: **Aircraft** for model and launch mode, **Field** for scenery and weather, and **Input** for the active control source. Arrow keys switch between the focused setup tabs. The bottom bar always provides Start/Resume, Pause and Reset; after an impact the primary action becomes Restart flight. Closing setup returns focus to the flight view. Pilot/Chase selection is retained when visiting another page.
+Choose the active source under **Fly → Flight setup → Input**. Mapping and calibration appear once hardware is available; a missing device shows connection steps and **Use keyboard for now**. Selecting the same device type keeps the current assignments and calibration in progress.
 
-A missing controller shows connection steps and **Use keyboard for now**. Mapping and calibration appear once hardware is available. Selecting the already-active device type keeps the current assignments and calibration in progress.
+For launch position, cameras and pilot movement, use [views and flight setup](flight-guide.md).
 
 ## Gamepad or joystick
 
+![PlayStation and Xbox layouts with named default flight shortcuts](images/diagram-gamepads.svg)
+
+### Connect
+
 1. Connect through USB or Bluetooth and confirm the operating system sees the device.
-2. Focus RCForge and move a centered stick or press a button; some browsers do not expose devices before interaction.
-3. Open Controllers, refresh if necessary and select the device.
-4. Assign the four channels with an axis selector or Detect: click Detect, then move only the desired axis within ten seconds. Noise and ambiguous simultaneous movement are ignored. Selecting an occupied axis swaps its entire binding, retaining physical calibration. Quick swap buttons exchange roll/yaw or pitch/throttle.
-5. Capture neutral with roll/pitch/yaw centered, start range capture, then sweep all channels both ways. Each channel reports captured endpoints. Save requires travel around each centered axis and sufficient throttle range. Cancel & restore reverts the entire pre-calibration profile; flight stays blocked while setup is active.
-6. Flip any channel that moves the wrong direction. Open Response on each channel to adjust dead zone and expo independently. Dead zone suppresses center noise; expo softens response. Throttle uses endpoints only. Leave software expo at zero if the transmitter already applies it.
-7. Select the controller input source. Check the throttle readout before launching. Reset applies calculated elevator trim; set the visible trim to zero for entirely transmitter-controlled trim.
+2. Focus RCForge and move a stick or press a button. Some browsers wait for interaction before exposing a controller.
+3. Select the device on Controllers. Refresh devices if needed.
+
+### Map the four flight controls
+
+For roll, pitch, yaw and throttle, choose an axis or click **Detect**, then move only that axis within ten seconds. Use **Reverse** if the direction is wrong.
+
+Selecting an occupied axis swaps the complete bindings, including their physical calibration. Quick-swap buttons exchange roll/yaw or pitch/throttle. Check the live monitor after a swap.
+
+### Calibrate
+
+1. Center roll, pitch and yaw. Capture neutral; throttle does not need to center.
+2. Start range capture. Sweep every control through its full travel, including throttle low and high.
+3. Check the captured endpoints, then save. **Cancel & restore** returns to the profile from before calibration. Flight stays blocked while calibration is active.
+4. Verify that the centered axes return near zero and throttle reaches 0–100%.
+
+### Tune the feel
+
+Open **Response** on a channel to adjust dead zone and expo. Dead zone removes small center noise; expo softens the center response. Throttle uses endpoints only. Avoid applying expo twice if your transmitter already supplies it.
+
+Check throttle before launch. Reset applies calculated elevator trim; set the visible aircraft trim to zero if you want all trim supplied by the transmitter.
+
+![Assign, center, sweep and verify analog controls](images/diagram-calibration.svg)
 
 Profiles are stored in browser storage keyed by device ID. Recalibrate when device IDs, adapter mode, transmitter mixes or endpoint settings change. Browser storage failures leave the active profile usable but unsaved.
 
 ## FlySky FS-i6
+
+![Mode 2 transmitter stick functions and RUN switch](images/diagram-rc-mode2.svg)
+
+Start with the [visual radio connection guide](radio-setup.md), including a copyable prompt for help with your exact hardware.
 
 See the [FS-i6 wiring and Arduino guide](flysky-fs-i6.md) for the original transmitter's trainer output, receiver PPM, or six receiver PWM channels. It includes the Uno/Nano sketch, upload steps, receiver failsafe setup and troubleshooting.
 
@@ -32,7 +84,7 @@ A compatible PPM-to-USB **joystick** adapter uses **Find devices**. A classic Na
 
 ## Physical acceptance checklist
 
-No physical controller was connected during implementation. Fill in the exact device, adapter, firmware, OS and browser during hardware verification:
+Trainer-to-Nano reception has user-supplied diagnostic evidence, but receiver connections and complete flight acceptance remain unverified. Record your device, adapter, firmware, OS and browser as you check:
 
 - [ ] Device appears and remains connected.
 - [ ] Four independent channels are exposed with smooth motion.
@@ -46,16 +98,20 @@ No physical controller was connected during implementation. Fill in the exact de
 
 The Arduino bridge shares the same mapping and calibration path as HID controllers. It accepts the documented RCForge serial protocol only; arbitrary USB serial or iBUS devices cannot be plugged in as if they were joystick adapters.
 
-Open **Position & view** on Fly for aircraft placement and pilot movement on one map. Select **You** and drag the blue marker to move your viewpoint at 1.7 m eye height. **Beside aircraft** and **Flight line** are quick positions. I/J/K/L walk forward/left/back/right; enable **Use WASD to walk** for WASD movement while arrows fly. Drag the field to look around; **Keep aircraft in view** recenters after looking. Chase keeps the horizon level, and scroll adjusts follow distance. The map supports dragging its background to pan, scrolling to zoom, and arrow keys to nudge the selected marker (Shift for 10 m steps).
+## Save or transfer a setup
 
-Export/import setup under Aircraft trim & profile files transfers a validated profile JSON. Imports are rebound to the selected device and require its available axes; verify directions before saving. Unsaved changes are marked beside the device selector.
+Export/import under **Aircraft trim & profile files** transfers a profile JSON. An import is attached to the selected device and requires its available axes. Verify directions before saving. Unsaved changes are marked beside the device selector.
 
 ## Controller shortcuts
 
-Choose the **Shortcuts** tab to assign Start/pause, Restart, Pilot/chase, or Settings to a button or an unused axis endpoint. Standard gamepads use PlayStation/Xbox button names; custom adapters retain one-based hardware numbers. The live diagram and pressed-button indicator help identify inputs. Analog flight axes are reserved and cannot trigger shortcuts. Move a switch back before triggering its next action. Holding a button does not repeatedly restart, and connecting with a switch already on does not trigger an action.
+Choose the **Shortcuts** tab to assign Start/pause, Restart, Pilot/chase/FPV, Cycle control response, or Settings to a button or an unused axis endpoint. Standard gamepads use PlayStation/Xbox button names; custom adapters retain one-based hardware numbers. The live diagram and pressed-button indicator help identify inputs. Analog flight axes are reserved and cannot trigger shortcuts. Move a switch back before triggering its next action. Holding a button does not repeatedly restart, and connecting with a switch already on does not trigger an action.
 
 For settings navigation assign Next setting, Previous setting, Activate, Decrease and Increase. Focus is outlined; decrease/increase adjusts selected numeric fields or dropdowns. Next/previous can reach all three flight setup tabs; Activate opens the focused tab. Navigation stays inside an open aircraft catalog or guide; focus wraps between its visible controls, and flight commands wait until the dialog is closed. Decrease/increase skips unavailable dropdown options. Shortcuts are stored separately per device in this browser. They do not change transmitter firmware or hardware menus. Leave controls unassigned if the USB adapter does not expose enough inputs. A four-axis simulator adapter may expose no spare switches or buttons.
 
 ## Flight reference display
 
-The lower-left **Flight reference** panel shows bank/pitch and heading alongside a north-up minimap. Amber is the aircraft, blue is the pilot; the runway, recent aircraft trail and pilot sightline provide orientation. The map scales automatically to retain both positions and the runway. Click it to open **Position & view**, or collapse the panel for more flight space. These are simulation-state references, not GPS or transmitter telemetry. The SVG instruments update at the normal 10 Hz UI cadence and add no extra 3D view.
+See [the flight reference panel](flight-guide.md#read-the-flight-reference-panel) for the attitude indicator, minimap and pilot/aircraft markers.
+
+## Response and movement tests
+
+Use [FPV and control setup](fpv-and-control-setup.md) for adjustable response curves, per-aircraft defaults, live servo motion and surface mixers. New standard gamepad shortcuts assign L1/LB to response cycling; existing saved bindings are retained.

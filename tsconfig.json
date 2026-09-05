@@ -9,6 +9,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "types": ["vite/client", "node"]
   },
   "include": [
@@ -16,6 +17,8 @@
     "scripts",
     "tests",
     "vite.config.ts",
-    "playwright.config.ts"
+    "playwright.config.ts",
+    "site",
+    "references"
   ]
 }

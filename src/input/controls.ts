@@ -1,7 +1,7 @@
 import { clamp } from "../core/math";
 import { cleanControls, type Controls } from "../core/simulation";
 import { ownsKeyboard } from "./ui-focus";
-export type Channel = keyof Controls;
+export type Channel = "roll" | "pitch" | "yaw" | "throttle";
 /** Shared, read-only input surface for browser HID and the Arduino serial bridge. */
 export interface InputDevice {
   id: string;
@@ -132,6 +132,7 @@ export function loadProfile(
   return fallback;
 }
 export class InputManager {
+  testBench = false;
   walking = false;
   active = true;
   source: "keyboard" | "controller" = "keyboard";
@@ -141,6 +142,13 @@ export class InputManager {
   deviceIndex = -1;
   extraDevices: () => InputDevice[] = () => [];
   private keyboard = { roll: 0, pitch: 0, yaw: 0 };
+  private turnAxis: "roll" | "yaw" = "roll";
+  /** Only keyboard steering changes for rudder-only trainers. HID mappings stay explicit. */
+  setKeyboardTurnAxis(axis: "roll" | "yaw") {
+    if (axis === this.turnAxis) return;
+    this.turnAxis = axis;
+    this.clear(); // A held key must not become a different command after an aircraft switch.
+  }
   constructor(private onInterrupt: (reason: string) => void) {
     window.addEventListener("keydown", (e) => {
       if (!this.active || ownsKeyboard(e.target)) return;
@@ -171,7 +179,7 @@ export class InputManager {
       ) {
         e.preventDefault();
         this.keys.add(e.code);
-        if (!e.repeat && this.source === "keyboard") {
+        if (!e.repeat && this.source === "keyboard" && !this.testBench) {
           if (["Space", "Equal", "NumpadAdd"].includes(e.code))
             this.throttle = clamp(this.throttle + 0.05, 0, 1);
           if (
@@ -241,22 +249,29 @@ export class InputManager {
         ? 1
         : 0;
     const target = {
-      roll: has("ArrowRight", "KeyD") - has("ArrowLeft", "KeyA"),
+      roll:
+        this.turnAxis === "roll"
+          ? has("ArrowRight", "KeyD") - has("ArrowLeft", "KeyA")
+          : 0,
       pitch: has("ArrowDown", "KeyS") - has("ArrowUp", "KeyW"),
-      yaw: has("KeyE") - has("KeyQ"),
+      yaw:
+        this.turnAxis === "yaw"
+          ? has("KeyE", "ArrowRight", "KeyD") - has("KeyQ", "ArrowLeft", "KeyA")
+          : has("KeyE") - has("KeyQ"),
     };
     for (const ch of ["roll", "pitch", "yaw"] as const)
       this.keyboard[ch] +=
         (target[ch] - this.keyboard[ch]) * (1 - Math.exp(-dt * 9));
-    this.throttle = clamp(
-      this.throttle +
-        (has("Space", "Equal", "NumpadAdd") -
-          has("ShiftLeft", "ShiftRight", "Minus", "NumpadSubtract")) *
-          dt *
-          0.35,
-      0,
-      1,
-    );
+    if (!this.testBench)
+      this.throttle = clamp(
+        this.throttle +
+          (has("Space", "Equal", "NumpadAdd") -
+            has("ShiftLeft", "ShiftRight", "Minus", "NumpadSubtract")) *
+            dt *
+            0.35,
+        0,
+        1,
+      );
     return { ...this.keyboard, throttle: this.throttle };
   }
 }

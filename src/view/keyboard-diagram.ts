@@ -1,6 +1,13 @@
+export interface KeyboardLayout {
+  turnAxis?: "roll" | "yaw";
+  yaw?: boolean;
+  vtol?: boolean;
+  walking?: boolean;
+}
 /** Physical key positions with a second line naming each flight command. */
-export function keyboardDiagram() {
+export function keyboardDiagram(layout: KeyboardLayout = {}) {
   const actions: Record<string, [string, string]> = {
+    Escape: ["Fly view", "view"],
     KeyQ: ["Yaw L", "flight"],
     KeyE: ["Yaw R", "flight"],
     KeyW: ["Pitch ↓", "flight"],
@@ -19,12 +26,31 @@ export function keyboardDiagram() {
     KeyP: ["Pause", "session"],
     KeyR: ["Restart", "session"],
     KeyV: ["Camera", "view"],
+    KeyC: ["Rates", "flight"],
+    KeyT: ["VTOL mode", "flight"],
+    KeyH: ["Hover 50%", "power"],
+    KeyB: ["VTOL assist", "flight"],
     KeyF: ["Locate", "view"],
     KeyI: ["Walk", "view"],
     KeyJ: ["Walk", "view"],
     KeyK: ["Walk", "view"],
     KeyL: ["Walk", "view"],
   };
+  if (layout.turnAxis === "yaw") {
+    for (const code of ["KeyA", "ArrowLeft"])
+      actions[code] = ["Yaw L", "flight"];
+    for (const code of ["KeyD", "ArrowRight"])
+      actions[code] = ["Yaw R", "flight"];
+  }
+  if (layout.yaw === false) {
+    delete actions.KeyQ;
+    delete actions.KeyE;
+  }
+  if (!layout.vtol)
+    for (const code of ["KeyT", "KeyH", "KeyB"]) delete actions[code];
+  if (layout.walking)
+    for (const code of ["KeyW", "KeyA", "KeyS", "KeyD"])
+      actions[code] = ["Walk", "view"];
   const key = (code: string, label: string, x: number, y: number, w = 40) => {
     const action = actions[code];
     return `<g class="keyboard-key ${action ? "mapped " + action[1] : ""}" data-key-code="${code}"><title>${label}${action ? ": " + action[0] : ""}</title><rect x="${x}" y="${y}" width="${w}" height="40" rx="5"/><text class="key-letter" x="${x + w / 2}" y="${y + 17}">${label}</text>${action ? `<text class="key-function" x="${x + w / 2}" y="${y + 31}">${action[0]}</text>` : ""}</g>`;

@@ -75,6 +75,29 @@ export const defaultChanges: DesignChanges = {
 /** Each edit is applied to a pristine baseline, never cumulatively. */
 export function modifyAircraft(base: Aircraft, c: DesignChanges): Aircraft {
   const a = structuredClone(base);
+  // Scale spanwise height as well as width about each wing root. Otherwise
+  // polyhedral joints separate when the panel spans change. Preserve the
+  // component's thickness/CG offset from its matching aerodynamic panel.
+  const wingRoots = new Map<number, number>();
+  const wingHeights = new Map<string, number>();
+  if (a.vehicleType !== "multirotor" && c.spanScale !== 1) {
+    const wings = a.surfaces
+      .filter((s) => s.kind === "wing")
+      .sort((s, t) => Math.abs(s.positionM[1]) - Math.abs(t.positionM[1]));
+    for (const s of wings) {
+      const side = Math.sign(s.positionM[1]);
+      if (!wingRoots.has(side))
+        wingRoots.set(
+          side,
+          s.positionM[2] -
+            ((side * s.spanM) / 2) * Math.sin(radians(s.rollDeg)),
+        );
+      wingHeights.set(
+        s.id,
+        (s.positionM[2] - wingRoots.get(side)!) * (c.spanScale - 1),
+      );
+    }
+  }
   if (a.vehicleType === "multirotor") {
     for (const p of a.parts) {
       p.positionM[0] *= c.spanScale;
@@ -98,6 +121,7 @@ export function modifyAircraft(base: Aircraft, c: DesignChanges): Aircraft {
     if (p.kind === "wing") {
       if (c.spanScale !== 1) delete p.inertiaDiagonalKgM2;
       p.positionM[1] *= c.spanScale;
+      p.positionM[2] += wingHeights.get(p.id) ?? 0;
       p.sizeM[1] *= c.spanScale;
       p.massKg *= c.spanScale;
     }
@@ -105,6 +129,7 @@ export function modifyAircraft(base: Aircraft, c: DesignChanges): Aircraft {
   }
   for (const s of a.surfaces) {
     if (s.kind === "wing") {
+      s.positionM[2] += wingHeights.get(s.id) ?? 0;
       s.spanM *= c.spanScale;
       s.positionM[1] *= c.spanScale;
       s.aspectRatio *= c.spanScale;
@@ -121,7 +146,13 @@ export function modifyAircraft(base: Aircraft, c: DesignChanges): Aircraft {
     if (s.control) s.control.maxDeg *= c.throwsScale;
   }
   for (const p of a.contactPoints)
-    if (p.spanLinked) p.positionM[1] *= c.spanScale;
+    if (p.spanLinked) {
+      const rootZ = wingRoots.get(Math.sign(p.positionM[1]));
+      if (rootZ !== undefined)
+        p.positionM[2] += (p.positionM[2] - rootZ) * (c.spanScale - 1);
+      p.positionM[1] *= c.spanScale;
+      if (p.strutAnchorM) p.strutAnchorM[1] *= c.spanScale;
+    }
   for (const m of a.motors) {
     m.maxThrustN *= c.thrustScale;
     m.performance?.points.forEach((p) => (p.thrustN *= c.thrustScale));

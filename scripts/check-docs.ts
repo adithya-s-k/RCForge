@@ -12,7 +12,12 @@ const files = [
       { encoding: "utf8" },
     ).split("\0"),
   ),
-].filter((path) => path.endsWith(".md") && existsSync(path));
+].filter(
+  (path) =>
+    path.endsWith(".md") &&
+    !path.startsWith("docs/versions/") &&
+    existsSync(path),
+);
 const scripts = JSON.parse(readFileSync("package.json", "utf8")).scripts;
 const errors: string[] = [];
 let checked = 0;

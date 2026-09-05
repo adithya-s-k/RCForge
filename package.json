@@ -1,6 +1,6 @@
 {
   "name": "rcforge",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "private": true,
   "type": "module",
   "description": "An open foundation for programmable RC aircraft",
@@ -22,8 +22,13 @@
     "format:check": "prettier --check .",
     "physics:validate": "tsx scripts/physics-validate.ts",
     "physics:compare": "tsx scripts/physics-compare.ts",
-    "docs:check": "tsx scripts/check-docs.ts",
-    "physics:envelope": "tsx scripts/physics-envelope.ts"
+    "docs:diagrams": "tsx scripts/docs-diagrams.ts",
+    "docs:check": "tsx scripts/docs-diagrams.ts --check && tsx scripts/check-docs.ts && tsx scripts/build-docs.ts",
+    "physics:envelope": "tsx scripts/physics-envelope.ts",
+    "docs:freeze": "tsx scripts/freeze-docs.ts",
+    "references:fetch": "tsx scripts/references.ts fetch",
+    "references:check": "tsx scripts/references.ts check",
+    "release:check": "npm run check && npm run docs:check && npm run references:check && npm run format:check && npm run physics:validate && npm run physics:envelope"
   },
   "dependencies": {
     "@fontsource/dm-sans": "^5.3.0",
@@ -34,6 +39,7 @@
   "devDependencies": {
     "@types/node": "^26.4.1",
     "@types/three": "^0.185.4",
+    "marked": "18.0.11",
     "prettier": "^3.9.6",
     "tsx": "^4.23.13",
     "typescript": "^7.0.2",

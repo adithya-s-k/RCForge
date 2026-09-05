@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="587" viewBox="0 0 960 587" role="img" aria-labelledby="title desc"><title id="title">RC transmitter · Mode 2</title><desc id="desc">Stick functions after mapping. Receiver channels are separate from the radio’s menu buttons.</desc><defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto-start-reverse"><path d="M0 0 8 4 0 8" fill="none" stroke="#536574" stroke-width="1.5"/></marker></defs><style>text{font-family:Arial,Helvetica,sans-serif}.controller-shell{fill:#30343b;stroke:#9ba0ab;stroke-width:1.2}.controller-well{fill:#11141a;stroke:#555d69;stroke-width:1.2}.controller-thumb{fill:#404754;stroke:#949caa}.thumb-inset{fill:#252b34;stroke:#697181}.controller-grip{fill:#222832;stroke:#48505e}.controller-outline{fill:none;stroke:#adb4bf;stroke-width:3;stroke-linecap:round}.controller-detail,.thumb-center{fill:none;stroke:#929aa8;stroke-width:1}.gimbal-guide{stroke:#69717d;stroke-width:.6}.controller-screen{fill:#141921;stroke:#858c99}.screen-lines{stroke:#82928c;stroke-width:1.5}.device-led{fill:#b5d1a3}.controller-glyph{font-size:9px;fill:#f4f4f6;text-anchor:middle}.controller-channel-label{font-size:7px;fill:#b5bac4;text-anchor:middle}.controller-caption{display:none}.keyboard-body{fill:#101319;stroke:#414956}.keyboard-key rect{fill:#1b2028;stroke:#3b4350}.keyboard-key text{text-anchor:middle}.key-letter{font-size:12px;fill:#7e8795}.key-function{font-size:7.5px;fill:#e4e9f0}.mapped .key-letter{fill:#fff}.mapped.flight rect{fill:#273e49;stroke:#7fa7b9}.mapped.power rect{fill:#4b3e29;stroke:#d1b479}.mapped.session rect{fill:#354336;stroke:#8ab193}.mapped.view rect{fill:#3f364c;stroke:#ac97c6}</style><rect width="960" height="587" rx="16" fill="#f7f9fb"/><text x="32" y="42" font-size="26" fill="#263442" text-anchor="start">RC transmitter · Mode 2</text><text x="32" y="69" font-size="14" fill="#526273" text-anchor="start">Stick functions after mapping. Receiver channels are separate from the radio’s menu buttons.</text><g class="controller" transform="translate(240 135) scale(1.2)"><g class="transmitter-face">
+      <path d="M194 30V9q0-5 6-5t6 5v21" class="controller-shell"/>
+      <path d="M152 38V25q48-12 96 0v13" class="controller-outline"/>
+      <path d="M102 37q98-12 196 0l25 24 9 38-10 106q-2 11-14 17l-27 12H119l-27-12q-12-6-14-17L68 99l9-38Z" class="controller-shell"/>
+      <path d="m78 88 12-9 6 23-4 82 15 24-17-8-12-18-5-72Zm244 0-12-9-6 23 4 82-15 24 17-8 12-18 5-72Z" class="controller-grip"/>
+      <path d="M80 113l9 3m-9 10 8 3m-7 10 7 3m-6 10 6 3m-5 10 5 3M320 113l-9 3m9 10-8 3m7 10-7 3m6 10-6 3m5 10-5 3" class="controller-detail"/>
+      <path d="M101 48 97 26m35 17-3-23m139 23 3-23m28 28 4-22" class="controller-outline"/>
+      <path d="M93 26h9m22-6h10m132 0h10m22 6h9" class="controller-detail"/>
+      <text x="103" y="58" class="controller-channel-label">A</text><text x="142" y="53" class="controller-channel-label">B</text>
+      <text x="254" y="53" class="controller-channel-label">C</text><text x="295" y="58" class="controller-channel-label">D</text>
+      <circle cx="185" cy="56" r="9" class="controller-well"/><circle cx="215" cy="56" r="9" class="controller-well"/>
+      <path d="M185 50v6m30-6v6" class="controller-outline"/>
+      <text x="177" y="77" class="controller-channel-label">VRA</text><text x="207" y="77" class="controller-channel-label">VRB</text>
+      <g><circle cx="128" cy="119" r="43" class="controller-well"/><circle cx="128" cy="119" r="36" class="controller-detail"/>
+    <path d="M96 119h64M128 87v64" class="gimbal-guide"/>
+    <g data-pad-stick="0" data-stick-x="128" data-stick-y="119" transform="translate(128 119)">
+      <g >
+        <title>Yaw and throttle</title>
+        <circle r="13" class="controller-thumb"/>
+        <circle r="8" class="thumb-inset"/>
+        <path d="M-3-3 3 3M-3 3 3-3" class="controller-detail"/>
+      </g>
+    </g></g><g><circle cx="272" cy="119" r="43" class="controller-well"/><circle cx="272" cy="119" r="36" class="controller-detail"/>
+    <path d="M240 119h64M272 87v64" class="gimbal-guide"/>
+    <g data-pad-stick="1" data-stick-x="272" data-stick-y="119" transform="translate(272 119)">
+      <g >
+        <title>Roll and pitch</title>
+        <circle r="13" class="controller-thumb"/>
+        <circle r="8" class="thumb-inset"/>
+        <path d="M-3-3 3 3M-3 3 3-3" class="controller-detail"/>
+      </g>
+    </g></g>
+      <path d="M176 103v34m48-34v34M112 169h32m112 0h32" class="controller-outline"/>
+      <path d="M173 120h6m42 0h6M128 166v6m144-6v6" class="controller-detail"/>
+      <text x="128" y="183" text-anchor="middle" class="controller-channel-label">YAW · POWER</text>
+      <text x="272" y="183" text-anchor="middle" class="controller-channel-label">ROLL · PITCH</text>
+      <path d="M193 98h14v37h-14Z" class="controller-grip"/>
+      <path d="M195 109h10m-10 4h10m-10 4h10" class="controller-detail"/>
+      <circle cx="200" cy="145" r="3" class="device-led"/>
+      <rect x="151" y="188" width="98" height="36" rx="3" class="controller-well"/>
+      <rect x="157" y="193" width="86" height="25" rx="2" class="controller-screen"/>
+      <text x="200" y="204" text-anchor="middle" class="controller-channel-label">STICK MONITOR</text>
+      <path d="M176 210h48" class="screen-lines"/>
+      <rect x="128" y="194" width="14" height="7" rx="2" class="controller-well"/><rect x="128" y="210" width="14" height="7" rx="2" class="controller-well"/>
+      <rect x="258" y="194" width="14" height="7" rx="2" class="controller-well"/><rect x="258" y="210" width="14" height="7" rx="2" class="controller-well"/>
+      <path d="M117 228h166" class="controller-detail"/>
+      </g><text x="200" y="251" class="controller-caption">MAPPED STICKS</text></g><text x="122" y="146" font-size="16" fill="#236c7d" text-anchor="start">LEFT STICK</text><text x="122" y="180" font-size="20" fill="#263442" text-anchor="start">↑ More power</text><text x="122" y="214" font-size="20" fill="#263442" text-anchor="start">↓ Less power</text><text x="122" y="248" font-size="20" fill="#263442" text-anchor="start">← / → Yaw</text><path d="M214 268h148" fill="none" stroke="#236c7d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><text x="680" y="146" font-size="16" fill="#236c7d" text-anchor="start">RIGHT STICK</text><text x="680" y="180" font-size="20" fill="#263442" text-anchor="start">↑ Nose down</text><text x="680" y="214" font-size="20" fill="#263442" text-anchor="start">↓ Nose up</text><text x="680" y="248" font-size="20" fill="#263442" text-anchor="start">← / → Roll</text><path d="M675 268H592" fill="none" stroke="#236c7d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="32" y="453" width="231" height="30" rx="7" fill="#edf1f5" stroke="#236c7d"/><text x="44" y="474" font-size="14" fill="#236c7d" text-anchor="start">CH5 · optional shortcut</text><rect x="504" y="453" width="204" height="30" rx="7" fill="#edf1f5" stroke="#8b5915"/><text x="516" y="474" font-size="14" fill="#8b5915" text-anchor="start">CH6 · RUN / failsafe</text><text x="32" y="519" font-size="18" fill="#8b5915" text-anchor="start">Reserve CH6 for RUN. On wireless setups, set receiver failsafe CH6 LOW.</text><text x="32" y="548" font-size="14" fill="#526273" text-anchor="start">An FS-i6 menu key is not a transmitted button. Other stick modes must be mapped explicitly.</text><text x="32" y="569" font-size="11" fill="#647283" text-anchor="start">RCFORGE  /  VISUAL FIELD GUIDE</text><style>.keyboard-body{fill:#e5ebf0;stroke:#8c9bab}.keyboard-key rect{fill:#f8fafb;stroke:#c2cbd5}.key-letter{fill:#607182}.key-function,.mapped .key-letter{fill:#263442}.mapped.flight rect{fill:#dbeaf0;stroke:#547f91}.mapped.power rect{fill:#f6ecd8;stroke:#987032}.mapped.session rect{fill:#e2ecdf;stroke:#64865e}.mapped.view rect{fill:#ebe4f3;stroke:#8b74a4}</style></svg>

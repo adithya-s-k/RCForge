@@ -82,7 +82,7 @@ The interface uses a monochrome palette defined by `--ui-*` tokens in `src/workb
 
 ## Rendering budgets
 
-`view/render-budget.ts` limits the 3D buffer to 2.1 megapixels / 1.25× pixel density, a 1024² shadow map, 128 × 128 terrain cells and sparse vegetation. Ground diffuse maps come from `public/scenery/lite/`; foliage uses the 1536 × 1024 `public/scenery/vegetation-v2.png` RGBA atlas. Distant terrain combines vertex slope/altitude colors with the shared world-space material and procedural strata; Alpine and Mesa shapes use bundled elevation samples. The sky is a small gradient shader. Flight instruments and controller SVGs retain native display resolution. The flight canvas and Locate overlay exclude the measured bottom instrument bar; the editor retains its full inspection viewport.
+`view/render-budget.ts` limits the 3D buffer to 2.1 megapixels / 1.25× pixel density, a 1024² shadow map, 128 × 128 terrain cells and sparse vegetation. Ground diffuse maps come from `public/scenery/lite/`; foliage uses the 1536 × 1024 `public/scenery/vegetation-v2.png` RGBA atlas. Distant terrain combines vertex slope/altitude colors with the shared world-space material and procedural strata; Alpine and Mesa shapes use bundled elevation samples. The sky samples a shared 1024 × 512 log-RGB photographic cloud texture, decoded once from the bundled HDR, over field-specific haze. The photograph is rotated to align its sun with the scene light; no PMREM or atmospheric scattering pass is added. Flight instruments and controller SVGs retain native display resolution. The flight canvas and Locate overlay exclude the measured bottom instrument bar; the editor retains its full inspection viewport.
 
 `view/surface-detail.ts` blends three world-anchored samples of the existing diffuse maps, with explicit gradients for stable mip selection. Grass, dirt and asphalt share that sampler; broad colour variation and bounded surface-gradient relief reduce repetition without new geometry or image downloads. Relief changes shading only, not the flat contact surface. See [scenery rendering](scenery-rendering.md) for the cost model and research references.
 
@@ -95,3 +95,58 @@ The browser updates physics independently at 120 Hz and polls input every animat
 `src/input/rc-serial.ts` validates a bounded, CRC-protected USB serial stream before exposing channel axes through the same `InputDevice` interface as Gamepad input. The AVR sketch supports trainer/receiver PPM and six PWM inputs. `src/app/arduino.ts` handles the user-initiated port chooser and connection state. Invalid or stale input removes the device, pauses its active flight and requires deliberate resume. Receiver-held pulses require a configured guard-channel failsafe; see `docs/flysky-fs-i6.md`.
 
 `src/view/flight-navigation.ts` draws the attitude instrument and north-up minimap with SVG at 10 Hz. It reads the existing simulation quaternion and position, keeps a bounded trail, and opens the shared positioning panel. It adds no render loop, WebGL context, terrain assets or physics behavior.
+
+## Onboard views and control bench
+
+Optional `fpv` references an equipment part. `core/fpv.ts` manages installation mass; `view/fpv-camera.ts` shares its mount between geometry and the camera pose. The optical center is relative to CG and follows full body attitude in the existing single render pass.
+
+`app/fpv-placement.ts` owns a cancelable camera-placement session. `view/camera-placement.ts` uses Three.js TransformControls and visible-airframe raycasts to preview a mount; it emits pose data without mutating the aircraft definition. `core/camera-placement.ts` validates the accepted pose and updates the existing component, retaining its mass and other draft edits. The dialog temporarily hosts the shared viewport and renders one bounded, scissored lens preview; flight retains its single view. Controls, geometry helpers, pointer listeners and preview overlays are disposed on close.
+
+`core/pilot-response.ts` shapes pilot commands at 120 Hz before trim and surface mixing. `app/pilot-response.ts` owns per-aircraft browser preferences and the optional authored default. Replay bypasses input shaping. `core/control-preview.ts` runs only the same servo step used by flight, without rigid-body integration, motors or charge consumption. `app/surface-mixer.ts` edits existing surface controls through the editor draft validation flow. See [FPV and control setup](fpv-and-control-setup.md) for field contracts and limits.
+
+## Aircraft revisions and release identity
+
+`app/release.ts` reads the application version from `package.json`; physics/replay compatibility stays in `SIM_VERSION`. `AIRCRAFT_FORMAT_VERSION` defines aircraft JSON compatibility independently of either release number.
+
+`core/aircraft-history.ts` validates version-1 history archives and compares complete aircraft definitions. `app/aircraft-history-storage.ts` stores bounded, immutable snapshots under each aircraft ID with one atomic localStorage write. It preserves existing data on quota or validation failure; it does not silently prune. Backup imports merge unique revision IDs and reject conflicts, while retaining existing local revision numbers. Origin-scoped history is independent of the applied-aircraft and controller-profile storage keys.
+
+`app/aircraft-history.ts` owns the comparison dialog. Apply saves a changed version; explicit checkpoints can save an unapplied draft. Restore preserves the current draft before replacing it in the editor and does not alter the active simulation. Exported history travels between browser origins; ordinary aircraft JSON remains the contribution format. See [versioning and recovery](versioning.md) for limits and migration steps.
+
+Compatibility identifiers live in `core/versions.ts`; the schema and simulation
+re-export them for existing consumers. This keeps release/documentation tooling
+independent of the dynamics dependency tree.
+
+## Documentation and reference boundary
+
+`src/app/bundled-aircraft.ts` is the explicit browser aircraft registry. The CLI
+loads definitions independently; both paths validate with the shared schema.
+Keep new presets in that registry rather than growing browser composition code.
+
+`site/` is a build-time documentation system. `site/config.ts` selects canonical
+Markdown, `content.ts` verifies release snapshots, `markdown.ts` renders safe
+HTML and version-aware links, and `plugin.ts` integrates development serving and
+static output with Vite. The docs load their own small stylesheet/script, without
+Three.js or the simulation loop. No documentation backend or remote search runs.
+
+`references/manifest.json` identifies reviewed source plans, creators, checksums
+and rights. Local source PDFs live in `references/local/`, outside Git and the
+production artifact. Only the local development docs serve verified manifest
+entries. Public pages retain creator links and source identities. Snapshot files
+include permitted aircraft/component JSON and guides, never upstream plan PDFs.
+See [documentation maintenance](documentation.md) and [plans](plans.md).
+
+## Tricopter VTOL path
+
+`core/vtol-config.ts` owns validated aircraft settings and replay state. `core/vtol.ts` computes tilted rotor loads and commands the motors/servos through an independent ideal-state controller. `core/vtol-trim.ts` solves a six-axis physical hover equilibrium; forward trim uses the fixed-wing solver with the rear motor off. These run at the same 120 Hz as the existing integrator. Rendering consumes actual actuator angles and never changes dynamics.
+
+`app/vtol-flight.ts` handles mode/profile UI and `app/vtol-editor.ts` edits the aircraft settings. `view/component-placement.ts` provides a temporary placement preview using the shared mass calculation; the app commits it only on Use placement. `site/hardware-illustrations.ts` and the shared component icons keep documentation and workbench imagery consistent.
+
+## Impact aftermath and visual focus
+
+`view/impact-debris.ts` partitions the existing visible model triangles around up to 16 component stations on a terminal crash. Materials are borrowed from the intact model; fragments own only their geometry. Linear impact velocity is captured before the last simulation step. Visual fragments inherit bounded motion, tumble, bounce and settle against the visible ground, with a bounded twenty-second lifetime for motion. They remain visible until reset. This is a cosmetic aftermath, not a structural strength model, progressive damage system or measured energy-conserving fracture simulation. Flight dynamics and recordings still terminate at the impact, and soft landings do not break the aircraft. Scene/model disposal clears fragments before releasing their materials.
+
+`view/pilot-focus.ts` smoothly narrows the pilot lens as an aircraft recedes, capped at 1.8× focal length. Physical model scale and depth are unchanged. **Focus at distance** in Position & view disables this behavior independently of head tracking. Looking away, Chase, FPV and the editor retain their own camera behavior. This helps screen readability within practical flying distances; it does not make a subpixel aircraft identifiable indefinitely.
+
+### Field collision snapshots
+
+`view/field-collisions.ts` exports tagged scenery bounds once during field construction. The app copies this snapshot into `Environment.obstacles` on a new flight, without letting rendering mutate physics. `core/obstacles.ts` uses installed part dimensions/orientations and CG-relative swept probes with an aircraft-envelope broad phase; it detects translations through thin obstacles and terminates on the first hit before ground resolution. Recording import validates at most 2,048 finite primitives and stores them explicitly, so CLI replay needs no browser, scenery meshes or textures. Field changes apply at reset; replay uses its saved obstacles. Simulation compatibility is 0.8.1.

@@ -2,10 +2,17 @@
 
 ## Current compatibility
 
-Simulation 0.7.1 corrects accumulated contact impulses. Existing aircraft format-1
-files remain compatible. Earlier recordings are rejected because contact
-trajectories change; use their original engine version or record a fresh flight.
-See [the contact correction](component-models.md#contact-correction-071).
+Simulation **0.8.0** adds tricopter VTOL actuator/controller state and replay
+commands. Aircraft format-1 definitions still load; the optional `vtol` extension
+and `vehicleType: "vtol"` require the current reader. Recordings must match the
+exact simulation version; earlier recordings are rejected rather than replayed
+with changed behavior. Use their original engine version or record a fresh flight.
+The [0.7.1 contact correction](component-models.md#contact-correction-071) remains included.
+
+The [VTOL guide](bronco-vtol.md) describes tests and assumptions. The controller
+uses perfect state and model information; no servo bench, physical radio or flight
+log has validated the conversion. Rotor interference, moving tilt inertia, servo
+load/backlash and realistic sensor/estimator behavior remain unmodeled.
 
 ## Automated checks
 
@@ -62,11 +69,11 @@ add artificial stabilization to conceal them.
 
 Measure assembled mass and CG, estimate or measure inertia, measure thrust against throttle/airspeed, obtain appropriate low-Reynolds-number aerodynamic polars, and compare trim speed, glide descent, stall onset and control response with recorded physical flights. Keep calibration data and uncertainty separate from implementation tests. Add regression cases when a model is calibrated.
 
-The estimated Quad X adds upward rotor thrust, reaction torque, actuator lag and a simple internal angle/rate controller. Numerical reports and measured-CSV comparison are available; see `physics-validation.md`. JSBSim comparison, physical hardware verification and flight-test calibration remain future work. The browser Arduino serial bridge is implemented but has not been tested with a connected board. There is no claim that a browser rendering proves numerical accuracy or that simulated success predicts a safe real-world flight.
+The estimated Quad X adds upward rotor thrust, reaction torque, actuator lag and a simple internal angle/rate controller. Numerical reports and measured-CSV comparison are available; see `physics-validation.md`. JSBSim comparison, physical hardware verification and flight-test calibration remain future work. The Arduino bridge has user-supplied evidence of trainer-to-Nano PPM reception and serial packet output; accepted flight input, calibration and signal-loss recovery remain unconfirmed. Receiver PPM/PWM connections are still to be tested successfully; see [connection test status](radio-setup.md#connection-test-status). There is no claim that a browser rendering proves numerical accuracy or that simulated success predicts a safe real-world flight.
 
 ## Version 0.2 additions
 
-Regression tests cover mass scaling, requested CG, optional gear mass, stationary wheel support, powered takeoff, gentle rolling touchdown, hard impact, and all three launch states. These are numerical behavior checks, not real flight calibration. The default Bronco uses an inverted-V/A-tail based on the supplied build image. Geometry and coefficients remain estimated. Tests check panel endpoint joins, symmetric pitch/differential yaw mixing, saturation, and yaw torque with motors removed.
+Regression tests cover mass scaling, requested CG, optional gear mass, stationary wheel support, powered takeoff, gentle rolling touchdown, hard impact, and all three launch states. These are numerical behavior checks, not real flight calibration. The default Bronco uses an inverted-V/A-tail based on the supplied build image. A separate conventional preset uses the sheet-3 H-tail, two fixed fins, one elevator servo and differential motor yaw; it is not a rudder-equipped digital twin. Geometry and coefficients remain estimated. Tests check panel endpoint joins, symmetric pitch/differential yaw mixing, saturation, and yaw torque with motors removed.
 
 Runway appearance uses a single weathered asphalt/paint surface with a three-metre photographic aggregate tile and painted markings. These are cosmetic material details; the runway remains a flat collision plane. Quad construction details are illustrative, and component masses and box-based inertia remain estimates unless supplied from measurements.
 
@@ -76,7 +83,7 @@ Selectable field scenery, temperature/elevation density, surface friction, optio
 
 ## Landscape rendering
 
-Alpine and mesa shapes are derived from offline elevation tiles, with a deliberately flattened airfield and estimated surface materials. The photographic asphalt, paint, shoulders and markers are cosmetic. Surface friction still follows the selected scenery everywhere; hills, buildings, plants and markers have no collision. Real elevation sources do not establish physical flight-model accuracy. The data transformations, source coordinates, licenses and regeneration command are documented in [the scenery manifest](../public/scenery/README.md).
+Alpine and mesa shapes are derived from offline elevation tiles, with a deliberately flattened airfield and estimated surface materials. The photographic asphalt, paint, shoulders and markers are cosmetic. Surface friction still follows the selected scenery everywhere; hills remain visual terrain. Buildings, trees, rocks, field tables, cones and fences now export approximate collision volumes. Real elevation sources do not establish physical flight-model accuracy. The data transformations, source coordinates, licenses and regeneration command are documented in [the scenery manifest](../public/scenery/README.md).
 
 ## Version 0.6 additions
 
@@ -107,3 +114,36 @@ current curves remain induced-power estimates. Manufacturer samples in the large
 quad cover a specific prop and voltage only, with command mapping still estimated.
 Numerical pass counts therefore do not establish battery endurance or handling
 accuracy. Constant-supply trim tests and discharge tests exercise different claims.
+
+## FPV and input response
+
+An FPV view is an ideal perspective projection, without lens distortion or a video-link model. Installing a camera changes component mass properties, but does not automatically supply its drag or electrical load. Its installation envelope participates in scenery collision. Gentle rates reduce pilot sensitivity and authority; they do not stabilize a fixed-wing aircraft or resolve an inadequate aerodynamic model. The control bench reproduces the simulated servo/linkage response without actual hardware, hinge loads or airframe motion. See [setup and verification](fpv-and-control-setup.md).
+
+## Vortex RC Simple Trainer
+
+The [Vortex trainer reconstruction](vortex-simple-trainer.md) distinguishes
+published dimensions/totals from proportional geometry, component and aerodynamic
+estimates. The product CG wording is ambiguous; the 58 mm wing-relative station
+is provisional. Its 9 m/s starting trim is an authored operating choice. A
+power-off experiment without landing input still ends in impact. Numerical
+control, ground-rest, takeoff, glide, servo and replay checks are not real-flight
+validation. Existing recordings retain their recorded state and controls; the
+new optional reference speed changes initialization only, not dynamics formulas
+or simulation version 0.7.1.
+
+## Bronco assembly variants
+
+The [reconstruction guide](flite-test-reconstruction.md) records the raised wing,
+conventional tail tracing, separate mass ledgers and survey limits. Regression
+checks cover lateral balance after removing one tail servo, wing-to-saddle
+clearance in the rendered geometry, tail orientation and positive control signs.
+The conventional variant retains the published shared 830 g reference using
+estimated allocations; no independently weighed conventional build or measured
+flight data is available. Passing these checks does not validate the aerodynamic
+coefficients or certify the physical assembly.
+
+## Field impacts and visible breakup
+
+Simulation 0.8.1 sweeps CG-relative installed-part envelopes against a recorded field snapshot. Trunks and solid props use boxes; crowns use ellipsoids that exclude transparent card corners. The broad phase rejects distant obstacles before testing part probes. A hit terminates flight and shuts down motors; the renderer then partitions the visible model and simulates a bounded cosmetic aftermath. Tests cover wingtip contact, thin-obstacle tunnelling, missed crowns, fixed-wing/quad termination and exact headless replay.
+
+These are approximate rigid obstruction volumes, not leaf/branch meshes, propeller strike mechanics, tree deformation, material strength, progressive damage or measured fracture physics. Capsule-like part envelopes are deliberately conservative; shape corners and extremely fast angular motion may differ from mesh contact. Moving components moves their collision envelope. Gentle ground landings retain the intact model. Mountain terrain is still not a physical landing surface; cosmetic fragments settle against its visual height but the flight solver still uses flat ground. No real-aircraft crash validation is claimed.

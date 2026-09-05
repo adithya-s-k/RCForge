@@ -1,5 +1,5 @@
 import * as T from "three";
-/** Visual-only surroundings. Collision remains the flat flight field. */
+/** Visual props also export their solid geometry bounds for collision snapshots. */
 export function addFieldDetails(field: T.Group) {
   const wood = new T.MeshStandardMaterial({
       color: "#81745b",
@@ -20,6 +20,7 @@ export function addFieldDetails(field: T.Group) {
     o.position.set(...(pos as [number, number, number]));
     o.castShadow = true;
     o.receiveShadow = true;
+    o.userData.collision = "solid";
     field.add(o);
     return o;
   };
@@ -47,6 +48,7 @@ export function addFieldDetails(field: T.Group) {
   for (let i = 0; i < 10; i++) {
     const cone = new T.Mesh(new T.ConeGeometry(0.12, 0.38, 12), orange);
     cone.position.set(-20 + i * 5, 0.19, -7.5);
+    cone.userData.collision = "solid";
     field.add(cone);
     box([0.26, 0.035, 0.26], [-20 + i * 5, 0.018, -7.5], steel);
   }
