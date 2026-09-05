@@ -48,6 +48,29 @@ it("keeps Tiny Trainer ailerons inside the rounded sport-wing tip, at the plan s
   }
 });
 
+it("faces Tiny Trainer wing-servo shafts toward the lower skin of each inclined panel", () => {
+  const a = parseAircraft(tiny);
+  const visual = buildAircraft(a);
+  visual.group.updateMatrixWorld(true);
+  for (const surface of a.surfaces.filter((s) => s.foamWing)) {
+    const partId = surface.control!.linkage!.servoPartId;
+    const housing = visual.group.getObjectByName(`servo-housing:${partId}`)!;
+    const output = new T.Vector3(0, 0, -1).applyQuaternion(
+      housing.getWorldQuaternion(new T.Quaternion()),
+    );
+    const lowerNormal = new T.Vector3(0, 0, 1).applyEuler(
+      new T.Euler(
+        T.MathUtils.degToRad(surface.rollDeg),
+        T.MathUtils.degToRad(surface.incidenceDeg),
+        0,
+      ),
+    );
+    expect(output.dot(lowerNormal)).toBeCloseTo(1, 10);
+    expect(output.z).toBeGreaterThan(0.99);
+  }
+  disposeAircraft(visual.group);
+});
+
 it("rejects crossed, incomplete and out-of-outline foam wing controls", () => {
   for (const mutate of [
     (

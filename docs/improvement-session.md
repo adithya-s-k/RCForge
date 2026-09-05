@@ -529,3 +529,17 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
 - Numerical report passes; FT-22 retains 57/135 trim solutions, zero nonfinite
   loads. Pass-21 CI 33934525622 passed on Node 22/24 with Arduino compile jobs.
 - Verification: 208 tests / 35 files, production build and local docs checks pass.
+
+## Pass 23 · Tiny Trainer lower-skin servo orientation
+
+- Rechecked the original sport-wing installation photo. The wing servos' output
+  shafts formerly pointed upward into the wing; their component frames now face
+  the lower skin and follow panel dihedral/incidence. Stations, case dimensions,
+  masses and CG remain unchanged estimates. No skin-cutout or linkage-load model
+  is claimed. Browser restored/applied the revised Tiny and inspected its underside.
+- Regression compares each rendered output-axis direction to its panel lower
+  normal. Updated the reconstruction guide's older mass-split descriptions to
+  include the prop allocations introduced in pass 21.
+- Verification: 209 tests / 35 files, production build and numerical report pass.
+  Tiny retains 81/135 trim solutions with zero nonfinite loads. Pass-22 CI
+  33935250417 passed on Node 22/24 and Arduino compilation.

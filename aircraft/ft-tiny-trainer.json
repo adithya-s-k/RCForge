@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "ft-tiny-trainer",
-  "name": "FT Tiny Trainer \u00b7 Sport",
+  "name": "FT Tiny Trainer · Sport",
   "description": "FT Tiny Trainer with four-channel sport wing. Plan-derived dimensions, 193 g dry reference plus estimated 60 g battery. Estimated aerodynamics.",
   "provenance": {
     "plans": {
@@ -12,7 +12,7 @@
     "geometry": {
       "status": "estimated",
       "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-Mini%20TinyTrainer-plans.pdf",
-      "note": "Vector/ruler readings: sport wing flat half span about 478.5 mm, root chord 139.5 mm, 32 mm aileron chord, rounded swept tips. Assembled approximation uses 5 degree dihedral, 953 mm projected span, 0.12566 m\u00b2 integrated wing area and 286 mm horizontal tail span. Powered nose and main fuselage overlap; 5 mm foam board. Not manufacturing CAD."
+      "note": "Vector/ruler readings: sport wing flat half span about 478.5 mm, root chord 139.5 mm, 32 mm aileron chord, rounded swept tips. Assembled approximation uses 5 degree dihedral, 953 mm projected span, 0.12566 m² integrated wing area and 286 mm horizontal tail span. Powered nose and main fuselage overlap; 5 mm foam board. Not manufacturing CAD."
     },
     "mass": {
       "status": "estimated",
@@ -56,6 +56,11 @@
     "propellerMass": {
       "status": "estimated",
       "note": "Separate 2 g mass entry per propeller, reallocated from the existing estimated powered-nose structural allocation. Published dry mass, existing motor masses, total aircraft mass and longitudinal CG are retained; battery station is rebalanced. Prop dimensions/inertia and the allocation are estimates, not weighed components. Propeller center follows the reconstructed rotor disk. This allows replacement of both motor and prop masses with a matching performance curve without adding the old prop mass again."
+    },
+    "wingServoInstallation": {
+      "status": "estimated",
+      "url": "https://www.flitetest.com/articles/flite-test-tiny-trainer",
+      "note": "Original sport-wing build photograph mvi-0068-01-01-39-14-still006 shows the servos entering the lower skin. Their output shafts now face the underside and follow each wing panel inclination. Existing component mass, station and dimensions are unchanged and remain estimates; source cutout details, insertion depth, mounting tabs and control rods are not fully reconstructed. This corrects the former upward-facing arms hidden inside the wing."
     }
   },
   "parts": [
@@ -109,13 +114,13 @@
         },
         {
           "x": 0.08163265306122451,
-          "width": 1.0,
+          "width": 1,
           "top": -0.5,
           "bottom": 0.49999999999999994
         },
         {
           "x": 0.4795918367346939,
-          "width": 1.0,
+          "width": 1,
           "top": -0.5,
           "bottom": 0.49999999999999994
         }
@@ -192,7 +197,10 @@
         "speedSecondsPer60Deg": 0.12,
         "travelDeg": 150,
         "ratedVoltage": 4.8
-      }
+      },
+      "orientationDeg": [
+        -174.9969677421497, 1.992386321222384, 0.1743817793302275
+      ]
     },
     {
       "id": "servo-right-wing",
@@ -210,7 +218,10 @@
         "speedSecondsPer60Deg": 0.12,
         "travelDeg": 150,
         "ratedVoltage": 4.8
-      }
+      },
+      "orientationDeg": [
+        174.99696774214968, 1.992386321222384, -0.1743817793302275
+      ]
     },
     {
       "id": "servo-elevator",
@@ -313,7 +324,7 @@
       "spanM": 0.4785,
       "chordM": 0.13130572815,
       "aspectRatio": 7.1,
-      "rollDeg": 5.0,
+      "rollDeg": 5,
       "incidenceDeg": 2,
       "liftSlope": 4.4,
       "zeroLiftDeg": -2,
@@ -357,7 +368,7 @@
       "spanM": 0.4785,
       "chordM": 0.13130572815,
       "aspectRatio": 7.1,
-      "rollDeg": -5.0,
+      "rollDeg": -5,
       "incidenceDeg": 2,
       "liftSlope": 4.4,
       "zeroLiftDeg": -2,
@@ -511,8 +522,8 @@
         "points": [
           {
             "command": 0,
-            "thrustN": 0.0,
-            "currentA": 0.0
+            "thrustN": 0,
+            "currentA": 0
           },
           {
             "command": 0.1,
