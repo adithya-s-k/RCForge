@@ -3,6 +3,7 @@ import { surfaceActuation } from "../core/actuation";
 import { buildQuad } from "./quad-model";
 import { buildPanel } from "./planform";
 import { buildFoamWing } from "./foam-wing";
+import { propellerBlade } from "./propeller";
 import { disposeModel } from "./dispose-model";
 import type { SurfaceControl } from "../core/surface-control";
 import * as T from "three";
@@ -409,6 +410,9 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     color: isBronco ? "#e9e7df" : "#285982",
     roughness: 0.7,
   });
+  const propellerMaterial = isBronco
+    ? new T.MeshStandardMaterial({ color: "#c8c6bc", roughness: 0.62 })
+    : dark;
   for (const p of a.parts) {
     const firstChild = group.children.length;
     if ((p.kind === "body" || p.kind === "boom") && p.bodyLoft) {
@@ -833,6 +837,7 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     }
     const prop = new T.Group();
     prop.position.set(x + shaft * 0.008, y, z);
+    prop.rotation.x = Math.PI / 2;
     rod(
       group,
       [center[0], center[1], center[2]],
@@ -844,17 +849,12 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     propellers.push(prop);
     const radius = motor.propDiameterM / 2;
     const bladeCount = motor.propBlades ?? 2;
+    const bladeGeometry = propellerBlade(radius, motor.spin === "ccw" ? -1 : 1);
     for (let i = 0; i < bladeCount; i++) {
       const bladeRoot = new T.Group();
       bladeRoot.rotation.x = (i * Math.PI * 2) / bladeCount;
       prop.add(bladeRoot);
-      const blade = mesh(new T.SphereGeometry(1, 12, 8), dark, bladeRoot, [
-        0,
-        radius * 0.49,
-        0,
-      ]);
-      blade.scale.set(0.003, radius * 0.52, 0.014);
-      blade.rotation.y = 0.15;
+      mesh(bladeGeometry, propellerMaterial, bladeRoot);
     }
     const hub = mesh(
       new T.ConeGeometry(isTiny ? 0.006 : 0.01, isTiny ? 0.01 : 0.018, 20),

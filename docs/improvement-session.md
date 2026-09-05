@@ -436,3 +436,21 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   passes; Bronco and Tiny each retain 81/135 trim solutions and zero nonfinite
   load cases. Their calculated inertia changes; these checks are not measured
   motor/CAD or real-flight calibration.
+
+## Pass 19 · propeller shape and reference finish
+
+- Rechecked the Bronco assembly photograph: its slender light-colored blades were
+  represented by thick black ellipsoids. Fixed-wing props now use a tapered,
+  twisted closed blade mesh; Bronco finish and vertical parked pose follow the
+  photograph. Existing prop diameter and blade count remain authoritative.
+- Each blade has 300 triangles and one geometry is shared by the blades on a
+  propeller. Radius/positive-volume/finite-geometry tests cover 5-, 8- and 9-inch
+  blades with both handednesses. Declared CW/CCW now drives fixed-wing animation
+  as well as quad animation. These shapes do not change propulsion calculations.
+- Browser inspected Bronco perspective and FT-22 top views; no new browser errors.
+  202 tests / 35 files and production build pass. Section/chord/twist remain visual
+  estimates rather than manufacturer blade CAD.
+- Next reference question: original FT-22 PDF includes an inch ruler whose labels
+  are 72.009 pt apart. That indicates approximately 649 mm span for the traced
+  outline, versus the earlier selected 635 mm store metric. Investigate the scale
+  conflict and prop-slot clearance before making any further definition changes.

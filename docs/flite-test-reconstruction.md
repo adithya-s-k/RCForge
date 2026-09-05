@@ -161,3 +161,11 @@ their motor centers to the visible housings shifts the battery aft by 10.9 mm an
 3.3 mm respectively to retain the same mass-weighted CG. This changes calculated
 inertia. Housing geometry is a simplified envelope, not an exact manufacturer
 CAD model; enter measured dimensions/positions for a known physical build.
+
+Fixed-wing propellers use slender tapered, twisted blade meshes rather than
+scaled ellipsoids. The Bronco's light blade finish and vertical parked pose follow
+the inspected assembly photograph. Each blade uses 300 triangles and stays inside
+the specified rotor radius; geometry is shared between that propeller's blades.
+Chord, twist and section thickness remain visual estimates. They do not supply
+propeller polars, pitch-derived thrust or extra component mass. Specified CW/CCW
+spin now also controls fixed-wing propeller animation.

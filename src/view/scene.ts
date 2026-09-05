@@ -468,10 +468,7 @@ export class FlightScene {
                 rotorPower.thrust[i] / sim.aircraft.motors[i].maxThrustN,
               ) || 0) *
           260 *
-          (sim.aircraft.vehicleType === "multirotor" &&
-          sim.aircraft.motors[i].spin === "ccw"
-            ? -1
-            : 1)),
+          (sim.aircraft.motors[i].spin === "ccw" ? -1 : 1)),
     );
     let desired: T.Vector3,
       target = this.studio ? this.modelCenter.clone() : pos.clone();
