@@ -62,6 +62,10 @@
       "status": "estimated",
       "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf",
       "note": "Sheet 1 Nose part 05: right-side cut outline runs Y=139.420 to 712.960 pt; inner fold station X=1344.86 pt. Its 573.54 pt projected length is 202.33 mm and rear height 371.64 pt is 131.66 mm. Sampled curvature replaces generic pointed loft. Parallel 68 mm width follows the 192.84 pt core fold separation (including board overlap); rear-core transition and X/Z registration remain photo-guided estimates. Nose apex retained near body X=327 mm. Cockpit paint and hatch markings are estimated from original assembly photographs. Fuselage mass and mass center retained; updated outer envelope changes its box-inertia estimate."
+    },
+    "motorInstallation": {
+      "status": "estimated",
+      "note": "Motor housing geometry now uses the motor component center and dimensions, instead of independent renderer constants. Housing stations are aligned with the existing reconstructed mount/prop assembly; housing dimensions and mass allocations remain estimates, not bench measurements. Battery moves aft to retain the same mass-weighted CG. Component box inertia changes with these revised dimensions and stations."
     }
   },
   "parts": [
@@ -336,16 +340,16 @@
       "id": "left-motor",
       "kind": "motor",
       "massKg": 0.045,
-      "positionM": [0.065, -0.17960512242138307, 0],
-      "sizeM": [0.065, 0.055, 0.055],
+      "positionM": [0.088, -0.17960512242138307, 0],
+      "sizeM": [0.027, 0.034, 0.034],
       "color": "#253b3e"
     },
     {
       "id": "right-motor",
       "kind": "motor",
       "massKg": 0.045,
-      "positionM": [0.065, 0.17960512242138307, 0],
-      "sizeM": [0.065, 0.055, 0.055],
+      "positionM": [0.088, 0.17960512242138307, 0],
+      "sizeM": [0.027, 0.034, 0.034],
       "color": "#253b3e"
     },
     {
@@ -364,7 +368,7 @@
       "id": "battery",
       "kind": "battery",
       "massKg": 0.19,
-      "positionM": [0.2544, 0, 0.063],
+      "positionM": [0.24350526315789475, 0, 0.063],
       "sizeM": [0.075, 0.034, 0.027],
       "color": "#df743d"
     },

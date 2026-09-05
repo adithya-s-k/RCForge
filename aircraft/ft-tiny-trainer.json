@@ -48,6 +48,10 @@
       "status": "calculated",
       "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-Mini%20TinyTrainer-plans.pdf",
       "note": "Original sheet 2: sport-wing lower skin CG marker X=523.187 pt and leading-edge fold X=649.187 pt, a 126 pt separation = 1.75 in = 44.45 mm. Mirrored right-wing stations 1603.187 and 1477.187 give the same distance. The 2020 v1.1 cover also lists 1.75 in / 44 mm. This corrects the earlier 35 mm estimate; not flight-test calibration."
+    },
+    "motorInstallation": {
+      "status": "estimated",
+      "note": "Motor housing geometry now uses the motor component center and dimensions, instead of independent renderer constants. Housing stations are aligned with the existing reconstructed mount/prop assembly; housing dimensions and mass allocations remain estimates, not bench measurements. Battery moves aft to retain the same mass-weighted CG. Component box inertia changes with these revised dimensions and stations."
     }
   },
   "parts": [
@@ -117,7 +121,7 @@
       "id": "motor",
       "kind": "motor",
       "massKg": 0.02,
-      "positionM": [0.183, 0, 0],
+      "positionM": [0.193, 0, 0],
       "sizeM": [0.024, 0.024, 0.024],
       "color": "#e9e7df"
     },
@@ -125,7 +129,7 @@
       "id": "battery",
       "kind": "battery",
       "massKg": 0.06,
-      "positionM": [0.12433791703007416, 0, 0.041],
+      "positionM": [0.12100458369674082, 0, 0.041],
       "sizeM": [0.05, 0.025, 0.02],
       "color": "#343a40"
     },

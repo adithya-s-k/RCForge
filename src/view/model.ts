@@ -798,38 +798,48 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     const motorPart = a.parts.find((p) => p.id === motor.partId);
     // A pusher's mass sits ahead of its prop disk; use the authored installation.
     const shaft = motorPart && motorPart.positionM[0] > x + 0.001 ? -1 : 1;
+    const center: Vec3 = motorPart?.positionM ?? [x - shaft * 0.012, y, z];
+    const size: Vec3 =
+      motorPart?.sizeM ??
+      (isTiny ? [0.019, 0.024, 0.024] : [0.027, 0.034, 0.034]);
     const engine = mesh(
-      new T.CylinderGeometry(
-        isTiny ? 0.012 : 0.017,
-        isTiny ? 0.012 : 0.017,
-        isTiny ? 0.019 : 0.027,
-        18,
-      ),
+      new T.CylinderGeometry(0.5, 0.5, 1, 24),
       orange,
       group,
-      [x - shaft * 0.012, y, z],
+      center,
     );
+    // Cylinder local Y becomes body X. The housing follows the same dimensions
+    // as the component ledger; cosmetic vents add no separate mass.
+    engine.scale.set(size[1], size[0], size[2]);
     engine.rotation.z = Math.PI / 2;
+    engine.name = `motor-housing:${motor.id}`;
     for (let i = 0; i < 8; i++) {
       const ang = (i * Math.PI) / 4;
       rod(
         group,
         [
-          x - shaft * 0.025,
-          y + Math.cos(ang) * 0.018,
-          z + Math.sin(ang) * 0.018,
+          center[0] - size[0] * 0.35,
+          center[1] + Math.cos(ang) * size[1] * 0.46,
+          center[2] + Math.sin(ang) * size[2] * 0.46,
         ],
         [
-          x - shaft * 0.005,
-          y + Math.cos(ang) * 0.018,
-          z + Math.sin(ang) * 0.018,
+          center[0] + size[0] * 0.35,
+          center[1] + Math.cos(ang) * size[1] * 0.46,
+          center[2] + Math.sin(ang) * size[2] * 0.46,
         ],
-        0.0012,
+        Math.min(size[1], size[2]) * 0.035,
         dark,
       );
     }
     const prop = new T.Group();
     prop.position.set(x + shaft * 0.008, y, z);
+    rod(
+      group,
+      [center[0], center[1], center[2]],
+      [prop.position.x, y, z],
+      Math.min(size[1], size[2]) * 0.075,
+      aluminum,
+    );
     group.add(prop);
     propellers.push(prop);
     const radius = motor.propDiameterM / 2;

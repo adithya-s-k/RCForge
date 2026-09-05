@@ -111,3 +111,24 @@ it("preserves the battery installation through quad construction batching", asyn
     vi.unstubAllGlobals();
   }
 });
+
+it("keeps edited fixed-wing motor housings at their declared component center and dimensions", () => {
+  const a = parseAircraft(bronco);
+  const motor = a.motors[0];
+  const part = a.parts.find((p) => p.id === motor.partId)!;
+  part.positionM = [0.17, -0.22, 0.014];
+  part.sizeM = [0.041, 0.05, 0.025];
+  const cg = massProperties(a).cg;
+  const visual = buildAircraft(a);
+  visual.group.updateMatrixWorld(true);
+  const housing = visual.group.getObjectByName(`motor-housing:${motor.id}`)!;
+  const bounds = new T.Box3().setFromObject(housing);
+  const expected = new T.Vector3(...part.positionM).sub(new T.Vector3(...cg));
+  expect(bounds.getCenter(new T.Vector3()).distanceTo(expected)).toBeLessThan(
+    1e-8,
+  );
+  expect(
+    bounds.getSize(new T.Vector3()).distanceTo(new T.Vector3(...part.sizeM)),
+  ).toBeLessThan(1e-8);
+  disposeAircraft(visual.group);
+});

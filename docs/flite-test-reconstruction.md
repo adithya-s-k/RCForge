@@ -15,7 +15,7 @@ The trainer preset selects the four-channel **sport wing**, not the three-channe
 
 Published references: 1,086 mm wingspan, 20.8 dm² wing area, 51 mm CG behind the leading edge, 640 g without battery, 830 g reference flying weight, 12° throws, and 30% recommended transmitter expo. Preset uses 203.2 mm (8 inch) props. Expo is a controller setting, not an aerodynamic coefficient; the aircraft preset does not overwrite your controller profile.
 
-Ruler-based readings from the plan give approximately 192 mm wing chord, 254 mm flat span per A-tail panel, 102 mm tail chord, 658 mm boom length and 63 mm fuselage core width. Reading precision is approximately a few millimetres, not manufacturing tolerance. At the assumed 45° assembly angle the A-tail yields approximately 359 mm boom spacing and 180 mm apex height. Those two assembled dimensions depend on the angle assumption. Outer-span ailerons occupy approximately 61% of each half-wing in the visualization; the aerodynamic surface still uses lumped control effectiveness.
+Ruler-based readings from the plan give approximately 192 mm wing chord, 254 mm flat span per A-tail panel, 102 mm tail chord, 658 mm boom length and approximately 68 mm fuselage core width (refined from the earlier 63 mm estimate). Reading precision is approximately a few millimetres, not manufacturing tolerance. At the assumed 45° assembly angle the A-tail yields approximately 359 mm boom spacing and 180 mm apex height. Those two assembled dimensions depend on the angle assumption. Outer-span ailerons occupy approximately 61% of each half-wing in the visualization; the aerodynamic surface still uses lumped control effectiveness.
 
 Battery mass is assumed to be 190 g; its position is solved to meet the published CG. Four 9 g servo masses are accounted for. Remaining component allocations, folded nose cross-sections, thrust curves, aerodynamic polars and inertia distribution are estimated. The PDF length uses inconsistent imperial/metric values (36 in versus 927 mm); do not treat either as a precise assembled measurement.
 
@@ -144,3 +144,20 @@ modification; it is not in the original FT-22 build.
 Mass totals, CG references, prop diameter and elevon control signs have regression checks. All three designs trim at the default operating point, and the numerical physics report includes their definitions. These checks verify implementation consistency; they do not establish agreement with a real aircraft. Reproduce an actual build's component masses, CG, thrust-versus-command curves and recorded response before making that claim.
 
 Ground mode adds the existing optional 45 g tricycle gear modification. It is not part of the original foamboard builds. Select hand launch or airborne mode to use the reference airframe without that modification.
+
+## Motor installation consistency
+
+Fixed-wing motor housings now use their linked component positions and dimensions
+instead of an unrelated renderer size/offset. Bronco housings use estimated
+27 × 34 × 34 mm envelopes at X = 88 mm; Tiny Trainer uses 24 mm envelopes at
+X = 193 mm. These stations retain the existing reconstructed visual mount
+positions and are not measurements of a particular motor. The FT-22 uses its
+authored 28 × 28 × 26 mm envelope. Vents and adapters are cosmetic detail whose
+mass is included in the existing motor allocation. Motor thrust direction is
+still along the vehicle axis; component inertia-frame rotation is not motor cant.
+
+The Bronco and Tiny motor mass allocations and total masses are unchanged. Moving
+their motor centers to the visible housings shifts the battery aft by 10.9 mm and
+3.3 mm respectively to retain the same mass-weighted CG. This changes calculated
+inertia. Housing geometry is a simplified envelope, not an exact manufacturer
+CAD model; enter measured dimensions/positions for a known physical build.

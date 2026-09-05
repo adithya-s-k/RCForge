@@ -416,3 +416,23 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   no physical controller was available for this pass.
 - Verification: 198 tests / 34 files, definitions/catalog, production build and
   local docs checks pass. No dynamics or model-definition change.
+
+## Pass 18 · motor housing and mass-envelope agreement
+
+- Fixed-wing motor housings used independent hard-coded offsets and sizes. They
+  now follow the linked motor component center and dimensions, with proportional
+  vent details and a shaft to the existing prop assembly. Edited motor dimensions
+  therefore affect the visible housing as well as the mass envelope/inertia.
+- Reconciled Bronco and Tiny component stations with their existing reconstructed
+  visible installations, replacing the Bronco's oversized placeholder envelope.
+  All motor/aircraft masses stay unchanged; the battery moves aft to retain the
+  reference CG. Dimensions/stations remain explicitly estimated. FT-22 uses its
+  existing authored motor envelope. No thrust curve or aerodynamic changes.
+- Browser checked the Tiny side view against its component outline, increased
+  housing height from 24 to 40 mm and applied the visibly changed assembly, then
+  restored the original. Regression compares edited housing bounds and center
+  against the mass ledger after CG translation.
+- Verification: 199 tests / 34 files and production build pass. Numerical report
+  passes; Bronco and Tiny each retain 81/135 trim solutions and zero nonfinite
+  load cases. Their calculated inertia changes; these checks are not measured
+  motor/CAD or real-flight calibration.
