@@ -4,6 +4,8 @@ This guide covers the **original FS-i6**, a **classic ATmega328P Uno R3 or Nano*
 
 Start with the [visual connection guide](radio-setup.md) for illustrated wiring, controller diagrams and a configurable AI-agent setup prompt. This page is the detailed reference.
 
+**Hardware status:** direct trainer PPM reception has been demonstrated in user-supplied Nano diagnostics. **Receiver PPM and PWM connections are still to be tested successfully.** See the [connection test status](radio-setup.md#connection-test-status) for evidence and unresolved checks.
+
 ## Choose a connection
 
 | Path                                   | What you need                                                                                  | RCForge connection                              |
@@ -177,7 +179,7 @@ Wire format (developer reference): `RCF1,sequence,valid,mode,count,pulse1,...,pu
 
 ## Verification status
 
-The browser protocol and disconnect behavior are covered with automated stream tests. Both PPM and PWM firmware compiled successfully with Arduino AVR core 1.8.8 for classic Uno and Nano. Run `bash scripts/check-arduino.sh` to compile both modes for Uno, Nano and Nano Old Bootloader (Arduino CLI and `arduino:avr` required); this command never uploads. **No physical transmitter, cable, receiver or Arduino was connected during development.** Compile success does not verify trainer pinout, signal timing, receiver failsafe or OS drivers.
+The browser protocol and disconnect behavior are covered with automated stream tests. Both PPM and PWM firmware compiled successfully with Arduino AVR core 1.8.8 for classic Uno and Nano. Run `bash scripts/check-arduino.sh` to compile both modes for Uno, Nano and Nano Old Bootloader (Arduino CLI and `arduino:avr` required); this command never uploads. User-supplied trainer-to-Nano diagnostics now demonstrate six-channel PPM reception. This was not an agent-controlled hardware test, and end-to-end calibration and signal-loss recovery are not yet confirmed. **Receiver PPM/PWM connections are still to be tested successfully.** Compile success does not verify trainer pinout, signal timing, receiver failsafe or OS drivers.
 
 Before considering your setup ready, record the receiver model, transmitter firmware, board, input mode, OS and browser, then verify: four independent channels; endpoint/neutral calibration; CH6 STOP/RUN; transmitter power-off; signal-wire removal; USB removal; manual resume after recovery; a complete launch/turn/land/reset session. Test signal and power changes on the bare bench receiver, not a powered aircraft.
 

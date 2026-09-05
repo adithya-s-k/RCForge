@@ -69,7 +69,7 @@ add artificial stabilization to conceal them.
 
 Measure assembled mass and CG, estimate or measure inertia, measure thrust against throttle/airspeed, obtain appropriate low-Reynolds-number aerodynamic polars, and compare trim speed, glide descent, stall onset and control response with recorded physical flights. Keep calibration data and uncertainty separate from implementation tests. Add regression cases when a model is calibrated.
 
-The estimated Quad X adds upward rotor thrust, reaction torque, actuator lag and a simple internal angle/rate controller. Numerical reports and measured-CSV comparison are available; see `physics-validation.md`. JSBSim comparison, physical hardware verification and flight-test calibration remain future work. The browser Arduino serial bridge is implemented but has not been tested with a connected board. There is no claim that a browser rendering proves numerical accuracy or that simulated success predicts a safe real-world flight.
+The estimated Quad X adds upward rotor thrust, reaction torque, actuator lag and a simple internal angle/rate controller. Numerical reports and measured-CSV comparison are available; see `physics-validation.md`. JSBSim comparison, physical hardware verification and flight-test calibration remain future work. The Arduino bridge has user-supplied evidence of trainer-to-Nano PPM reception and serial packet output; accepted flight input, calibration and signal-loss recovery remain unconfirmed. Receiver PPM/PWM connections are still to be tested successfully; see [connection test status](radio-setup.md#connection-test-status). There is no claim that a browser rendering proves numerical accuracy or that simulated success predicts a safe real-world flight.
 
 ## Version 0.2 additions
 

@@ -18,6 +18,17 @@ The [detailed FS-i6 reference](flysky-fs-i6.md) includes troubleshooting and pro
 
 Have an **FS-i6, FS-iA6B and classic Nano**? Follow the [step-by-step bench guide](fs-i6-ia6b-nano-setup.md), including binding, resistor wiring, upload and the CH6 RUN switch.
 
+## Connection test status
+
+| Route                                   | Evidence and remaining checks                                                                                                                                                                               |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **FS-i6 trainer → Nano**                | User-supplied diagnostic output shows six-channel PPM and changing stick values; CH6 RUN was reported. Full RCForge calibration and signal-loss/recovery are not yet confirmed.                             |
+| **FS-iA6B receiver → Nano (PPM)**       | **Still to be tested successfully.** An attempted bench connection caused the USB port to disappear when the transmitter linked. The cause is unresolved; do not describe this route as hardware-validated. |
+| **Receiver → Uno/Nano (six PWM wires)** | **Still to be tested on hardware.** Firmware compilation is not a physical connection test.                                                                                                                 |
+| **USB simulator adapter**               | Documented option; no adapter hardware test is recorded here.                                                                                                                                               |
+
+The sketches compile for classic Uno/Nano. The trainer evidence does not validate receiver power, binding or RF failsafe. Start with the [trainer walkthrough](trainer-nano.md) for the connection demonstrated so far.
+
 ## 1. USB joystick adapter
 
 Use an adapter documented for the **FS-i6 trainer output** that presents itself as

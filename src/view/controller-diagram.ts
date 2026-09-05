@@ -36,24 +36,35 @@ export function controllerDiagram(
     stick = kind === "joystick";
   let body: string;
   if (rc) {
-    body = `<path d="M190 33V8q0-5 5-5h10q5 0 5 5v25" class="controller-shell"/>
-      <path d="M137 38V24h126v14" class="controller-outline"/>
-      <path d="M95 37h210l27 34-8 142-26 21H102l-26-21-8-142Z" class="controller-shell"/>
-      <path d="m78 91 17-12v113l-13-5m240-96-17-12v113l13-5" class="controller-grip"/>
-      <path d="M96 63h208M92 193h216" class="controller-detail"/>
-      <path d="M105 47V24m28 21V17m134 28V17m28 30V24" class="controller-outline"/>
-      <path d="M100 24h10m18-7h10m124 0h10m18 7h10" class="controller-detail"/>
-      <text x="128" y="62" class="controller-channel-label">YAW / POWER</text><text x="272" y="62" class="controller-channel-label">ROLL / PITCH</text>
-      ${gimbal(128, 112, 0, true)}${gimbal(272, 112, 1, true)}
-      <rect x="157" y="170" width="86" height="43" rx="4" class="controller-screen"/>
-      <text x="200" y="185" class="controller-channel-label">RCFORGE</text>
-      <path d="M169 194h62M169 202h39" class="screen-lines"/>
-      <circle cx="122" cy="189" r="10" class="controller-well"/>
-      <path d="M118 189h8M122 185v8" class="controller-detail"/>
-      <circle cx="278" cy="189" r="10" class="controller-well"/>
-      <path d="m275 186 4 3-4 3" class="controller-detail"/>
-      <path d="M178 90v42m44-42v42M101 162h40m118 0h40" class="gimbal-guide"/>
-      <circle cx="200" cy="148" r="4" class="device-led"/>`;
+    body = `<g class="transmitter-face">
+      <path d="M194 30V9q0-5 6-5t6 5v21" class="controller-shell"/>
+      <path d="M152 38V25q48-12 96 0v13" class="controller-outline"/>
+      <path d="M102 37q98-12 196 0l25 24 9 38-10 106q-2 11-14 17l-27 12H119l-27-12q-12-6-14-17L68 99l9-38Z" class="controller-shell"/>
+      <path d="m78 88 12-9 6 23-4 82 15 24-17-8-12-18-5-72Zm244 0-12-9-6 23 4 82-15 24 17-8 12-18 5-72Z" class="controller-grip"/>
+      <path d="M80 113l9 3m-9 10 8 3m-7 10 7 3m-6 10 6 3m-5 10 5 3M320 113l-9 3m9 10-8 3m7 10-7 3m6 10-6 3m5 10-5 3" class="controller-detail"/>
+      <path d="M101 48 97 26m35 17-3-23m139 23 3-23m28 28 4-22" class="controller-outline"/>
+      <path d="M93 26h9m22-6h10m132 0h10m22 6h9" class="controller-detail"/>
+      <text x="103" y="58" class="controller-channel-label">A</text><text x="142" y="53" class="controller-channel-label">B</text>
+      <text x="254" y="53" class="controller-channel-label">C</text><text x="295" y="58" class="controller-channel-label">D</text>
+      <circle cx="185" cy="56" r="9" class="controller-well"/><circle cx="215" cy="56" r="9" class="controller-well"/>
+      <path d="M185 50v6m30-6v6" class="controller-outline"/>
+      <text x="177" y="77" class="controller-channel-label">VRA</text><text x="207" y="77" class="controller-channel-label">VRB</text>
+      ${gimbal(128, 119, 0, true)}${gimbal(272, 119, 1, true)}
+      <path d="M176 103v34m48-34v34M112 169h32m112 0h32" class="controller-outline"/>
+      <path d="M173 120h6m42 0h6M128 166v6m144-6v6" class="controller-detail"/>
+      <text x="128" y="183" text-anchor="middle" class="controller-channel-label">YAW · POWER</text>
+      <text x="272" y="183" text-anchor="middle" class="controller-channel-label">ROLL · PITCH</text>
+      <path d="M193 98h14v37h-14Z" class="controller-grip"/>
+      <path d="M195 109h10m-10 4h10m-10 4h10" class="controller-detail"/>
+      <circle cx="200" cy="145" r="3" class="device-led"/>
+      <rect x="151" y="188" width="98" height="36" rx="3" class="controller-well"/>
+      <rect x="157" y="193" width="86" height="25" rx="2" class="controller-screen"/>
+      <text x="200" y="204" text-anchor="middle" class="controller-channel-label">STICK MONITOR</text>
+      <path d="M176 210h48" class="screen-lines"/>
+      <rect x="128" y="194" width="14" height="7" rx="2" class="controller-well"/><rect x="128" y="210" width="14" height="7" rx="2" class="controller-well"/>
+      <rect x="258" y="194" width="14" height="7" rx="2" class="controller-well"/><rect x="258" y="210" width="14" height="7" rx="2" class="controller-well"/>
+      <path d="M117 228h166" class="controller-detail"/>
+      </g>`;
   } else if (stick) {
     body = `<path d="M110 175h180l31 43q4 10-10 10H89q-14 0-10-10Z" class="controller-shell"/>
       <ellipse cx="200" cy="187" rx="51" ry="21" class="controller-well"/>

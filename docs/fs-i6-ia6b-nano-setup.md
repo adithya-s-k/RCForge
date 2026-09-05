@@ -4,6 +4,8 @@ A step-by-step guide for the transmitter, receiver and jumper wires in your phot
 
 The receiver and transmitter labels are visible. The board looks like a classic Nano, but its processor marking, USB chip and header solder joints cannot be confirmed from the photo. Check those before selecting the board or connecting power.
 
+> **Receiver connection: still to be tested successfully.** A user-reported attempt caused the Nano USB port to disappear when the transmitter linked, even with only receiver power and ground connected. The cause has not been established. This is a reference procedure, not a validated setup. The [direct trainer route](trainer-nano.md) has demonstrated PPM reception and avoids powering the receiver.
+
 ## 1. What you are building
 
 ```text
@@ -16,7 +18,7 @@ The receiver and transmitter labels are visible. The board looks like a classic 
                                   └── powered by Nano's USB-fed 5V pin
 ```
 
-**Use receiver PPM first.** PPM carries the stick and auxiliary channels on one signal wire. PWM uses a separate wire per channel. The receiver's `PPM/CH1` connector provides PPM when enabled; `i-BUS/SERVO` and `SENS` are different interfaces. Leave those unused for this guide. [FlySky receiver manual, interface diagram](https://storage.ua.prom.st/3070002_fs_ia6b_user_manual_20240327.pdf).
+**For the receiver route, PPM uses fewer wires.** PPM carries the stick and auxiliary channels on one signal wire. PWM uses a separate wire per channel. The receiver's `PPM/CH1` connector provides PPM when enabled; `i-BUS/SERVO` and `SENS` are different interfaces. Leave those unused for this guide. [FlySky receiver manual, interface diagram](https://storage.ua.prom.st/3070002_fs_ia6b_user_manual_20240327.pdf).
 
 The Nano runs RCForge's existing serial bridge. You do **not** need a USB simulator adapter, a connection to the transmitter's trainer socket, or a flight controller for this route. It does not turn the Nano into a system-wide USB gamepad.
 
@@ -261,7 +263,7 @@ All six signal wires must be present. Repeat the serial, failsafe and calibratio
 | Radio off but simulation stays live                 | Receiver is holding outputs; revisit CH6 failsafe and test again.                               |
 | Cannot read the pin labels                          | Stop before power-up and take a clear close-up of the receiver pin end and both Nano sides.     |
 
-## What this guide verifies
+## Verification limits
 
 The connections match the checked-in [bridge](../hardware/rcforge_bridge/rcforge_bridge.ino), the manufacturer's documented PPM port and the classic Nano pinout. Your particular board, receiver firmware, actual voltages and physical wiring have **not** been tested remotely. No upload or change to your transmitter has been performed by this guide.
 

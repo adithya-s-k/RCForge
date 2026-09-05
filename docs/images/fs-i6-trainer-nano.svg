@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="970" viewBox="0 0 1200 970" role="img" aria-labelledby="title desc">
 <title id="title">FS-i6 trainer socket to Arduino Nano</title>
-<desc id="desc">An outside rear view locates the trainer socket below the antenna. The socket contacts have no verified electrical assignments. Use a documented breakout: PPM OUT through 1 kiloohm to D2, 47 kiloohms from D2 to ground, and shared ground. Transmitter and Nano have separate power. Read diagnostics before using the bridge.</desc>
+<desc id="desc">An outside rear view locates the trainer socket below the antenna. A builder reference identifies upper-left PPM OUT and the metal shell as ground, with the key opening at the top. Confirm actual hardware before wiring. Use a documented breakout: PPM OUT through 1 kiloohm to D2, 47 kiloohms from D2 to ground, and shared ground. Transmitter and Nano have separate power. Read diagnostics before using the bridge.</desc>
 <style>text{font-family:Arial,Helvetica,sans-serif;fill:#f1f2f5}.small{font-size:16px;fill:#a1a5b0}.label{font-size:13px;letter-spacing:2px;fill:#a1a5b0}.heading{font-size:22px;font-weight:700}.mono{font-family:monospace;font-size:18px}.signal{stroke:#eac275;fill:none;stroke-width:4;stroke-linejoin:round}.ground{stroke:#b2bccb;fill:none;stroke-width:4}.panel{fill:#191c22;stroke:#3b404b}.outline{stroke:#737c89;stroke-width:2;fill:none}</style>
 <rect width="1200" height="970" rx="20" fill="#111419"/>
 <text x="40" y="40" class="label">RCFORGE / BENCH CONNECTION GUIDE</text>
@@ -20,21 +20,28 @@
 <rect x="120" y="458" width="214" height="92" rx="12" fill="#191c22" stroke="#737c89"/>
 <text x="227" y="500" class="small" text-anchor="middle">Battery compartment</text>
 <path d="M203 522h48" class="outline"/>
-<!-- Enlargement is deliberately separate from all electrical wires. -->
+<!-- Builder-reported contact reference, outside rear view, key opening up. -->
 <path d="M252 369H365V586H227V600" fill="none" stroke="#737c89" stroke-dasharray="4 5"/>
 <circle cx="227" cy="639" r="45" fill="#242a32" stroke="#b2bccb" stroke-width="3"/>
 <circle cx="227" cy="639" r="35" fill="#191c22" stroke="#737c89"/>
 <rect x="218" y="610" width="18" height="10" rx="2" fill="#111419"/>
-<rect x="206" y="626" width="8" height="9" fill="#111419" stroke="#737c89"/>
+<rect x="206" y="626" width="8" height="9" fill="#eac275" stroke="#eac275"/>
 <rect x="239" y="626" width="8" height="9" fill="#111419" stroke="#737c89"/>
 <rect x="209" y="645" width="8" height="9" fill="#111419" stroke="#737c89"/>
 <rect x="237" y="645" width="8" height="9" fill="#111419" stroke="#737c89"/>
-<text x="227" y="709" class="small" text-anchor="middle">Orientation only · contacts unassigned</text>
+<path d="M147 619H171L204 630" stroke="#eac275" fill="none" stroke-width="2"/>
+<text x="59" y="615" font-size="16" style="fill:#eac275">PPM OUT</text>
+<text x="59" y="638" font-size="13" class="small">Upper left</text>
+<path d="M268 654H287" stroke="#b2bccb" fill="none" stroke-width="2"/>
+<text x="294" y="651" font-size="16">GND</text>
+<text x="294" y="672" font-size="13">Metal ring</text>
+<text x="227" y="708" font-size="14" text-anchor="middle">Key at top · other three contacts unused</text>
+<text x="227" y="728" font-size="12" text-anchor="middle" style="fill:#a1a5b0">Builder reference; verify your radio / cable</text>
 
 <rect x="438" y="152" width="730" height="586" rx="14" class="panel"/>
 <text x="462" y="187" class="label">02 / WIRE VERIFIED SIGNALS</text>
 <text x="462" y="220" class="heading">Use a documented PPM OUT breakout</text>
-<text x="462" y="250" class="small">Socket front ≠ plug solder side. Do not guess a contact.</text>
+<text x="462" y="250" class="small">Outside rear view · plug solder-side wiring may be mirrored.</text>
 <rect x="462" y="286" width="180" height="243" rx="10" fill="#111419" stroke="#3b404b"/>
 <text x="480" y="319" font-size="18" font-weight="700">TRAINER CABLE</text>
 <text x="480" y="344" class="small">Verified terminals</text>
@@ -85,5 +92,5 @@
 <text x="814" y="836" class="heading">3. Connect RCForge</text>
 <text x="814" y="865" class="small">Upload rcforge_bridge.ino instead.</text>
 <text x="814" y="890" class="small">Six channels + CH6 RUN → calibrate.</text>
-<text x="40" y="947" font-size="13" fill="#737c89">Original schematic / FS-i6 rear reference / not a cable pinout or hardware-tested installation</text>
+<text x="40" y="947" font-size="13" fill="#737c89">Contact reference: rootik/RCTransmitter-USBGamepad / verify your hardware / receiver route still unverified</text>
 </svg>

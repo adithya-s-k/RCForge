@@ -2,15 +2,21 @@
 
 Connect the transmitter directly to USB through your **classic ATmega328P Nano**. The receiver is not used. This guide pairs a socket illustration with a PPM diagnostic sketch and the existing RCForge bridge.
 
-![Rear trainer socket orientation, verified breakout, signal conditioning and Nano wiring. Socket contacts are intentionally not assigned electrical functions.](images/fs-i6-trainer-nano.svg)
+![Rear trainer socket orientation, verified breakout, signal conditioning and Nano wiring. Builder-reported upper-left PPM OUT and outer metal shell GND, with the key at the top.](images/fs-i6-trainer-nano.svg)
+
+## What has been tested
+
+**Trainer PPM reception has been demonstrated on one user setup. Receiver connections are still to be tested.** User-supplied Serial Monitor output showed six decoded channels, changing stick values, and a reported CH6 RUN position. This establishes basic trainer-to-Nano reception, not every control, electrical level, or an end-to-end flight test.
+
+The bridge subsequently emitted `RCF1` packets with status `0`. Accepted flight input, calibration and signal-loss recovery still need confirmation. See [test status](radio-setup.md#connection-test-status) for the receiver limitation.
 
 ## 1. Identify the plug before wiring
 
-The drawing shows the **socket viewed from outside the transmitter**, with the antenna above it, as in your photo. It is an orientation illustration, not a verified electrical pinout. Looking at a plug's solder side can reverse left and right.
+The drawing shows the **socket viewed from outside the transmitter**, with the antenna above it, as in your photo. The [labeled photograph from a working FS-i6 adapter project](https://github.com/rootik/RCTransmitter-USBGamepad/blob/master/images/fs-i6.png) identifies the **upper-left contact as PPM OUT** and the **outer metal ring as GND**, with the rectangular key opening at the top. Leave the other three contacts unused. Ground is the metal shell, not another hole. This is a builder-reported reference, not a manufacturer-certified pinout; verify your radio and cable. Looking at a plug's solder side can reverse left and right.
 
 Use an **FS-i6-compatible trainer PPM-output breakout** with documented contacts. You need only **PPM OUT and GND**. Do not insert loose jumper wires into the socket, infer a pin from wire color, or assume a physically matching S-video/PS/2 cable has the correct wiring. A firmware-update USB cable is not a PPM-to-USB joystick adapter.
 
-The manufacturer sources checked do not establish the numbered contacts for your exact cable. A separate builder reports a working [FS-i6 trainer PPM adapter](https://github.com/rootik/RCTransmitter-USBGamepad), but that project uses a Leonardo and its D4 input; **our classic Nano sketch uses D2**. Its wiring is not proof of your cable's contact assignment.
+The manufacturer sources checked do not establish the numbered contacts for your exact cable; the drawing now includes the separate builder reference above. A separate builder reports a working [FS-i6 trainer PPM adapter](https://github.com/rootik/RCTransmitter-USBGamepad), but that project uses a Leonardo and its D4 input; **our classic Nano sketch uses D2**. Its wiring is not proof of your cable's contact assignment.
 
 If the cable documentation does not specify electrical levels, have PPM OUT checked with an oscilloscope and suitable probes. This circuit expects LOW near 0 V and HIGH at **3.3–5 V**, with no negative voltage. An ordinary multimeter cannot verify pulse peaks. The resistors below do not convert an unsuitable voltage.
 
@@ -73,6 +79,17 @@ Set the physical CH6 control above 1700 μs for RUN, below it for STOP. If stude
 2. Close Serial Monitor. Open RCForge in desktop Chrome on localhost or HTTPS.
 3. Choose **Controllers → RC transmitter → Connect Arduino**, select the Nano, then map and calibrate the four flight controls.
 4. With throttle low, test STOP and transmitter power-off. Input must become unavailable and flight must pause. Restoring the signal must not resume flight automatically.
+
+## If RCForge says “Input stopped”
+
+The USB port has opened, but the bridge is not reporting accepted live input. In `RCF1,502,0,PPM,6,...`, the third field is the validity flag. **When it is `0`, the six values that follow are substituted inactive values, not raw stick readings.** You cannot use the displayed CH6 fallback of 1000 to conclude the physical switch is low.
+
+1. Put the control that produced RUN in the diagnostic into that same position, with throttle low.
+2. Disconnect RCForge before opening Serial Monitor at 115200. Look for `RCF1,number,1,PPM,6,...`.
+3. If the status stays `0`, temporarily upload the diagnostic again to distinguish missing/malformed pulses from CH6 STOP. Do not change pins or disable the guard to hide an unknown signal problem.
+4. Upload the bridge again after diagnosis, close Serial Monitor, reconnect and calibrate. Reconnecting does not automatically resume a flight.
+
+`Failed to open serial port` happens earlier: close Serial Monitor/other serial clients, reconnect USB and select the current port in desktop Chrome. It is not a CH6 rejection.
 
 ## Sources and verification
 
