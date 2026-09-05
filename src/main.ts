@@ -1,3 +1,9 @@
+import {
+  hostAllows,
+  requireHostAccess,
+  onHostAccessChange,
+  mountHost,
+} from "./app/host";
 import { ComponentPlacementDialog } from "./app/component-placement";
 import "./view/vtol.css";
 import { VtolFlight } from "./app/vtol-flight";
@@ -111,7 +117,9 @@ for (const selector of [".flight-bottom", ".flight-key-guide"])
 const originals = [...bundledAircraft];
 const bundledIds = new Set(originals.map((a) => a.id));
 originals.push(...importedAircraft(originals));
-let baseline = preferredAircraft(originals),
+let baseline = preferredAircraft(
+    originals.filter((a) => hostAllows({ kind: "aircraft", id: a.id })),
+  ),
   aircraft = structuredClone(baseline),
   environment = calmEnvironment(),
   mode: LaunchMode = "ground",
@@ -179,7 +187,10 @@ let previewAccumulator = 0;
 let previewPitchTrim = 0;
 let previewStatus = "Enable Test sticks to move the controls.";
 renderControlTest(controlPreview);
-const input = new InputManager((reason) => pause(reason));
+const input = new InputManager(
+  (reason) => pause(reason),
+  () => hostAllows({ kind: "input", id: "controller" }),
+);
 const controller = new ControllerPage(input, () => pause(), message);
 const arduino = setupArduino(input, controller, pause);
 const vtolFlight = new VtolFlight(
@@ -326,6 +337,10 @@ function reset() {
   stats();
 }
 async function launch() {
+  if (!requireHostAccess({ kind: "aircraft", id: sim.aircraft.id })) return;
+  if (!requireHostAccess({ kind: "input", id: controller.type })) return;
+  if (replay && !requireHostAccess({ kind: "workspace", id: "experiments" }))
+    return;
   if (!scene) {
     message("WebGL is unavailable. Enable hardware acceleration to fly.");
     return;
@@ -370,9 +385,16 @@ async function launch() {
   await audio.start();
 }
 function loadAircraft(a: Aircraft) {
+  if (!requireHostAccess({ kind: "aircraft", id: a.id })) {
+    fillSelects();
+    return;
+  }
   baseline = originals.find((v) => v.id === a.id) ?? a;
-  aircraft = savedAircraft(a);
-  rememberAircraft(aircraft.id);
+  aircraft = hostAllows({ kind: "workspace", id: "aircraft" })
+    ? savedAircraft(a)
+    : structuredClone(a);
+  if (hostAllows({ kind: "workspace", id: "aircraft" }))
+    rememberAircraft(aircraft.id);
   editor.switchTo(aircraft);
   reset();
   invalidate();
@@ -381,7 +403,10 @@ function loadAircraft(a: Aircraft) {
 function fillSelects() {
   for (const id of ["flight-aircraft", "editor-aircraft"]) {
     $(id).innerHTML = originals
-      .map((a) => `<option value="${a.id}">${escape(a.name)}</option>`)
+      .map(
+        (a) =>
+          `<option value="${a.id}">${escape(a.name)}${hostAllows({ kind: "aircraft", id: a.id }) ? "" : " · Sign in"}</option>`,
+      )
       .join("");
     $<HTMLSelectElement>(id).value = aircraft.id;
   }
@@ -487,7 +512,14 @@ function route() {
   cameraPlacer?.close(false);
   componentPlacer?.close(false);
   positioning.close(false);
-  const next = location.hash.replace(/^#\//, "") || "fly";
+  let next = location.hash.replace(/^#\//, "") || "fly";
+  if (
+    (next === "aircraft" || next === "experiments") &&
+    !requireHostAccess({ kind: "workspace", id: next })
+  ) {
+    next = "fly";
+    history.replaceState(null, "", "#/fly");
+  }
   window.scrollTo(0, 0);
   page = ["fly", "aircraft", "controllers", "experiments"].includes(next)
     ? next
@@ -668,6 +700,7 @@ function updateExperimentInfo() {
       : "Original model compared with your applied configuration.";
 }
 function applyDraft() {
+  if (!requireHostAccess({ kind: "workspace", id: "aircraft" })) return false;
   try {
     editor.commitPending();
     const next = parseAircraft(editor.draft);
@@ -751,12 +784,14 @@ $("export-aircraft").onclick = () => {
 $("import-aircraft-button").onclick = () => $("import-aircraft").click();
 $<HTMLInputElement>("import-aircraft").onchange = async (e) => {
   const file = (e.target as HTMLInputElement).files?.[0];
-  if (!file) return;
+  if (!file || !requireHostAccess({ kind: "workspace", id: "aircraft" }))
+    return;
   try {
     if (file.size > MAX_HISTORY_BYTES)
       throw new Error("Import exceeds the 1.8 MB limit.");
     const text = await file.text(),
       data: unknown = JSON.parse(text);
+    if (!requireHostAccess({ kind: "workspace", id: "aircraft" })) return;
     const archive =
       data &&
       typeof data === "object" &&
@@ -848,6 +883,7 @@ function cycleFlightCamera() {
   setFlightCamera(views[(views.indexOf(flightCamera) + 1) % views.length]);
 }
 function openFpvEditor() {
+  if (!requireHostAccess({ kind: "workspace", id: "aircraft" })) return;
   pause();
   location.hash = "#/aircraft";
   route();
@@ -987,9 +1023,11 @@ $<HTMLInputElement>("import-replay").onchange = async (e) => {
   const file = (e.target as HTMLInputElement).files?.[0];
   if (!file) return;
   try {
+    if (!requireHostAccess({ kind: "workspace", id: "experiments" })) return;
     if (file.size > 15000000) throw new Error("Recording exceeds 15 MB");
     const r = parseRecording(JSON.parse(await file.text())),
       next = new Simulation(r.aircraft, r.environment, r.initialState);
+    if (!requireHostAccess({ kind: "workspace", id: "experiments" })) return;
     pause();
     replay = r;
     replayIndex = 0;
@@ -1437,3 +1475,54 @@ scene?.pilotPosition.set(
 route();
 controller.selectType("keyboard");
 requestAnimationFrame(frame);
+
+// Access changes pause immediately and retain drafts/history; never silently resume.
+onHostAccessChange(() => {
+  pause("Account access changed — resume when ready.");
+  input.clear();
+  if (!hostAllows({ kind: "input", id: controller.type })) {
+    void arduino.disconnect();
+    controller.selectType("keyboard");
+  }
+  if (!hostAllows({ kind: "workspace", id: "aircraft" })) {
+    const available = originals.filter((a) =>
+      hostAllows({ kind: "aircraft", id: a.id }),
+    );
+    if (available.length) loadAircraft(available[0]);
+  }
+  fillSelects();
+  route();
+});
+mountHost({
+  prepareToLeave() {
+    pause();
+    input.clear();
+    try {
+      if (hostAllows({ kind: "workspace", id: "aircraft" })) {
+        editor.commitPending();
+        if (!sameAircraft(editor.draft, aircraft))
+          saveAircraftRevision(editor.draft, {
+            name: "Before account change",
+            previous: aircraft,
+          });
+      }
+      return true;
+    } catch (error) {
+      message("Keep your work before continuing: " + errorText(error), true);
+      return false;
+    }
+  },
+  open(request) {
+    if (request.kind === "aircraft") {
+      const model = originals.find((a) => a.id === request.id);
+      if (model) loadAircraft(model);
+      location.hash = "/fly";
+    } else if (request.kind === "input") {
+      location.hash = "/controllers";
+      if (
+        ["keyboard", "gamepad", "joystick", "transmitter"].includes(request.id)
+      )
+        controller.selectType(request.id as typeof controller.type);
+    } else location.hash = "/" + request.id;
+  },
+});

@@ -1,3 +1,4 @@
+import { requireHostAccess } from "./host";
 import { $, escape, download } from "./dom";
 import {
   InputManager,
@@ -215,6 +216,10 @@ export class ControllerPage {
     this.updateAvailability();
   }
   selectType(type: InputType) {
+    if (!requireHostAccess({ kind: "input", id: type })) {
+      $<HTMLSelectElement>("flight-input-type").value = this.type;
+      return;
+    }
     if (this.initialized && type === this.type) return;
     this.initialized = true;
     this.cancel();

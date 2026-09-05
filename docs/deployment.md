@@ -46,3 +46,23 @@ A restrictive Permissions Policy should allow `gamepad` and, where supported, `s
 - Check missing documentation paths return 404, and local-plan URLs are unavailable in production.
 
 Localhost storage does not migrate to the domain automatically. Share the [history migration steps](versioning.md#move-from-localhost-to-the-hosted-workbench) when announcing the hosted site. Keep the previous deployment available for rollback; an older build may reject newer file formats, so retain exported backups before rolling back.
+
+## Optional hosted integration
+
+The MIT standalone build remains unrestricted and has no authentication or
+analytics service. An embedding application can call `configureHost` from
+`src/app/host.ts` before importing `src/main.ts`. It supplies capability checks
+for aircraft, workspaces and input devices, plus its own account UI. Call
+`notifyHostAccessChange` when authenticated access changes. The workbench pauses,
+clears held controls and applies the new policy without automatically resuming.
+
+The host receives `prepareToLeave` to pause and checkpoint a pending aircraft
+draft before an account redirect. If validation or storage fails, it returns
+false and the host must cancel navigation. `open` returns a signed-in visitor to
+the requested workspace, aircraft or device setup; hardware permission still
+requires an explicit connection action.
+
+Restrictions in browser code are presentation policy, not a security boundary.
+Authorize private APIs and cloud data on the server. Keep OAuth secrets out of
+bundles. A separate hosted build can include account/analytics integrations;
+community builds must not contact those services or require their credentials.

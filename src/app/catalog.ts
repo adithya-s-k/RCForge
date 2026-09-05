@@ -1,3 +1,4 @@
+import { hostAllows, requireHostAccess } from "./host";
 import * as T from "three";
 import { buildAircraft, disposeAircraft } from "../view/model";
 import { massProperties } from "../core/aircraft";
@@ -77,7 +78,7 @@ export function setupCatalog(
       matches
         .map((a) => {
           const quad = a.vehicleType === "multirotor";
-          return `<button class="catalog-card" data-catalog-id="${escape(a.id)}" aria-label="Select ${escape(a.name)}" aria-pressed="${a.id === current()}"><div class="catalog-preview">${cache.has(a.id) ? `<img src="${cache.get(a.id)}" alt="${escape(a.name)} 3D model"/>` : "<span>Preview unavailable</span>"}<span class="catalog-type">${a.vtol ? "TILTROTOR VTOL" : quad ? "MULTIROTOR" : "FIXED WING"}</span>${a.id === current() ? '<span class="catalog-current">Selected</span>' : ""}</div><div class="catalog-info"><h3>${escape(a.name)}</h3><div class="catalog-specs"><span><b>${(a.reference.spanM * 1000).toFixed(0)} mm</b>${quad ? "Motor diagonal" : "Wingspan"}</span><span><b>${(massProperties(a).mass * 1000).toFixed(0)} g</b>Model mass</span><span><b>${a.motors.length}</b>Motors</span></div><div class="catalog-choose">${target === "editor" ? "Open in editor" : "Use for flight"}<span>→</span></div></div></button>`;
+          return `<button class="catalog-card" data-catalog-id="${escape(a.id)}" aria-label="Select ${escape(a.name)}" aria-pressed="${a.id === current()}"><div class="catalog-preview">${cache.has(a.id) ? `<img src="${cache.get(a.id)}" alt="${escape(a.name)} 3D model"/>` : "<span>Preview unavailable</span>"}<span class="catalog-type">${a.vtol ? "TILTROTOR VTOL" : quad ? "MULTIROTOR" : "FIXED WING"}</span>${a.id === current() ? '<span class="catalog-current">Selected</span>' : ""}</div><div class="catalog-info"><h3>${escape(a.name)}</h3><div class="catalog-specs"><span><b>${(a.reference.spanM * 1000).toFixed(0)} mm</b>${quad ? "Motor diagonal" : "Wingspan"}</span><span><b>${(massProperties(a).mass * 1000).toFixed(0)} g</b>Model mass</span><span><b>${a.motors.length}</b>Motors</span></div><div class="catalog-choose">${!hostAllows({ kind: "aircraft", id: a.id }) ? "Sign in to fly" : target === "editor" ? "Open in editor" : "Use for flight"}<span>→</span></div></div></button>`;
         })
         .join("") ||
       '<div class="catalog-empty"><h3>No matching aircraft</h3><p>Try a different search or clear the filters above.</p></div>';
@@ -88,8 +89,9 @@ export function setupCatalog(
         (button) =>
           (button.onclick = () => {
             const a = models.find((m) => m.id === button.dataset.catalogId)!;
-            if (a.id !== current()) select(a);
             dialog.close();
+            if (!requireHostAccess({ kind: "aircraft", id: a.id })) return;
+            if (a.id !== current()) select(a);
           }),
       );
   };

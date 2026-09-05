@@ -149,7 +149,10 @@ export class InputManager {
     this.turnAxis = axis;
     this.clear(); // A held key must not become a different command after an aircraft switch.
   }
-  constructor(private onInterrupt: (reason: string) => void) {
+  constructor(
+    private onInterrupt: (reason: string) => void,
+    private allowDevices: () => boolean = () => true,
+  ) {
     window.addEventListener("keydown", (e) => {
       if (!this.active || ownsKeyboard(e.target)) return;
       if (
@@ -214,6 +217,7 @@ export class InputManager {
     this.keyboard = { roll: 0, pitch: 0, yaw: 0 };
   }
   devices(): InputDevice[] {
+    if (!this.allowDevices()) return [];
     let pads: Gamepad[] = [];
     try {
       pads = Array.from(navigator.getGamepads?.() ?? []).filter(
