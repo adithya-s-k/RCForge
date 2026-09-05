@@ -51,7 +51,7 @@ Use **Control test** to check mechanisms without spinning motors: yaw moves the 
 
 ## Components, placement and balance
 
-The preset has **34 mass entries totaling 1,287 g**. Its computed CG is approximately 52.9 mm aft of the wing leading edge. These are properties of the JSON definition, not a weighed build. The original Bronco's published 830 g weight does not describe this conversion.
+The preset has **36 mass entries totaling 1,323 g**. Its computed CG is approximately 46.9 mm aft of the wing leading edge. These are properties of the JSON definition, not a weighed build. The original Bronco's published 830 g weight does not describe this conversion.
 
 | Installed equipment     | Definition / evidence                                                                                                                            |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -59,10 +59,12 @@ The preset has **34 mass entries totaling 1,287 g**. Its computed CG is approxim
 | Rear yaw servo          | Provisional MG996R based on the close-up, 55 g, manufacturer 0.15 s/60° at 6 V; ±20° configured lean                                             |
 | Motors / propellers     | 3 × EMAX MT2213 935KV / 1045 packages; 53 g motor and estimated 8 g prop each. This is an assumed package, not a motor identified from the photo |
 | Battery                 | Estimated 3S 2200 mAh / 190 g pack, initially 95% charge                                                                                         |
-| Structure and hardware  | Bronco foam structure, four surface servos, separate front yokes, rear printed cradle, wood support, skid assembly                               |
+| Structure and hardware  | Bronco foam structure, four surface servos, two 18 g front wood platforms, front yokes, rear printed cradle and wood beam, skid assembly         |
 | Electronics             | Individual left/right/rear ESCs, receiver, wiring, flight controller and BEC; masses and positions estimated                                     |
 
 ![Illustrated component mass and center-of-gravity relationship](images/diagram-mass-cg.svg)
+
+In the interactive guide, move the battery slider to compare positions. Moving this 190 g battery 50 mm forward shifts CG 7.2 mm toward the nose, without changing total mass. The illustration follows the preset geometry; it is not a physical fit or safe-CG assessment and does not alter your editor draft.
 
 Open **Components**, choose a part by its name and icon, then **Move on model**. Drag an X/Y/Z arrow or enter millimeters. The gold CG marker and balance readout update while you move. **Check motor headroom** solves a physical hover equilibrium at the starting battery charge; it reports motor commands, not a certified flight margin. A heavily loaded rear motor can constrain the aircraft even when total thrust appears adequate. **Cancel** discards placement; **Use placement** changes the editor draft. **Apply to flight** creates a local version and adopts the result.
 
@@ -96,6 +98,10 @@ Start from [bronco-tri-vtol.json](../aircraft/bronco-tri-vtol.json), assign a ne
 
 `motors[].positionM` is the force application point on the tilt axis. In this reconstruction the rear motor housing is above its longitudinal hinge; its thrust line passes through that hinge, so its force moment is computed there. Component positions specify mass centers. This fixed-inertia approximation does not shift CG/inertia throughout servo movement.
 
+`vtol.massConfiguration: "hover"` declares that motor and propeller mass envelopes describe the upright installation. The renderer transforms those same envelopes around the motor force pivots during conversion. Older definitions without this field default to `"front-forward"`, preserving their original front motor envelopes. The rear motor is upright in both formats. This is an installation convention, not a physics integration change.
+
+The front platforms connect the motor brackets to the nacelles. Mirrored front servo shafts align with their lateral hinges; the rear servo shaft aligns with the longitudinal yaw hinge. The moving cradles, routed wires and flight-controller standoffs are illustrative hardware within the existing mass entries. Inspect physical clearances and weigh the real assembly before replacing these estimates.
+
 ```bash
 npm run aircraft:validate -- bronco-tri-vtol
 npm run simulate -- bronco-tri-vtol --scenario vtol-transition --duration 50
@@ -111,7 +117,7 @@ Regression tests cover six-axis hover equilibrium, cruise equilibrium, CG-sensit
 
 The controller uses exact simulated attitude, velocity, position and modeled aerodynamic loads. It has no sensor noise, latency, estimator or GPS faults. The model omits rotor-wing downwash, tilt gyroscopic moments, moving-part inertia, servo hinge-load/backlash, BEC/servo-current transients, detailed motor/prop advance-ratio maps and measured conversion aerodynamics. Fixed-wing propwash is disabled for VTOL instead of applying a forward stream to an upright rotor. Hover near-ground rotor effects and real thrust curves across inflow are not validated.
 
-The operating-point survey finds 116 trim solutions across 162 conditions and no nonfinite load cases. Missing solutions include heavy/low-charge hover and some 9 m/s cruise points; these are reported, not suppressed. At baseline mass, 15% charge does not solve hover even at the club field. The lower-density sites also lose modeled hover at 50% charge. The preset needs thrust/weight and battery margins assessed before treating any configuration as flyable.
+The operating-point survey finds 107 trim solutions across 162 conditions and no nonfinite load cases. Missing solutions include heavy/low-charge hover and some 9 m/s cruise points; these are reported, not suppressed. At baseline mass, 15% charge does not solve hover even at the club field. The lower-density sites also lose modeled hover at 50% charge. The preset needs thrust/weight and battery margins assessed before treating any configuration as flyable.
 
 No real transmitter, Arduino, servo, motor bench or flight test validates this conversion. Collect component masses and stations, loaded servo timing, thrust/current versus voltage, then independent hover and transition logs before making fidelity claims. See [validation limits](validation.md) and the [realism plan](realism-plan.md).
 

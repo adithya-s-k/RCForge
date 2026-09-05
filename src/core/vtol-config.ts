@@ -31,6 +31,10 @@ export const VtolConfigSchema = z
     leftServoPartId: z.string().min(1),
     rightServoPartId: z.string().min(1),
     rearServoPartId: z.string().min(1),
+    // Older local builds authored the front motor mass envelopes in forward flight.
+    massConfiguration: z
+      .enum(["hover", "front-forward"])
+      .default("front-forward"),
     tiltRateDegS: number.min(3).max(60),
     yawTiltDeg: number.min(5).max(30),
     transitionAirspeedMps: number.min(5).max(35),

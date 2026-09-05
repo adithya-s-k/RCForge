@@ -58,7 +58,7 @@ const hover = (altitude = 15) => {
 
 it("counts both real tilt servos, the third motor and the separate mounting mass exactly once", () => {
   const a = aircraft();
-  expect(massProperties(a).mass).toBeCloseTo(1.287, 6);
+  expect(massProperties(a).mass).toBeCloseTo(1.323, 6);
   expect(a.parts.filter((p) => p.catalogId === "rds3115mg-180")).toHaveLength(
     2,
   );
@@ -327,4 +327,83 @@ it("animates front conversion and separate sideways rear yaw at installed servo 
     preview.step(hoverControl(), responseSettings());
   expect(preview.tiltDeg[0]).toBeCloseTo(a.vtol!.tiltRateDegS);
   disposeAircraft(model.group);
+});
+
+it("aligns installed shaft axes and rendered hover hardware with the component ledger", () => {
+  const a = aircraft(),
+    visual = buildAircraft(a),
+    cg = new T.Vector3(...massProperties(a).cg);
+  visual.group.updateMatrixWorld(true);
+  expect(visual.tiltServoHorns).toHaveLength(3);
+  a.motors.forEach((motor, index) => {
+    const part = a.parts.find((p) => p.id === motor.partId)!;
+    const housing = visual.group
+      .getObjectByName(`tilt-pivot:${motor.id}`)!
+      .getObjectByName("vtol-motor-can")!;
+    expect(
+      housing
+        .getWorldPosition(new T.Vector3())
+        .add(cg)
+        .distanceTo(new T.Vector3(...part.positionM)),
+    ).toBeLessThan(1e-9);
+    const prop = a.parts.find((p) => p.id === motor.propPartId)!;
+    expect(
+      visual.propellers[index]
+        .getWorldPosition(new T.Vector3())
+        .add(cg)
+        .distanceTo(new T.Vector3(...prop.positionM)),
+    ).toBeLessThan(1e-9);
+  });
+  const pairs = [
+    [a.vtol!.leftServoPartId, a.vtol!.frontLeftMotorId, 1],
+    [a.vtol!.rightServoPartId, a.vtol!.frontRightMotorId, -1],
+    [a.vtol!.rearServoPartId, a.vtol!.rearMotorId, 0],
+  ] as const;
+  for (const [id, motorId, direction] of pairs) {
+    const shaft = visual.group.getObjectByName(`servo-shaft:${id}`)!;
+    const pos = shaft.getWorldPosition(new T.Vector3()).add(cg);
+    const motor = a.motors.find((m) => m.id === motorId)!;
+    const axis = new T.Vector3(0, 1, 0).applyQuaternion(
+      shaft.getWorldQuaternion(new T.Quaternion()),
+    );
+    expect(pos.z).toBeCloseTo(motor.positionM[2], 8);
+    if (direction) {
+      expect(pos.x).toBeCloseTo(motor.positionM[0], 8);
+      expect(axis.y).toBeCloseTo(direction, 8);
+    } else {
+      expect(pos.y).toBeCloseTo(motor.positionM[1], 8);
+      expect(axis.x).toBeCloseTo(-1, 8);
+    }
+  }
+  disposeAircraft(visual.group);
+});
+it("supports both front mounts and the rear yaw base without hidden mass", () => {
+  const a = aircraft(),
+    part = (id: string) => a.parts.find((p) => p.id === id)!;
+  const front = [part("front-support-left"), part("front-support-right")];
+  expect(front.reduce((s, p) => s + p.massKg, 0)).toBeCloseTo(0.036, 8);
+  for (const [i, platform] of front.entries()) {
+    const bracket = part(i === 0 ? "tilt-bracket-left" : "tilt-bracket-right");
+    expect(bracket.positionM[2] + bracket.sizeM[2] / 2).toBeCloseTo(
+      platform.positionM[2] - platform.sizeM[2] / 2,
+      8,
+    );
+    const boom = part(i === 0 ? "left-boom" : "right-boom");
+    expect(platform.positionM[0] - platform.sizeM[0] / 2).toBeLessThan(
+      boom.positionM[0] + boom.sizeM[0] / 2,
+    );
+  }
+  const rear = part("rear-yaw-bracket"),
+    beam = part("rear-motor-support");
+  expect(rear.positionM[2] + rear.sizeM[2] / 2).toBeCloseTo(
+    beam.positionM[2] - beam.sizeM[2] / 2,
+    8,
+  );
+});
+it("preserves the legacy front-forward mass convention when old definitions omit the field", () => {
+  const old = structuredClone(raw) as typeof raw & {
+    vtol: { massConfiguration?: string };
+  };
+  Reflect.deleteProperty(old.vtol, "massConfiguration");
+  expect(parseAircraft(old).vtol!.massConfiguration).toBe("front-forward");
 });

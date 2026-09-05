@@ -69,7 +69,11 @@
     },
     "cruiseTrim": {
       "status": "calculated",
-      "note": "Calm sea-level longitudinal equilibrium at 14 m/s with this mass ledger: pitch 2.297°, elevator command +0.30763. Recalculate after moving parts or changing surfaces. Not a measured flight trim."
+      "note": "Calm sea-level longitudinal equilibrium at 14 m/s with this mass ledger: pitch 2.535 degrees, elevator command 0.40915. Recalculate after moving parts or changing surfaces. Not a measured flight trim."
+    },
+    "vtol-installation": {
+      "status": "estimated",
+      "note": "User-supplied conversion and rear yaw-mount photographs; independent installation reconstruction. Two 18 g light-wood front platforms bridge the nacelles to the tilt mounts. Front and rear motor mass envelopes now describe vertical/hover installation; rotor pivots remain the force stations. Mirrored front servo shafts and the rear servo shaft align with their bearing axes. Platform, bracket, servo and skid connections are estimated geometry, not measured CAD or collision-certified hardware. Total mass and inertia are recalculated from these entries."
     }
   },
   "parts": [
@@ -123,142 +127,142 @@
         },
         {
           "x": -0.2315436241610738,
-          "width": 1.0,
+          "width": 1,
           "top": -0.4962121212121212,
           "bottom": 0.3409090909090909
         },
         {
           "x": -0.12416107382550334,
-          "width": 1.0,
+          "width": 1,
           "top": -0.5089105828454841,
           "bottom": 0.3409090909090909
         },
         {
           "x": -0.06375838926174496,
-          "width": 1.0,
+          "width": 1,
           "top": -0.6439393939393938,
           "bottom": 0.3409090909090909,
           "topColor": "#23262a"
         },
         {
           "x": -0.019015659955257256,
-          "width": 1.0,
+          "width": 1,
           "top": -0.6515151515151514,
           "bottom": 0.3409090909090909,
           "topColor": "#23262a"
         },
         {
           "x": 0.047355366567238356,
-          "width": 1.0,
+          "width": 1,
           "top": -0.6523207047057097,
           "bottom": 0.3409090909090909,
           "topColor": "#23262a"
         },
         {
           "x": 0.08125991541138457,
-          "width": 1.0,
+          "width": 1,
           "top": -0.6462575290995118,
           "bottom": 0.3409090909090909,
           "topColor": "#23262a"
         },
         {
           "x": 0.11282839664429531,
-          "width": 1.0,
+          "width": 1,
           "top": -0.6321921319773726,
           "bottom": 0.3409090909090909,
           "topColor": "#23262a"
         },
         {
           "x": 0.14439687787720612,
-          "width": 1.0,
+          "width": 1,
           "top": -0.60665145699795,
           "bottom": 0.3409090909090909,
           "topColor": "#23262a"
         },
         {
           "x": 0.16876774538901324,
-          "width": 1.0,
+          "width": 1,
           "top": -0.5777422160143337,
           "bottom": 0.3409090909090909,
           "topColor": "#23262a"
         },
         {
           "x": 0.19174959972657224,
-          "width": 1.0,
+          "width": 1,
           "top": -0.539778783500991,
           "bottom": 0.3394174633499517,
           "topColor": "#23262a"
         },
         {
           "x": 0.21542596065125533,
-          "width": 1.0,
+          "width": 1,
           "top": -0.4840647326139855,
           "bottom": 0.33697171738533327,
           "topColor": "#23262a"
         },
         {
           "x": 0.2442953367387522,
-          "width": 1.0,
+          "width": 1,
           "top": -0.36015638511698833,
           "bottom": 0.3320618259523528
         },
         {
           "x": 0.2627786825006214,
-          "width": 1.0,
+          "width": 1,
           "top": -0.3609582811349171,
           "bottom": 0.3278517912879286
         },
         {
           "x": 0.29434716373353226,
-          "width": 1.0,
+          "width": 1,
           "top": -0.35704856678896957,
           "bottom": 0.31858313127465193
         },
         {
           "x": 0.33380776527467076,
-          "width": 1.0,
+          "width": 1,
           "top": -0.34173572819657794,
           "bottom": 0.30234801517075865
         },
         {
           "x": 0.3732683668158092,
-          "width": 1.0,
+          "width": 1,
           "top": -0.3141974722723571,
           "bottom": 0.27860267185403803
         },
         {
           "x": 0.4127289683569476,
-          "width": 1.0,
+          "width": 1,
           "top": -0.27146514583492826,
           "bottom": 0.24465118121095772
         },
         {
           "x": 0.4442974495898584,
-          "width": 1.0,
+          "width": 1,
           "top": -0.22205406335784678,
           "bottom": 0.20547827437502836
         },
         {
           "x": 0.46797381051454146,
-          "width": 1.0,
+          "width": 1,
           "top": -0.16964268762486934,
           "bottom": 0.16289577915057468
         },
         {
           "x": 0.48375805113099685,
-          "width": 1.0,
+          "width": 1,
           "top": -0.12030647022407258,
           "bottom": 0.12038077943873851
         },
         {
           "x": 0.49559623159333843,
-          "width": 1.0,
+          "width": 1,
           "top": -0.06002367764353735,
           "bottom": 0.06715989938336515
         },
         {
           "x": 0.49993689776286365,
-          "width": 1.0,
+          "width": 1,
           "top": -0.003210271442494184,
           "bottom": 0.01049122035297334
         }
@@ -290,13 +294,13 @@
         },
         {
           "x": 0.16869300911854104,
-          "width": 1.0,
+          "width": 1,
           "top": -0.4735446146886728,
           "bottom": 0.5555555555555556
         },
         {
           "x": 0.43920972644376904,
-          "width": 1.0,
+          "width": 1,
           "top": -0.6116756584560304,
           "bottom": 0.5555555555555556
         }
@@ -328,13 +332,13 @@
         },
         {
           "x": 0.16869300911854104,
-          "width": 1.0,
+          "width": 1,
           "top": -0.4735446146886728,
           "bottom": 0.5555555555555556
         },
         {
           "x": 0.43920972644376904,
-          "width": 1.0,
+          "width": 1,
           "top": -0.6116756584560304,
           "bottom": 0.5555555555555556
         }
@@ -511,7 +515,7 @@
     {
       "kind": "motor",
       "massKg": 0.053,
-      "sizeM": [0.0397, 0.0279, 0.0279],
+      "sizeM": [0.0279, 0.0279, 0.0397],
       "color": "#252729",
       "manufacturer": "EMAX",
       "model": "MT2213 935KV",
@@ -520,13 +524,13 @@
         "finish": "metal"
       },
       "id": "motor-left",
-      "positionM": [0.215, -0.17960512, -0.005],
+      "positionM": [0.215, -0.17960512, -0.030000000000000002],
       "catalogId": "emax-mt2213-1045-3s"
     },
     {
       "kind": "equipment",
       "massKg": 0.008,
-      "sizeM": [0.003, 0.254, 0.254],
+      "sizeM": [0.254, 0.254, 0.003],
       "color": "#252729",
       "manufacturer": "EMAX",
       "model": "1045 prop (mass estimated)",
@@ -535,7 +539,7 @@
         "finish": "plastic"
       },
       "id": "prop-left",
-      "positionM": [0.238, -0.17960512, -0.005]
+      "positionM": [0.215, -0.17960512, -0.056999999999999995]
     },
     {
       "kind": "equipment",
@@ -554,7 +558,7 @@
         "stallTorqueNm": 1.4709975
       },
       "id": "tilt-servo-left",
-      "positionM": [0.182, -0.20360512, 0.028],
+      "positionM": [0.2042, -0.20360512, -0.005],
       "catalogId": "rds3115mg-180",
       "orientationDeg": [90, 0, 0]
     },
@@ -562,8 +566,8 @@
       "id": "tilt-bracket-left",
       "kind": "equipment",
       "massKg": 0.018,
-      "positionM": [0.215, -0.17960512, 0.01],
-      "sizeM": [0.056, 0.052, 0.032],
+      "positionM": [0.215, -0.17960512, -0.005],
+      "sizeM": [0.056, 0.056, 0.02],
       "color": "#55575a",
       "material": {
         "name": "estimated metal tilt bracket",
@@ -574,7 +578,7 @@
     {
       "kind": "motor",
       "massKg": 0.053,
-      "sizeM": [0.0397, 0.0279, 0.0279],
+      "sizeM": [0.0279, 0.0279, 0.0397],
       "color": "#252729",
       "manufacturer": "EMAX",
       "model": "MT2213 935KV",
@@ -583,13 +587,13 @@
         "finish": "metal"
       },
       "id": "motor-right",
-      "positionM": [0.215, 0.17960512, -0.005],
+      "positionM": [0.215, 0.17960512, -0.030000000000000002],
       "catalogId": "emax-mt2213-1045-3s"
     },
     {
       "kind": "equipment",
       "massKg": 0.008,
-      "sizeM": [0.003, 0.254, 0.254],
+      "sizeM": [0.254, 0.254, 0.003],
       "color": "#252729",
       "manufacturer": "EMAX",
       "model": "1045 prop (mass estimated)",
@@ -598,7 +602,7 @@
         "finish": "plastic"
       },
       "id": "prop-right",
-      "positionM": [0.238, 0.17960512, -0.005]
+      "positionM": [0.215, 0.17960512, -0.056999999999999995]
     },
     {
       "kind": "equipment",
@@ -617,16 +621,16 @@
         "stallTorqueNm": 1.4709975
       },
       "id": "tilt-servo-right",
-      "positionM": [0.182, 0.20360512, 0.028],
+      "positionM": [0.2042, 0.20360512, -0.005],
       "catalogId": "rds3115mg-180",
-      "orientationDeg": [90, 0, 0]
+      "orientationDeg": [-90, 0, 0]
     },
     {
       "id": "tilt-bracket-right",
       "kind": "equipment",
       "massKg": 0.018,
-      "positionM": [0.215, 0.17960512, 0.01],
-      "sizeM": [0.056, 0.052, 0.032],
+      "positionM": [0.215, 0.17960512, -0.005],
+      "sizeM": [0.056, 0.056, 0.02],
       "color": "#55575a",
       "material": {
         "name": "estimated metal tilt bracket",
@@ -667,7 +671,7 @@
       "id": "rear-motor-support",
       "kind": "equipment",
       "massKg": 0.028,
-      "positionM": [-0.244, 0, 0.045],
+      "positionM": [-0.244, 0, 0.05],
       "sizeM": [0.294, 0.055, 0.01],
       "color": "#b39b70",
       "model": "Wood rear rotor support beam (estimated)",
@@ -680,7 +684,7 @@
       "id": "flight-controller",
       "kind": "equipment",
       "massKg": 0.012,
-      "positionM": [-0.04, 0, -0.066],
+      "positionM": [-0.04, 0, -0.049],
       "sizeM": [0.037, 0.037, 0.01],
       "color": "#333537",
       "model": "Estimated installation allowance"
@@ -720,7 +724,7 @@
         "stallTorqueNm": 1.0787315
       },
       "id": "yaw-servo-rear",
-      "positionM": [-0.291, 0, 0.002],
+      "positionM": [-0.291, 0, 0.023989],
       "catalogId": "towerpro-mg996r",
       "manufacturer": "TowerPro",
       "orientationDeg": [0, 90, 0]
@@ -729,8 +733,8 @@
       "id": "rear-yaw-bracket",
       "kind": "equipment",
       "massKg": 0.018,
-      "positionM": [-0.34, 0, 0.014],
-      "sizeM": [0.054, 0.052, 0.028],
+      "positionM": [-0.34, 0, 0.028],
+      "sizeM": [0.054, 0.052, 0.034],
       "color": "#db582d",
       "model": "Printed rear yaw cradle and bearings (estimated)"
     },
@@ -774,10 +778,36 @@
       "id": "wiring",
       "kind": "equipment",
       "massKg": 0.011,
-      "positionM": [0.0, 0, 0.025],
+      "positionM": [0, 0, 0.025],
       "sizeM": [0.15, 0.036, 0.016],
       "color": "#292b2d",
       "model": "Power distribution and wiring (estimated)"
+    },
+    {
+      "id": "front-support-left",
+      "kind": "equipment",
+      "massKg": 0.018,
+      "positionM": [0.15, -0.17960512, 0.008],
+      "sizeM": [0.19, 0.09, 0.006],
+      "color": "#a99471",
+      "model": "Light wood motor platform (estimated)",
+      "material": {
+        "name": "Light plywood / balsa mounting platform",
+        "densityKgM3": 175.44
+      }
+    },
+    {
+      "id": "front-support-right",
+      "kind": "equipment",
+      "massKg": 0.018,
+      "positionM": [0.15, 0.17960512, 0.008],
+      "sizeM": [0.19, 0.09, 0.006],
+      "color": "#a99471",
+      "model": "Light wood motor platform (estimated)",
+      "material": {
+        "name": "Light plywood / balsa mounting platform",
+        "densityKgM3": 175.44
+      }
     }
   ],
   "surfaces": [
@@ -1021,7 +1051,7 @@
             "currentA": 9
           },
           {
-            "command": 1.0,
+            "command": 1,
             "thrustN": 6.276256,
             "currentA": 9.5
           }
@@ -1098,7 +1128,7 @@
             "currentA": 9
           },
           {
-            "command": 1.0,
+            "command": 1,
             "thrustN": 6.276256,
             "currentA": 9.5
           }
@@ -1175,7 +1205,7 @@
             "currentA": 9
           },
           {
-            "command": 1.0,
+            "command": 1,
             "thrustN": 6.276256,
             "currentA": 9.5
           }
@@ -1227,28 +1257,28 @@
     {
       "id": "skid-front-left",
       "positionM": [0.16, -0.18, 0.24],
-      "strutAnchorM": [0.16, -0.18, 0.035],
+      "strutAnchorM": [0.16, -0.18, 0.011],
       "kind": "skid",
       "spanLinked": false
     },
     {
       "id": "skid-front-right",
       "positionM": [0.16, 0.18, 0.24],
-      "strutAnchorM": [0.16, 0.18, 0.035],
+      "strutAnchorM": [0.16, 0.18, 0.011],
       "kind": "skid",
       "spanLinked": false
     },
     {
       "id": "skid-back-left",
       "positionM": [-0.18, -0.18, 0.24],
-      "strutAnchorM": [-0.18, -0.18, 0.035],
+      "strutAnchorM": [-0.18, -0.18, 0.0275],
       "kind": "skid",
       "spanLinked": false
     },
     {
       "id": "skid-back-right",
       "positionM": [-0.18, 0.18, 0.24],
-      "strutAnchorM": [-0.18, 0.18, 0.035],
+      "strutAnchorM": [-0.18, 0.18, 0.0275],
       "kind": "skid",
       "spanLinked": false
     }
@@ -1300,8 +1330,8 @@
     "transitionAirspeedMps": 12,
     "transitionAltitudeM": 5,
     "transitionTimeoutS": 25,
-    "cruisePitchDeg": 2.2969675036563855,
-    "cruisePitchTrim": 0.3076265153811362,
+    "cruisePitchDeg": 2.5350038626779936,
+    "cruisePitchTrim": 0.4091535202633824,
     "attitudeGain": 3,
     "rateGain": 14,
     "profiles": {
@@ -1323,7 +1353,8 @@
       }
     },
     "defaultAssistance": "beginner",
-    "rearServoPartId": "yaw-servo-rear"
+    "rearServoPartId": "yaw-servo-rear",
+    "massConfiguration": "hover"
   },
   "pilotResponse": {
     "preset": "standard"

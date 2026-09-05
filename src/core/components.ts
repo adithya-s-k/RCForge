@@ -160,14 +160,15 @@ export function replaceComponent(
     throw new Error(
       "Replace this propeller through its motor/prop package so the performance curve stays paired.",
     );
-  const rearLift =
-    out.vtol &&
-    out.motors.some(
-      (m) => m.id === out.vtol!.rearMotorId && m.partId === partId,
-    );
   const product = catalogMassParts(
     entry,
-    rearLift ? "multirotor" : out.vehicleType,
+    out.vtol &&
+      (out.vtol.massConfiguration === "hover" ||
+        out.motors.some(
+          (m) => m.id === out.vtol!.rearMotorId && m.partId === partId,
+        ))
+      ? "multirotor"
+      : out.vehicleType,
   );
   out.parts[index] = {
     ...product.part,

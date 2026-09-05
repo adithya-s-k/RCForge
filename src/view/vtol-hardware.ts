@@ -18,6 +18,9 @@ export function vtolHardware() {
     wood = mat("#af9469"),
     board = mat("#27403c"),
     gold = mat("#b7a05c", 0.5);
+  const red = mat("#a5392c"),
+    cable = mat("#181b20"),
+    signal = mat("#b57e3f");
   function solid(
     parent: T.Object3D,
     geometry: T.BufferGeometry,
@@ -57,7 +60,76 @@ export function vtolHardware() {
     part(parent: T.Group, p: Part, a: Aircraft): boolean {
       const [x, y, z] = p.positionM,
         [l, w, h] = p.sizeM;
-      if (p.id === "rear-motor-support") {
+      if (p.id === "wiring") {
+        const byId = (id: string) =>
+          a.parts.find((p) => p.id === id)?.positionM;
+        const wire = (
+          from: Vec3,
+          to: Vec3,
+          material: T.Material,
+          radius = 0.001,
+        ) => {
+          const mid: Vec3 = [
+            (from[0] + to[0]) / 2,
+            (from[1] + to[1]) / 2,
+            Math.max(from[2], to[2]) + 0.012,
+          ];
+          solid(
+            parent,
+            new T.TubeGeometry(
+              new T.CatmullRomCurve3([
+                new T.Vector3(...from),
+                new T.Vector3(...mid),
+                new T.Vector3(...to),
+              ]),
+              12,
+              radius,
+              5,
+              false,
+            ),
+            material,
+            [0, 0, 0],
+          );
+        };
+        const battery = byId(a.battery?.partId ?? "battery");
+        for (const side of ["left", "right", "rear"]) {
+          const esc = byId(`esc-${side}`),
+            motor = a.motors.find((m) => m.id === `motor-${side}`);
+          if (battery && esc)
+            for (const offset of [-0.002, 0.002])
+              wire(
+                [battery[0] - 0.03, battery[1] + offset, battery[2]],
+                [esc[0], esc[1] + offset, esc[2]],
+                offset > 0 ? red : cable,
+              );
+          if (esc && motor)
+            for (const offset of [-0.002, 0, 0.002])
+              wire(
+                [esc[0], esc[1] + offset, esc[2]],
+                [
+                  motor.positionM[0],
+                  motor.positionM[1] + offset,
+                  motor.positionM[2] + 0.009,
+                ],
+                cable,
+                0.00075,
+              );
+        }
+        const fc = byId("flight-controller");
+        if (fc)
+          for (const id of [
+            a.vtol!.leftServoPartId,
+            a.vtol!.rightServoPartId,
+            a.vtol!.rearServoPartId,
+          ]) {
+            const servo = byId(id);
+            if (servo)
+              wire([fc[0], fc[1], fc[2] + 0.005], servo, signal, 0.00065);
+          }
+      } else if (
+        p.id === "rear-motor-support" ||
+        p.id.startsWith("front-support-")
+      ) {
         box(parent, p.sizeM, p.positionM, wood).name = p.id;
         for (const offset of [-0.35, 0.35])
           box(
@@ -71,18 +143,32 @@ export function vtolHardware() {
         p.id.startsWith("tilt-bracket-")
       ) {
         const rear = p.id === "rear-yaw-bracket",
-          material = rear ? printed : plastic;
+          material = rear ? printed : plastic,
+          rotor = a.motors.find(
+            (m) =>
+              m.id ===
+              (rear
+                ? a.vtol!.rearMotorId
+                : p.id.endsWith("left")
+                  ? a.vtol!.frontLeftMotorId
+                  : a.vtol!.frontRightMotorId),
+          )!,
+          hinge = rotor.positionM,
+          floor = z + h / 2 - 0.004,
+          top = hinge[2] - 0.006;
         box(parent, [l, w, 0.004], [x, y, z + h / 2 - 0.002], material).name =
           p.id;
         // Rear bearings run along body X; front bearings along body Y.
         for (const side of [-1, 1]) {
           const pos: Vec3 = rear
-            ? [x + side * (l / 2 - 0.003), y, z - 0.003]
-            : [x, y + side * (w / 2 - 0.003), z - 0.004];
+            ? [hinge[0] + side * (l / 2 - 0.003), hinge[1], hinge[2]]
+            : [hinge[0], hinge[1] + side * (w / 2 - 0.003), hinge[2]];
           box(
             parent,
-            rear ? [0.006, w * 0.55, h] : [l * 0.6, 0.006, h],
-            pos,
+            rear
+              ? [0.006, w * 0.55, floor - top]
+              : [l * 0.6, 0.006, floor - top],
+            [pos[0], pos[1], (floor + top) / 2],
             material,
           );
           const axis: Vec3 = rear ? [0.004, 0, 0] : [0, 0.004, 0];
@@ -92,7 +178,7 @@ export function vtolHardware() {
             pos.map((v, i) => v + axis[i]) as Vec3,
             0.005,
             metal,
-          );
+          ).name = `tilt-bearing:${rotor.id}:${side}`;
           for (const end of [-1, 1]) {
             const bolt: Vec3 = [
               x + end * l * 0.36,
@@ -118,6 +204,16 @@ export function vtolHardware() {
         box(parent, p.sizeM, p.positionM, pcb ? board : plastic).name =
           `equipment:${p.id}`;
         if (pcb) {
+          const wingTop = -0.043;
+          for (const dx of [-1, 1])
+            for (const dy of [-1, 1])
+              rod(
+                parent,
+                [x + dx * l * 0.37, y + dy * w * 0.37, z + h / 2],
+                [x + dx * l * 0.37, y + dy * w * 0.37, wingTop],
+                0.0015,
+                plastic,
+              );
           box(
             parent,
             [l * 0.38, w * 0.38, 0.003],
@@ -197,22 +293,32 @@ export function vtolHardware() {
       }
       can.name = "vtol-motor-can";
     },
-    cradle(pivot: T.Group, rear: boolean, size: Vec3) {
+    cradle(pivot: T.Group, rear: boolean, size: Vec3, centerX: number) {
       // Authored along canonical +X shaft. The motor pivot supplies the actual tilt.
       const [l, w, h] = size;
       box(
         pivot,
         [0.005, w * 1.2, h * 1.2],
-        [rear ? 0.009 : -l * 0.46, 0, 0],
+        [centerX - l / 2 - 0.0025, 0, 0],
         rear ? printed : plastic,
       ).name = "moving-motor-cradle";
+      const plateX = centerX - l / 2 - 0.0025;
+      for (const sign of [-1, 1])
+        box(
+          pivot,
+          rear
+            ? [Math.max(0.008, plateX + 0.006), 0.008, 0.005]
+            : [Math.max(0.008, plateX + 0.006), 0.005, 0.008],
+          rear ? [plateX / 2, 0, sign * 0.02] : [plateX / 2, sign * 0.02, 0],
+          rear ? printed : plastic,
+        );
       rod(
         pivot,
-        [-l * 0.46, -w * 0.65, 0],
-        [-l * 0.46, w * 0.65, 0],
+        rear ? [0, 0, -0.024] : [0, -0.025, 0],
+        rear ? [0, 0, 0.024] : [0, 0.025, 0],
         0.0025,
         metal,
-      );
+      ).name = "tilt-shaft";
     },
     servo(parent: T.Group, p: Part) {
       // Local servo shaft comes out of its top. orientationDeg installs it sideways.
@@ -225,13 +331,12 @@ export function vtolHardware() {
         [x + l * 0.27, y, z - h / 2 - 0.005],
         0.004,
         metal,
-      );
-      box(
-        parent,
-        [0.014, 0.004, 0.002],
-        [x + l * 0.27 + 0.004, y, z - h / 2 - 0.006],
-        plastic,
-      );
+      ).name = `servo-shaft:${p.id}`;
+      const horn = new T.Group();
+      horn.name = `tilt-servo-horn:${p.id}`;
+      horn.position.set(x + l * 0.27, y, z - h / 2 - 0.006);
+      parent.add(horn);
+      box(horn, [0.014, 0.004, 0.002], [0.004, 0, 0], plastic);
       box(
         parent,
         [l * 0.6, 0.0005, h * 0.3],

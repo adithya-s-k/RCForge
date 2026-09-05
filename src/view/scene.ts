@@ -95,6 +95,7 @@ export class FlightScene {
   private studioFloorHeight = -0.27;
   private field: ReturnType<typeof createField>;
   private studioGroup = new T.Group();
+  private lightTheme = false;
   private arrows: T.ArrowHelper[] = [];
   private forces = new T.Group();
   private orbitYaw = 0.65;
@@ -425,6 +426,39 @@ export class FlightScene {
     this.sun.intensity = p.sunIntensity;
     this.setStudio(this.studio);
   }
+  setTheme(light: boolean) {
+    this.lightTheme = light;
+    const floor = this.studioGroup.children[0] as T.Mesh<
+      T.PlaneGeometry,
+      T.MeshStandardMaterial
+    >;
+    floor.material.color.set(light ? "#c6cdd4" : "#252627");
+    const grid = this.studioGroup.children[1] as T.GridHelper;
+    const colors = grid.geometry.getAttribute("color");
+    const central = new T.Color(light ? "#939fa9" : "#44474a");
+    const ordinary = new T.Color(light ? "#b0b9c2" : "#2e3134");
+    for (let i = 0; i < colors.count; i++) {
+      const color = Math.floor(i / 4) === 20 ? central : ordinary;
+      colors.setXYZ(i, color.r, color.g, color.b);
+    }
+    colors.needsUpdate = true;
+    for (const material of Array.isArray(grid.material)
+      ? grid.material
+      : [grid.material]) {
+      material.transparent = light;
+      material.opacity = light ? 0.45 : 1;
+      material.depthWrite = !light;
+      material.needsUpdate = true;
+    }
+    this.updateStudioBackground();
+  }
+  private updateStudioBackground() {
+    const color = this.lightTheme ? "#e2e7ed" : "#1d2024";
+    this.scene.background = this.studio ? new T.Color(color) : null;
+    this.scene.fog = this.studio
+      ? new T.Fog(color, 8, 50)
+      : new T.Fog(sceneries[this.scenery].fog, 1800, 13000);
+  }
   setStudio(value: boolean) {
     this.studio = value;
     this.field.field.visible = !value;
@@ -438,10 +472,7 @@ export class FlightScene {
     this.hemisphere.color.set(value ? "#e7edf5" : "#d6e3f1");
     this.hemisphere.groundColor.set(value ? "#73777d" : "#788266");
     this.hemisphere.intensity = value ? 3 : 2.1;
-    this.scene.background = value ? new T.Color("#1d2024") : null;
-    this.scene.fog = value
-      ? new T.Fog("#1d2024", 8, 50)
-      : new T.Fog(sceneries[this.scenery].fog, 1800, 13000);
+    this.updateStudioBackground();
     if (value) this.setCamera("orbit");
     this.resize();
   }
@@ -586,6 +617,20 @@ export class FlightScene {
       s.batterySoc,
       sim.environment.densityKgM3,
     );
+    for (const horn of this.visual.tiltServoHorns ?? []) {
+      const config = sim.aircraft.vtol!;
+      const rear = horn.partId === config.rearServoPartId;
+      const i = horn.partId === config.leftServoPartId ? 0 : 1;
+      const angle = rear
+        ? this.studio
+          ? previewRearTilt
+          : (s.vtol?.rearTiltDeg ?? 0)
+        : this.studio
+          ? (previewTilts?.[i] ?? 0)
+          : (s.vtol?.tiltDeg[i] ?? 0);
+      horn.pivot.rotation.z =
+        ((angle * Math.PI) / 180) * (rear || i === 0 ? 1 : -1);
+    }
     this.visual.propellers.forEach(
       (p, i) =>
         (p.rotation.x +=
