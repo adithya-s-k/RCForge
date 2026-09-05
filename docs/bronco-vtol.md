@@ -62,7 +62,9 @@ The preset has **36 mass entries totaling 1,323 g**. Its computed CG is approxim
 | Structure and hardware  | Bronco foam structure, four surface servos, two 18 g front wood platforms, front yokes, rear printed cradle and wood beam, skid assembly         |
 | Electronics             | Individual left/right/rear ESCs, receiver, wiring, flight controller and BEC; masses and positions estimated                                     |
 
-![Illustrated component mass and center-of-gravity relationship](images/diagram-mass-cg.svg)
+![Battery movement and center of gravity, illustrated with a conventional trainer](images/diagram-mass-cg.svg)
+
+The interactive example uses the FT Tiny Trainer to explain balance. Its mass and CG readouts are separate from this VTOL preset.
 
 In the interactive guide, move the battery slider to compare positions. Moving this 190 g battery 50 mm forward shifts CG 7.2 mm toward the nose, without changing total mass. The illustration follows the preset geometry; it is not a physical fit or safe-CG assessment and does not alter your editor draft.
 

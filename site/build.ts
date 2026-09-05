@@ -61,7 +61,7 @@ export function buildDocs(root: string, localPlans = false) {
                     parseAircraft(
                       JSON.parse(
                         content.files
-                          .get("aircraft/bronco-tri-vtol.json")!
+                          .get("aircraft/ft-tiny-trainer.json")!
                           .toString(),
                       ),
                     ),

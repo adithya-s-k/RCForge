@@ -85,8 +85,16 @@ export function renderMarkdown(
           posix.normalize(posix.join(posix.dirname(page.file), href)),
         );
         if (url && diagram) return diagram(url);
+        const light = href.replace(/\.svg$/, "-light.svg");
+        const lightPath = posix.normalize(
+          posix.join(posix.dirname(page.file), light),
+        );
+        const themeAttrs =
+          /\.svg$/.test(href) && downloads.has(lightPath)
+            ? ` data-diagram-dark="${escapeHtml(url)}" data-diagram-light="${escapeHtml(link(light, true))}"`
+            : "";
         return url
-          ? `<span class="doc-figure"><a class="expand-diagram" href="${escapeHtml(url)}" aria-label="Enlarge: ${escapeHtml(text)}"><img src="${escapeHtml(url)}" alt="${escapeHtml(text)}" loading="lazy"/><span class="figure-action">Enlarge diagram ↗</span></a></span>`
+          ? `<span class="doc-figure"><a class="expand-diagram" href="${escapeHtml(url)}" aria-label="Enlarge: ${escapeHtml(text)}"><img src="${escapeHtml(url)}"${themeAttrs} alt="${escapeHtml(text)}" loading="lazy"/><span class="figure-action">Enlarge diagram ↗</span></a></span>`
           : `<span>${escapeHtml(text)}</span>`;
       },
       code({ text, lang }) {

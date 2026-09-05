@@ -4,6 +4,7 @@ import { buildDocs } from "../site/build";
 import { validateDocs } from "../site/validate";
 import { pages } from "../site/config";
 import { bundledAircraft } from "../src/app/bundled-aircraft";
+import { documentationDiagrams } from "../site/diagrams";
 
 const root = process.cwd();
 const render = (source: string) =>
@@ -88,6 +89,31 @@ describe("documentation renderer", () => {
 });
 
 describe("same-site documentation artifact", () => {
+  it("ships both palettes for every diagram and resolves themed image/download targets", () => {
+    const files = buildDocs(root);
+    const diagrams = documentationDiagrams();
+    for (const [name, dark] of diagrams) {
+      if (name.endsWith("-light.svg")) continue;
+      const light = diagrams.get(name.replace(/\.svg$/, "-light.svg"));
+      expect(light, name).toBeDefined();
+      expect(light).not.toEqual(dark);
+      // Themed variants preserve all explanatory text, including wiring labels.
+      const labels = (svg: string) =>
+        [...svg.matchAll(/<text\b[^>]*>(.*?)<\/text>/gs)].map((m) => m[1]);
+      expect(labels(light!)).toEqual(labels(dark));
+    }
+    let themedImages = 0;
+    for (const [path, file] of files) {
+      if (!path.endsWith(".html")) continue;
+      for (const match of file.data
+        .toString()
+        .matchAll(/data-diagram-(?:light|dark)="([^"]+)"/g)) {
+        expect(files.has(match[1]), `${path}: ${match[1]}`).toBe(true);
+        themedImages++;
+      }
+    }
+    expect(themedImages).toBeGreaterThan(20);
+  });
   const files = buildDocs(root);
   it("renders every selected guide and public reference with no simulator bundle", () => {
     for (const page of pages) {

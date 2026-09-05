@@ -1,3 +1,4 @@
+import { lightDiagram } from "./diagram-theme";
 import { staticBalanceDiagram } from "./balance-visual";
 import { hardwareIllustration as hardware } from "./hardware-illustrations";
 import { componentIcon } from "../src/view/component-icon";
@@ -139,7 +140,7 @@ function routes() {
   return svg(
     "Your radio, connected to RCForge",
     "Choose a route, then follow its wiring diagram. Hardware silhouettes are not connector pinouts.",
-    800,
+    830,
     body +
       text(
         36,
@@ -187,7 +188,7 @@ function ppm(trainer = false) {
     text(928, 118, "CLASSIC ATmega328P UNO / NANO", 14, color.usb, "end");
   body +=
     rect(32, 155, 260, 248) +
-    hardware(trainer ? "radio" : "receiver", 215, 165, 0.43) +
+    hardware(trainer ? "radio" : "receiver", 215, 277, 0.43) +
     text(52, 187, source, 19) +
     text(
       52,
@@ -557,7 +558,7 @@ function vtolLayout() {
   );
 }
 export function documentationDiagrams() {
-  return new Map(
+  const diagrams = new Map(
     Object.entries({
       "diagram-radio-paths.svg": routes(),
       "diagram-input-conditioning.svg": conditioning(),
@@ -573,4 +574,7 @@ export function documentationDiagrams() {
       "diagram-vtol-layout.svg": vtolLayout(),
     }),
   );
+  for (const [name, svg] of [...diagrams])
+    diagrams.set(name.replace(/\.svg$/, "-light.svg"), lightDiagram(svg));
+  return diagrams;
 }

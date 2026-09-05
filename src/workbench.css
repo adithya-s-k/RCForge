@@ -9,7 +9,7 @@
   --ui-border-strong: #505056;
   --ui-text: #ededf0;
   --ui-muted: #a1a1aa;
-  --ui-faint: #75757e;
+  --ui-faint: #92929c;
   --ui-accent: #ededf0;
   --ui-selection: #2c2c30;
   --ui-inverse: #111113;
@@ -2053,6 +2053,8 @@ button.primary:hover {
 .controller-diagram .controller-channel-label {
   font-size: 7px;
   letter-spacing: 0.6px;
+  /* These labels are printed on a dark device body in either page theme. */
+  fill: #c7c7d1;
 }
 .controller-diagram .pressed .controller-well,
 .controller-diagram .pressed .controller-thumb,

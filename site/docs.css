@@ -170,7 +170,7 @@ kbd {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1.2px;
-  color: var(--docs-muted, #747782);
+  color: var(--docs-muted, #8b909d);
   margin: 0 0 8px;
   padding: 0 9px;
 }
@@ -425,7 +425,7 @@ article summary {
 }
 .page-contents p {
   font-size: 10px;
-  color: var(--docs-muted, #737680);
+  color: var(--docs-muted, #8b909d);
   border-top: 1px solid var(--line);
   margin-top: 25px;
   padding-top: 20px;
@@ -453,7 +453,7 @@ article summary {
 }
 .page-navigation small {
   display: block;
-  color: var(--docs-muted, #767985);
+  color: var(--docs-muted, #8b909d);
   font-size: 10px;
   margin-bottom: 7px;
 }
@@ -463,7 +463,7 @@ article summary {
   flex-wrap: wrap;
   gap: 10px;
   font-size: 10px;
-  color: var(--docs-muted, #757883);
+  color: var(--docs-muted, #8b909d);
   padding-top: 28px;
 }
 .page-footer a:hover {

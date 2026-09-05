@@ -7,7 +7,7 @@
   --ui-border-strong: #a5adb9;
   --ui-text: #20252d;
   --ui-muted: #58616f;
-  --ui-faint: #717c8c;
+  --ui-faint: #616c7a;
   --ui-accent: #252b34;
   --ui-selection: #e3e8ef;
   --ui-inverse: #fff;
@@ -40,6 +40,14 @@
 }
 [data-theme="light"] .brand-mark {
   filter: brightness(0.25);
+}
+[data-theme="light"] .catalog-preview {
+  background: radial-gradient(ellipse at center, #bdc8d4, #e3e8ee);
+}
+[data-theme="light"] button.primary:hover {
+  background: #394451;
+  border-color: #394451;
+  color: #fff;
 }
 [data-theme="light"] .keyboard-key.mapped.power rect {
   fill: #fff0d2;
@@ -121,7 +129,7 @@
   stroke: #aaa4bd;
 }
 [data-theme="light"] .controller-diagram .keyboard-key .key-letter {
-  fill: #7b8490;
+  fill: #647184;
 }
 [data-theme="light"] .controller-diagram .keyboard-key .key-function,
 [data-theme="light"] .controller-diagram .keyboard-key.mapped .key-letter {

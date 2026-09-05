@@ -303,3 +303,26 @@ document.querySelectorAll("[data-balance-lab]").forEach((lab) => {
   lab.querySelector(".balance-controls").hidden = false;
   update();
 });
+
+// Explicit app preference controls SVG sources, including downloads and an open viewer.
+const syncDiagramTheme = () => {
+  const light = document.documentElement.dataset.theme === "light";
+  document
+    .querySelectorAll("[data-diagram-dark][data-diagram-light]")
+    .forEach((element) => {
+      const url = light
+        ? element.dataset.diagramLight
+        : element.dataset.diagramDark;
+      if (element instanceof HTMLImageElement) {
+        element.src = url;
+        element.closest(".expand-diagram")?.setAttribute("href", url);
+      } else if (element instanceof HTMLAnchorElement) element.href = url;
+    });
+  if (viewer.open && diagramOpener) {
+    const source = diagramOpener.querySelector("img");
+    diagramImage.src = source.src;
+    document.querySelector("#diagram-original").href = source.src;
+  }
+};
+window.addEventListener("rcforge-themechange", syncDiagramTheme);
+syncDiagramTheme();

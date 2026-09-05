@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import raw from "../aircraft/bronco-tri-vtol.json";
+import raw from "../aircraft/ft-tiny-trainer.json";
 import { parseAircraft } from "../src/core/schema";
 import { massProperties } from "../src/core/aircraft";
 import {
@@ -36,7 +36,7 @@ it("ships a static fallback and a bounded keyboard-accessible control using vers
   expect(html).toContain('min="-50" max="50"');
   expect(html).toContain('class="balance-controls" hidden');
   expect(html).not.toMatch(/<script|oninput=/);
-  expect(staticBalanceDiagram()).toContain("CG  +7.2 mm forward");
+  expect(staticBalanceDiagram()).toContain("CG  +11.9 mm forward");
   // A standalone SVG is XML: data attributes must have values, unlike HTML booleans.
   expect(staticBalanceDiagram()).not.toMatch(/\sdata-[\w-]+(?=\s|>)/);
   const files = buildDocs(process.cwd());

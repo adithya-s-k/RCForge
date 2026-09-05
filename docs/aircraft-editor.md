@@ -16,7 +16,7 @@ stays unchanged until you export it and edit the file yourself.
 
 ![Moving the battery changes the aircraft center of gravity](images/diagram-mass-cg.svg)
 
-Try the battery slider in this guide: the highlighted pack and gold CG marker move together. The readout uses the Bronco VTOL component ledger. This demonstration stays separate from your aircraft; use **Components → Move on model** to change an actual editor draft.
+Try the battery slider in this guide: the highlighted pack and gold CG marker move together. The readout uses the FT Tiny Trainer component ledger. This demonstration stays separate from your aircraft; use **Components → Move on model** to change an actual editor draft.
 
 **Aircraft mass** is the sum of its installed parts. Editing total mass scales
 those masses; for a real component substitution, edit that component instead.
