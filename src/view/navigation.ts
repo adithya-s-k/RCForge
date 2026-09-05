@@ -17,5 +17,5 @@ export function workspaceNavigation(fromDocs = false) {
 }
 
 export function documentationLink(active = false) {
-  return `<a class="header-docs${active ? " active" : ""}" href="/docs/" aria-label="Documentation" title="Documentation"${active ? ' aria-current="page"' : ""}>${uiIcon("docs")}<span>Docs</span></a>`;
+  return `<a class="header-docs${active ? " active" : ""}" href="/docs/" aria-label="Documentation" title="Documentation"${active ? ' aria-current="page"' : ' target="_blank" rel="noopener"'}>${uiIcon("docs")}<span>Docs</span></a>`;
 }
