@@ -3,6 +3,7 @@
  * Simple Trainer: Vortex RC. Plan identities and local cache: references/manifest.json.
  * These are independent engineering approximations; source artwork is not bundled.
  */
+import broncoVtol from "../../aircraft/bronco-tri-vtol.json";
 import bronco from "../../aircraft/ft-bronco.json";
 import conventional from "../../aircraft/ft-bronco-conventional.json";
 import tiny from "../../aircraft/ft-tiny-trainer.json";
@@ -16,6 +17,7 @@ import { parseAircraft } from "../core/schema";
 export const bundledAircraft = [
   bronco,
   conventional,
+  broncoVtol,
   tiny,
   raptor,
   vortex,

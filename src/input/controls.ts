@@ -1,7 +1,7 @@
 import { clamp } from "../core/math";
 import { cleanControls, type Controls } from "../core/simulation";
 import { ownsKeyboard } from "./ui-focus";
-export type Channel = keyof Controls;
+export type Channel = "roll" | "pitch" | "yaw" | "throttle";
 /** Shared, read-only input surface for browser HID and the Arduino serial bridge. */
 export interface InputDevice {
   id: string;

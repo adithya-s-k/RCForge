@@ -50,6 +50,32 @@ export class ControllerActions {
       } catch {}
       this.signature = "";
     };
+    $("vtol-radio-shortcuts").onclick = () => {
+      const d = this.input.selected();
+      if (
+        !d ||
+        d.axes.length < 5 ||
+        channels.some((c) => this.input.profile.bindings[c].axis === 4)
+      )
+        return;
+      for (const action of Object.keys(this.bindings) as Action[])
+        if (["a4+", "a4-"].includes(this.bindings[action] ?? ""))
+          delete this.bindings[action];
+      this.bindings.vtolHover = "a4-";
+      this.bindings.vtolCruise = "a4+";
+      try {
+        localStorage.setItem(
+          "rcforge.actions." + d.id,
+          JSON.stringify(this.bindings),
+        );
+        $("action-status").textContent =
+          "CH5 mode switch saved. Cycle the switch once after connecting. Confirm raw channel order first.";
+      } catch {
+        $("action-status").textContent =
+          "Mode switch assigned for this session; storage unavailable.";
+      }
+      this.signature = "";
+    };
     $("standard-shortcuts").onclick = () => {
       if (!this.standard) return;
       this.bindings = { ...standardShortcuts };
@@ -163,10 +189,20 @@ export class ControllerActions {
     });
     const legend =
       this.input.source === "keyboard"
-        ? "<span><kbd>Enter</kbd> Start</span><span><kbd>P</kbd> Pause</span><span><kbd>R</kbd> Restart</span>"
+        ? "<span><kbd>Enter</kbd> Start</span><span><kbd>P</kbd> Pause</span><span><kbd>R</kbd> Restart</span><span><kbd>T</kbd> VTOL mode</span><span><kbd>H</kbd> VTOL hold height</span><span><kbd>B</kbd> VTOL assistance</span>"
         : !d
           ? '<div class="shortcut-empty"><strong>Flight shortcuts</strong><p>Connect hardware to see your button bindings.</p></div>'
-          : (["toggle", "reset", "camera", "response", "settings"] as Action[])
+          : (
+              [
+                "toggle",
+                "reset",
+                "camera",
+                "response",
+                "vtolMode",
+                "vtolAssistance",
+                "settings",
+              ] as Action[]
+            )
               .map(
                 (a) =>
                   `<span data-shortcut-action="${a}"><b>${escape(this.hint(a) || "Unassigned")}</b> ${actionNames[a]}</span>`,
@@ -187,6 +223,11 @@ export class ControllerActions {
         );
       });
     const occupied = channels.map((c) => this.input.profile.bindings[c].axis);
+    if (d?.mapping === "Arduino USB") occupied.push(5); // CH6 is the firmware RUN guard.
+    const radio = kind === "transmitter" && !!d && d.axes.length >= 5;
+    $("vtol-radio-shortcuts").hidden = !radio;
+    $("vtol-radio-shortcuts-note").hidden = !radio;
+    $("vtol-radio-shortcuts").toggleAttribute("disabled", occupied.includes(4));
     const signature = JSON.stringify([
       id,
       d?.buttons.length,

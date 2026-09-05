@@ -39,5 +39,10 @@ export function placedLaunch(
   if (mode !== "ground") s.position[2] = -p.altitudeM;
   s.orientation = mulQ(yaw, s.orientation);
   s.velocity = rotate(yaw, s.velocity);
+  if (s.vtol) {
+    s.vtol.positionTarget = [...s.position];
+    s.vtol.altitudeTargetM = -s.position[2];
+    s.vtol.headingTarget = radians(p.headingDeg);
+  }
   return s;
 }

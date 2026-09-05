@@ -1,3 +1,4 @@
+import { componentIcon, installedPartIcon } from "../view/component-icon";
 import catalogData from "../../components/catalog.json";
 import {
   ComponentCatalogSchema,
@@ -52,6 +53,7 @@ export class ComponentWorkshop {
       part: Aircraft["parts"][number] | undefined,
     ) => void = () => {},
     private placeCamera: () => void = () => {},
+    private placeComponent: (id: string) => void = () => {},
   ) {}
   private navigate(fn: () => void) {
     try {
@@ -127,7 +129,7 @@ export class ComponentWorkshop {
         )
         .join(
           "",
-        )}</select><label class="compact-part-picker">Installed part<select id="component-picker">${visible.map((p) => `<option value="${escape(p.id)}" ${p.id === part?.id ? "selected" : ""}>${escape(p.id.replaceAll("-", " "))} · ${(p.massKg * 1000).toFixed(1)} g</option>`).join("")}</select></label><div class="workshop-parts" role="group" aria-label="Installed components">${visible.map((p) => `<button data-component-id="${escape(p.id)}" aria-pressed="${p.id === part?.id}" class="${p.id === part?.id ? "active" : ""}"><span><b>${escape(p.id.replaceAll("-", " "))}</b><small>${escape(p.model ?? p.material?.name ?? p.kind)}</small></span><strong>${(p.massKg * 1000).toFixed(1)}<small>g</small></strong></button>`).join("") || '<p class="muted">No components of this type.</p>'}</div></div><div id="component-detail" class="component-detail"></div></div>`;
+        )}</select><label class="compact-part-picker">Installed part<select id="component-picker">${visible.map((p) => `<option value="${escape(p.id)}" ${p.id === part?.id ? "selected" : ""}>${escape(p.id.replaceAll("-", " "))} · ${(p.massKg * 1000).toFixed(1)} g</option>`).join("")}</select></label><div class="workshop-parts" role="group" aria-label="Installed components">${visible.map((p) => `<button data-component-id="${escape(p.id)}" aria-pressed="${p.id === part?.id}" class="${p.id === part?.id ? "active" : ""}"><span class="installed-part-label">${installedPartIcon(a, p)}<span><b>${escape(p.id.replaceAll("-", " "))}</b><small>${escape(p.model ?? p.material?.name ?? p.kind)}</small></span></span><strong>${(p.massKg * 1000).toFixed(1)}<small>g</small></strong></button>`).join("") || '<p class="muted">No components of this type.</p>'}</div></div><div id="component-detail" class="component-detail"></div></div>`;
     const cameraBar = document.createElement("div");
     cameraBar.className = "fpv-install-bar";
     const mounted = a.parts.find((p) => p.id === a.fpv?.partId);
@@ -224,7 +226,7 @@ export class ComponentWorkshop {
       }
     const delta = next ? massProperties(next) : undefined;
     $("component-detail").innerHTML =
-      `<div class="component-detail-heading"><div><span class="eyebrow">${escape(type)}</span><h3>${escape(part.model ?? part.id.replaceAll("-", " "))}</h3></div>${propMotor?.partId ? '<button id="paired-motor">Motor / prop package</button>' : choices.length ? '<button id="browse-components" aria-expanded="' + this.browse + '">' + (this.browse ? "Close catalog" : "Replace component…") + "</button>" : ""}</div>
+      `<div class="component-detail-heading"><div><span class="eyebrow component-type-label">${installedPartIcon(a, part)}${escape(type)}</span><h3>${escape(part.model ?? part.id.replaceAll("-", " "))}</h3></div>${propMotor?.partId ? '<button id="paired-motor">Motor / prop package</button>' : choices.length ? '<button id="browse-components" aria-expanded="' + this.browse + '">' + (this.browse ? "Close catalog" : "Replace component…") + "</button>" : ""}</div>
     ${
       this.browse
         ? `<div class="parts-catalog"><label for="parts-search">Find a replacement</label><input type="search" id="parts-search" placeholder="Name or manufacturer" value="${escape(this.query)}"/><div id="parts-matches">${
@@ -236,7 +238,7 @@ export class ComponentWorkshop {
               )
               .map(
                 (e) =>
-                  `<button class="part-choice" data-part-choice="${e.id}" aria-pressed="${candidate?.id === e.id}"><b>${escape(e.name)}</b><small>${escape(e.description)}</small></button>`,
+                  `<button class="part-choice" data-part-choice="${e.id}" aria-pressed="${candidate?.id === e.id}"><b>${componentIcon(e.type)}${escape(e.name)}</b><small>${escape(e.description)}</small></button>`,
               )
               .join("") || '<p class="muted">No matching parts.</p>'
           }</div>${
@@ -280,7 +282,14 @@ export class ComponentWorkshop {
                 return `<fieldset class="linkage-fields"><legend>${escape(s.id.replaceAll("-", " "))} · ±${act.maxDeg.toFixed(1)}° effective</legend><div class="component-fields">${numberField(`link-${i}-travel`, "Servo command · ±°", l.servoTravelDeg, 0.1, 135, 0.5)}${numberField(`link-${i}-servo-arm`, "Servo horn · mm", l.servoArmM * 1000, 0.1, 200, 0.5)}${numberField(`link-${i}-surface-arm`, "Surface horn · mm", l.surfaceArmM * 1000, 0.1, 200, 0.5)}${numberField(`link-${i}-limit`, "Surface limit · ±°", s.control!.maxDeg, 0, 45, 0.5)}</div><small class="muted">${act.rateLimitDegS.toFixed(0)}°/s surface rate · ${((act.maxDeg / act.rateLimitDegS) * 1000).toFixed(0)} ms center-to-end, before configured lag</small></fieldset>`;
               })
               .join("") ||
-            '<p class="component-note">No control surface is linked to this servo yet.</p>'
+            (a.vtol &&
+            [
+              a.vtol.leftServoPartId,
+              a.vtol.rightServoPartId,
+              a.vtol.rearServoPartId,
+            ].includes(part.id)
+              ? `<p class="component-note">${part.id === a.vtol.rearServoPartId ? `Rear yaw servo · ±${a.vtol.yawTiltDeg}° sideways motor lean` : "Front conversion servo · 0° vertical → 90° forward"}. Test its motion in Control test.</p>`
+              : '<p class="component-note">No control surface is linked to this servo yet.</p>')
           }`
         : ""
     }
@@ -290,6 +299,23 @@ export class ComponentWorkshop {
     <details id="part-installation-${partIndex}" class="component-position"><summary>Installation position & dimensions</summary><p class="small muted">Body axes: X forward · Y right · Z down. Millimeters from the aircraft datum.</p><div class="component-fields component-axis-fields">${part.positionM.map((v, i) => f(`pos-${i}`, `${["X", "Y", "Z"][i]} position · mm`, v * 1000, -10000, 10000, 0.5)).join("")}</div><div class="component-fields component-axis-fields">${part.sizeM.map((v, i) => f(`size-${i}`, `${["Length X", "Width Y", "Height Z"][i]} · mm`, v * 1000, 0.1, 10000, 0.5)).join("")}</div>${part.kind === "battery" || part.servo || fpv ? `<div class="component-fields component-axis-fields">${(part.orientationDeg ?? [0, 0, 0]).map((v, i) => f(`angle-${i}`, `Installation ${["roll", "pitch", "yaw"][i]} · °`, v, -180, 180, 1)).join("")}</div>` : ""}</details>
     ${part.catalogId && !reference ? `<small class="muted">External catalog reference: ${escape(part.catalogId)}. Specifications are stored in this aircraft; this catalog is not installed.</small>` : ""}</div>`;
     const bind = (key: string, edit: Edit) => this.register(id(key), edit);
+    if (
+      ["battery", "motor", "equipment"].includes(part.kind) &&
+      !fpv &&
+      part.id !== "vtol-skids"
+    ) {
+      const placement = document.createElement("div");
+      placement.className = "component-placement-entry";
+      const cgLabel =
+        a.vehicleType === "multirotor"
+          ? `X ${(total.cg[0] * 1000).toFixed(1)} mm from datum`
+          : `${((a.reference.leadingEdgeXM - total.cg[0]) * 1000).toFixed(1)} mm aft LE`;
+      placement.innerHTML = `<button id="place-component" class="wide">Move on model ↗</button><small class="muted">${part.positionM.map((v, i) => `${["X", "Y", "Z"][i]} ${(v * 1000).toFixed(1)}`).join(" · ")} mm · CG ${cgLabel}</small>`;
+      $("component-detail")
+        .querySelector(".component-detail-heading")!
+        .after(placement);
+      $("place-component").onclick = () => this.placeComponent(part.id);
+    }
     if (fpv) {
       const cameraControls = document.createElement("div");
       cameraControls.className = "fpv-mount-fields";

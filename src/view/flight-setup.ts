@@ -14,6 +14,7 @@ export function flightSetupMarkup() {
       <p class="aircraft-credit" id="flight-aircraft-credit"></p>
       <label>Launch from</label><div class="segmented launch-options" role="group" aria-label="Launch mode"><button data-launch="ground" class="active">Ground</button><button data-launch="hand">Hand throw</button><button data-launch="airborne">In flight</button></div>
       <p class="small muted" id="launch-description"></p>
+      <div id="flight-vtol" class="vtol-flight-panel" hidden></div>
       <div class="setup-divider"></div><div class="setup-line"><span>All-up weight</span><strong id="flight-mass"></strong></div><div class="setup-line"><span>Landing gear</span><strong id="flight-gear"></strong></div>
       <div id="battery-telemetry" class="battery-telemetry" hidden></div><p id="flight-control-note" class="small muted"></p>
       <button id="setup-fpv-camera" class="wide">Set up FPV camera</button><a class="setup-text-link" href="#/aircraft">Edit this aircraft ↗</a>

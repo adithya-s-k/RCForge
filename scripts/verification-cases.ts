@@ -43,6 +43,8 @@ export function extraChecks(a: Aircraft): Check[] {
       });
   const vacuum = structuredClone(a);
   vacuum.surfaces = [];
+  delete vacuum.vtol;
+  vacuum.vehicleType = "fixed-wing";
   delete vacuum.bodyDragAreaM2;
   delete vacuum.battery;
   vacuum.motors = [];
@@ -99,6 +101,10 @@ export function extraChecks(a: Aircraft): Check[] {
   turned.position = rotate(q, turned.position);
   turned.velocity = rotate(q, turned.velocity);
   turned.orientation = mulQ(q, turned.orientation);
+  if (turned.vtol) {
+    turned.vtol.positionTarget = rotate(q, turned.vtol.positionTarget);
+    turned.vtol.headingTarget += 1.17;
+  }
   const other = new Simulation(a, calmEnvironment(), turned);
   for (let i = 0; i < 480; i++) {
     const c = { ...trim.controls, roll: 0.08 };

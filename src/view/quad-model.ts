@@ -9,7 +9,10 @@ import { batchStatic } from "./batch-static";
 
 /** Cosmetic construction detail. SI dimensions and rotor stations come from the aircraft definition.
  * The component ledger is authoritative; rendered detail adds no hidden mass. */
-export function buildQuad(a: Aircraft): AircraftVisual {
+export function buildQuad(
+  a: Aircraft,
+  editablePartId?: string,
+): AircraftVisual {
   const group = new T.Group(),
     propellers: T.Group[] = [];
   const construction = new T.Group();
@@ -222,11 +225,15 @@ export function buildQuad(a: Aircraft): AircraftVisual {
       mat("#b79b3d"),
       0.001,
     );
-    orientComponent(
+    const installedBattery = orientComponent(
       construction,
       battery,
       construction.children.slice(firstChild),
     );
+    if (installedBattery && editablePartId === battery.id) {
+      group.add(installedBattery);
+      batchStatic(installedBattery);
+    }
   }
   for (const m of a.motors) {
     const [x, y, z] = m.positionM;
@@ -256,7 +263,13 @@ export function buildQuad(a: Aircraft): AircraftVisual {
         component.sizeM[1] / 0.026,
         (component.sizeM[2] * 0.63) / 0.02,
       );
-    construction.add(bell);
+    bell.userData.partId = m.partId;
+    bell.userData.pairedPartId = m.propPartId;
+    (editablePartId &&
+    (editablePartId === m.partId || editablePartId === m.propPartId)
+      ? group
+      : construction
+    ).add(bell);
     cylinder(0.014, 0.003, [0, 0, 0.023], carbon, bell);
     cylinder(0.0125, 0.003, [0, 0, 0.021], black, bell);
     cylinder(0.0105, 0.009, [0, 0, 0.014], copper, bell);
@@ -286,7 +299,10 @@ export function buildQuad(a: Aircraft): AircraftVisual {
     const holder = new T.Group();
     holder.position.set(x, y, z);
     holder.rotation.y = Math.PI / 2;
+    holder.userData.partId = m.partId;
+    holder.userData.pairedPartId = m.propPartId;
     group.add(holder);
+    if (bell.parent === group) batchStatic(bell);
     const prop = new T.Group();
     holder.add(prop);
     propellers.push(prop);
@@ -363,6 +379,8 @@ export function buildQuad(a: Aircraft): AircraftVisual {
   for (const part of a.parts.filter((p) => p.id.startsWith("esc-"))) {
     const esc = box(part.sizeM, part.positionM, black, 0.001);
     esc.quaternion.copy(componentRotation(part));
+    esc.userData.partId = part.id;
+    if (editablePartId === part.id) group.add(esc);
   }
   if (!authoredArms.length || a.parts.some((p) => p.id === "vtx")) {
     wire(

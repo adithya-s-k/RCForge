@@ -48,6 +48,7 @@ export class PilotResponseFilter {
       return this.axes[i];
     });
     return {
+      ...input,
       roll: values[0],
       pitch: values[1],
       yaw: values[2],

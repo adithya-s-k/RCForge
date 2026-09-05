@@ -38,7 +38,7 @@
   padding: 16px;
 }
 .editor-page[data-workspace="components"] .workshop-layout {
-  grid-template-columns: minmax(120px, 30%) minmax(0, 1fr);
+  grid-template-columns: minmax(160px, 31%) minmax(0, 1fr);
   gap: 14px;
 }
 .editor-page[data-workspace="components"] .workshop-heading {
@@ -51,16 +51,22 @@
   max-height: 520px;
 }
 .editor-page[data-workspace="components"] .workshop-parts button {
-  flex-wrap: wrap;
-  gap: 5px;
-  padding: 10px;
+  flex-wrap: nowrap;
+  gap: 8px;
+  padding: 12px 9px;
 }
 .editor-page[data-workspace="components"] .workshop-parts small {
-  max-width: 130px;
+  max-width: 100%;
+}
+.editor-page[data-workspace="components"] .workshop-parts strong small {
+  display: inline;
+  margin-left: 2px;
 }
 .editor-page[data-workspace="components"] .workshop-parts strong {
   color: var(--ui-muted);
   font-weight: 400;
+  white-space: nowrap;
+  font-size: 11px;
 }
 .editor-page[data-workspace="components"] .component-detail-heading {
   align-items: flex-start;
@@ -79,7 +85,7 @@
   position: absolute;
   left: 16px;
   right: 16px;
-  top: 58px;
+  top: 82px;
   font-size: 11px;
   color: var(--ui-muted);
   pointer-events: none;
@@ -166,4 +172,50 @@
 }
 .component-position .component-axis-fields + .component-axis-fields {
   margin-top: 12px;
+}
+
+.workshop-parts .installed-part-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  flex: 1;
+}
+.workshop-parts .installed-part-label > .ui-icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  color: var(--ui-muted);
+}
+.workshop-parts .installed-part-label > span {
+  min-width: 0;
+}
+.workshop-parts .installed-part-label b,
+.workshop-parts .installed-part-label small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.workshop-parts button.active .ui-icon {
+  color: var(--ui-text);
+}
+.component-detail .component-type-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.component-type-label .ui-icon {
+  width: 24px;
+  height: 24px;
+}
+.part-choice b {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.part-choice .ui-icon {
+  width: 22px;
+  height: 22px;
+  flex: none;
 }

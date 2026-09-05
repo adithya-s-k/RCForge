@@ -1,3 +1,4 @@
+import { ComponentPlacementView } from "./component-placement";
 import { fpvMount, placeFpvCamera } from "./fpv-camera";
 import { powertrain } from "../core/powertrain";
 import { sceneries, type SceneryId } from "../core/scenery";
@@ -40,6 +41,8 @@ export class FlightScene {
   private selectedComponent?: Aircraft["parts"][number];
   private inspectComponents = false;
   private cameraPlacement?: CameraPlacementView;
+  private componentPlacement?: ComponentPlacementView;
+  private componentInspection?: InspectionView;
   private savedInspection?: {
     view: InspectionView;
     yaw: number;
@@ -152,14 +155,23 @@ export class FlightScene {
     grid.position.y = -0.268;
     this.studioGroup.add(grid);
     canvas.addEventListener("pointerdown", (e) => {
-      if (this.cameraPlacement?.pointerDown(e)) return;
+      if (
+        this.cameraPlacement?.pointerDown(e) ||
+        this.componentPlacement?.pointerDown(e)
+      )
+        return;
       if (this.mode === "orbit" || this.mode === "ground") {
         this.dragging = true;
         canvas.setPointerCapture(e.pointerId);
       }
     });
     canvas.addEventListener("pointermove", (e) => {
-      if (this.cameraPlacement?.dragging) return;
+      if (
+        this.componentPlacement?.dragging ||
+        this.cameraPlacement?.dragging ||
+        this.componentPlacement?.dragging
+      )
+        return;
       // Capture can be lost to a panel, tab switch or system gesture without pointerup.
       if (e.buttons === 0) this.dragging = false;
       if (this.dragging && this.mode === "ground") {
@@ -244,6 +256,7 @@ export class FlightScene {
   get needsSmoothMotion() {
     return (
       this.dragging ||
+      this.componentPlacement?.dragging ||
       this.cameraPlacement?.dragging ||
       !!this.pilotDestination ||
       Math.abs(this.lookYaw) + Math.abs(this.lookPitch) > 0.002
@@ -263,10 +276,11 @@ export class FlightScene {
     this.scene.remove(this.visual.group);
     disposeAircraft(this.visual.group);
   }
-  setAircraft(a: Aircraft) {
+  setAircraft(a: Aircraft, editablePartId?: string) {
+    this.endComponentPlacement();
     this.endCameraPlacement();
     this.disposeVisual();
-    this.visual = buildAircraft(a);
+    this.visual = buildAircraft(a, editablePartId);
     this.scene.add(this.visual.group);
     const bounds = new T.Box3().setFromObject(this.visual.group);
     this.shadowRadius =
@@ -313,7 +327,33 @@ export class FlightScene {
       ? `${part.id.replaceAll("-", " ")} · ${(part.massKg * 1000).toFixed(1)} g · installation envelope`
       : "";
   }
+  beginComponentPlacement(a: Aircraft, partId: string) {
+    if (!this.studio || !this.visual)
+      throw new Error("Open the aircraft editor first.");
+    this.endCameraPlacement();
+    this.endComponentPlacement();
+    this.setAircraft(a, partId);
+    this.componentInspection = this.inspectionView;
+    this.setInspectionView("perspective");
+    this.componentPlacement = new ComponentPlacementView(
+      this.scene,
+      this.renderer.domElement,
+      this.camera,
+      this.visual,
+      a,
+      partId,
+    );
+    return this.componentPlacement;
+  }
+  endComponentPlacement() {
+    this.componentPlacement?.dispose();
+    this.componentPlacement = undefined;
+    if (this.componentInspection)
+      this.setInspectionView(this.componentInspection);
+    this.componentInspection = undefined;
+  }
   beginCameraPlacement(a: Aircraft) {
+    this.endComponentPlacement();
     if (!this.studio || !this.visual || !a.fpv)
       throw new Error(
         "Open an aircraft with an FPV camera in the editor first.",
@@ -473,6 +513,8 @@ export class FlightScene {
     c: Controls,
     dt: number,
     previewDeflections?: readonly number[],
+    previewTilts?: readonly number[],
+    previewRearTilt = 0,
   ) {
     if (!this.visual) return;
     if (!this.studio && this.pilotDestination) {
@@ -516,6 +558,27 @@ export class FlightScene {
       if (v.hingeAxis)
         v.pivot.quaternion.setFromAxisAngle(v.hingeAxis, deflection);
       else v.pivot.rotation.y = deflection;
+    }
+    for (const mount of this.visual.tiltMounts ?? []) {
+      if (
+        sim.aircraft.motors[mount.motorIndex].id ===
+        sim.aircraft.vtol!.rearMotorId
+      ) {
+        mount.pivot.rotation.x =
+          ((this.studio ? previewRearTilt : (s.vtol?.rearTiltDeg ?? 0)) *
+            Math.PI) /
+          180;
+        continue;
+      }
+      const front =
+        sim.aircraft.motors[mount.motorIndex].id ===
+        sim.aircraft.vtol!.frontLeftMotorId
+          ? 0
+          : 1;
+      const angle = this.studio
+        ? (previewTilts?.[front] ?? 0)
+        : (s.vtol?.tiltDeg[front] ?? 0);
+      mount.pivot.rotation.y = Math.PI / 2 - (angle * Math.PI) / 180;
     }
     const rotorPower = powertrain(
       sim.aircraft,
@@ -667,7 +730,8 @@ export class FlightScene {
       this.studio &&
       this.inspectComponents &&
       !!this.selectedComponent &&
-      !this.cameraPlacement;
+      !this.cameraPlacement &&
+      !this.componentPlacement;
     this.componentFocusLabel.hidden = !this.componentFocus.group.visible;
     this.axisGuide.hidden = !this.studio || !!this.cameraPlacement;
     this.axisGuide.style.right = this.studio ? "14px" : "auto";
@@ -675,6 +739,7 @@ export class FlightScene {
     this.axisGuide.style.top = this.studio ? "58px" : "90px";
     if (!this.studio) this.field.update(this.camera);
     this.cameraPlacement?.prepare(viewCamera);
+    this.componentPlacement?.prepare(viewCamera);
     this.renderer.render(this.scene, viewCamera);
     this.cameraPlacement?.renderPreview();
   }
@@ -687,6 +752,7 @@ export class FlightScene {
       this.resize();
   }
   dispose() {
+    this.endComponentPlacement();
     this.endCameraPlacement();
     this.observer.disconnect();
     this.disposeVisual();

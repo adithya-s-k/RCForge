@@ -1,0 +1,1331 @@
+{
+  "schemaVersion": 1,
+  "id": "bronco-tri-vtol",
+  "name": "Bronco · Tricopter VTOL",
+  "description": "Experimental Bronco-sized tricopter: two RDS3115MG front conversion servos and a separate MG996R rear yaw mount. Ideal-state hover/cruise assistance; uncalibrated build.",
+  "provenance": {
+    "dimensions": {
+      "status": "sourced",
+      "note": "Published span 1.086 m and wing area 0.208 m². The procedural folded wing and assembly reconstruction use the separate geometry assumptions below.",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf"
+    },
+    "geometry": {
+      "status": "estimated",
+      "note": "Plan-derived procedural reconstruction: 192 mm wing chord, approximately 61% outer-span ailerons, 658 mm booms, 63 mm fuselage core width; A-tail sheet 3. Folded assembly locations and nose cross-sections inferred from build photos. Not a manufacturing template. Rear motor force acts on its longitudinal hinge at Z=13 mm; housing center is 28 mm above it. Rotation moves the housing along its thrust line; component inertia stays at the authored neutral configuration."
+    },
+    "tail": {
+      "status": "estimated",
+      "note": "A-tail panel flat span approximately 254 mm per side and chord 102 mm measured from PDF sheet 3 ruler. 45 degree fold remains an assembly estimate; yields 359 mm boom spacing and 180 mm apex height. Ruddervator effectiveness and inertia distribution remain estimates."
+    },
+    "noseReconstruction": {
+      "status": "estimated",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf",
+      "note": "Sheet 1 Nose part 05: right-side cut outline runs Y=139.420 to 712.960 pt; inner fold station X=1344.86 pt. Its 573.54 pt projected length is 202.33 mm and rear height 371.64 pt is 131.66 mm. Sampled curvature replaces generic pointed loft. Parallel 68 mm width follows the 192.84 pt core fold separation (including board overlap); rear-core transition and X/Z registration remain photo-guided estimates. Nose apex retained near body X=327 mm. Cockpit paint and hatch markings are estimated from original assembly photographs. Fuselage mass and mass center retained; updated outer envelope changes its box-inertia estimate."
+    },
+    "controls": {
+      "status": "sourced",
+      "note": "12 degree reference throws; inverted-V pitch/yaw mixing and aerodynamic effectiveness estimated. No flight-test calibration.",
+      "url": "https://www.flitetest.com/articles/ft-bronco-build"
+    },
+    "aerodynamics": {
+      "status": "estimated",
+      "note": "Uncalibrated Bronco analytical wing/tail coefficients retained as an explicit starting approximation. No measured VTOL interference, rotor-wing downwash, dynamic transition, tilt gyroscopic or flight data; rigid inertia fixed at declared part positions."
+    },
+    "propulsion": {
+      "status": "sourced",
+      "note": "Motor mass and dimensions and 11.1 V / 1045 thrust-current-RPM samples from EMAX. Command is estimated RPM/max RPM, not measured PWM. Propeller mass, response time, torque ratio and air density are estimated. Robu datasheet describes an older 920KV variant; do not treat its maximum-thrust headline as this curve. This motor is an assumed installable option, not identified from the photograph.",
+      "url": "https://emaxmodel.com/collections/mt-series/products/emax-mt2213-935kv-multicopter-brushless-motor"
+    },
+    "mass": {
+      "status": "estimated",
+      "note": "Individual ledger: baseline Bronco structure retained, three 53 g motor / 8 g prop packages, two 60 g RDS3115MG and one provisional 55 g MG996R, four 9 g surface servos, 190 g battery; separate ESCs, receiver, wiring, BEC, controller, brackets, beam and skids. Published 830 g Bronco mass is NOT the mass of this conversion. Installation hardware and structure allocation are unweighed estimates."
+    },
+    "cg": {
+      "status": "calculated",
+      "note": "CG and full inertia tensor are computed from the part ledger. Battery is placed forward in the nose to reduce rear rotor load. Positions are estimated from the reference layout, not measured build stations. Move parts to adjust balance; the published Bronco 51 mm CG is a reference, not a guaranteed VTOL target."
+    },
+    "frontServos": {
+      "status": "sourced",
+      "note": "RDS3115MG retailer: 60 g, 180°, 0.14 s/60° at 6 V. Front mounts use a 0–90° conversion with a slower configured transition rate. Torque capability under propeller load, mount rigidity and servo current are not verified.",
+      "url": "https://robocraze.com/products/rds3115mg-15kg-large-torque-180-degree"
+    },
+    "rearServo": {
+      "status": "estimated",
+      "note": "Close-up suggests an MG996R alongside a printed longitudinal hinge on a wood beam. Provisional manufacturer mass 55 g and 0.15 s/60° at 6 V; configured rear yaw lean ±20°. Actual servo identity, horn geometry and bearings need measurement.",
+      "url": "https://towerpro.com.tw/product/mg996r/"
+    },
+    "electrical": {
+      "status": "estimated",
+      "note": "3S 2200 mAh / 190 g battery with illustrative OCV, 0.04 ohm resistance and 0.6 A constant avionics allowance. Motor thrust/current use the sourced static EMAX table. No dynamic servo current, BEC heating, flight-speed efficiency or measured endurance model."
+    },
+    "vtolControl": {
+      "status": "estimated",
+      "note": "Independent ideal-state hover/cruise controller inspired by ArduPilot tricopter conventions. Front motors tilt together for conversion; rear rotor leans sideways for yaw. No ArduPilot firmware, sensors, EKF or real-world control tuning is reproduced. Hover support and conversion depend on available modeled thrust.",
+      "url": "https://ardupilot.org/plane/docs/guide-tilt-rotor.html"
+    },
+    "controlSurfaceServos": {
+      "status": "estimated",
+      "note": "Four 9 g surface servos, 0.06 s lag, linkage ratios and 12° throws are illustrative. Servo no-load speed limits travel; aerodynamic hinge load, backlash and linkage flex are not modeled."
+    },
+    "cruiseTrim": {
+      "status": "calculated",
+      "note": "Calm sea-level longitudinal equilibrium at 14 m/s with this mass ledger: pitch 2.297°, elevator command +0.30763. Recalculate after moving parts or changing surfaces. Not a measured flight trim."
+    }
+  },
+  "parts": [
+    {
+      "id": "left-wing",
+      "kind": "wing",
+      "massKg": 0.12,
+      "positionM": [-0.048, -0.2715, -0.031],
+      "sizeM": [0.192, 0.543, 0.022],
+      "color": "#ebe9dd",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "right-wing",
+      "kind": "wing",
+      "massKg": 0.12,
+      "positionM": [-0.048, 0.2715, -0.031],
+      "sizeM": [0.192, 0.543, 0.022],
+      "color": "#ebe9dd",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "fuselage",
+      "kind": "body",
+      "massKg": 0.084,
+      "positionM": [0.1035, 0, 0.045],
+      "sizeM": [0.447, 0.068, 0.132],
+      "color": "#e7e5d9",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.49999999999999994,
+          "width": 0.7352941176470588,
+          "top": -0.4644659671287142,
+          "bottom": 0.07575757575757577
+        },
+        {
+          "x": -0.39932885906040266,
+          "width": 0.926470588235294,
+          "top": -0.47637077490999175,
+          "bottom": 0.2878787878787879
+        },
+        {
+          "x": -0.2315436241610738,
+          "width": 1.0,
+          "top": -0.4962121212121212,
+          "bottom": 0.3409090909090909
+        },
+        {
+          "x": -0.12416107382550334,
+          "width": 1.0,
+          "top": -0.5089105828454841,
+          "bottom": 0.3409090909090909
+        },
+        {
+          "x": -0.06375838926174496,
+          "width": 1.0,
+          "top": -0.6439393939393938,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": -0.019015659955257256,
+          "width": 1.0,
+          "top": -0.6515151515151514,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.047355366567238356,
+          "width": 1.0,
+          "top": -0.6523207047057097,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.08125991541138457,
+          "width": 1.0,
+          "top": -0.6462575290995118,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.11282839664429531,
+          "width": 1.0,
+          "top": -0.6321921319773726,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.14439687787720612,
+          "width": 1.0,
+          "top": -0.60665145699795,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.16876774538901324,
+          "width": 1.0,
+          "top": -0.5777422160143337,
+          "bottom": 0.3409090909090909,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.19174959972657224,
+          "width": 1.0,
+          "top": -0.539778783500991,
+          "bottom": 0.3394174633499517,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.21542596065125533,
+          "width": 1.0,
+          "top": -0.4840647326139855,
+          "bottom": 0.33697171738533327,
+          "topColor": "#23262a"
+        },
+        {
+          "x": 0.2442953367387522,
+          "width": 1.0,
+          "top": -0.36015638511698833,
+          "bottom": 0.3320618259523528
+        },
+        {
+          "x": 0.2627786825006214,
+          "width": 1.0,
+          "top": -0.3609582811349171,
+          "bottom": 0.3278517912879286
+        },
+        {
+          "x": 0.29434716373353226,
+          "width": 1.0,
+          "top": -0.35704856678896957,
+          "bottom": 0.31858313127465193
+        },
+        {
+          "x": 0.33380776527467076,
+          "width": 1.0,
+          "top": -0.34173572819657794,
+          "bottom": 0.30234801517075865
+        },
+        {
+          "x": 0.3732683668158092,
+          "width": 1.0,
+          "top": -0.3141974722723571,
+          "bottom": 0.27860267185403803
+        },
+        {
+          "x": 0.4127289683569476,
+          "width": 1.0,
+          "top": -0.27146514583492826,
+          "bottom": 0.24465118121095772
+        },
+        {
+          "x": 0.4442974495898584,
+          "width": 1.0,
+          "top": -0.22205406335784678,
+          "bottom": 0.20547827437502836
+        },
+        {
+          "x": 0.46797381051454146,
+          "width": 1.0,
+          "top": -0.16964268762486934,
+          "bottom": 0.16289577915057468
+        },
+        {
+          "x": 0.48375805113099685,
+          "width": 1.0,
+          "top": -0.12030647022407258,
+          "bottom": 0.12038077943873851
+        },
+        {
+          "x": 0.49559623159333843,
+          "width": 1.0,
+          "top": -0.06002367764353735,
+          "bottom": 0.06715989938336515
+        },
+        {
+          "x": 0.49993689776286365,
+          "width": 1.0,
+          "top": -0.003210271442494184,
+          "bottom": 0.01049122035297334
+        }
+      ]
+    },
+    {
+      "id": "left-boom",
+      "kind": "boom",
+      "massKg": 0.06,
+      "positionM": [-0.231, -0.17960512242138307, 0.005],
+      "sizeM": [0.658, 0.05, 0.045],
+      "color": "#e7e5d9",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.560790273556231,
+          "width": 0.35999999999999993,
+          "top": -0.17777777777777778,
+          "bottom": 0.20000000000000004
+        },
+        {
+          "x": -0.10486322188449844,
+          "width": 0.7199999999999999,
+          "top": -0.39999999999999997,
+          "bottom": 0.4444444444444445
+        },
+        {
+          "x": 0.16869300911854104,
+          "width": 1.0,
+          "top": -0.4735446146886728,
+          "bottom": 0.5555555555555556
+        },
+        {
+          "x": 0.43920972644376904,
+          "width": 1.0,
+          "top": -0.6116756584560304,
+          "bottom": 0.5555555555555556
+        }
+      ]
+    },
+    {
+      "id": "right-boom",
+      "kind": "boom",
+      "massKg": 0.06,
+      "positionM": [-0.231, 0.17960512242138307, 0.005],
+      "sizeM": [0.658, 0.05, 0.045],
+      "color": "#e7e5d9",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.560790273556231,
+          "width": 0.35999999999999993,
+          "top": -0.17777777777777778,
+          "bottom": 0.20000000000000004
+        },
+        {
+          "x": -0.10486322188449844,
+          "width": 0.7199999999999999,
+          "top": -0.39999999999999997,
+          "bottom": 0.4444444444444445
+        },
+        {
+          "x": 0.16869300911854104,
+          "width": 1.0,
+          "top": -0.4735446146886728,
+          "bottom": 0.5555555555555556
+        },
+        {
+          "x": 0.43920972644376904,
+          "width": 1.0,
+          "top": -0.6116756584560304,
+          "bottom": 0.5555555555555556
+        }
+      ]
+    },
+    {
+      "id": "tail-mass",
+      "kind": "tail",
+      "massKg": 0.03,
+      "positionM": [-0.549, 0, -0.08980256121069154],
+      "sizeM": [0.102, 0.35921024484276615, 0.17960512242138307],
+      "color": "#ebe9dd",
+      "material": {
+        "name": "Foamboard assembly",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "battery",
+      "kind": "battery",
+      "massKg": 0.19,
+      "positionM": [0.239, 0, 0.066],
+      "sizeM": [0.075, 0.034, 0.027],
+      "color": "#df743d"
+    },
+    {
+      "id": "servo-left-wing",
+      "kind": "equipment",
+      "massKg": 0.009,
+      "positionM": [-0.065, -0.29, -0.031],
+      "sizeM": [0.023, 0.0122, 0.029],
+      "color": "#2d3942",
+      "material": {
+        "name": "Positional micro servo",
+        "finish": "plastic"
+      },
+      "model": "SG90-class reference",
+      "servo": {
+        "speedSecondsPer60Deg": 0.1,
+        "travelDeg": 150,
+        "ratedVoltage": 4.8
+      }
+    },
+    {
+      "id": "servo-right-wing",
+      "kind": "equipment",
+      "massKg": 0.009,
+      "positionM": [-0.065, 0.29, -0.031],
+      "sizeM": [0.023, 0.0122, 0.029],
+      "color": "#2d3942",
+      "material": {
+        "name": "Positional micro servo",
+        "finish": "plastic"
+      },
+      "model": "SG90-class reference",
+      "servo": {
+        "speedSecondsPer60Deg": 0.1,
+        "travelDeg": 150,
+        "ratedVoltage": 4.8
+      }
+    },
+    {
+      "id": "servo-left-ruddervator",
+      "kind": "equipment",
+      "massKg": 0.009,
+      "positionM": [-0.445, -0.17960512242138307, -0.008],
+      "sizeM": [0.023, 0.0122, 0.029],
+      "color": "#2d3942",
+      "material": {
+        "name": "Positional micro servo",
+        "finish": "plastic"
+      },
+      "model": "SG90-class reference",
+      "servo": {
+        "speedSecondsPer60Deg": 0.1,
+        "travelDeg": 150,
+        "ratedVoltage": 4.8
+      }
+    },
+    {
+      "id": "servo-right-ruddervator",
+      "kind": "equipment",
+      "massKg": 0.009,
+      "positionM": [-0.445, 0.17960512242138307, -0.008],
+      "sizeM": [0.023, 0.0122, 0.029],
+      "color": "#2d3942",
+      "material": {
+        "name": "Positional micro servo",
+        "finish": "plastic"
+      },
+      "model": "SG90-class reference",
+      "servo": {
+        "speedSecondsPer60Deg": 0.1,
+        "travelDeg": 150,
+        "ratedVoltage": 4.8
+      }
+    },
+    {
+      "id": "left-nacelle",
+      "kind": "body",
+      "massKg": 0.014,
+      "positionM": [-0.012, -0.17960512242138307, 0.005],
+      "sizeM": [0.21, 0.06, 0.075],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Folded paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 0.6,
+          "top": -0.2855235995928736,
+          "bottom": 0.15
+        },
+        {
+          "x": -0.12,
+          "width": 1,
+          "top": -0.3226792983320932,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.25,
+          "width": 1,
+          "top": -0.3588572155255438,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.5,
+          "width": 0.82,
+          "top": -0.35,
+          "bottom": 0.35
+        }
+      ]
+    },
+    {
+      "id": "right-nacelle",
+      "kind": "body",
+      "massKg": 0.014,
+      "positionM": [-0.012, 0.17960512242138307, 0.005],
+      "sizeM": [0.21, 0.06, 0.075],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Folded paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 0.6,
+          "top": -0.2855235995928736,
+          "bottom": 0.15
+        },
+        {
+          "x": -0.12,
+          "width": 1,
+          "top": -0.3226792983320932,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.25,
+          "width": 1,
+          "top": -0.3588572155255438,
+          "bottom": 0.5
+        },
+        {
+          "x": 0.5,
+          "width": 0.82,
+          "top": -0.35,
+          "bottom": 0.35
+        }
+      ]
+    },
+    {
+      "kind": "motor",
+      "massKg": 0.053,
+      "sizeM": [0.0397, 0.0279, 0.0279],
+      "color": "#252729",
+      "manufacturer": "EMAX",
+      "model": "MT2213 935KV",
+      "material": {
+        "name": "metal",
+        "finish": "metal"
+      },
+      "id": "motor-left",
+      "positionM": [0.215, -0.17960512, -0.005],
+      "catalogId": "emax-mt2213-1045-3s"
+    },
+    {
+      "kind": "equipment",
+      "massKg": 0.008,
+      "sizeM": [0.003, 0.254, 0.254],
+      "color": "#252729",
+      "manufacturer": "EMAX",
+      "model": "1045 prop (mass estimated)",
+      "material": {
+        "name": "plastic",
+        "finish": "plastic"
+      },
+      "id": "prop-left",
+      "positionM": [0.238, -0.17960512, -0.005]
+    },
+    {
+      "kind": "equipment",
+      "massKg": 0.06,
+      "sizeM": [0.04, 0.02, 0.0405],
+      "color": "#343434",
+      "model": "RDS3115MG",
+      "material": {
+        "name": "metal gear servo",
+        "finish": "metal"
+      },
+      "servo": {
+        "speedSecondsPer60Deg": 0.14,
+        "travelDeg": 180,
+        "ratedVoltage": 6,
+        "stallTorqueNm": 1.4709975
+      },
+      "id": "tilt-servo-left",
+      "positionM": [0.182, -0.20360512, 0.028],
+      "catalogId": "rds3115mg-180",
+      "orientationDeg": [90, 0, 0]
+    },
+    {
+      "id": "tilt-bracket-left",
+      "kind": "equipment",
+      "massKg": 0.018,
+      "positionM": [0.215, -0.17960512, 0.01],
+      "sizeM": [0.056, 0.052, 0.032],
+      "color": "#55575a",
+      "material": {
+        "name": "estimated metal tilt bracket",
+        "finish": "metal"
+      },
+      "model": "Front tilt yoke and bearing mount (estimated)"
+    },
+    {
+      "kind": "motor",
+      "massKg": 0.053,
+      "sizeM": [0.0397, 0.0279, 0.0279],
+      "color": "#252729",
+      "manufacturer": "EMAX",
+      "model": "MT2213 935KV",
+      "material": {
+        "name": "metal",
+        "finish": "metal"
+      },
+      "id": "motor-right",
+      "positionM": [0.215, 0.17960512, -0.005],
+      "catalogId": "emax-mt2213-1045-3s"
+    },
+    {
+      "kind": "equipment",
+      "massKg": 0.008,
+      "sizeM": [0.003, 0.254, 0.254],
+      "color": "#252729",
+      "manufacturer": "EMAX",
+      "model": "1045 prop (mass estimated)",
+      "material": {
+        "name": "plastic",
+        "finish": "plastic"
+      },
+      "id": "prop-right",
+      "positionM": [0.238, 0.17960512, -0.005]
+    },
+    {
+      "kind": "equipment",
+      "massKg": 0.06,
+      "sizeM": [0.04, 0.02, 0.0405],
+      "color": "#343434",
+      "model": "RDS3115MG",
+      "material": {
+        "name": "metal gear servo",
+        "finish": "metal"
+      },
+      "servo": {
+        "speedSecondsPer60Deg": 0.14,
+        "travelDeg": 180,
+        "ratedVoltage": 6,
+        "stallTorqueNm": 1.4709975
+      },
+      "id": "tilt-servo-right",
+      "positionM": [0.182, 0.20360512, 0.028],
+      "catalogId": "rds3115mg-180",
+      "orientationDeg": [90, 0, 0]
+    },
+    {
+      "id": "tilt-bracket-right",
+      "kind": "equipment",
+      "massKg": 0.018,
+      "positionM": [0.215, 0.17960512, 0.01],
+      "sizeM": [0.056, 0.052, 0.032],
+      "color": "#55575a",
+      "material": {
+        "name": "estimated metal tilt bracket",
+        "finish": "metal"
+      },
+      "model": "Front tilt yoke and bearing mount (estimated)"
+    },
+    {
+      "kind": "motor",
+      "massKg": 0.053,
+      "sizeM": [0.0279, 0.0279, 0.0397],
+      "color": "#252729",
+      "manufacturer": "EMAX",
+      "model": "MT2213 935KV",
+      "material": {
+        "name": "metal",
+        "finish": "metal"
+      },
+      "id": "motor-rear",
+      "positionM": [-0.34, 0, -0.015],
+      "catalogId": "emax-mt2213-1045-3s"
+    },
+    {
+      "kind": "equipment",
+      "massKg": 0.008,
+      "sizeM": [0.254, 0.254, 0.003],
+      "color": "#252729",
+      "manufacturer": "EMAX",
+      "model": "1045 prop (mass estimated)",
+      "material": {
+        "name": "plastic",
+        "finish": "plastic"
+      },
+      "id": "prop-rear",
+      "positionM": [-0.34, 0, -0.038]
+    },
+    {
+      "id": "rear-motor-support",
+      "kind": "equipment",
+      "massKg": 0.028,
+      "positionM": [-0.244, 0, 0.045],
+      "sizeM": [0.294, 0.055, 0.01],
+      "color": "#b39b70",
+      "model": "Wood rear rotor support beam (estimated)",
+      "material": {
+        "name": "wood",
+        "finish": "wood"
+      }
+    },
+    {
+      "id": "flight-controller",
+      "kind": "equipment",
+      "massKg": 0.012,
+      "positionM": [-0.04, 0, -0.066],
+      "sizeM": [0.037, 0.037, 0.01],
+      "color": "#333537",
+      "model": "Estimated installation allowance"
+    },
+    {
+      "id": "vtol-bec",
+      "kind": "equipment",
+      "massKg": 0.018,
+      "positionM": [0.04, 0, 0.04],
+      "sizeM": [0.035, 0.023, 0.012],
+      "color": "#333537",
+      "model": "Estimated installation allowance"
+    },
+    {
+      "id": "vtol-skids",
+      "kind": "equipment",
+      "massKg": 0.028,
+      "positionM": [-0.01, 0, 0.139],
+      "sizeM": [0.39, 0.368, 0.202],
+      "color": "#333537",
+      "model": "Carbon struts and landing rails (estimated)"
+    },
+    {
+      "kind": "equipment",
+      "massKg": 0.055,
+      "sizeM": [0.0407, 0.0197, 0.0429],
+      "color": "#242629",
+      "model": "MG996R",
+      "material": {
+        "name": "metal gear servo",
+        "finish": "plastic"
+      },
+      "servo": {
+        "speedSecondsPer60Deg": 0.15,
+        "travelDeg": 159,
+        "ratedVoltage": 6,
+        "stallTorqueNm": 1.0787315
+      },
+      "id": "yaw-servo-rear",
+      "positionM": [-0.291, 0, 0.002],
+      "catalogId": "towerpro-mg996r",
+      "manufacturer": "TowerPro",
+      "orientationDeg": [0, 90, 0]
+    },
+    {
+      "id": "rear-yaw-bracket",
+      "kind": "equipment",
+      "massKg": 0.018,
+      "positionM": [-0.34, 0, 0.014],
+      "sizeM": [0.054, 0.052, 0.028],
+      "color": "#db582d",
+      "model": "Printed rear yaw cradle and bearings (estimated)"
+    },
+    {
+      "id": "esc-left",
+      "kind": "equipment",
+      "massKg": 0.015,
+      "positionM": [0.05, -0.17960512, 0.014],
+      "sizeM": [0.035, 0.023, 0.012],
+      "color": "#292b2d",
+      "model": "Left ESC (estimated)"
+    },
+    {
+      "id": "esc-right",
+      "kind": "equipment",
+      "massKg": 0.015,
+      "positionM": [0.05, 0.17960512, 0.014],
+      "sizeM": [0.035, 0.023, 0.012],
+      "color": "#292b2d",
+      "model": "Right ESC (estimated)"
+    },
+    {
+      "id": "esc-rear",
+      "kind": "equipment",
+      "massKg": 0.015,
+      "positionM": [-0.224, 0, 0.029],
+      "sizeM": [0.035, 0.023, 0.012],
+      "color": "#292b2d",
+      "model": "Rear ESC (estimated)"
+    },
+    {
+      "id": "receiver",
+      "kind": "equipment",
+      "massKg": 0.005,
+      "positionM": [0.055, 0, 0.008],
+      "sizeM": [0.031, 0.022, 0.012],
+      "color": "#292b2d",
+      "model": "Receiver (estimated)"
+    },
+    {
+      "id": "wiring",
+      "kind": "equipment",
+      "massKg": 0.011,
+      "positionM": [0.0, 0, 0.025],
+      "sizeM": [0.15, 0.036, 0.016],
+      "color": "#292b2d",
+      "model": "Power distribution and wiring (estimated)"
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "left-wing",
+      "positionM": [0, -0.2715, -0.023],
+      "spanM": 0.543,
+      "chordM": 0.192,
+      "aspectRatio": 5.65,
+      "rollDeg": 0,
+      "incidenceDeg": 2,
+      "liftSlope": 4.6,
+      "zeroLiftDeg": -2,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": -0.025,
+      "control": {
+        "axis": "roll",
+        "gain": 1,
+        "maxDeg": 12,
+        "effectiveness": 0.55,
+        "responseSeconds": 0.06,
+        "linkage": {
+          "servoPartId": "servo-left-wing",
+          "servoTravelDeg": 45,
+          "servoArmM": 0.01,
+          "surfaceArmM": 0.015
+        }
+      },
+      "kind": "wing",
+      "foamWing": {
+        "rootChordM": 0.192,
+        "boardThicknessM": 0.005,
+        "foldHeightM": 0.021,
+        "hingeFraction": 0.765,
+        "controlSpan": [0.39, 0.998],
+        "tipStations": [
+          [0, 0, 1],
+          [0.985, 0, 1],
+          [1, 0.015, 0.995]
+        ]
+      }
+    },
+    {
+      "id": "right-wing",
+      "positionM": [0, 0.2715, -0.023],
+      "spanM": 0.543,
+      "chordM": 0.192,
+      "aspectRatio": 5.65,
+      "rollDeg": 0,
+      "incidenceDeg": 2,
+      "liftSlope": 4.6,
+      "zeroLiftDeg": -2,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": -0.025,
+      "control": {
+        "axis": "roll",
+        "gain": -1,
+        "maxDeg": 12,
+        "effectiveness": 0.55,
+        "responseSeconds": 0.06,
+        "linkage": {
+          "servoPartId": "servo-right-wing",
+          "servoTravelDeg": 45,
+          "servoArmM": 0.01,
+          "surfaceArmM": 0.015
+        }
+      },
+      "kind": "wing",
+      "foamWing": {
+        "rootChordM": 0.192,
+        "boardThicknessM": 0.005,
+        "foldHeightM": 0.021,
+        "hingeFraction": 0.765,
+        "controlSpan": [0.39, 0.998],
+        "tipStations": [
+          [0, 0, 1],
+          [0.985, 0, 1],
+          [1, 0.015, 0.995]
+        ]
+      }
+    },
+    {
+      "id": "left-ruddervator",
+      "positionM": [-0.5235, -0.08980256121069154, -0.08980256121069154],
+      "spanM": 0.254,
+      "chordM": 0.102,
+      "aspectRatio": 4.980392156862745,
+      "rollDeg": -45,
+      "incidenceDeg": 0,
+      "liftSlope": 3.5,
+      "zeroLiftDeg": 0,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": 0,
+      "control": {
+        "axis": "pitch",
+        "gain": -1,
+        "maxDeg": 12,
+        "effectiveness": 0.55,
+        "mix": {
+          "yaw": 1
+        },
+        "responseSeconds": 0.06,
+        "linkage": {
+          "servoPartId": "servo-left-ruddervator",
+          "servoTravelDeg": 45,
+          "servoArmM": 0.01,
+          "surfaceArmM": 0.015
+        }
+      },
+      "kind": "horizontal-tail",
+      "panel": {
+        "outline": [
+          [0.25, -0.5],
+          [0.25, 0.5],
+          [-0.4179858362841079, 0.5],
+          [-0.75, 0.42208333333333314],
+          [-0.75, -0.5]
+        ],
+        "thicknessM": 0.005,
+        "controlHinge": [
+          [-0.4179858362841079, -0.5],
+          [-0.4179858362841079, 0.5]
+        ]
+      }
+    },
+    {
+      "id": "right-ruddervator",
+      "positionM": [-0.5235, 0.08980256121069154, -0.08980256121069154],
+      "spanM": 0.254,
+      "chordM": 0.102,
+      "aspectRatio": 4.980392156862745,
+      "rollDeg": 45,
+      "incidenceDeg": 0,
+      "liftSlope": 3.5,
+      "zeroLiftDeg": 0,
+      "stallDeg": 15,
+      "cd0": 0.025,
+      "efficiency": 0.8,
+      "cm": 0,
+      "control": {
+        "axis": "pitch",
+        "gain": -1,
+        "maxDeg": 12,
+        "effectiveness": 0.55,
+        "mix": {
+          "yaw": -1
+        },
+        "responseSeconds": 0.06,
+        "linkage": {
+          "servoPartId": "servo-right-ruddervator",
+          "servoTravelDeg": 45,
+          "servoArmM": 0.01,
+          "surfaceArmM": 0.015
+        }
+      },
+      "kind": "horizontal-tail",
+      "panel": {
+        "outline": [
+          [0.25, -0.5],
+          [0.25, 0.5],
+          [-0.75, 0.5],
+          [-0.75, -0.42208333333333314],
+          [-0.4179858362841079, -0.5]
+        ],
+        "thicknessM": 0.005,
+        "controlHinge": [
+          [-0.4179858362841079, -0.5],
+          [-0.4179858362841079, 0.5]
+        ]
+      }
+    }
+  ],
+  "motors": [
+    {
+      "maxThrustN": 6.276256,
+      "zeroThrustSpeedMps": 35,
+      "responseSeconds": 0.085,
+      "propDiameterM": 0.254,
+      "propBlades": 2,
+      "torquePerThrustM": 0.018,
+      "model": "EMAX MT2213 935KV",
+      "propeller": "EMAX1045 two blade",
+      "performance": {
+        "referenceVoltage": 11.1,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0
+          },
+          {
+            "command": 0.450229709035222,
+            "thrustN": 1.2748645,
+            "currentA": 1
+          },
+          {
+            "command": 0.5911179173047473,
+            "thrustN": 2.157463,
+            "currentA": 2
+          },
+          {
+            "command": 0.6738131699846861,
+            "thrustN": 2.8439285,
+            "currentA": 3
+          },
+          {
+            "command": 0.7565084226646248,
+            "thrustN": 3.5303940000000003,
+            "currentA": 4
+          },
+          {
+            "command": 0.8177641653905053,
+            "thrustN": 4.2168595,
+            "currentA": 5
+          },
+          {
+            "command": 0.8759571209800919,
+            "thrustN": 4.8052585,
+            "currentA": 6
+          },
+          {
+            "command": 0.9157733537519143,
+            "thrustN": 5.295591,
+            "currentA": 7
+          },
+          {
+            "command": 0.9448698315467075,
+            "thrustN": 5.687857,
+            "currentA": 8
+          },
+          {
+            "command": 0.9816232771822359,
+            "thrustN": 6.080123,
+            "currentA": 9
+          },
+          {
+            "command": 1.0,
+            "thrustN": 6.276256,
+            "currentA": 9.5
+          }
+        ]
+      },
+      "id": "motor-left",
+      "partId": "motor-left",
+      "propPartId": "prop-left",
+      "positionM": [0.215, -0.17960512, -0.005],
+      "spin": "ccw",
+      "yawMix": 0
+    },
+    {
+      "maxThrustN": 6.276256,
+      "zeroThrustSpeedMps": 35,
+      "responseSeconds": 0.085,
+      "propDiameterM": 0.254,
+      "propBlades": 2,
+      "torquePerThrustM": 0.018,
+      "model": "EMAX MT2213 935KV",
+      "propeller": "EMAX1045 two blade",
+      "performance": {
+        "referenceVoltage": 11.1,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0
+          },
+          {
+            "command": 0.450229709035222,
+            "thrustN": 1.2748645,
+            "currentA": 1
+          },
+          {
+            "command": 0.5911179173047473,
+            "thrustN": 2.157463,
+            "currentA": 2
+          },
+          {
+            "command": 0.6738131699846861,
+            "thrustN": 2.8439285,
+            "currentA": 3
+          },
+          {
+            "command": 0.7565084226646248,
+            "thrustN": 3.5303940000000003,
+            "currentA": 4
+          },
+          {
+            "command": 0.8177641653905053,
+            "thrustN": 4.2168595,
+            "currentA": 5
+          },
+          {
+            "command": 0.8759571209800919,
+            "thrustN": 4.8052585,
+            "currentA": 6
+          },
+          {
+            "command": 0.9157733537519143,
+            "thrustN": 5.295591,
+            "currentA": 7
+          },
+          {
+            "command": 0.9448698315467075,
+            "thrustN": 5.687857,
+            "currentA": 8
+          },
+          {
+            "command": 0.9816232771822359,
+            "thrustN": 6.080123,
+            "currentA": 9
+          },
+          {
+            "command": 1.0,
+            "thrustN": 6.276256,
+            "currentA": 9.5
+          }
+        ]
+      },
+      "id": "motor-right",
+      "partId": "motor-right",
+      "propPartId": "prop-right",
+      "positionM": [0.215, 0.17960512, -0.005],
+      "spin": "cw",
+      "yawMix": 0
+    },
+    {
+      "maxThrustN": 6.276256,
+      "zeroThrustSpeedMps": 35,
+      "responseSeconds": 0.085,
+      "propDiameterM": 0.254,
+      "propBlades": 2,
+      "torquePerThrustM": 0.018,
+      "model": "EMAX MT2213 935KV",
+      "propeller": "EMAX1045 two blade",
+      "performance": {
+        "referenceVoltage": 11.1,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0
+          },
+          {
+            "command": 0.450229709035222,
+            "thrustN": 1.2748645,
+            "currentA": 1
+          },
+          {
+            "command": 0.5911179173047473,
+            "thrustN": 2.157463,
+            "currentA": 2
+          },
+          {
+            "command": 0.6738131699846861,
+            "thrustN": 2.8439285,
+            "currentA": 3
+          },
+          {
+            "command": 0.7565084226646248,
+            "thrustN": 3.5303940000000003,
+            "currentA": 4
+          },
+          {
+            "command": 0.8177641653905053,
+            "thrustN": 4.2168595,
+            "currentA": 5
+          },
+          {
+            "command": 0.8759571209800919,
+            "thrustN": 4.8052585,
+            "currentA": 6
+          },
+          {
+            "command": 0.9157733537519143,
+            "thrustN": 5.295591,
+            "currentA": 7
+          },
+          {
+            "command": 0.9448698315467075,
+            "thrustN": 5.687857,
+            "currentA": 8
+          },
+          {
+            "command": 0.9816232771822359,
+            "thrustN": 6.080123,
+            "currentA": 9
+          },
+          {
+            "command": 1.0,
+            "thrustN": 6.276256,
+            "currentA": 9.5
+          }
+        ]
+      },
+      "id": "motor-rear",
+      "partId": "motor-rear",
+      "propPartId": "prop-rear",
+      "positionM": [-0.34, 0, 0.013],
+      "spin": "cw",
+      "yawMix": 0
+    }
+  ],
+  "fuselageDragAreaM2": 0.006,
+  "angularDamping": [0.025, 0.04, 0.035],
+  "reference": {
+    "spanM": 1.086,
+    "areaM2": 0.208512,
+    "cgFromLeadingEdgeM": 0.051,
+    "leadingEdgeXM": 0.048,
+    "trimSpeedMps": 14
+  },
+  "contactPoints": [
+    {
+      "id": "contact-0",
+      "positionM": [0.327, 0, 0.11],
+      "spanLinked": false
+    },
+    {
+      "id": "contact-1",
+      "positionM": [-0.6, -0.17960512242138307, 0.025],
+      "spanLinked": false
+    },
+    {
+      "id": "contact-2",
+      "positionM": [-0.6, 0.17960512242138307, 0.025],
+      "spanLinked": false
+    },
+    {
+      "id": "contact-3",
+      "positionM": [0, -0.543, -0.0205],
+      "spanLinked": true
+    },
+    {
+      "id": "contact-4",
+      "positionM": [0, 0.543, -0.0205],
+      "spanLinked": true
+    },
+    {
+      "id": "skid-front-left",
+      "positionM": [0.16, -0.18, 0.24],
+      "strutAnchorM": [0.16, -0.18, 0.035],
+      "kind": "skid",
+      "spanLinked": false
+    },
+    {
+      "id": "skid-front-right",
+      "positionM": [0.16, 0.18, 0.24],
+      "strutAnchorM": [0.16, 0.18, 0.035],
+      "kind": "skid",
+      "spanLinked": false
+    },
+    {
+      "id": "skid-back-left",
+      "positionM": [-0.18, -0.18, 0.24],
+      "strutAnchorM": [-0.18, -0.18, 0.035],
+      "kind": "skid",
+      "spanLinked": false
+    },
+    {
+      "id": "skid-back-right",
+      "positionM": [-0.18, 0.18, 0.24],
+      "strutAnchorM": [-0.18, 0.18, 0.035],
+      "kind": "skid",
+      "spanLinked": false
+    }
+  ],
+  "battery": {
+    "partId": "battery",
+    "chemistry": "LiPo",
+    "cells": 3,
+    "capacityMah": 2200,
+    "resistanceOhm": 0.04,
+    "initialSoc": 0.95,
+    "avionicsCurrentA": 0.6,
+    "voltageCurve": [
+      {
+        "soc": 0,
+        "voltsPerCell": 3.3
+      },
+      {
+        "soc": 0.1,
+        "voltsPerCell": 3.65
+      },
+      {
+        "soc": 0.5,
+        "voltsPerCell": 3.8
+      },
+      {
+        "soc": 0.9,
+        "voltsPerCell": 4.1
+      },
+      {
+        "soc": 1,
+        "voltsPerCell": 4.2
+      }
+    ]
+  },
+  "credit": {
+    "name": "Flite Test",
+    "url": "https://www.flitetest.com/articles/ft-bronco-build"
+  },
+  "vehicleType": "vtol",
+  "vtol": {
+    "frontLeftMotorId": "motor-left",
+    "frontRightMotorId": "motor-right",
+    "rearMotorId": "motor-rear",
+    "leftServoPartId": "tilt-servo-left",
+    "rightServoPartId": "tilt-servo-right",
+    "tiltRateDegS": 15,
+    "yawTiltDeg": 20,
+    "transitionAirspeedMps": 12,
+    "transitionAltitudeM": 5,
+    "transitionTimeoutS": 25,
+    "cruisePitchDeg": 2.2969675036563855,
+    "cruisePitchTrim": 0.3076265153811362,
+    "attitudeGain": 3,
+    "rateGain": 14,
+    "profiles": {
+      "beginner": {
+        "bankDeg": 18,
+        "pitchDeg": 12,
+        "yawRateDegS": 45,
+        "climbMps": 2,
+        "horizontalSpeedMps": 4,
+        "positionHold": true
+      },
+      "intermediate": {
+        "bankDeg": 35,
+        "pitchDeg": 22,
+        "yawRateDegS": 90,
+        "climbMps": 4,
+        "horizontalSpeedMps": 8,
+        "positionHold": false
+      }
+    },
+    "defaultAssistance": "beginner",
+    "rearServoPartId": "yaw-servo-rear"
+  },
+  "pilotResponse": {
+    "preset": "standard"
+  }
+}

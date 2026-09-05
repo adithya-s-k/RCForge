@@ -1,3 +1,5 @@
+import { findVtolHoverTrim } from "./vtol-trim";
+import { vtolMotorIndices } from "./vtol";
 import type { Aircraft } from "./schema";
 import { surfaceCommand } from "./surface-control";
 import {
@@ -22,8 +24,19 @@ export function findTrim(
   speed = a.reference.trimSpeedMps ?? 12,
   environment = calmEnvironment(),
   flightPathDeg = 0,
+  vtolMode: "hover" | "cruise" = "hover",
 ) {
+  if (a.vtol && vtolMode === "hover") return findVtolHoverTrim(a, environment);
   const sim = new Simulation(a, environment);
+  const prepareCruise = (s: ReturnType<typeof initialState>) => {
+    if (s.vtol) {
+      s.vtol.phase = "cruise";
+      s.vtol.requestedMode = "cruise";
+      s.vtol.commonTiltDeg = 90;
+      s.vtol.tiltDeg = [90, 90];
+      s.motors[vtolMotorIndices(a)[2]] = 0;
+    }
+  };
   if (a.vehicleType === "multirotor") {
     let lo = 0,
       hi = 1;
@@ -63,6 +76,7 @@ export function findTrim(
     const s = initialState(a, speed, 18, x[0]);
     s.velocity = [...velocity];
     s.motors.fill(x[2]);
+    prepareCruise(s);
     const f = sim.forces(s, { roll: 0, pitch: x[1], yaw: 0, throttle: x[2] });
     const world = rotate(s.orientation, f.force);
     return [world[0], world[2] + sim.properties.mass * GRAVITY, f.torque[1]];
@@ -97,6 +111,9 @@ export function findTrim(
   const state = initialState(a, speed, 18, x[0]);
   state.velocity = [...velocity];
   state.motors.fill(x[2]);
+  prepareCruise(state);
+  if (a.vtol)
+    controls.vtol = { mode: "cruise", assistance: a.vtol.defaultAssistance };
   state.surfaceCommands = a.surfaces.map((s) =>
     s.control ? surfaceCommand(s.control, controls) : 0,
   );

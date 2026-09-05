@@ -79,6 +79,8 @@ export const standardShortcuts: ActionBindings = {
   reset: "b2",
   camera: "b3",
   response: "b4",
+  vtolMode: "b5",
+  vtolAssistance: "b8",
   settings: "b9",
   next: "b13",
   previous: "b12",

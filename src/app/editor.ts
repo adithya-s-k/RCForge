@@ -1,3 +1,5 @@
+import type { Vec3 } from "../core/math";
+import { renderVtolEditor } from "./vtol-editor";
 import { powertrain } from "../core/powertrain";
 import { aircraftCredit } from "./aircraft-credit";
 import { findTrim } from "../core/trim";
@@ -29,6 +31,7 @@ function numericValue(field: HTMLInputElement) {
 }
 export class AircraftEditor {
   onPlaceCamera?: () => void;
+  onPlaceComponent?: (partId: string) => void;
   draft: Aircraft;
   private workshop: ComponentWorkshop;
   private mixer: SurfaceMixer;
@@ -147,6 +150,7 @@ export class AircraftEditor {
       this.notify,
       selected,
       () => this.onPlaceCamera?.(),
+      (id) => this.onPlaceComponent?.(id),
     );
     this.mixer = new SurfaceMixer(
       () => this.draft,
@@ -238,6 +242,18 @@ export class AircraftEditor {
     $("editor-components-tab").click();
     this.workshop.selectFpv();
   }
+  placeComponent(id: string, position: Vec3) {
+    this.commitPending();
+    const out = structuredClone(this.draft);
+    position.forEach((value, axis) => moveComponent(out, id, axis, value));
+    out.provenance.componentPlacement = {
+      status: "estimated",
+      note: "User-adjusted installation positions. CG and inertia are recalculated from component masses; physical installation is not measured.",
+    };
+    this.draft = parseAircraft(out);
+    this.update();
+    this.changed(this.draft);
+  }
   placeCamera(pose: CameraPlacement) {
     this.commitPending();
     this.draft = withCameraPlacement(this.draft, pose);
@@ -266,12 +282,34 @@ export class AircraftEditor {
       `${(p.mass * 1000).toFixed(0)} g · ${a.parts.length} parts`;
     this.workshop.render();
     this.mixer.render();
+    renderVtolEditor(
+      a,
+      (id, edit) => this.registerNumber(id, edit),
+      (edit) => {
+        try {
+          this.commitPending();
+          const out = structuredClone(this.draft);
+          edit(out);
+          out.provenance.vtolTuning = {
+            status: "estimated",
+            note: "User-edited simulation assistance or calculated cruise trim; not hardware tuning.",
+          };
+          this.draft = parseAircraft(out);
+          this.update();
+          this.changed(this.draft);
+        } catch (e) {
+          this.notify(e instanceof Error ? e.message : "Check VTOL settings.");
+        }
+      },
+    );
     const quad = a.vehicleType === "multirotor";
-    $("mass-scope").textContent = quad
-      ? "Includes all components and battery."
-      : a.contactPoints.some((p) => p.kind === "wheel")
-        ? "Includes installed landing gear and battery."
-        : "Ground starts add removable gear to this mass.";
+    $("mass-scope").textContent = a.vtol
+      ? "Includes installed tilt servos, brackets, electronics and skids."
+      : quad
+        ? "Includes all components and battery."
+        : a.contactPoints.some((p) => p.kind === "wheel")
+          ? "Includes installed landing gear and battery."
+          : "Ground starts add removable gear to this mass.";
     $("mass-evidence").textContent = quad
       ? `Component total: ${(p.mass * 1000).toFixed(0)} g. Each listed component is counted once. Rendered detail adds no hidden mass; replace estimates with measured values.`
       : `Component total: ${(p.mass * 1000).toFixed(0)} g. Replace estimated component weights with measured values for your build.`;

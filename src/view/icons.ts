@@ -1,5 +1,20 @@
 /** Small, shared outline icons. Labels belong to the surrounding control. */
 const paths = {
+  balance:
+    '<circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="1"/><path d="M12 2v6M12 16v6M2 12h6M16 12h6"/>',
+  battery:
+    '<rect x="3" y="6" width="17" height="12" rx="2"/><path d="M20 10h2v4h-2M8 9v6M5 12h6M14 12h3"/>',
+  motor: '<path d="M7 5h10l2 4v10H5V9ZM8 9v7M12 9v7M16 9v7M12 2v3M7 21h10"/>',
+  propeller:
+    '<circle cx="12" cy="12" r="2"/><path d="M11 10 6 3C2 2 1 5 4 8l6 4m3 2 5 7c4 1 5-2 2-5l-6-4"/>',
+  servo:
+    '<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M2 13h3M19 13h3M12 10V6M5 4h14v3H5ZM8 16h8"/><circle cx="12" cy="5.5" r="1"/>',
+  electronics:
+    '<rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M8 2v3M12 2v3M16 2v3M8 19v3M12 19v3M16 19v3M2 8h3M2 12h3M2 16h3M19 8h3M19 12h3M19 16h3"/>',
+  structure:
+    '<path d="m3 9 9-6 9 6v7l-9 5-9-5Zm0 0 9 5 9-5M12 14v7M7 6l10 6"/>',
+  camera:
+    '<rect x="3" y="6" width="18" height="14" rx="3"/><circle cx="12" cy="13" r="4"/><path d="M8 6V3h8v3M18 9h.01"/>',
   docs: '<path d="M4 4h6l2 2 2-2h6v16h-6l-2 1-2-1H4ZM12 6v15M7 8h2M7 12h2M15 8h2M15 12h2"/>',
   github:
     '<path d="M9 19c-4 1-4-2-6-2m12 5v-4a3.5 3.5 0 0 0-1-2.8c3.3-.4 6.8-1.6 6.8-7.2a5.6 5.6 0 0 0-1.5-3.9A5.2 5.2 0 0 0 19.2.2S18 .0 15.2 1.7a13.4 13.4 0 0 0-7.2 0C5.2 0 4 .2 4 .2a5.2 5.2 0 0 0-.1 4A5.6 5.6 0 0 0 2.4 8c0 5.6 3.5 6.8 6.8 7.2A3.5 3.5 0 0 0 8.2 18v4" transform="translate(1 1) scale(.9)"/>',

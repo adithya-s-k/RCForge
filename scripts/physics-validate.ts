@@ -141,9 +141,15 @@ for (const electric of aircraft.filter((a) => a.battery)) {
     current = powertrain(electric, es.motors, before).current;
   esim.step(ec);
   er.frames.push(ec);
+  const integratedCurrent = powertrain(
+    electric,
+    esim.state.motors,
+    before,
+  ).current;
   const chargeError = Math.abs(
     esim.state.batterySoc! -
-      (before - (current * FIXED_DT) / (electric.battery!.capacityMah * 3.6)),
+      (before -
+        (integratedCurrent * FIXED_DT) / (electric.battery!.capacityMah * 3.6)),
   );
   checks.push({
     aircraft: electric.id,

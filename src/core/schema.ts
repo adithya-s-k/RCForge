@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { VtolConfigSchema } from "./vtol-config";
 import { PilotResponseSchema } from "./pilot-response";
 import { AIRCRAFT_FORMAT_VERSION } from "./versions";
 export { AIRCRAFT_FORMAT_VERSION } from "./versions";
@@ -43,7 +44,10 @@ const provenance = z
 export const AircraftSchema = z
   .object({
     schemaVersion: z.literal(AIRCRAFT_FORMAT_VERSION),
-    vehicleType: z.enum(["fixed-wing", "multirotor"]).default("fixed-wing"),
+    vehicleType: z
+      .enum(["fixed-wing", "multirotor", "vtol"])
+      .default("fixed-wing"),
+    vtol: VtolConfigSchema.optional(),
     multirotor: z
       .object({
         mode: z.enum(["angle", "rate"]),
@@ -558,6 +562,65 @@ export const AircraftSchema = z
           "Polar angles must be strictly increasing",
         );
     });
+    if (a.vehicleType === "vtol") {
+      const v = a.vtol;
+      if (!v || a.motors.length !== 3 || !a.surfaces.length || a.multirotor)
+        issue(
+          ["vtol"],
+          "VTOL needs three rotors, aerodynamic surfaces and tiltrotor settings",
+        );
+      if (v) {
+        const ids = [v.frontLeftMotorId, v.frontRightMotorId, v.rearMotorId];
+        const motors = ids.map((id) => a.motors.find((m) => m.id === id));
+        if (new Set(ids).size !== 3 || motors.some((m) => !m?.spin))
+          issue(
+            ["vtol"],
+            "Reference three distinct installed motors with spin directions",
+          );
+        const [left, right, rear] = motors;
+        if (
+          left &&
+          right &&
+          rear &&
+          (left.positionM[1] >= 0 ||
+            right.positionM[1] <= 0 ||
+            rear.positionM[0] >=
+              Math.min(left.positionM[0], right.positionM[0]) ||
+            left.spin === right.spin)
+        )
+          issue(
+            ["vtol"],
+            "Front motors must straddle the datum, counter-rotate, and sit ahead of the rear lift motor",
+          );
+        const servoIds = [
+          v.leftServoPartId,
+          v.rightServoPartId,
+          v.rearServoPartId,
+        ];
+        if (new Set(servoIds).size !== 3)
+          issue(
+            ["vtol"],
+            "Tricopter needs two front tilt servos and a separate rear yaw servo",
+          );
+        for (const id of servoIds) {
+          const servo = a.parts.find((p) => p.id === id)?.servo;
+          if (
+            !servo ||
+            servo.travelDeg < (id === v.rearServoPartId ? v.yawTiltDeg * 2 : 90)
+          )
+            issue(
+              ["vtol"],
+              "Front servos need 90 degrees; the rear servo must cover both yaw endpoints",
+            );
+          if (a.surfaces.some((s) => s.control?.linkage?.servoPartId === id))
+            issue(
+              ["vtol"],
+              "A tilt servo cannot also drive an aerodynamic surface",
+            );
+        }
+      }
+    } else if (a.vtol)
+      issue(["vtol"], "Tiltrotor settings require vehicleType vtol");
     if (a.vehicleType === "fixed-wing" && !a.surfaces.length)
       ctx.addIssue({
         code: "custom",

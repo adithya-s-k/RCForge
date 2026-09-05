@@ -310,3 +310,27 @@
     line-height: 1.4;
   }
 }
+
+.component-placement-entry {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0;
+}
+.component-balance-output {
+  display: grid;
+  gap: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.component-balance-output strong {
+  font-size: 23px;
+  color: #edb561;
+}
+.component-balance-output strong small {
+  font-size: 11px;
+  color: var(--ui-muted);
+  display: block;
+}
+.component-balance-output span {
+  font-size: 11px;
+  line-height: 1.7;
+}

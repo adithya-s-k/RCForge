@@ -1,3 +1,6 @@
+import { ComponentPlacementDialog } from "./app/component-placement";
+import "./view/vtol.css";
+import { VtolFlight } from "./app/vtol-flight";
 import { bundledAircraft } from "./app/bundled-aircraft";
 import { setupReleaseInfo } from "./app/release-info";
 import { setupAircraftHistory } from "./app/aircraft-history";
@@ -178,6 +181,13 @@ renderControlTest(controlPreview);
 const input = new InputManager((reason) => pause(reason));
 const controller = new ControllerPage(input, () => pause(), message);
 const arduino = setupArduino(input, controller, pause);
+const vtolFlight = new VtolFlight(
+  () => sim,
+  message,
+  () => {
+    if (input.source === "keyboard" && !replay) input.throttle = 0.5;
+  },
+);
 function physicalAircraft() {
   return mode === "ground" ? fitLandingGear(aircraft) : aircraft;
 }
@@ -189,24 +199,28 @@ function updateFlightInfo() {
   const a = physicalAircraft();
   const quad = a.vehicleType === "multirotor";
   document.querySelectorAll<HTMLButtonElement>("[data-launch]").forEach((b) => {
-    b.disabled = quad && b.dataset.launch === "hand";
+    b.disabled = (quad || !!a.vtol) && b.dataset.launch === "hand";
     b.classList.toggle("active", b.dataset.launch === mode);
     b.setAttribute("aria-pressed", String(b.dataset.launch === mode));
     if (b.dataset.launch === "airborne")
-      b.textContent = quad ? "Hover" : "In flight";
+      b.textContent = quad || a.vtol ? "Hover" : "In flight";
   });
   const scenario = $<HTMLSelectElement>("scenario");
   for (const option of scenario.options) {
     option.disabled =
-      (quad && ["glide", "stall"].includes(option.value)) ||
+      ((quad || !!a.vtol) && ["glide", "stall"].includes(option.value)) ||
+      (option.value === "vtol-transition" && !a.vtol) ||
       (option.value === "roll-pulse" && !aircraftChannels(a).includes("roll"));
     if (option.value === "cruise")
-      option.textContent = quad ? "Stationary hover" : "Trimmed cruise";
+      option.textContent =
+        quad || a.vtol ? "Stationary hover" : "Trimmed cruise";
   }
   if (scenario.selectedOptions[0]?.disabled) scenario.value = "cruise";
-  $("experiment-description").textContent = quad
-    ? "Starts in hover at 3 m with calculated power. Pitch and roll pulses test the configured controller. No altitude hold."
-    : "Each aircraft starts at its authored trim speed and 18 m with calculated trim. Field weather is retained.";
+  $("experiment-description").textContent = a.vtol
+    ? "Hover begins at 3 m. The 50 s conversion scenario starts at 15 m, requests Cruise at 3 s and Hover at 24 s; this tests the ideal-state controller."
+    : quad
+      ? "Starts in hover at 3 m with calculated power. Pitch and roll pulses test the configured controller. No altitude hold."
+      : "Each aircraft starts at its authored trim speed and 18 m with calculated trim. Field weather is retained.";
   const note = flightModelNote({
     quad,
     controlMode: a.multirotor?.mode,
@@ -215,7 +229,9 @@ function updateFlightInfo() {
     converged: releaseTrimConverged,
     pitchTrim,
   });
-  $("flight-control-note").textContent = note.text;
+  $("flight-control-note").textContent = a.vtol
+    ? "Experimental tiltrotor · ideal-state assistance, estimated aerodynamics."
+    : note.text;
   $("flight-control-note").classList.toggle("trim-limited", note.limited);
   if (quad)
     $("launch-description").textContent =
@@ -229,18 +245,25 @@ function updateFlightInfo() {
         : mode === "hand"
           ? `Release at ${placement?.altitudeM ?? 1.7} m and 8.5 m/s${releaseTrimConverged ? ", trimmed for a gentle climb" : ""}.`
           : `Start at ${placement?.altitudeM ?? 22} m and ${launchAirspeed(a, mode)} m/s${releaseTrimConverged ? " with calculated trim" : ""}.`;
+  if (a.vtol)
+    $("launch-description").textContent =
+      mode === "ground"
+        ? "Start on the skids. Raise throttle above center to lift off, then center it to hold height."
+        : "Start in hover. Center throttle holds height.";
   $("flight-mass").textContent =
     (massProperties(a).mass * 1000).toFixed(0) + " g";
   $("flight-model-info").textContent =
-    `${a.name} · ${(a.reference.spanM * 1000).toFixed(0)} mm ${quad ? "motor diagonal" : "span"} · ${quad ? "Four rotors" : a.motors.length === 2 ? "Twin motor" : "Single motor"}`;
+    `${a.name} · ${(a.reference.spanM * 1000).toFixed(0)} mm ${quad ? "motor diagonal" : "span"} · ${a.vtol ? "Three rotors · front conversion + rear yaw" : quad ? "Four rotors" : a.motors.length === 2 ? "Twin motor" : "Single motor"}`;
   $("flight-aircraft-credit").innerHTML = aircraftCredit(a);
-  $("flight-gear").textContent = quad
-    ? "Four landing feet"
-    : aircraft.contactPoints.some((p) => p.kind === "wheel")
-      ? `${aircraft.contactPoints.filter((p) => p.kind === "wheel").length} installed wheels${aircraft.contactPoints.some((p) => p.kind === "skid") ? " + tail skid" : ""}`
-      : mode === "ground"
-        ? "Removable tricycle (+45 g)"
-        : "Belly landing";
+  $("flight-gear").textContent = a.vtol
+    ? "Installed VTOL skids"
+    : quad
+      ? "Four landing feet"
+      : aircraft.contactPoints.some((p) => p.kind === "wheel")
+        ? `${aircraft.contactPoints.filter((p) => p.kind === "wheel").length} installed wheels${aircraft.contactPoints.some((p) => p.kind === "skid") ? " + tail skid" : ""}`
+        : mode === "ground"
+          ? "Removable tricycle (+45 g)"
+          : "Belly landing";
 }
 function showScenery(env: typeof environment) {
   const id = (
@@ -259,7 +282,11 @@ function reset() {
   const cameraMode = flightCamera;
   showScenery(environment);
   pause();
-  if (aircraft.vehicleType === "multirotor" && mode === "hand") mode = "ground";
+  if (
+    (aircraft.vehicleType === "multirotor" || aircraft.vtol) &&
+    mode === "hand"
+  )
+    mode = "ground";
   started = false;
   replay = null;
   replayIndex = 0;
@@ -280,6 +307,7 @@ function reset() {
     yaw: 0,
     throttle: mode === "ground" ? 0 : trim.controls.throttle,
   };
+  vtolFlight.reset();
   input.throttle = controls.throttle;
   sim.lastForces = sim.forces(sim.state, controls);
   recording = createRecording(sim);
@@ -359,6 +387,7 @@ function fillSelects() {
 let editorComponent: Aircraft["parts"][number] | undefined;
 let componentsWorkspace = false;
 let cameraPlacer: FpvPlacementDialog | undefined;
+let componentPlacer: ComponentPlacementDialog | undefined;
 const editor = new AircraftEditor(
   aircraft,
   (a) => {
@@ -385,6 +414,25 @@ const editor = new AircraftEditor(
     scene?.setComponentInspection(part, componentsWorkspace);
   },
 );
+editor.onPlaceComponent = (id) => {
+  try {
+    editor.commitPending();
+    if (!scene) throw new Error("3D rendering is unavailable.");
+    const wasTesting = input.testBench;
+    enableControlTest(false);
+    componentPlacer = new ComponentPlacementDialog(
+      scene,
+      (id, p) => editor.placeComponent(id, p),
+      () => {
+        enableControlTest(wasTesting);
+        scene?.setComponentInspection(editorComponent, componentsWorkspace);
+      },
+    );
+    componentPlacer.open(editor.draft, id);
+  } catch (e) {
+    message(errorText(e));
+  }
+};
 editor.onPlaceCamera = () => {
   try {
     editor.commitPending();
@@ -435,6 +483,7 @@ const invalidate = setupExperiments(
 );
 function route() {
   cameraPlacer?.close(false);
+  componentPlacer?.close(false);
   positioning.close(false);
   const next = location.hash.replace(/^#\//, "") || "fly";
   window.scrollTo(0, 0);
@@ -901,6 +950,15 @@ window.addEventListener("keydown", (e) => {
     e.preventDefault();
     if (!running) void launch();
   }
+  if (e.code === "KeyB" && !e.repeat && !replay) vtolFlight.cycleAssistance();
+  if (e.code === "KeyT" && !e.repeat && !replay) vtolFlight.toggle();
+  if (
+    e.code === "KeyH" &&
+    sim.aircraft.vtol &&
+    input.source === "keyboard" &&
+    !replay
+  )
+    input.throttle = 0.5;
   if (e.code === "KeyX" && input.source === "keyboard") input.throttle = 0;
   if (e.code === "KeyR" && !e.repeat) {
     positioning.close(false);
@@ -954,6 +1012,11 @@ $("scenery-select").onchange = () => {
   invalidate();
 };
 function stats() {
+  vtolFlight.update(
+    input.source === "keyboard",
+    replay ? controls.vtol : undefined,
+    !!replay,
+  );
   const session = {
     running,
     started,
@@ -967,9 +1030,12 @@ function stats() {
     ...session,
     mode,
     keyboard: input.source === "keyboard",
-    quad: sim.aircraft.vehicleType === "multirotor",
+    quad: sim.aircraft.vehicleType === "multirotor" || !!sim.aircraft.vtol,
     pauseReason,
   });
+  if (sim.aircraft.vtol && !started && !replay)
+    feedback.detail =
+      "Start flight; raise throttle above 50% to climb. Center it to hold height.";
   $("flight-feedback").dataset.tone = feedback.tone;
   for (const [id, value] of [
     ["flight-cue-title", feedback.title],
@@ -1050,7 +1116,7 @@ function stats() {
           ? replay
             ? "REPLAY"
             : s.status === "grounded"
-              ? sim.aircraft.vehicleType === "multirotor"
+              ? sim.aircraft.vehicleType === "multirotor" || !!sim.aircraft.vtol
                 ? "GROUNDED"
                 : "GROUND ROLL"
               : "IN FLIGHT"
@@ -1118,6 +1184,10 @@ const controllerActions = new ControllerActions(input, (action) => {
     return;
   }
   if (page !== "fly" || (positioning.isOpen() && action !== "camera")) return;
+  if (action === "vtolAssistance") vtolFlight.cycleAssistance();
+  if (action === "vtolMode") vtolFlight.toggle();
+  if (action === "vtolHover") vtolFlight.request("hover");
+  if (action === "vtolCruise") vtolFlight.request("cruise");
   if (action === "reset") reset();
   if (action === "toggle") {
     if (running) pause();
@@ -1154,9 +1224,10 @@ function frame(now: number) {
           controls = cleanControls(
             withPitchTrim(
               responseFilter.step(raw, responsePanel.settings, FIXED_DT),
-              pitchTrim,
+              sim.aircraft.vtol ? 0 : pitchTrim,
             ),
           );
+          if (sim.aircraft.vtol) controls.vtol = { ...vtolFlight.command };
         }
         sim.step(controls);
         accumulator -= FIXED_DT;
@@ -1231,6 +1302,8 @@ function frame(now: number) {
           controlPreview.controls,
           viewDt,
           controlPreview.deflections,
+          controlPreview.tiltDeg,
+          controlPreview.rearTiltDeg,
         );
       drawAccumulator =
         Math.max(0, drawAccumulator - renderInterval) % renderInterval;

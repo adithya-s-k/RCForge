@@ -1,3 +1,5 @@
+import { initialVtolState, vtolCommands, vtolRotorLoads } from "./vtol";
+import type { VtolCommand, VtolState } from "./vtol-config";
 import { surfacePolar, STANDARD_AIR_VISCOSITY } from "./aerodynamics";
 import { powertrain } from "./powertrain";
 import { rotorCommands } from "./multirotor";
@@ -32,6 +34,7 @@ export interface Controls {
   pitch: number;
   yaw: number;
   throttle: number;
+  vtol?: VtolCommand;
 }
 export const neutralControls = (): Controls => ({
   roll: 0,
@@ -63,6 +66,7 @@ export interface State {
   motors: number[];
   batterySoc?: number;
   surfaceCommands?: number[];
+  vtol?: VtolState;
   status: "flying" | "grounded" | "landed" | "crashed";
 }
 export interface SurfaceForce {
@@ -95,6 +99,7 @@ export const initialState = (
   omega: [0, 0, 0],
   motors: a.motors.map(() => 0),
   ...(a.battery ? { batterySoc: a.battery.initialSoc } : {}),
+  ...(a.vtol ? { vtol: initialVtolState([0, 0, -altitude]) } : {}),
   status: "flying",
 });
 export function windAt(t: number, e: Environment): Vec3 {
@@ -113,6 +118,20 @@ export function windAt(t: number, e: Environment): Vec3 {
 }
 export function cleanControls(c: Controls): Controls {
   return {
+    ...(c.vtol
+      ? {
+          vtol: {
+            mode:
+              c.vtol.mode === "cruise"
+                ? ("cruise" as const)
+                : ("hover" as const),
+            assistance:
+              c.vtol.assistance === "intermediate"
+                ? ("intermediate" as const)
+                : ("beginner" as const),
+          },
+        }
+      : {}),
     roll: clamp(Number.isFinite(c.roll) ? c.roll : 0, -1, 1),
     pitch: clamp(Number.isFinite(c.pitch) ? c.pitch : 0, -1, 1),
     yaw: clamp(Number.isFinite(c.yaw) ? c.yaw : 0, -1, 1),
@@ -139,6 +158,8 @@ export class Simulation {
       surfaceActuation(aircraft, s),
     );
     this.state = structuredClone(state ?? initialState(aircraft));
+    if (aircraft.vtol && !this.state.vtol)
+      this.state.vtol = initialVtolState(this.state.position);
     if (aircraft.battery && this.state.batterySoc === undefined)
       this.state.batterySoc = aircraft.battery.initialSoc;
   }
@@ -167,7 +188,7 @@ export class Simulation {
         const motor = this.aircraft.motors[i],
           dx = motor.positionM[0] - wing.positionM[0];
         const radius = motor.propDiameterM / 2;
-        if (dx > 0 && dx < 1.5) {
+        if (!this.aircraft.vtol && dx > 0 && dx < 1.5) {
           const radial = Math.hypot(
             wing.positionM[1] - motor.positionM[1],
             wing.positionM[2] - motor.positionM[2],
@@ -253,7 +274,22 @@ export class Simulation {
         stalled: Math.abs(alpha) > stall,
       });
     }
-    for (let i = 0; i < this.aircraft.motors.length; i++) {
+    if (this.aircraft.vtol) {
+      const rotor = vtolRotorLoads(
+        this.aircraft,
+        s,
+        this.properties.cg,
+        power.thrust,
+        flow,
+      );
+      force = add(force, rotor.force);
+      torque = add(torque, rotor.torque);
+    }
+    for (
+      let i = 0;
+      i < this.aircraft.motors.length && !this.aircraft.vtol;
+      i++
+    ) {
       const m = this.aircraft.motors[i],
         speedFactor = clamp(
           1 - Math.max(0, flow[0]) / m.zeroThrustSpeedMps,
@@ -334,10 +370,26 @@ export class Simulation {
       return this.state;
     const c = cleanControls(raw),
       s = this.state;
+    const hybrid = this.aircraft.vtol
+      ? vtolCommands(
+          this.aircraft,
+          s,
+          c,
+          this.properties,
+          this.environment,
+          rotate(
+            inverseQ(s.orientation),
+            sub(s.velocity, windAt(s.time, this.environment)),
+          ),
+          this.forces(s, c),
+          dt,
+        )
+      : null;
     const rotors =
-      this.aircraft.vehicleType === "multirotor"
+      hybrid?.motors ??
+      (this.aircraft.vehicleType === "multirotor"
         ? rotorCommands(this.aircraft, s, c)
-        : null;
+        : null);
     s.motors = s.motors.map((v, i) => {
       const m = this.aircraft.motors[i];
       const target =
@@ -354,7 +406,7 @@ export class Simulation {
     ) {
       s.surfaceCommands = this.aircraft.surfaces.map((w, i) => {
         if (!w.control) return 0;
-        const target = surfaceCommand(w.control, c),
+        const target = surfaceCommand(w.control, hybrid?.surfaces ?? c),
           previous = s.surfaceCommands?.[i] ?? 0;
         return advanceSurfaceCommand(previous, target, this.actuations[i], dt);
       });
