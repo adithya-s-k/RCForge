@@ -1,0 +1,312 @@
+.fpv-placement-dialog {
+  width: min(1440px, calc(100vw - 40px));
+  max-width: none;
+  height: min(900px, calc(100dvh - 40px));
+  max-height: none;
+  padding: 0;
+  color: var(--ui-text);
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.fpv-placement-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.camera-placement-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--ui-border);
+}
+.camera-placement-header > div {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+.camera-placement-header h2 {
+  margin: 0;
+  font-size: 17px;
+}
+.camera-placement-header span {
+  color: var(--ui-muted);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.camera-placement-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 286px;
+  flex: 1;
+  min-height: 0;
+}
+.camera-placement-stage {
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+  background: #1d2024;
+}
+.camera-placement-stage #viewport {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.camera-placement-settings {
+  padding: 18px;
+  overflow-y: auto;
+  border-left: 1px solid var(--ui-border);
+}
+.camera-placement-section {
+  margin-bottom: 22px;
+}
+.camera-placement-section h3 {
+  margin: 0 0 10px;
+  font-size: 13px;
+}
+.camera-placement-section p,
+.camera-placement-note {
+  color: var(--ui-muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+.camera-placement-section > button {
+  width: 100%;
+  margin-top: 12px;
+  font-size: 11px;
+}
+.camera-position-fields {
+  display: grid;
+  gap: 10px;
+}
+.camera-position-fields label {
+  display: grid;
+  grid-template-columns: 1fr 132px;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+.camera-position-fields label > div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ui-muted);
+}
+.camera-position-fields input {
+  min-width: 0;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+.camera-position-fields label:nth-child(1) {
+  color: #ef8c84;
+}
+.camera-position-fields label:nth-child(2) {
+  color: #a7d08d;
+}
+.camera-position-fields label:nth-child(3) {
+  color: #8ebfec;
+}
+.camera-aim-field {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  margin-top: 15px;
+  gap: 9px;
+  font-size: 11px;
+}
+.camera-aim-field output {
+  font-variant-numeric: tabular-nums;
+  color: var(--ui-text);
+}
+.camera-aim-field input {
+  grid-column: 1 / -1;
+  width: 100%;
+  accent-color: #dedede;
+}
+.camera-placement-options {
+  display: grid;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--ui-muted);
+}
+.camera-placement-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.camera-placement-history {
+  display: flex;
+  gap: 8px;
+  margin: 22px 0 12px;
+}
+.camera-placement-history button {
+  flex: 1;
+  font-size: 11px;
+}
+.camera-placement-tools,
+.camera-placement-views {
+  display: flex;
+  gap: 3px;
+  background: #101113ee;
+  border: 1px solid #434549;
+  border-radius: 6px;
+  padding: 4px;
+  position: absolute;
+  z-index: 5;
+}
+.camera-placement-tools {
+  left: 16px;
+  top: 16px;
+}
+.camera-placement-views {
+  left: 16px;
+  bottom: 44px;
+}
+.camera-placement-tools button,
+.camera-placement-views button {
+  background: transparent;
+  color: #aeb1b6;
+  border: 0;
+  font-size: 11px;
+  padding: 9px 12px;
+}
+.camera-placement-tools button[aria-pressed="true"],
+.camera-placement-views button[aria-pressed="true"] {
+  background: #34363a;
+  color: #fff;
+}
+.camera-placement-hint {
+  position: absolute;
+  z-index: 5;
+  left: 16px;
+  bottom: 8px;
+  right: 16px;
+  margin: 0;
+  color: #c1c3c7;
+  font-size: 11px;
+  pointer-events: none;
+}
+.camera-lens-preview {
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+  border: 1px solid #888b90;
+  border-radius: 3px;
+  box-shadow: 0 4px 22px #0005;
+  box-sizing: content-box;
+}
+.camera-lens-preview > span {
+  position: absolute;
+  bottom: 100%;
+  left: -1px;
+  right: -1px;
+  background: #101113ef;
+  padding: 7px 10px;
+  border: 1px solid #55585d;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+.camera-lens-preview small {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  color: #b8bbc0;
+  font-size: 9px;
+  padding-top: 5px;
+  white-space: nowrap;
+}
+.camera-lens-preview i {
+  position: absolute;
+  left: calc(50% - 7px);
+  top: calc(50% - 7px);
+  width: 14px;
+  height: 14px;
+  opacity: 0.8;
+}
+.camera-lens-preview i::before,
+.camera-lens-preview i::after {
+  content: "";
+  position: absolute;
+  background: #fff;
+  box-shadow: 0 0 1px #000;
+}
+.camera-lens-preview i::before {
+  width: 14px;
+  height: 1px;
+  top: 7px;
+}
+.camera-lens-preview i::after {
+  height: 14px;
+  width: 1px;
+  left: 7px;
+}
+#camera-placement-error {
+  color: #ffbcad;
+  font-size: 12px;
+}
+.fpv-place-action {
+  width: 100%;
+  margin-bottom: 14px;
+}
+@media (max-width: 760px) {
+  .fpv-placement-dialog {
+    width: calc(100vw - 12px);
+    height: calc(100dvh - 12px);
+    border-radius: 7px;
+  }
+  .camera-placement-header {
+    padding: 12px;
+    gap: 8px;
+  }
+  .camera-placement-header > div:first-child {
+    display: block;
+  }
+  .camera-placement-header h2 {
+    font-size: 14px;
+  }
+  .camera-placement-header span {
+    display: block;
+    max-width: 140px;
+    margin-top: 4px;
+    font-size: 10px;
+  }
+  .camera-placement-header > div {
+    gap: 6px;
+  }
+  .camera-placement-header button {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+  .camera-placement-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(270px, 46%) minmax(0, 1fr);
+  }
+  .camera-placement-settings {
+    border-left: 0;
+    border-top: 1px solid var(--ui-border);
+    padding: 14px;
+  }
+  .camera-placement-tools {
+    top: 10px;
+    left: 10px;
+  }
+  .camera-placement-views {
+    left: 10px;
+    top: 58px;
+    bottom: auto;
+    flex-direction: row;
+  }
+  .camera-placement-views button {
+    padding: 5px 9px;
+    font-size: 10px;
+  }
+  .camera-placement-hint {
+    left: 10px;
+    font-size: 10px;
+    line-height: 1.4;
+  }
+}

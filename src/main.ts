@@ -1,4 +1,5 @@
 import { ControlPreview } from "./core/control-preview";
+import { FpvPlacementDialog } from "./app/fpv-placement";
 import { renderControlTest, updateControlTest } from "./app/control-test";
 import { PilotResponseFilter, withPitchTrim } from "./core/pilot-response";
 import { ResponsePanel } from "./app/pilot-response";
@@ -356,6 +357,7 @@ function fillSelects() {
 }
 let editorComponent: Aircraft["parts"][number] | undefined;
 let componentsWorkspace = false;
+let cameraPlacer: FpvPlacementDialog | undefined;
 const editor = new AircraftEditor(
   aircraft,
   (a) => {
@@ -382,6 +384,25 @@ const editor = new AircraftEditor(
     scene?.setComponentInspection(part, componentsWorkspace);
   },
 );
+editor.onPlaceCamera = () => {
+  try {
+    editor.commitPending();
+    if (!scene) throw new Error("3D rendering is unavailable.");
+    const wasTesting = input.testBench;
+    enableControlTest(false);
+    cameraPlacer = new FpvPlacementDialog(
+      scene,
+      (pose) => editor.placeCamera(pose),
+      () => {
+        enableControlTest(wasTesting);
+        scene?.setComponentInspection(editorComponent, componentsWorkspace);
+      },
+    );
+    cameraPlacer.open(editor.draft);
+  } catch (e) {
+    message(errorText(e));
+  }
+};
 responsePanel.onSaveToAircraft = (settings) => {
   try {
     editor.setPilotResponse(settings);
@@ -412,6 +433,7 @@ const invalidate = setupExperiments(
   () => pause(),
 );
 function route() {
+  cameraPlacer?.close(false);
   positioning.close(false);
   const next = location.hash.replace(/^#\//, "") || "fly";
   window.scrollTo(0, 0);
@@ -1229,6 +1251,7 @@ function frame(now: number) {
 try {
   scene = new FlightScene($("viewport"));
   scene.onInspectionView = (view) => {
+    cameraPlacer?.inspectionView(view);
     document
       .querySelectorAll<HTMLButtonElement>("[data-inspect]")
       .forEach((button) => {

@@ -12,6 +12,10 @@ import { ZodError } from "zod";
 import { SurfaceMixer } from "./surface-mixer";
 import { ComponentWorkshop } from "./component-workshop";
 import { moveComponent } from "../core/components";
+import {
+  withCameraPlacement,
+  type CameraPlacement,
+} from "../core/camera-placement";
 function numericValue(field: HTMLInputElement) {
   const value = Number(field.value);
   if (!field.value.trim() || !Number.isFinite(value))
@@ -23,6 +27,7 @@ function numericValue(field: HTMLInputElement) {
   return value;
 }
 export class AircraftEditor {
+  onPlaceCamera?: () => void;
   draft: Aircraft;
   private workshop: ComponentWorkshop;
   private mixer: SurfaceMixer;
@@ -140,6 +145,7 @@ export class AircraftEditor {
       },
       this.notify,
       selected,
+      () => this.onPlaceCamera?.(),
     );
     this.mixer = new SurfaceMixer(
       () => this.draft,
@@ -230,6 +236,12 @@ export class AircraftEditor {
   editFpv() {
     $("editor-components-tab").click();
     this.workshop.selectFpv();
+  }
+  placeCamera(pose: CameraPlacement) {
+    this.commitPending();
+    this.draft = withCameraPlacement(this.draft, pose);
+    this.update();
+    this.changed(this.draft);
   }
   setPilotResponse(settings: NonNullable<Aircraft["pilotResponse"]>) {
     this.commitPending();

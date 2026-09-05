@@ -51,6 +51,7 @@ export class ComponentWorkshop {
     private selected: (
       part: Aircraft["parts"][number] | undefined,
     ) => void = () => {},
+    private placeCamera: () => void = () => {},
   ) {}
   private navigate(fn: () => void) {
     try {
@@ -135,13 +136,15 @@ export class ComponentWorkshop {
       : '<div><strong>Onboard FPV camera</strong><small>Mount a camera to fly from the aircraft.</small></div><button id="add-fpv-camera">Add FPV camera</button>';
     host.querySelector(".workshop-heading")!.after(cameraBar);
     if (mounted)
-      $("edit-fpv-camera").onclick = () =>
+      $("edit-fpv-camera").onclick = () => {
         this.navigate(() => {
           this.category = "all";
           this.partId = mounted.id;
         });
+        this.placeCamera();
+      };
     else
-      $("add-fpv-camera").onclick = () =>
+      $("add-fpv-camera").onclick = () => {
         this.navigate(() => {
           const next = installFpvCamera(this.getAircraft());
           this.category = "all";
@@ -151,6 +154,8 @@ export class ComponentWorkshop {
             "Camera added to draft. Adjust its mount, then Apply & fly.",
           );
         });
+        if (this.getAircraft().fpv) this.placeCamera();
+      };
     $("component-filter").onchange = () =>
       this.navigate(() => {
         this.category = $<HTMLSelectElement>("component-filter").value;
@@ -288,18 +293,18 @@ export class ComponentWorkshop {
     if (fpv) {
       const cameraControls = document.createElement("div");
       cameraControls.className = "fpv-mount-fields";
-      cameraControls.innerHTML = `<div class="response-title"><strong>Camera view</strong><button id="remove-fpv-camera">Remove camera</button></div><div class="component-fields">${f("fpv-fov", "Vertical field of view · °", fpv.fovDeg, 40, 120)}${f("fpv-tilt", "Camera tilt up · °", part.orientationDeg?.[1] ?? 0, -90, 90)}</div><p class="small muted">Rigid mount: the horizon rolls with the aircraft. Move X/Y/Z below to place it on the nose or above the airframe. Inspect clearance before applying.</p>`;
+      cameraControls.innerHTML = `<div class="response-title"><strong>Camera view</strong><button id="remove-fpv-camera">Remove camera</button></div><button id="place-fpv-camera" class="primary fpv-place-action">Place camera in 3D ↗</button><div class="component-fields">${f("fpv-fov", "Vertical field of view · °", fpv.fovDeg, 40, 120)}${f("fpv-tilt", "Camera tilt up · °", part.orientationDeg?.[1] ?? 0, -90, 90)}</div><p class="small muted">Place and aim on the model with a live lens preview. Precise dimensions remain available below.</p>`;
       $("component-detail")
         .querySelector(".component-detail-heading")!
         .after(cameraControls);
       bind("fpv-fov", (out, v) => (out.fpv!.fovDeg = v));
+      $("place-fpv-camera").onclick = () => this.placeCamera();
       bind("fpv-tilt", (out, v) => {
         out.parts[partIndex].orientationDeg ??= [0, 0, 0];
         out.parts[partIndex].orientationDeg[1] = v;
       });
       $("remove-fpv-camera").onclick = () =>
         this.navigate(() => this.replace(removeFpvCamera(this.getAircraft())));
-      $<HTMLDetailsElement>(`part-installation-${partIndex}`).open = true;
     }
     bind("mass", (out, v) => {
       const p = out.parts[partIndex];

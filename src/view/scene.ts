@@ -18,6 +18,7 @@ import {
   type InspectionView,
 } from "./inspection-camera";
 import { ComponentFocus } from "./component-focus";
+import { CameraPlacementView } from "./camera-placement";
 const studioSun: [number, number, number] = [-3, 6, 4];
 const toWorld = (v: Vec3) => new T.Vector3(v[0], -v[2], v[1]);
 const conversion = new T.Quaternion().setFromAxisAngle(
@@ -38,6 +39,13 @@ export class FlightScene {
   private componentFocusLabel = document.createElement("div");
   private selectedComponent?: Aircraft["parts"][number];
   private inspectComponents = false;
+  private cameraPlacement?: CameraPlacementView;
+  private savedInspection?: {
+    view: InspectionView;
+    yaw: number;
+    pitch: number;
+    zoom: number;
+  };
   onInspectionView?: (view: InspectionView) => void;
   mode: CameraMode = "ground";
   showForces = false;
@@ -144,12 +152,14 @@ export class FlightScene {
     grid.position.y = -0.268;
     this.studioGroup.add(grid);
     canvas.addEventListener("pointerdown", (e) => {
+      if (this.cameraPlacement?.pointerDown(e)) return;
       if (this.mode === "orbit" || this.mode === "ground") {
         this.dragging = true;
         canvas.setPointerCapture(e.pointerId);
       }
     });
     canvas.addEventListener("pointermove", (e) => {
+      if (this.cameraPlacement?.dragging) return;
       // Capture can be lost to a panel, tab switch or system gesture without pointerup.
       if (e.buttons === 0) this.dragging = false;
       if (this.dragging && this.mode === "ground") {
@@ -199,6 +209,9 @@ export class FlightScene {
       );
       if (point) this.onGroundPick(point.x, point.z);
     });
+    canvas.addEventListener("contextmenu", (e) => {
+      if (this.cameraPlacement) e.preventDefault();
+    });
     canvas.addEventListener(
       "wheel",
       (e) => {
@@ -231,6 +244,7 @@ export class FlightScene {
   get needsSmoothMotion() {
     return (
       this.dragging ||
+      this.cameraPlacement?.dragging ||
       !!this.pilotDestination ||
       Math.abs(this.lookYaw) + Math.abs(this.lookPitch) > 0.002
     );
@@ -250,6 +264,7 @@ export class FlightScene {
     disposeAircraft(this.visual.group);
   }
   setAircraft(a: Aircraft) {
+    this.endCameraPlacement();
     this.disposeVisual();
     this.visual = buildAircraft(a);
     this.scene.add(this.visual.group);
@@ -297,6 +312,44 @@ export class FlightScene {
     this.componentFocusLabel.textContent = part
       ? `${part.id.replaceAll("-", " ")} · ${(part.massKg * 1000).toFixed(1)} g · installation envelope`
       : "";
+  }
+  beginCameraPlacement(a: Aircraft) {
+    if (!this.studio || !this.visual || !a.fpv)
+      throw new Error(
+        "Open an aircraft with an FPV camera in the editor first.",
+      );
+    this.endCameraPlacement();
+    this.savedInspection = {
+      view: this.inspectionView,
+      yaw: this.orbitYaw,
+      pitch: this.orbitPitch,
+      zoom: this.orbitZoom,
+    };
+    this.setInspectionView("perspective");
+    this.orbitZoom = 0.9;
+    this.cameraPlacement = new CameraPlacementView(
+      this.scene,
+      this.renderer,
+      this.camera,
+      this.visual,
+      a,
+      this.cg,
+      this.container,
+    );
+    return this.cameraPlacement;
+  }
+  endCameraPlacement() {
+    this.cameraPlacement?.dispose();
+    this.cameraPlacement = undefined;
+    if (this.savedInspection) {
+      const saved = this.savedInspection;
+      this.setInspectionView(saved.view);
+      this.orbitYaw = saved.yaw;
+      this.orbitPitch = saved.pitch;
+      this.orbitZoom = saved.zoom;
+      this.savedInspection = undefined;
+    }
+    this.dragging = false;
   }
   setCamera(mode: CameraMode) {
     this.mode = mode === "fpv" && !this.fpv ? "ground" : mode;
@@ -448,7 +501,8 @@ export class FlightScene {
       .multiply(
         this.studio ? new T.Quaternion() : new T.Quaternion(...s.orientation),
       );
-    this.visual.cg.visible = this.showCG && this.studio;
+    this.visual.cg.visible =
+      this.showCG && this.studio && !this.cameraPlacement;
     for (const v of this.visual.controls) {
       const index = sim.aircraft.surfaces.findIndex(
         (s) => s.id === v.surfaceId,
@@ -610,14 +664,19 @@ export class FlightScene {
       });
     }
     this.componentFocus.group.visible =
-      this.studio && this.inspectComponents && !!this.selectedComponent;
+      this.studio &&
+      this.inspectComponents &&
+      !!this.selectedComponent &&
+      !this.cameraPlacement;
     this.componentFocusLabel.hidden = !this.componentFocus.group.visible;
-    this.axisGuide.hidden = !this.studio;
+    this.axisGuide.hidden = !this.studio || !!this.cameraPlacement;
     this.axisGuide.style.right = this.studio ? "14px" : "auto";
     this.axisGuide.style.left = this.studio ? "auto" : "14px";
     this.axisGuide.style.top = this.studio ? "58px" : "90px";
     if (!this.studio) this.field.update(this.camera);
+    this.cameraPlacement?.prepare(viewCamera);
     this.renderer.render(this.scene, viewCamera);
+    this.cameraPlacement?.renderPreview();
   }
   private resizeIfNeeded() {
     const size = this.renderer.getSize(new T.Vector2());
@@ -628,6 +687,7 @@ export class FlightScene {
       this.resize();
   }
   dispose() {
+    this.endCameraPlacement();
     this.observer.disconnect();
     this.disposeVisual();
     this.field.dispose();
