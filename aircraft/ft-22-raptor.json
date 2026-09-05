@@ -51,7 +51,7 @@
     },
     "foldedAssembly": {
       "status": "estimated",
-      "note": "Nose side profile, separate elevon outline and fixed fin outline follow full-size vector plans. Foam intake floor/walls and side rails use estimated folded registration, with a prop-clearance interruption. Their 20 g allocation is removed from the original 60 g fuselage allocation; total structure mass is unchanged. Canopy top color is a visual marking, not a mass component."
+      "note": "Nose, separate elevons and fixed fins follow original full-size vector plans. Underside side plates use plan slot/tab registration, with estimated forward cheek folds and a 6 g intake floor. Their 20 g allocation is separated from the former 60 g fuselage allocation; total structure mass is unchanged. Canopy top color is a visual marking, not a mass component. See sidePlateAssembly for the corrected servo installation."
     },
     "planScale": {
       "status": "calculated",
@@ -61,6 +61,11 @@
     "propellerMass": {
       "status": "estimated",
       "note": "Separate 8 g mass entry per propeller, reallocated from the existing estimated fuselage structural allocation. Published dry mass, existing motor masses, total aircraft mass and longitudinal CG are retained; battery station is rebalanced. Prop dimensions/inertia and the allocation are estimates, not weighed components. Propeller center follows the reconstructed rotor disk. This allows replacement of both motor and prop masses with a matching performance curve without adding the old prop mass again."
+    },
+    "sidePlateAssembly": {
+      "status": "estimated",
+      "url": "https://www.flitetest.com/articles/ft-22-raptor-build",
+      "note": "Original build photographs show sideways servos in underside side plates, not on top of the wing. Sheet-2 rear tab X=1078.348..1158.065 matches sheet-1 slot X=2043.153..2122.871 in reverse, giving registration sum 3201.2185 pt. Wall center Y follows slot 1283.128..1295.368 pt; side depth 87.875 pt, servo notch 65.196 by 34.015 pt. At 72 pt/in this gives a 31.00 mm deep wall and 23.00 by 12.00 mm opening. Front cheek fold angle, servo insertion depth, case mass center and individual wall mass remain assembly estimates. Replaces the earlier separate top rails with continuous underside side plates. Existing 20 g folded-assembly allocation and 320 g total retained, battery rebalanced to source CG. Glue, tolerances, control-rod guide groove and linkage loads are unresolved."
     }
   },
   "parts": [
@@ -284,7 +289,7 @@
       "id": "battery",
       "kind": "battery",
       "massKg": 0.085,
-      "positionM": [0.2421108467256001, 0, 0.025],
+      "positionM": [0.22657047481686615, 0, 0.025],
       "sizeM": [0.075, 0.034, 0.017],
       "color": "#252729",
       "material": {
@@ -299,9 +304,11 @@
       "id": "servo-left-elevon",
       "kind": "equipment",
       "massKg": 0.009,
-      "positionM": [-0.13292447277777777, -0.048057309388888886, -0.013],
-      "sizeM": [0.023, 0.0122, 0.029],
-      "color": "#2d3942",
+      "positionM": [
+        -0.047180676388888926, -0.10715608888888889, 0.008499868055555573
+      ],
+      "sizeM": [0.022999700000000046, 0.011999736111111145, 0.029],
+      "color": "#244e86",
       "material": {
         "name": "Positional micro servo",
         "finish": "plastic"
@@ -311,15 +318,18 @@
         "speedSecondsPer60Deg": 0.1,
         "travelDeg": 150,
         "ratedVoltage": 4.8
-      }
+      },
+      "orientationDeg": [-90, 0, 0]
     },
     {
       "id": "servo-right-elevon",
       "kind": "equipment",
       "massKg": 0.009,
-      "positionM": [-0.13292447277777777, 0.048057309388888886, -0.013],
-      "sizeM": [0.023, 0.0122, 0.029],
-      "color": "#2d3942",
+      "positionM": [
+        -0.047180676388888926, 0.10715608888888889, 0.008499868055555573
+      ],
+      "sizeM": [0.022999700000000046, 0.011999736111111145, 0.029],
+      "color": "#244e86",
       "material": {
         "name": "Positional micro servo",
         "finish": "plastic"
@@ -329,7 +339,8 @@
         "speedSecondsPer60Deg": 0.1,
         "travelDeg": 150,
         "ratedVoltage": 4.8
-      }
+      },
+      "orientationDeg": [90, 0, 0]
     },
     {
       "id": "intake-floor",
@@ -367,42 +378,10 @@
       "id": "intake-left",
       "kind": "body",
       "massKg": 0.002,
-      "positionM": [0.0644172445, -0.1083845701111111, 0.01635993511111111],
-      "sizeM": [0.18404927, 0.005, 0.03271987022222222],
-      "color": "#e9e7df",
-      "material": {
-        "name": "Folded paper-faced foamboard",
-        "finish": "foam"
-      },
-      "bodyLoft": [
-        {
-          "x": -0.5,
-          "width": 1,
-          "top": -0.5,
-          "bottom": 0.5
-        },
-        {
-          "x": 0.4,
-          "width": 1,
-          "top": -0.5,
-          "bottom": 0.5
-        },
-        {
-          "x": 0.5,
-          "width": 1,
-          "top": 0.1,
-          "bottom": 0.5
-        }
-      ]
-    },
-    {
-      "id": "rail-left-front",
-      "kind": "body",
-      "massKg": 0.002,
       "positionM": [
-        0.01635993511111111, -0.02556239861111111, -0.014314943222222222
+        0.06483861342170812, -0.10476276111111112, 0.01800017361111111
       ],
-      "sizeM": [0.19018424566666664, 0.005, 0.028629886444444443],
+      "sizeM": [0.16012618611111104, 0.005, 0.03100034722222222],
       "color": "#e9e7df",
       "material": {
         "name": "Folded paper-faced foamboard",
@@ -416,7 +395,7 @@
           "bottom": 0.5
         },
         {
-          "x": 0.42,
+          "x": 0.35,
           "width": 1,
           "top": -0.5,
           "bottom": 0.5
@@ -424,79 +403,21 @@
         {
           "x": 0.5,
           "width": 1,
-          "top": 0.35,
-          "bottom": 0.5
+          "top": -0.5,
+          "bottom": -0.45
         }
-      ]
-    },
-    {
-      "id": "rail-left-rear",
-      "kind": "body",
-      "massKg": 0.003,
-      "positionM": [
-        -0.24335403477777776, -0.02556239861111111, -0.014314943222222222
       ],
-      "sizeM": [0.13087948088888887, 0.005, 0.028629886444444443],
-      "color": "#e9e7df",
-      "material": {
-        "name": "Folded paper-faced foamboard",
-        "finish": "foam"
-      },
-      "bodyLoft": [
-        {
-          "x": -0.5,
-          "width": 1,
-          "top": -0.25,
-          "bottom": 0.5
-        },
-        {
-          "x": 0.5,
-          "width": 1,
-          "top": -0.5,
-          "bottom": 0.5
-        }
-      ]
+      "orientationDeg": [0, 0, 8.904879081465868],
+      "model": "Folded side plate \u00b7 forward cheek"
     },
     {
       "id": "intake-right",
       "kind": "body",
       "massKg": 0.002,
-      "positionM": [0.0644172445, 0.1083845701111111, 0.01635993511111111],
-      "sizeM": [0.18404927, 0.005, 0.03271987022222222],
-      "color": "#e9e7df",
-      "material": {
-        "name": "Folded paper-faced foamboard",
-        "finish": "foam"
-      },
-      "bodyLoft": [
-        {
-          "x": -0.5,
-          "width": 1,
-          "top": -0.5,
-          "bottom": 0.5
-        },
-        {
-          "x": 0.4,
-          "width": 1,
-          "top": -0.5,
-          "bottom": 0.5
-        },
-        {
-          "x": 0.5,
-          "width": 1,
-          "top": 0.1,
-          "bottom": 0.5
-        }
-      ]
-    },
-    {
-      "id": "rail-right-front",
-      "kind": "body",
-      "massKg": 0.002,
       "positionM": [
-        0.01635993511111111, 0.02556239861111111, -0.014314943222222222
+        0.06483861342170812, 0.10476276111111112, 0.01800017361111111
       ],
-      "sizeM": [0.19018424566666664, 0.005, 0.028629886444444443],
+      "sizeM": [0.16012618611111104, 0.005, 0.03100034722222222],
       "color": "#e9e7df",
       "material": {
         "name": "Folded paper-faced foamboard",
@@ -510,7 +431,7 @@
           "bottom": 0.5
         },
         {
-          "x": 0.42,
+          "x": 0.35,
           "width": 1,
           "top": -0.5,
           "bottom": 0.5
@@ -518,38 +439,12 @@
         {
           "x": 0.5,
           "width": 1,
-          "top": 0.35,
-          "bottom": 0.5
+          "top": -0.5,
+          "bottom": -0.45
         }
-      ]
-    },
-    {
-      "id": "rail-right-rear",
-      "kind": "body",
-      "massKg": 0.003,
-      "positionM": [
-        -0.24335403477777776, 0.02556239861111111, -0.014314943222222222
       ],
-      "sizeM": [0.13087948088888887, 0.005, 0.028629886444444443],
-      "color": "#e9e7df",
-      "material": {
-        "name": "Folded paper-faced foamboard",
-        "finish": "foam"
-      },
-      "bodyLoft": [
-        {
-          "x": -0.5,
-          "width": 1,
-          "top": -0.25,
-          "bottom": 0.5
-        },
-        {
-          "x": 0.5,
-          "width": 1,
-          "top": -0.5,
-          "bottom": 0.5
-        }
-      ]
+      "orientationDeg": [0, 0, -8.904879081465868],
+      "model": "Folded side plate \u00b7 forward cheek"
     },
     {
       "id": "pusher-propeller",
@@ -563,6 +458,136 @@
         "finish": "plastic"
       },
       "model": "9x4.7 slow-fly pusher"
+    },
+    {
+      "id": "sideplate-left",
+      "kind": "body",
+      "model": "Side plate \u00b7 servo mount",
+      "massKg": 0.005,
+      "positionM": [
+        -0.16188266666666662, -0.11715608888888888, 0.01800017361111111
+      ],
+      "sizeM": [0.295246425, 0.005, 0.03100034722222222],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 1,
+          "top": -0.5,
+          "bottom": -0.4903226890379812
+        },
+        {
+          "x": -0.45415326931280087,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.33318349928876384
+        },
+        {
+          "x": -0.4235254546736305,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.49999999999999994
+        },
+        {
+          "x": 0.34951190442958857,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.49999999999999994
+        },
+        {
+          "x": 0.3495457744417318,
+          "width": 1,
+          "top": -0.11291607396870444,
+          "bottom": 0.49999999999999994
+        },
+        {
+          "x": 0.4274457862708336,
+          "width": 1,
+          "top": -0.11291607396870444,
+          "bottom": 0.49999999999999994
+        },
+        {
+          "x": 0.4274796562829769,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.49999999999999994
+        },
+        {
+          "x": 0.4999999999999999,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.49999999999999994
+        }
+      ]
+    },
+    {
+      "id": "sideplate-right",
+      "kind": "body",
+      "model": "Side plate \u00b7 servo mount",
+      "massKg": 0.005,
+      "positionM": [
+        -0.16188266666666662, 0.11715608888888888, 0.01800017361111111
+      ],
+      "sizeM": [0.295246425, 0.005, 0.03100034722222222],
+      "color": "#e9e7df",
+      "material": {
+        "name": "Paper-faced foamboard",
+        "finish": "foam"
+      },
+      "bodyLoft": [
+        {
+          "x": -0.5,
+          "width": 1,
+          "top": -0.5,
+          "bottom": -0.4903226890379812
+        },
+        {
+          "x": -0.45415326931280087,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.33318349928876384
+        },
+        {
+          "x": -0.4235254546736305,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.49999999999999994
+        },
+        {
+          "x": 0.34951190442958857,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.49999999999999994
+        },
+        {
+          "x": 0.3495457744417318,
+          "width": 1,
+          "top": -0.11291607396870444,
+          "bottom": 0.49999999999999994
+        },
+        {
+          "x": 0.4274457862708336,
+          "width": 1,
+          "top": -0.11291607396870444,
+          "bottom": 0.49999999999999994
+        },
+        {
+          "x": 0.4274796562829769,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.49999999999999994
+        },
+        {
+          "x": 0.4999999999999999,
+          "width": 1,
+          "top": -0.5,
+          "bottom": 0.49999999999999994
+        }
+      ]
     }
   ],
   "surfaces": [

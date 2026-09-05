@@ -509,3 +509,23 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
 - Verification: 207 tests / 35 files, production build and numerical validation
   pass. Bronco/Tiny remain 81/135 trim solutions and FT-22 57/135; zero nonfinite
   loads. No new measured mass, thrust or flight evidence is claimed.
+
+## Pass 22 · FT-22 underside assembly from matching plan tabs
+
+- Original build and project photographs showed the servos mounted sideways in
+  the underside side plates. The previous model placed upright blocks above the
+  wing. Matching a rear tab on sheet 2 to its slot on sheet 1 established the
+  reversed sheet registration; the 23 × 12 mm opening agrees with a micro servo.
+- Replaced the separate estimated top rails with underside walls and servo
+  cutouts, plus folded forward cheeks. Servo installation rotation and position
+  now match that arrangement; case materials respect authored plastic colors.
+  Existing 20 g folded structure and 320 g total stay unchanged, with battery
+  rebalanced to the reference CG. Remaining registration/fold assumptions are
+  documented in the reconstruction guide and aircraft provenance.
+- Browser inspected top/perspective and orbited to the underside: cases now sit
+  within the wall notches. Regression covers world-space case bounds, mass/CG,
+  source registration and wall-to-prop radial separation. Pushrod guides and
+  loaded mechanical-linkage geometry remain unresolved rather than invented.
+- Numerical report passes; FT-22 retains 57/135 trim solutions, zero nonfinite
+  loads. Pass-21 CI 33934525622 passed on Node 22/24 with Arduino compile jobs.
+- Verification: 208 tests / 35 files, production build and local docs checks pass.

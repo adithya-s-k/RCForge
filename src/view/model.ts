@@ -411,6 +411,7 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     roughness: 0.7,
   });
   const propellerMaterials = new Map<string, T.Material>();
+  const servoMaterials = new Map<string, T.Material>();
   for (const p of a.parts) {
     const firstChild = group.children.length;
     if ((p.kind === "body" || p.kind === "boom") && p.bodyLoft) {
@@ -596,7 +597,16 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
       const housing = new T.Group();
       housing.position.set(...p.positionM);
       group.add(housing);
-      box(housing, p.sizeM, [0, 0, 0], dark);
+      let plastic = servoMaterials.get(p.color);
+      if (!plastic) {
+        plastic = new T.MeshStandardMaterial({
+          color: p.color,
+          roughness: 0.62,
+          metalness: 0,
+        });
+        servoMaterials.set(p.color, plastic);
+      }
+      box(housing, p.sizeM, [0, 0, 0], plastic).name = `servo-housing:${p.id}`;
       const surface = a.surfaces.find(
         (s) => s.control?.linkage?.servoPartId === p.id,
       );

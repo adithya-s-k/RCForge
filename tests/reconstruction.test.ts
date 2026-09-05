@@ -75,6 +75,49 @@ it("keeps corrected folded geometry inexpensive with finite bounds and complete 
   expect(triangles).toBeLessThan(12000);
   disposeAircraft(model.group);
 });
+it("registers FT-22 underside side plates and sideways servos to their plan cutouts", () => {
+  const k = 0.0254 / 72;
+  // The rear tab on sheet 2 fits the matching sheet-1 side-plate slot in reverse.
+  const registration = (1078.348 + 2122.871 + 1158.065 + 2043.153) / 2;
+  const notchX = (1296.53 - registration + (1738.35 + 1803.546) / 2) * k;
+  const notchWidth = (1803.546 - 1738.35) * k;
+  const notchDepth = (1748.928 - 1714.913) * k;
+  const visual = buildAircraft(a);
+  visual.group.updateMatrixWorld(true);
+  const cg = new T.Vector3(...massProperties(a).cg);
+  for (const side of ["left", "right"]) {
+    const servo = a.parts.find((p) => p.id === `servo-${side}-elevon`)!;
+    const wall = a.parts.find((p) => p.id === `sideplate-${side}`)!;
+    expect(servo.positionM[0]).toBeCloseTo(notchX, 8);
+    expect(servo.sizeM[0]).toBeCloseTo(notchWidth, 8);
+    expect(servo.sizeM[1]).toBeCloseTo(notchDepth, 8);
+    // Below the wing, output shaft facing outboard, rather than a tower above it.
+    expect(servo.orientationDeg![0]).toBe(side === "left" ? -90 : 90);
+    const housing = visual.group.getObjectByName(`servo-housing:${servo.id}`)!;
+    const bounds = new T.Box3().setFromObject(housing);
+    expect(bounds.min.z + cg.z).toBeCloseTo(0.0025, 7);
+    expect(bounds.getSize(new T.Vector3()).z).toBeCloseTo(notchDepth, 7);
+    expect(bounds.getSize(new T.Vector3()).y).toBeCloseTo(servo.sizeM[2], 7);
+    const center = bounds.getCenter(new T.Vector3()).add(cg).toArray();
+    servo.positionM.forEach((v, axis) =>
+      expect(center[axis]).toBeCloseTo(v, 7),
+    );
+    // A conservative radial check includes the whole 5 mm wall at the prop disk.
+    expect(Math.abs(wall.positionM[1]) - wall.sizeM[1] / 2).toBeGreaterThan(
+      a.motors[0].propDiameterM / 2,
+    );
+    expect(wall.positionM[0] - wall.sizeM[0] / 2).toBeLessThan(
+      a.motors[0].positionM[0],
+    );
+    expect(wall.positionM[0] + wall.sizeM[0] / 2).toBeGreaterThan(
+      a.motors[0].positionM[0],
+    );
+  }
+  expect(a.parts.some((p) => p.id.startsWith("rail-"))).toBe(false);
+  expect(massProperties(a).mass).toBeCloseTo(0.32, 10);
+  expect(massProperties(a).cg[0]).toBeCloseTo(0, 10);
+  disposeAircraft(visual.group);
+});
 it("clears the ruler-scaled FT-22 plate through a full propeller turn", () => {
   const visual = buildAircraft(a);
   const prop = visual.propellers[0];

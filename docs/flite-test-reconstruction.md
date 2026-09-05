@@ -116,7 +116,8 @@ front bevel lines are intake folds, **not elevon hinges**. A symmetric propeller
 opening is retained. The separate elevons join the main trailing edge with a
 0.8 mm visualization gap; the two fixed fins lean outward by an assumed 18°.
 The nose side curve is sampled into a light faceted loft; widths, foam overlap,
-intake registration, side rails and canopy marking remain assembly estimates.
+forward intake registration and canopy marking remain assembly estimates.
+The underside side plates and servo openings use the registration described below.
 No detailed glue beads, decals or photogrammetry are claimed.
 
 The 400 mm nose-to-CG target is retained within the manufacturer’s 394–406 mm
@@ -194,3 +195,31 @@ The component envelope represents the parked blade assembly approximately; it
 is not blade CAD or a spin-averaged inertia model. Catalog props can exceed the
 reconstructed opening. The baseline FT-22 clearance regression does not establish
 clearance for arbitrary replacements, flex or mounting tolerances.
+
+## FT-22 side plates and servo installation
+
+The original [build sequence](https://www.flitetest.com/articles/ft-22-raptor-build),
+[side-plate installation photograph](https://s3.amazonaws.com/assets.flitetest.com/article_images/medium/ft-22-build-3-jpg_1389801207.jpg)
+and [servo close-up](https://s3.amazonaws.com/assets.flitetest.com/article_images/medium/ft-22-raptor-7-jpg_1389633259.jpg)
+show sideways servos in the underside walls. Earlier separate rails above the
+wing and upright servo blocks have been replaced by that assembly.
+
+| Plan feature          | Registration / reconstructed dimension                                            |
+| --------------------- | --------------------------------------------------------------------------------- |
+| Sheet-2 rear wall tab | X = 1078.348–1158.065 pt, reversed onto sheet-1 slot X = 2043.153–2122.871 pt     |
+| Sheet transform       | Sheet-1 X + sheet-2 X = 3201.219 pt                                               |
+| Wall lateral station  | Slot Y = 1283.128–1295.368 pt gives center 117.16 mm from the aircraft centerline |
+| Wall depth            | Y = 1661.053–1748.928 pt gives 31.00 mm beneath the wing                          |
+| Servo opening         | 65.196 × 34.015 pt gives 23.00 × 12.00 mm; reconstructed X = −47.18 mm            |
+
+The forward cheek folds follow the narrowing intake with an estimated fold angle.
+Servos face outboard at ±90° roll in their component frames. Their cases sit in
+the modeled openings, with estimated insertion depth and mass centers. Plastic
+color follows component data. The original 20 g folded assembly allocation is
+now floor 6 g plus two 7 g side plates; the battery is rebalanced to retain 320 g
+and the nose-to-CG reference. Inertia follows the revised installation.
+
+Regression checks cover transformed servo bounds, registration, mass/CG and the
+side-wall distance from the full prop radius. Clearance is sub-millimetre in this
+reconstruction, so these checks do not prove physical tolerances. Pushrod routing,
+guide channels, glue and loaded linkage kinematics remain unresolved details.
