@@ -89,23 +89,27 @@ Its two servos operate mixed elevons; the canted fins are fixed. There is no
 rudder command. Roll to turn and use elevator to manage the turn.
 
 The [manufacturer's listing](https://store.flitetest.com/ft-22-mkr2/) gives both
-25.5 inches and 635 mm for span; these disagree. The reconstruction chooses 635 mm
-and applies one scale to the drawings. The [project article](https://www.flitetest.com/articles/ft-22-raptor-pr)
+25.5 inches and 635 mm for span; these disagree. The reconstruction uses the original PDF
+ruler: its one-inch rectangles span exactly 72 points (X = 231.474 to 303.474);
+centimetre bars independently span about 28.347 points. The traced wing is
+therefore approximately 649.3 mm wide at the printed scale, replacing the earlier
+635 mm interpretation. This preserves the source drawing rather than forcing
+its outline to a conflicting retail specification. The [project article](https://www.flitetest.com/articles/ft-22-raptor-pr)
 contains an older F-22 photograph as well as the FT-22: the newer foam nose,
 intakes and side rails are the relevant assembly. The PDF's assembly inset was
 also inspected. No source artwork is bundled.
 
 The current reconstruction uses these PDF vector stations (points, before scaling):
 
-| Feature                       | Measured station                                    | Interpretation                                                        |
-| ----------------------------- | --------------------------------------------------- | --------------------------------------------------------------------- |
-| Main plate span               | Y = 36.906 to 1877.399                              | 635 mm model span; centerline Y = 957.152                             |
-| Circle-cross datum            | X = 1296.53                                         | Interpreted as the plan CG station; verify on a real build            |
-| Main-plate trailing edge      | X = 2179.925                                        | Aft of the prop opening                                               |
-| Main-plate half-width at tail | 379.538 pt                                          | Matches separate tail's 378.706 pt hinge edge                         |
-| Separate elevon               | Sheet 2, X = 355.37 to 923.75; Y = 464.67 to 876.11 | About 196 mm outboard reach and 142 mm depth; rounded corners sampled |
-| Fuselage side outline         | Sheet 2, X = 307.046 to 1687.497                    | 476 mm side profile at the selected scale                             |
-| Fin root and height           | About 308 and 389 pt                                | 106 mm root, 134 mm height before cant                                |
+| Feature                       | Measured station                                    | Interpretation                                                            |
+| ----------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------- |
+| Main plate span               | Y = 36.906 to 1877.399                              | 649.3 mm ruler-derived span; centerline Y = 957.152                       |
+| Circle-cross datum            | X = 1296.53                                         | Interpreted as the plan CG station; verify on a real build                |
+| Main-plate trailing edge      | X = 2179.925                                        | Aft of the prop opening                                                   |
+| Main-plate half-width at tail | 379.538 pt                                          | Matches separate tail's 378.706 pt hinge edge                             |
+| Separate elevon               | Sheet 2, X = 355.37 to 923.75; Y = 464.67 to 876.11 | About 200.5 mm outboard reach and 145.1 mm depth; rounded corners sampled |
+| Fuselage side outline         | Sheet 2, X = 307.046 to 1687.497                    | 487 mm side profile at the printed ruler scale                            |
+| Fin root and height           | About 308 and 389 pt                                | 109 mm root, 137 mm height before cant                                    |
 
 Body X points forward, so increasing sheet-1 X points aft. The main plate's
 front bevel lines are intake folds, **not elevon hinges**. A symmetric propeller
@@ -115,13 +119,18 @@ The nose side curve is sampled into a light faceted loft; widths, foam overlap,
 intake registration, side rails and canopy marking remain assembly estimates.
 No detailed glue beads, decals or photogrammetry are claimed.
 
-The 400 mm nose-to-CG target is retained. This places the CG approximately
-8.7 mm behind the reconstructed main-wing root leading edge; the nose and wing
+The 400 mm nose-to-CG target is retained within the manufacturer’s 394–406 mm
+range. The independent body-sheet registration remains an assembly estimate. This places the CG approximately
+8.9 mm behind the reconstructed main-wing root leading edge; the nose and wing
 leading edge are different references. The earlier 90 mm root reference was an
 assembly approximation and has been replaced. Wing/elevon mass positions follow
 polygon centroids; inertia remains a cuboid approximation. The intake and rail
 masses are split from the existing 60 g fuselage allocation; total mass stays
-320 g. The battery is positioned to balance the mass ledger, not assumed to be
+320 g. Structural dimensions, area, mass centers and inertia follow the ruler
+correction; 5 mm board thickness and physical hardware dimensions stay fixed.
+The 9-inch propeller now clears the reconstructed main-plate opening in a sampled
+360° blade sweep; this does not establish physical build tolerances or flex.
+The battery is positioned to balance the mass ledger, not assumed to be
 at a measured installation station.
 
 Aerodynamic centers use area-weighted quarter-chord estimates from spanwise

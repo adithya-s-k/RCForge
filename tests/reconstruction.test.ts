@@ -6,6 +6,7 @@ import { buildAircraft, disposeAircraft } from "../src/view/model";
 import { launchState, launchTrim } from "../src/core/launch";
 import { Simulation, GRAVITY } from "../src/core/simulation";
 import { rotate } from "../src/core/math";
+import { massProperties } from "../src/core/aircraft";
 const a = parseAircraft(raptor);
 const outline = (id: string) => {
   const s = a.surfaces.find((s) => s.id === id)!;
@@ -17,8 +18,13 @@ const outline = (id: string) => {
 it("reconstructs the FT-22 plate, prop slot and matching separate tail from plan stations", () => {
   const wing = outline("right-wing"),
     tail = outline("right-elevon");
-  const k = 0.635 / (1877.3987 - 36.906);
-  expect(Math.max(...wing.map((p) => p[1]))).toBeCloseTo(0.3175, 5);
+  // Original sheet-1 inch ruler spans X=231.474 to 303.474 points.
+  const k = 0.0254 / (303.474 - 231.474);
+  expect(a.reference.spanM).toBeCloseTo((1877.3987 - 36.906) * k, 8);
+  expect(Math.max(...wing.map((p) => p[1]))).toBeCloseTo(
+    (1877.4 - 957.152) * k,
+    7,
+  );
   const trailingEdge = Math.min(...wing.map((p) => p[0]));
   expect(trailingEdge).toBeCloseTo((1296.53 - 2179.925) * k, 5);
   expect(trailingEdge - Math.max(...tail.map((p) => p[0]))).toBeCloseTo(
@@ -68,6 +74,53 @@ it("keeps corrected folded geometry inexpensive with finite bounds and complete 
   expect(draws).toBeLessThan(100);
   expect(triangles).toBeLessThan(12000);
   disposeAircraft(model.group);
+});
+it("clears the ruler-scaled FT-22 plate through a full propeller turn", () => {
+  const visual = buildAircraft(a);
+  const prop = visual.propellers[0];
+  const position = prop.position
+    .clone()
+    .add(new T.Vector3(...massProperties(a).cg));
+  const blade = prop.getObjectByName("propeller-blade") as T.Mesh;
+  const vertices = blade.geometry.getAttribute("position");
+  const plates = [outline("left-wing"), outline("right-wing")];
+  const inside = (x: number, y: number, points: number[][]) => {
+    let hit = false;
+    for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
+      const p = points[i],
+        q = points[j];
+      if (
+        p[1] > y !== q[1] > y &&
+        x < ((q[0] - p[0]) * (y - p[1])) / (q[1] - p[1]) + p[0]
+      )
+        hit = !hit;
+    }
+    return hit;
+  };
+  let planeSamples = 0,
+    collisions = 0,
+    undersizedCollisions = 0;
+  const undersized = plates.map((p) =>
+    p.map(([x, y]) => [x, (y * 0.635) / a.reference.spanM]),
+  );
+  for (let angle = 0; angle < 360; angle++) {
+    const c = Math.cos((angle * Math.PI) / 180),
+      s = Math.sin((angle * Math.PI) / 180);
+    for (let i = 0; i < vertices.count; i++) {
+      const x = position.x + vertices.getX(i);
+      const y = position.y + vertices.getY(i) * c - vertices.getZ(i) * s;
+      const z = position.z + vertices.getY(i) * s + vertices.getZ(i) * c;
+      if (Math.abs(z) > 0.0025) continue;
+      planeSamples++;
+      if (plates.some((p) => inside(x, y, p))) collisions++;
+      if (undersized.some((p) => inside(x, y, p))) undersizedCollisions++;
+    }
+  }
+  expect(planeSamples).toBeGreaterThan(100);
+  expect(collisions).toBe(0);
+  // The old 635 mm scaling puts the same 9-inch prop into the plate edges.
+  expect(undersizedCollisions).toBeGreaterThan(0);
+  disposeAircraft(visual.group);
 });
 it("releases into an eight-degree climb with balanced forces, not a universal throttle", () => {
   const trim = launchTrim(a, "hand"),

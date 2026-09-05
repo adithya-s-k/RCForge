@@ -454,3 +454,25 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   are 72.009 pt apart. That indicates approximately 649 mm span for the traced
   outline, versus the earlier selected 635 mm store metric. Investigate the scale
   conflict and prop-slot clearance before making any further definition changes.
+
+## Pass 20 · FT-22 printed-ruler scale and prop-slot clearance
+
+- Revisited the PDF calibration bars themselves: six inch rectangles are 72.000
+  pt each; centimetre bars are about 28.347 pt. The earlier 72.009 figure described
+  text label spacing, not the bar geometry. These establish ordinary 72 pt/in
+  print scale, yielding 649.285 mm for the traced main plate. The retail page
+  still lists inconsistent 25.5 inches / 635 mm; this preset follows its original
+  full-size drawing instead of that metric figure.
+- Corrected the structural outline dimensions, area and component stations.
+  Five-millimetre board thickness and motor/battery/servo sizes remain physical
+  dimensions. Nose registration stays 400 mm ahead of CG, within the listed
+  394–406 mm balance range. Dry mass 235 g plus assumed 85 g pack remains 320 g;
+  battery is rebalanced, and inertia follows the revised geometry/positions.
+- Added a sampled full-turn check of actual rendered blade vertices against the
+  main plate. The corrected slot clears the nine-inch prop; the same check finds
+  interference with the earlier 635 mm width. This checks modeled geometry, not
+  real-build tolerance, flex or dynamic propeller deformation.
+- Verification: 203 tests / 35 files, definitions/catalog, production build and
+  numerical validation pass. FT-22 survey is now 57/135 trim solutions (previously
+  54/135) with zero nonfinite loads. More trim solutions are not flight-validation
+  evidence. Browser restored/applied 649.3 mm and inspected top/perspective views.

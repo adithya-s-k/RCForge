@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "ft-22-raptor",
   "name": "FT-22 Raptor",
-  "description": "Flite Test foamboard park jet. 635 mm span, two mixed elevons and a 9-inch pusher. 235 g dry reference plus an estimated 85 g battery. Estimated flight model.",
+  "description": "Flite Test foamboard park jet. 649 mm plan-derived span, two mixed elevons and a 9-inch pusher. 235 g dry reference plus an estimated 85 g battery. Estimated flight model.",
   "provenance": {
     "plans": {
       "status": "sourced",
@@ -11,8 +11,8 @@
     },
     "dimensions": {
       "status": "estimated",
-      "url": "https://store.flitetest.com/ft-22-mkr2/",
-      "note": "635 mm span scale retained because published 25.5 in / 635 mm values disagree. Main plate, prop cutout and separate sheet-2 tail outlines reconstructed from vector coordinates. Plan circle-cross stations define the reconstruction datum; source nose-to-CG target is 400 mm. Folded body side profile sampled from sheet 2; thickness/width, side-plate registration and fin cant 72 degrees remain assembly estimates. Area-weighted quarter-chord uses polygon strips; aerodynamic centers are estimates, not measured pressure centers."
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-22-plans.pdf",
+      "note": "Original PDF ruler rectangles are 72.000 pt per inch (sheet 1, X 231.474 to 303.474); centimetre bars are 28.346-28.348 pt. Using 0.0254/72 metres per point gives 649.285 mm for the traced span Y 36.906 to 1877.3987. This replaces the inconsistent store metric 635 mm (the same listing says 25.5 inches). Main plate, separate elevons, fins and folded body side profile use this ruler scale. Hardware dimensions and 5 mm board thickness do not scale. Body nose registration retains the 400 mm target within the published 394-406 mm range; assembly widths, registration and 18 degree fin cant remain estimates. Aerodynamic centers are calculated polygon quarter-chord estimates, not measured pressure centers."
     },
     "mass": {
       "status": "estimated",
@@ -52,6 +52,11 @@
     "foldedAssembly": {
       "status": "estimated",
       "note": "Nose side profile, separate elevon outline and fixed fin outline follow full-size vector plans. Foam intake floor/walls and side rails use estimated folded registration, with a prop-clearance interruption. Their 20 g allocation is removed from the original 60 g fuselage allocation; total structure mass is unchanged. Canopy top color is a visual marking, not a mass component."
+    },
+    "planScale": {
+      "status": "calculated",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-22-plans.pdf",
+      "note": "Printed-inch ruler establishes 72 pt/in, rather than scaling the outline to a conflicting store dimension. Structural span/chords/area/centers and inertia follow the corrected drawing scale. The fixed 9-inch prop now clears the main-plate slot in the reconstructed geometry; this is a geometry check, not a real-build clearance guarantee. The published 235 g dry mass and assumed 85 g battery remain. Battery is rebalanced to retain CG; no measured aerodynamic or propulsion curves were added."
     }
   },
   "parts": [
@@ -59,8 +64,8 @@
       "id": "fuselage",
       "kind": "body",
       "massKg": 0.04,
-      "positionM": [0.16186094489806999, 0, 0],
-      "sizeM": [0.47627811020386007, 0.046, 0.1],
+      "positionM": [0.1565037819444445, 0, 0],
+      "sizeM": [0.48699243611111104, 0.046, 0.10224959444444444],
       "color": "#e9e7df",
       "material": {
         "name": "Paper-faced foamboard",
@@ -161,8 +166,8 @@
       "id": "left-wing",
       "kind": "wing",
       "massKg": 0.04,
-      "positionM": [-0.12764531488282568, -0.12527480822689338, 0],
-      "sizeM": [0.4661118596123745, 0.31750056927691156, 0.005],
+      "positionM": [-0.13051681679502333, -0.128092983353054, 0.0],
+      "sizeM": [0.47659748611111113, 0.3246430444444444, 0.005],
       "color": "#e9e7df",
       "material": {
         "name": "Paper-faced foamboard",
@@ -173,8 +178,8 @@
       "id": "left-elevon",
       "kind": "tail",
       "massKg": 0.008,
-      "positionM": [-0.3674528634081902, -0.10943915834415599, 0],
-      "sizeM": [0.14122552618654777, 0.1961003702975839, 0.005],
+      "positionM": [-0.3757010658538173, -0.11190109557031287, 0.0],
+      "sizeM": [0.14440252777777776, 0.2005118333333333, 0.005],
       "color": "#e9e7df",
       "material": {
         "name": "Paper-faced foamboard",
@@ -186,9 +191,9 @@
       "kind": "tail",
       "massKg": 0.007,
       "positionM": [
-        -0.25805685260425604, -0.08314979714483076, -0.05585933187571602
+        -0.26386208522394955, -0.08502033036196768, -0.05711594030229591
       ],
-      "sizeM": [0.15165191907579964, 0.1341526918308342, 0.005],
+      "sizeM": [0.1550634722222222, 0.13717058333333332, 0.005],
       "color": "#e9e7df",
       "material": {
         "name": "Paper-faced foamboard",
@@ -200,8 +205,8 @@
       "id": "right-wing",
       "kind": "wing",
       "massKg": 0.04,
-      "positionM": [-0.12764531488282568, 0.12527480822689338, 0],
-      "sizeM": [0.4661118596123745, 0.31750056927691156, 0.005],
+      "positionM": [-0.13051681679502333, 0.128092983353054, 0.0],
+      "sizeM": [0.47659748611111113, 0.3246430444444444, 0.005],
       "color": "#e9e7df",
       "material": {
         "name": "Paper-faced foamboard",
@@ -212,8 +217,8 @@
       "id": "right-elevon",
       "kind": "tail",
       "massKg": 0.008,
-      "positionM": [-0.3674528634081902, 0.10943915834415599, 0],
-      "sizeM": [0.14122552618654777, 0.1961003702975839, 0.005],
+      "positionM": [-0.3757010658538173, 0.11190109557031287, 0.0],
+      "sizeM": [0.14440252777777776, 0.2005118333333333, 0.005],
       "color": "#e9e7df",
       "material": {
         "name": "Paper-faced foamboard",
@@ -225,9 +230,9 @@
       "kind": "tail",
       "massKg": 0.007,
       "positionM": [
-        -0.25805685260425604, 0.08314979714483076, -0.05585933187571602
+        -0.26386208522394955, 0.08502033036196768, -0.05711594030229591
       ],
-      "sizeM": [0.15165191907579964, 0.1341526918308342, 0.005],
+      "sizeM": [0.1550634722222222, 0.13717058333333332, 0.005],
       "color": "#e9e7df",
       "material": {
         "name": "Paper-faced foamboard",
@@ -239,7 +244,7 @@
       "id": "motor",
       "kind": "motor",
       "massKg": 0.024,
-      "positionM": [-0.0996024258069592, 0, -0.012],
+      "positionM": [-0.10211302777777778, 0, -0.012],
       "sizeM": [0.028, 0.028, 0.026],
       "color": "#e9e7df",
       "material": {
@@ -251,7 +256,7 @@
       "id": "esc",
       "kind": "equipment",
       "massKg": 0.017,
-      "positionM": [0.035, 0, 0.02],
+      "positionM": [0.03578735805555556, 0.0, 0.02],
       "sizeM": [0.045, 0.022, 0.012],
       "color": "#e9e7df",
       "material": {
@@ -263,7 +268,7 @@
       "id": "receiver",
       "kind": "equipment",
       "massKg": 0.006,
-      "positionM": [0.085, 0, 0.02],
+      "positionM": [0.08691215527777778, 0.0, 0.02],
       "sizeM": [0.03, 0.02, 0.012],
       "color": "#e9e7df",
       "material": {
@@ -275,7 +280,7 @@
       "id": "battery",
       "kind": "battery",
       "massKg": 0.085,
-      "positionM": [0.20692573370659886, 0, 0.025],
+      "positionM": [0.2158880881635086, 0, 0.025],
       "sizeM": [0.075, 0.034, 0.017],
       "color": "#252729",
       "material": {
@@ -290,7 +295,7 @@
       "id": "servo-left-elevon",
       "kind": "equipment",
       "massKg": 0.009,
-      "positionM": [-0.13, -0.047, -0.013],
+      "positionM": [-0.13292447277777777, -0.048057309388888886, -0.013],
       "sizeM": [0.023, 0.0122, 0.029],
       "color": "#2d3942",
       "material": {
@@ -308,7 +313,7 @@
       "id": "servo-right-elevon",
       "kind": "equipment",
       "massKg": 0.009,
-      "positionM": [-0.13, 0.047, -0.013],
+      "positionM": [-0.13292447277777777, 0.048057309388888886, -0.013],
       "sizeM": [0.023, 0.0122, 0.029],
       "color": "#2d3942",
       "material": {
@@ -326,8 +331,8 @@
       "id": "intake-floor",
       "kind": "body",
       "massKg": 0.006,
-      "positionM": [0.063, 0, 0.032],
-      "sizeM": [0.18, 0.224, 0.005],
+      "positionM": [0.0644172445, 0.0, 0.03271987022222222],
+      "sizeM": [0.18404927, 0.22903909155555555, 0.005],
       "color": "#e9e7df",
       "material": {
         "name": "Folded paper-faced foamboard",
@@ -358,8 +363,8 @@
       "id": "intake-left",
       "kind": "body",
       "massKg": 0.002,
-      "positionM": [0.063, -0.106, 0.016],
-      "sizeM": [0.18, 0.005, 0.032],
+      "positionM": [0.0644172445, -0.1083845701111111, 0.01635993511111111],
+      "sizeM": [0.18404927, 0.005, 0.03271987022222222],
       "color": "#e9e7df",
       "material": {
         "name": "Folded paper-faced foamboard",
@@ -390,8 +395,10 @@
       "id": "rail-left-front",
       "kind": "body",
       "massKg": 0.002,
-      "positionM": [0.016, -0.025, -0.014],
-      "sizeM": [0.186, 0.005, 0.028],
+      "positionM": [
+        0.01635993511111111, -0.02556239861111111, -0.014314943222222222
+      ],
+      "sizeM": [0.19018424566666664, 0.005, 0.028629886444444443],
       "color": "#e9e7df",
       "material": {
         "name": "Folded paper-faced foamboard",
@@ -422,8 +429,10 @@
       "id": "rail-left-rear",
       "kind": "body",
       "massKg": 0.003,
-      "positionM": [-0.238, -0.025, -0.014],
-      "sizeM": [0.128, 0.005, 0.028],
+      "positionM": [
+        -0.24335403477777776, -0.02556239861111111, -0.014314943222222222
+      ],
+      "sizeM": [0.13087948088888887, 0.005, 0.028629886444444443],
       "color": "#e9e7df",
       "material": {
         "name": "Folded paper-faced foamboard",
@@ -448,8 +457,8 @@
       "id": "intake-right",
       "kind": "body",
       "massKg": 0.002,
-      "positionM": [0.063, 0.106, 0.016],
-      "sizeM": [0.18, 0.005, 0.032],
+      "positionM": [0.0644172445, 0.1083845701111111, 0.01635993511111111],
+      "sizeM": [0.18404927, 0.005, 0.03271987022222222],
       "color": "#e9e7df",
       "material": {
         "name": "Folded paper-faced foamboard",
@@ -480,8 +489,10 @@
       "id": "rail-right-front",
       "kind": "body",
       "massKg": 0.002,
-      "positionM": [0.016, 0.025, -0.014],
-      "sizeM": [0.186, 0.005, 0.028],
+      "positionM": [
+        0.01635993511111111, 0.02556239861111111, -0.014314943222222222
+      ],
+      "sizeM": [0.19018424566666664, 0.005, 0.028629886444444443],
       "color": "#e9e7df",
       "material": {
         "name": "Folded paper-faced foamboard",
@@ -512,8 +523,10 @@
       "id": "rail-right-rear",
       "kind": "body",
       "massKg": 0.003,
-      "positionM": [-0.238, 0.025, -0.014],
-      "sizeM": [0.128, 0.005, 0.028],
+      "positionM": [
+        -0.24335403477777776, 0.02556239861111111, -0.014314943222222222
+      ],
+      "sizeM": [0.13087948088888887, 0.005, 0.028629886444444443],
       "color": "#e9e7df",
       "material": {
         "name": "Folded paper-faced foamboard",
@@ -539,9 +552,9 @@
     {
       "id": "left-wing",
       "kind": "wing",
-      "positionM": [-0.07506180683907486, -0.12527480822689338, 0],
-      "spanM": 0.31750056927691156,
-      "chordM": 0.2609020446102894,
+      "positionM": [-0.0767503930756263, -0.128092983353054, 0.0],
+      "spanM": 0.3246430444444444,
+      "chordM": 0.2667712825112844,
       "aspectRatio": 2.433859276176693,
       "rollDeg": 0,
       "incidenceDeg": 0,
@@ -576,9 +589,9 @@
     {
       "id": "left-elevon",
       "kind": "horizontal-tail",
-      "positionM": [-0.34088804065903083, -0.10943915834415599, 0],
-      "spanM": 0.1961003702975839,
-      "chordM": 0.09306852850153623,
+      "positionM": [-0.3485386423279163, -0.11190109557031287, 0.0],
+      "spanM": 0.2005118333333333,
+      "chordM": 0.09516219294823297,
       "aspectRatio": 2.2,
       "rollDeg": 0,
       "incidenceDeg": 0,
@@ -636,10 +649,10 @@
       "id": "left-fin",
       "kind": "vertical-tail",
       "positionM": [
-        -0.23029031043540438, -0.08314979714483076, -0.05585933187571602
+        -0.23547090846505309, -0.08502033036196768, -0.05711594030229591
       ],
-      "spanM": 0.1341526918308342,
-      "chordM": 0.10510748471989846,
+      "spanM": 0.13717058333333332,
+      "chordM": 0.10747197685685259,
       "aspectRatio": 1.05,
       "rollDeg": 72,
       "incidenceDeg": 0,
@@ -668,9 +681,9 @@
     {
       "id": "right-wing",
       "kind": "wing",
-      "positionM": [-0.07506180683907486, 0.12527480822689338, 0],
-      "spanM": 0.31750056927691156,
-      "chordM": 0.2609020446102894,
+      "positionM": [-0.0767503930756263, 0.128092983353054, 0.0],
+      "spanM": 0.3246430444444444,
+      "chordM": 0.2667712825112844,
       "aspectRatio": 2.433859276176693,
       "rollDeg": 0,
       "incidenceDeg": 0,
@@ -705,9 +718,9 @@
     {
       "id": "right-elevon",
       "kind": "horizontal-tail",
-      "positionM": [-0.34088804065903083, 0.10943915834415599, 0],
-      "spanM": 0.1961003702975839,
-      "chordM": 0.09306852850153623,
+      "positionM": [-0.3485386423279163, 0.11190109557031287, 0.0],
+      "spanM": 0.2005118333333333,
+      "chordM": 0.09516219294823297,
       "aspectRatio": 2.2,
       "rollDeg": 0,
       "incidenceDeg": 0,
@@ -765,10 +778,10 @@
       "id": "right-fin",
       "kind": "vertical-tail",
       "positionM": [
-        -0.23029031043540438, 0.08314979714483076, -0.05585933187571602
+        -0.23547090846505309, 0.08502033036196768, -0.05711594030229591
       ],
-      "spanM": 0.1341526918308342,
-      "chordM": 0.10510748471989846,
+      "spanM": 0.13717058333333332,
+      "chordM": 0.10747197685685259,
       "aspectRatio": 1.05,
       "rollDeg": -72,
       "incidenceDeg": 0,
@@ -798,7 +811,7 @@
   "motors": [
     {
       "id": "pusher",
-      "positionM": [-0.1116024258069592, 0, -0.012],
+      "positionM": [-0.11411302777777778, 0, -0.012],
       "maxThrustN": 4.8,
       "zeroThrustSpeedMps": 24,
       "responseSeconds": 0.09,
@@ -849,10 +862,10 @@
   "bodyDragAreaM2": [0.0025, 0.006, 0.01],
   "angularDamping": [0.004, 0.006, 0.008],
   "reference": {
-    "spanM": 0.635,
-    "areaM2": 0.20217464118295908,
-    "cgFromLeadingEdgeM": 0.0087047615021782,
-    "leadingEdgeXM": 0.0087047615021782
+    "spanM": 0.6492849247222222,
+    "areaM2": 0.21137317419376583,
+    "cgFromLeadingEdgeM": 0.008900583333333338,
+    "leadingEdgeXM": 0.008900583333333338
   },
   "contactPoints": [
     {
@@ -862,27 +875,27 @@
     },
     {
       "id": "belly",
-      "positionM": [0.16, 0, 0.053],
+      "positionM": [0.15460097333333336, 0, 0.05419228505555555],
       "spanLinked": false
     },
     {
       "id": "left-tip",
-      "positionM": [-0.17370536161322456, -0.3175, 0.003],
+      "positionM": [-0.17761302777777777, -0.3246424623611111, 0.003],
       "spanLinked": true
     },
     {
       "id": "left-tail",
-      "positionM": [-0.44681120938974667, -0.11, 0.003],
+      "positionM": [-0.4568626495333334, -0.11247455388888888, 0.003],
       "spanLinked": false
     },
     {
       "id": "right-tip",
-      "positionM": [-0.17370536161322456, 0.3175, 0.003],
+      "positionM": [-0.17761302777777777, 0.3246424623611111, 0.003],
       "spanLinked": true
     },
     {
       "id": "right-tail",
-      "positionM": [-0.44681120938974667, 0.11, 0.003],
+      "positionM": [-0.4568626495333334, 0.11247455388888888, 0.003],
       "spanLinked": false
     }
   ],

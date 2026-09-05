@@ -854,7 +854,8 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
       const bladeRoot = new T.Group();
       bladeRoot.rotation.x = (i * Math.PI * 2) / bladeCount;
       prop.add(bladeRoot);
-      mesh(bladeGeometry, propellerMaterial, bladeRoot);
+      mesh(bladeGeometry, propellerMaterial, bladeRoot).name =
+        "propeller-blade";
     }
     const hub = mesh(
       new T.ConeGeometry(isTiny ? 0.006 : 0.01, isTiny ? 0.01 : 0.018, 20),
