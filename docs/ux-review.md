@@ -28,7 +28,8 @@ validated applied definition. It starts parked in Pilot view with the observer
 beside it; launch/camera state is not resumed. Removed selections and malformed,
 oversized or mismatched-ID stored overrides fall back to the source definition.
 Unavailable browser storage does not prevent flying. This does not retain
-unapplied drafts or register custom imports as permanent bundled aircraft.
+unapplied drafts. Applied custom imports also return in the local catalog, with
+the imported baseline available for restoration; they do not become bundled presets.
 
 ## Findings and changes
 

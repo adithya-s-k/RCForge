@@ -14,8 +14,10 @@ import largeQuadData from "../aircraft/quad-x-450.json";
 import detailedQuadData from "../aircraft/quad-x-6s.json";
 import { setupCatalog } from "./app/catalog";
 import {
+  importedAircraft,
   preferredAircraft,
   rememberAircraft,
+  saveAppliedAircraft,
   savedAircraft,
 } from "./app/aircraft-storage";
 import { ControllerActions, navigateSetting } from "./app/controller-actions";
@@ -91,6 +93,8 @@ const originals = [
   parseAircraft(detailedQuadData),
   parseAircraft(largeQuadData),
 ];
+const bundledIds = new Set(originals.map((a) => a.id));
+originals.push(...importedAircraft(originals));
 let baseline = preferredAircraft(originals),
   aircraft = structuredClone(baseline),
   environment = calmEnvironment(),
@@ -528,15 +532,10 @@ function applyDraft() {
     aircraft = parseAircraft(editor.draft);
     findTrim(aircraft);
     rememberAircraft(aircraft.id);
-    let stored = true;
-    try {
-      localStorage.setItem(
-        "rcforge.aircraft.v3." + aircraft.id,
-        JSON.stringify(aircraft),
-      );
-    } catch {
-      stored = false;
-    }
+    const stored = saveAppliedAircraft(
+      aircraft,
+      bundledIds.has(aircraft.id) ? undefined : baseline,
+    );
     $("editor-state").textContent = "Applied to flight";
     $("editor-state").classList.remove("pending");
     reset();
@@ -550,7 +549,7 @@ function applyDraft() {
     message(
       stored
         ? "Aircraft saved locally and applied to flight."
-        : "Aircraft applied. Browser storage unavailable; export JSON to keep your changes.",
+        : "Aircraft applied, but could not be saved locally. Export JSON to keep your changes.",
     );
     return true;
   } catch (e) {
@@ -589,6 +588,7 @@ $<HTMLInputElement>("import-aircraft").onchange = async (e) => {
     findTrim(a);
     const index = originals.findIndex((v) => v.id === a.id);
     if (index < 0) originals.push(a);
+    else if (!bundledIds.has(a.id)) originals[index] = a;
     baseline = a;
     aircraft = structuredClone(a);
     editor.set(a);
@@ -598,7 +598,7 @@ $<HTMLInputElement>("import-aircraft").onchange = async (e) => {
     scene?.setAircraft(a);
     invalidate();
     message(
-      "Aircraft imported. Review mass, CG and assumptions before flight.",
+      "Aircraft imported for this session. Apply to flight to save it locally; export JSON to keep a file.",
     );
   } catch (e) {
     message(errorText(e), true);

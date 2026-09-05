@@ -17,7 +17,17 @@ npm run simulate -- aircraft/my-aircraft.json --scenario cruise
 npm run simulate -- aircraft/my-aircraft.json --scenario pitch-pulse
 ```
 
-Load the JSON through the browser's **Aircraft editor → Import JSON** control. For a bundled example, add an explicit import to `src/main.ts` and register it in the `originals` array. This keeps the default aircraft list deliberate; the CLI discovers local JSON automatically.
+Load the JSON through the browser's **Aircraft editor → Import JSON** control.
+**Apply to flight** or **Apply & fly** saves the imported aircraft in this browser's
+catalog. Reload restores its applied setup; **Restore original aircraft** uses the
+imported source definition. Importing the same custom ID again updates that
+baseline when applied. A bundled ID keeps the repository preset as its original.
+Unapplied imports and drafts last only for the current session. Export JSON for a
+portable copy: clearing browser data also removes local aircraft. The local import
+registry is bounded to 32 aircraft and 2 million JSON characters; storage quota or
+validation failures are reported without preventing flight.
+
+For a bundled example, add an explicit import to `src/main.ts` and register it in the `originals` array. This keeps the default aircraft list deliberate; the CLI discovers local JSON automatically.
 
 ## Sources and assumptions
 

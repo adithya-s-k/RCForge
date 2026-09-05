@@ -573,3 +573,21 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   targets. Those are compilation/numerical checks, not physical hardware evidence.
 - Verification for this pass: production typecheck/build and docs checks pass;
   browser console has no errors. Changes are limited to CSS and overlay markup.
+
+## Pass 26 · recover applied custom aircraft
+
+- Found that an unbundled JSON import could say "saved locally" but disappear from
+  the catalog on reload. Applied imports now retain a validated local source
+  registry, separate from applied edits, and rejoin the catalog before selection
+  recovery. Restore original uses the imported source; bundled IDs retain their
+  repository definitions. Reimporting a custom ID updates its baseline.
+- Import feedback explains the Apply step and portable JSON export. Storage quota
+  and size failures do not claim success. Catalog data is bounded and revalidated;
+  malformed entries cannot hide other valid models or replace bundled IDs.
+- Added fresh-catalog recovery and corrupt/quota/ID-isolation regressions. No
+  physics, render-loop or file format change.
+- Verification: 213 tests / 36 files, bundled validation, production build and
+  docs checks pass. Browser verified Apply → reload retained a 263 g Tiny Trainer,
+  then Restore original → Apply returned 253 g. Import registry recovery was
+  tested through the storage boundary; the browser tool has no file-upload
+  capability, so no synthetic browser import is claimed.
