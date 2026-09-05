@@ -51,7 +51,7 @@ New sessions start on the ground with the pilot beside the aircraft. Press **Sta
 
 The catalog includes both FT Bronco tail configurations, FT Tiny Trainer Sport, FT-22 Raptor, **Simple Trainer by Vortex RC**, and three Quad X assemblies. See [plans and design credits](docs/plans.md) for their references and assumptions.
 
-Browser edits stay local until exported. **Aircraft → History** saves and compares checkpoints; **Export history** creates a portable backup. [Edit an aircraft](docs/aircraft-editor.md) · [Connect an FS-i6](docs/flysky-fs-i6.md) · [Versioning](docs/versioning.md).
+Browser edits stay local until exported. **Aircraft → History** saves and compares checkpoints; **Export history** creates a portable backup. [Edit an aircraft](docs/aircraft-editor.md) · [Connect a radio visually](docs/radio-setup.md) · [Versioning](docs/versioning.md).
 
 ## Build and contribute
 

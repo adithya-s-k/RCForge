@@ -25,6 +25,32 @@ downloads under that version, and sends other code references to GitHub. Tables
 scroll on narrow screens. Code blocks have a copy button. Raw HTML is not a way to
 add scripts or embeds. Remote image embeds are not published by the docs renderer.
 
+## Diagrams and setup prompts
+
+Original SVG drawings live in `docs/images/diagram-*.svg`. Edit their source in
+`site/diagrams.ts`, then regenerate them:
+
+```sh
+npm run docs:diagrams
+npm run docs:check
+```
+
+Controller drawings and button names reuse the simulator's existing SVG helpers.
+The wiring diagrams describe logical connections, not physical connector faces;
+check the firmware and manufacturer references when changing pin assignments.
+`docs:check` rejects stale generated diagrams. View each affected drawing at normal
+and enlarged sizes, including narrow screens. Local images get an enlarged viewer
+with zoom and an ordinary source link as a fallback. They are external images,
+not executable inline SVG, and ship inside each documentation snapshot.
+
+An `agent-prompt` code fence adds a copyable setup form. Fields use
+`{{Field label}}` for text or `{{Field label|Option one|Option two}}` for a choice.
+Keep all technical instructions in the Markdown template so frozen releases retain
+their own setup guidance. Unknown fields remain explicitly unspecified; prompts
+must ask the user to verify hardware instead of guessing pinouts. Form values stay
+in the page and are neither stored nor sent to an AI service. Without JavaScript,
+the source prompt remains readable with its placeholders.
+
 ## Documentation versions
 
 `/docs/` is the entry point; `/docs/next/` contains current **development** docs.

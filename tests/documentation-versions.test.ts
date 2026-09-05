@@ -60,7 +60,22 @@ describe("documentation release snapshots", () => {
       current.files.get("aircraft/ft-bronco.json"),
     );
     write("docs/README.md", "# A later development guide");
+    write("docs/radio-setup.md", "# New hardware workflow");
+    write(
+      "docs/images/diagram-receiver-ppm.svg",
+      '<svg xmlns="http://www.w3.org/2000/svg"><title>New diagram</title></svg>',
+    );
     const files = buildDocs(root);
+    expect(
+      files.get(
+        `/docs/${current.version}/files/docs/images/diagram-receiver-ppm.svg`,
+      )!.data,
+    ).toEqual(current.files.get("docs/images/diagram-receiver-ppm.svg"));
+    const radio = files
+      .get(`/docs/${current.version}/radio-setup/index.html`)!
+      .data.toString();
+    expect(radio).toContain("Copy setup prompt");
+    expect(radio).not.toContain("New hardware workflow");
     const release = files
       .get(`/docs/${current.version}/index.html`)!
       .data.toString();

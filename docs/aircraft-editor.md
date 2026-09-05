@@ -14,6 +14,8 @@ stays unchanged until you export it and edit the file yourself.
 
 ## Mass and center of gravity
 
+![Moving the battery changes the aircraft center of gravity](images/diagram-mass-cg.svg)
+
 **Aircraft mass** is the sum of its installed parts. Editing total mass scales
 those masses; for a real component substitution, edit that component instead.
 **CG aft of LE** is the longitudinal center of gravity measured from the main

@@ -4,7 +4,13 @@ RCForge reads keyboard input, browser Gamepad API axes, and the RCForge Arduino 
 
 ## Keyboard
 
-W/S or arrows pitch down/up; A/D or arrows roll; Q/E yaw. Space increases throttle, Shift decreases it, and X cuts power; +/− and keypad +/− also work. Tap for 5% steps or hold for a continuous change. Releasing holds the selected throttle. P pauses, R resets. Enter starts or resumes. V cycles Pilot/Chase/FPV when a camera is mounted; C cycles control response, and F recenters the view and briefly marks the aircraft. Flight shortcuts are suppressed while a button, link, form field or dialog owns keyboard focus. On Controllers, click the keyboard diagram to try live inputs. Launch focuses the flight canvas. Losing focus pauses and clears held keys.
+![Keyboard with flight, power, session and view keys highlighted](images/diagram-keyboard.svg)
+
+W/S or arrows pitch down/up; A/D or arrows roll; Q/E yaw. Space increases throttle, Shift decreases it, and X cuts power; +/− and keypad +/− also work. Tap for 5% steps or hold for a continuous change. Releasing holds the selected throttle.
+
+P pauses, R resets. Enter starts or resumes. V cycles Pilot/Chase/FPV when a camera is mounted; C cycles control response, and F recenters the view and briefly marks the aircraft.
+
+Flight shortcuts are suppressed while a button, link, form field or dialog owns keyboard focus. On Controllers, click the keyboard diagram to try live inputs. Launch focuses the flight canvas. Losing focus pauses and clears held keys.
 
 ## Flight setup
 
@@ -14,6 +20,8 @@ A missing controller shows connection steps and **Use keyboard for now**. Mappin
 
 ## Gamepad or joystick
 
+![PlayStation and Xbox layouts with named default flight shortcuts](images/diagram-gamepads.svg)
+
 1. Connect through USB or Bluetooth and confirm the operating system sees the device.
 2. Focus RCForge and move a centered stick or press a button; some browsers do not expose devices before interaction.
 3. Open Controllers, refresh if necessary and select the device.
@@ -22,9 +30,15 @@ A missing controller shows connection steps and **Use keyboard for now**. Mappin
 6. Flip any channel that moves the wrong direction. Open Response on each channel to adjust dead zone and expo independently. Dead zone suppresses center noise; expo softens response. Throttle uses endpoints only. Leave software expo at zero if the transmitter already applies it.
 7. Select the controller input source. Check the throttle readout before launching. Reset applies calculated elevator trim; set the visible trim to zero for entirely transmitter-controlled trim.
 
+![Assign, center, sweep and verify analog controls](images/diagram-calibration.svg)
+
 Profiles are stored in browser storage keyed by device ID. Recalibrate when device IDs, adapter mode, transmitter mixes or endpoint settings change. Browser storage failures leave the active profile usable but unsaved.
 
 ## FlySky FS-i6
+
+![Mode 2 transmitter stick functions and RUN switch](images/diagram-rc-mode2.svg)
+
+Start with the [visual radio connection guide](radio-setup.md), including a copyable prompt for help with your exact hardware.
 
 See the [FS-i6 wiring and Arduino guide](flysky-fs-i6.md) for the original transmitter's trainer output, receiver PPM, or six receiver PWM channels. It includes the Uno/Nano sketch, upload steps, receiver failsafe setup and troubleshooting.
 

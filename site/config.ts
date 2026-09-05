@@ -14,6 +14,12 @@ export const pages = [
     file: "docs/controllers.md",
   },
   {
+    slug: "radio-setup",
+    title: "Connect a radio · visual guide",
+    group: "Start here",
+    file: "docs/radio-setup.md",
+  },
+  {
     slug: "aircraft-editor",
     title: "Edit & save an aircraft",
     group: "Start here",

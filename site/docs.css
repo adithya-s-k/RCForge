@@ -756,3 +756,180 @@ dialog::backdrop {
     min-height: 34px;
   }
 }
+
+/* Versioned, original diagrams. The source link also works without JavaScript. */
+.doc-figure {
+  display: block;
+  margin: 24px 0;
+}
+.expand-diagram {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #333841;
+  border-radius: 10px;
+  background: #111419;
+  text-decoration: none;
+}
+article .expand-diagram img {
+  display: block;
+  width: 100%;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+.figure-action {
+  display: block;
+  padding: 9px 14px;
+  border-top: 1px solid #2d333d;
+  color: #b9c0cc;
+  font-size: 12px;
+}
+.expand-diagram:hover {
+  border-color: #929aa8;
+}
+.expand-diagram:hover .figure-action {
+  color: #fff;
+}
+#diagram-viewer {
+  width: min(1180px, calc(100vw - 32px));
+  height: min(900px, calc(100dvh - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  border: 1px solid #444953;
+  border-radius: 12px;
+  background: #111419;
+  color: #eee;
+}
+#diagram-viewer[open] {
+  display: flex;
+  flex-direction: column;
+}
+.diagram-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid #333841;
+}
+.diagram-toolbar h2 {
+  margin: 0;
+  flex: 1 1 220px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.diagram-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.diagram-actions button,
+.diagram-actions a {
+  min-height: 36px;
+  padding: 6px 12px;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.diagram-actions output {
+  min-width: 40px;
+  text-align: center;
+  font-size: 12px;
+  color: #bac2ce;
+}
+.diagram-actions button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.diagram-stage {
+  flex: 1;
+  display: flex;
+  overflow: auto;
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+.diagram-stage img {
+  display: block;
+  flex: none;
+  margin: auto;
+  max-width: none;
+  height: auto;
+}
+.prompt-fields {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.prompt-fields[hidden] {
+  display: none;
+}
+.prompt-fields label {
+  display: grid;
+  gap: 6px;
+  color: #bbc0c9;
+  font-size: 13px;
+  min-width: 0;
+}
+.prompt-fields input,
+.prompt-fields select {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #42464f;
+  border-radius: 5px;
+  background: #121419;
+  color: #eee;
+  font: inherit;
+  padding: 10px;
+}
+article .prompt-note {
+  margin: 0;
+  padding: 0 20px 18px;
+  color: #a3aab5;
+  font-size: 13px;
+}
+article .agent-prompt details {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid #30343c;
+  border-radius: 0;
+}
+.agent-prompt summary {
+  padding: 12px 20px;
+  font-size: 13px;
+}
+article .agent-prompt pre {
+  margin: 0;
+  padding: 18px 20px;
+  max-height: 420px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+@media (max-width: 600px) {
+  .prompt-fields {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+  #diagram-viewer {
+    width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+  .diagram-toolbar {
+    padding: 12px;
+  }
+  .diagram-actions {
+    gap: 5px;
+  }
+  .diagram-actions button,
+  .diagram-actions a {
+    min-height: 42px;
+    padding: 6px 10px;
+  }
+  #diagram-original {
+    display: none;
+  }
+}

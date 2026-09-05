@@ -17,7 +17,11 @@ const render = (source: string) =>
     },
     "0.8.0",
     pages,
-    new Set(["aircraft/ft-bronco.json", "docs/images/workbench.png"]),
+    new Set([
+      "aircraft/ft-bronco.json",
+      "docs/images/workbench.png",
+      "docs/images/diagram-receiver-ppm.svg",
+    ]),
     "a".repeat(40),
   );
 
@@ -58,6 +62,28 @@ describe("documentation renderer", () => {
     expect(html).toContain('src="/docs/0.8.0/files/docs/images/workbench.png"');
     expect(html.match(/<img/g)).toHaveLength(1);
     expect(html).toContain("&lt;/code&gt;");
+  });
+  it("keeps enlarged diagrams on the selected documentation version", () => {
+    const { html } = render("![PPM & ground](images/diagram-receiver-ppm.svg)");
+    expect(html).toContain(
+      'href="/docs/0.8.0/files/docs/images/diagram-receiver-ppm.svg"',
+    );
+    expect(html).toContain('aria-label="Enlarge: PPM &amp; ground"');
+    expect(html).toContain('class="expand-diagram"');
+    expect(html).not.toContain("<svg");
+  });
+  it("renders prompt fields as inert data, preserving copyable text without JavaScript", () => {
+    const { html } = render(
+      "```agent-prompt\nBoard: {{Board|Uno|Nano}}\nReceiver: {{Receiver}}\nAgain: {{Receiver}}\nNever run <script>alert(1)</script>\n```",
+    );
+    expect(html).toContain('aria-label="Copy setup prompt"');
+    expect(html.match(/<select /g)).toHaveLength(1);
+    expect(html.match(/<input /g)).toHaveLength(1);
+    expect(html).toContain("<option>Uno</option>");
+    expect(html).toContain("Board: {{Board|Uno|Nano}}");
+    expect(html).toContain('class="prompt-fields" hidden');
+    expect(html).toContain("&lt;script&gt;");
+    expect(html).not.toContain("<script>");
   });
 });
 

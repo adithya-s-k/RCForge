@@ -2,6 +2,8 @@
 
 This guide covers the **original FS-i6**, a **classic ATmega328P Uno R3 or Nano**, and either a wired trainer connection or a separate bound receiver. The receiver model and your cable pinout still need to be checked. FS-i6X/i6S, Uno R4 and Nano Every have different hardware.
 
+Start with the [visual connection guide](radio-setup.md) for illustrated wiring, controller diagrams and a configurable AI-agent setup prompt. This page is the detailed reference.
+
 ## Choose a connection
 
 | Path                                   | What you need                                                                                  | RCForge connection                              |
@@ -28,13 +30,7 @@ For either Arduino board: a USB **data** cable, jumper leads, a breadboard, one 
 
 Input conditioning, repeated per connected signal:
 
-```text
-PPM OUT or PWM S ── 1 kΩ ──┬── Arduino D2 (or D3…D7)
-                           │
-                         47 kΩ
-                           │
-Source ground ─────────────┴── Arduino GND
-```
+![Complete input conditioning circuit](images/diagram-input-conditioning.svg)
 
 ## A. Directly from the transmitter
 
@@ -55,11 +51,7 @@ Use a trainer breakout whose **PPM OUT and GND contacts have been identified for
 | GND                              | GND                                        |
 | PPM **IN**, VCC, unused contacts | Leave unconnected                          |
 
-```text
-FS-i6 trainer PPM OUT ── input conditioning ── D2
-FS-i6 trainer GND ─────────────────────────── GND
-                                                Uno / Nano ── USB ── RCForge
-```
+![Trainer PPM wiring to a classic Uno or Nano](images/diagram-trainer-ppm.svg)
 
 **Connector limitation:** the manufacturer resources checked identify the trainer/update interface but do not establish the numbered PPM-out pinout for your particular plug/breakout. This guide deliberately uses signal names. A solder-side diagram can mirror a socket/front-view diagram; generic mini-DIN drawings and internet wire colors are insufficient. Use a documented FS-i6 PPM-out breakout, or identify it with the cable's manufacturer pinout and measurement. If you do not have that information, use the receiver path below, which uses labeled receiver pins.
 
@@ -77,19 +69,15 @@ Use this when your bound receiver provides a labeled **PPM** or **PPM/CH1** outp
 | Receiver **−**                          | GND                                        |
 | Receiver **+**, only when rated for 5 V | 5V (USB-powered board, bare receiver only) |
 
-```text
-FS-i6  ~~~ radio link ~~~  bound receiver
-                          PPM S ── conditioning ── D2
-                          − ────────────────────── GND
-                          + ────────────────────── 5V
-                                                   Uno / Nano ── USB ── RCForge
-```
+![Receiver PPM wiring to a classic Uno or Nano](images/diagram-receiver-ppm.svg)
 
 Select `RCF_INPUT_MODE 1`. A port marked **i-BUS SERVO**, **SENS**, or **S.BUS** is not PPM and cannot be fed into this decoder. This sketch does not decode those protocols. Use the receiver's PPM output or the PWM path below.
 
 ## C. Via the receiver: six PWM channels
 
 Use this for a receiver with normal CH1–CH6 servo outputs, including a PWM-only receiver. Disable PPM on CH1 if it had been enabled.
+
+![Six receiver PWM channels connected to Arduino D2–D7](images/diagram-receiver-pwm.svg)
 
 | Receiver signal pin           | Arduino digital pin | Starting assignment                            |
 | ----------------------------- | ------------------- | ---------------------------------------------- |
@@ -110,7 +98,7 @@ The sketch captures edges with pin-change interrupts. It does not read channels 
 
 1. Create a dedicated ordinary airplane model named RCForge. Disable V-tail, elevon and other mixing. Begin with centered trims and conventional endpoints; the simulated aircraft performs its own mixing.
 2. In auxiliary-channel setup assign **CH6 to a two-position switch**. Choose a convenient high position as RUN: its pulse must exceed 1700 μs. The low position is STOP. CH5 remains available for a separate simulator shortcut.
-3. For a wireless receiver, set its failsafe **CH6 low**, throttle low, and centered flight controls. On the documented FS-i6 menu, open **RX setup → Failsafe**, select CH6, enable its failsafe, move its switch to STOP and hold **CANCEL** to confirm. Hold **CANCEL** again to save the overall menu. Repeat for throttle low and centered controls. A failsafe value of **Off** means hold the last value; it does not mean zero throttle. Verify your receiver implements the settings. [FS-i6 manual, sections 8.4–8.5](https://raw.githubusercontent.com/flysky-rc/FLYSKY-ProductInformationDownload/master/Transmitter/FS-i6/FS-i6%20User%20manual%2020240110-EN.pdf).
+3. For a wireless receiver, set its failsafe **CH6 low**, throttle low, and centered flight controls. On the documented FS-i6 menu, open **RX setup → Failsafe**, select CH6, enable its failsafe, move its switch to STOP and hold **CANCEL** to confirm. Hold **CANCEL** again to save the overall menu. Repeat for throttle low and centered controls. A failsafe value of **Off** means hold the last value; it does not mean zero throttle. Verify your receiver implements the settings. [FS-i6 manual, section 8.4](https://raw.githubusercontent.com/flysky-rc/FLYSKY-ProductInformationDownload/master/Transmitter/FS-i6/FS-i6%20User%20manual%2020240110-EN.pdf).
 4. In RUN, the Arduino built-in LED is on only when all six channels have valid, fresh pulses. In STOP it is off and RCForge pauses. Restoring RUN makes input available but does not automatically resume flight.
 5. Test RF loss: while receiving live input, turn the transmitter off. RCForge must lose live input and pause. Turn it on, verify low throttle, then resume manually.
 

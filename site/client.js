@@ -137,17 +137,45 @@ document.addEventListener("click", (event) => {
   )
     closeMenu();
 });
+// Configure copyable prompts without uploading or storing hardware details.
+document.querySelectorAll(".agent-prompt").forEach((panel) => {
+  const template = panel.querySelector("template").content.textContent;
+  const fields = [...panel.querySelectorAll("[data-prompt-token]")];
+  const update = () => {
+    let prompt = template;
+    for (const field of fields) {
+      prompt = prompt.replaceAll(
+        field.dataset.promptToken,
+        () => field.value.trim() || "Not specified — ask me before assuming",
+      );
+    }
+    panel.querySelector("code").textContent = prompt;
+  };
+  fields.forEach((field) => field.addEventListener("input", update));
+  panel.querySelector(".prompt-fields").hidden = false;
+  panel.querySelector("details").open = false;
+  update();
+});
 document.querySelectorAll(".copy-code").forEach((button) =>
   button.addEventListener("click", async () => {
+    const label = button.closest(".agent-prompt") ? "Copy prompt" : "Copy";
     try {
       await navigator.clipboard.writeText(
         button.closest(".code-block").querySelector("code").textContent,
       );
       button.textContent = "Copied";
-      document.querySelector("#copy-status").textContent = "Code copied";
-      setTimeout(() => (button.textContent = "Copy"), 1500);
+      document.querySelector("#copy-status").textContent =
+        label === "Copy prompt" ? "Setup prompt copied" : "Code copied";
+      setTimeout(() => (button.textContent = label), 1500);
     } catch {
       button.textContent = "Select code to copy";
+      const block = button.closest(".code-block");
+      block.querySelector("details")?.setAttribute("open", "");
+      const pre = block.querySelector("pre");
+      pre.tabIndex = 0;
+      pre.focus();
+      document.querySelector("#copy-status").textContent =
+        "Clipboard unavailable. Select the visible text to copy it.";
     }
   }),
 );
@@ -169,3 +197,61 @@ if ("IntersectionObserver" in window) {
     .querySelectorAll("article h2, article h3")
     .forEach((h) => observer.observe(h));
 }
+
+// Images remain ordinary versioned links without JavaScript.
+const viewer = document.querySelector("#diagram-viewer");
+const diagramImage = document.querySelector("#diagram-image");
+const stage = viewer.querySelector(".diagram-stage");
+let diagramZoom = 1;
+let diagramOpener;
+const sizeDiagram = () => {
+  const ratio = diagramImage.naturalWidth / diagramImage.naturalHeight || 1;
+  const fit = Math.min(stage.clientWidth, stage.clientHeight * ratio);
+  diagramImage.style.width = `${Math.floor(fit * diagramZoom)}px`;
+  document.querySelector("#diagram-scale").textContent =
+    `${Math.round(diagramZoom * 100)}%`;
+  document.querySelector("#diagram-smaller").disabled = diagramZoom <= 1;
+  document.querySelector("#diagram-larger").disabled = diagramZoom >= 4;
+};
+diagramImage.addEventListener("load", sizeDiagram);
+document.querySelectorAll(".expand-diagram").forEach((link) =>
+  link.addEventListener("click", (event) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+      return;
+    event.preventDefault();
+    diagramOpener = link;
+    const source = link.querySelector("img");
+    document.querySelector("#diagram-title").textContent = source.alt;
+    diagramImage.src = source.src;
+    diagramImage.alt = source.alt;
+    document.querySelector("#diagram-original").href = source.src;
+    document.querySelector("#diagram-original").textContent =
+      /\.svg(?:$|[?#])/.test(source.src) ? "Open SVG ↗" : "Open image ↗";
+    diagramZoom = 1;
+    viewer.showModal();
+    sizeDiagram();
+    stage.scrollTo(0, 0);
+    document.querySelector("#diagram-close").focus();
+  }),
+);
+document
+  .querySelector("#diagram-close")
+  .addEventListener("click", () => viewer.close());
+viewer.addEventListener("close", () => diagramOpener?.focus());
+document.querySelector("#diagram-fit").addEventListener("click", () => {
+  diagramZoom = 1;
+  sizeDiagram();
+  stage.scrollTo(0, 0);
+});
+for (const [id, factor] of [
+  ["diagram-smaller", 0.5],
+  ["diagram-larger", 2],
+]) {
+  document.querySelector(`#${id}`).addEventListener("click", () => {
+    diagramZoom = Math.max(1, Math.min(4, diagramZoom * factor));
+    sizeDiagram();
+  });
+}
+window.addEventListener("resize", () => {
+  if (viewer.open) sizeDiagram();
+});

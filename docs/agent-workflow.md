@@ -25,6 +25,8 @@ Read the actual schema and nearby code before inventing a field or extension poi
 | Improve scenery or camera UX        | [Scenery manifest](../public/scenery/README.md), architecture                                     | `src/view/scene.ts`, `src/view/field.ts`, `src/view/render-budget.ts`, `src/app/placement.ts` |
 | Change menus or instruments         | [Browser acceptance](validation.md#browser-acceptance)                                            | `src/view/workbench.ts`, `src/app/`, `src/workbench.css`, `src/main.ts`                       |
 
+For a user connecting physical hardware, use the [visual radio guide and configurable setup prompt](radio-setup.md#set-up-with-an-ai-agent). Keep unknown board, receiver and connector details explicit; compile results do not verify the physical circuit.
+
 ## Example: reference design to a flyable definition
 
 ### 1. Establish the evidence
