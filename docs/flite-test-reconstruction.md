@@ -231,3 +231,28 @@ Regression checks cover transformed servo bounds, registration, mass/CG and the
 side-wall distance from the full prop radius. Clearance is sub-millimetre in this
 reconstruction, so these checks do not prove physical tolerances. Pushrod routing,
 guide channels, glue and loaded linkage kinematics remain unresolved details.
+
+## FT-22 trim and power-response review
+
+The current geometry is closer to the drawing than its aerodynamic model is to
+measured flight. On the 320 g preset in calm Northfield conditions (18 °C, 120 m),
+the 8.5 m/s, 8° climb solution requires approximately +0.777 pitch command and
+37.6% power. This corresponds to about 31.1° physical elevon trim under the current
+40°/horn setup. Raising power to 100% while retaining that pitch command produces
+repeated large pitch excursions and an impact near 8.7 seconds in a deterministic
+run. The browser power-step trial showed the same pattern and an impact near
+9 seconds. The trimmed-power run remained near its 8.5 m/s climb for 12 seconds.
+
+These are observations of the estimated simulator, **not a validated description
+of real FT-22 handling**. The original plan's CG markers and the manufacturer's
+394–406 mm nose reference were rechecked. They do not establish the pressure
+center, wing/elevon interaction or control effectiveness. The current independent
+surface/quarter-chord approximation needs measured trim and control-response data,
+and potentially a coupled wing/elevon model. Moving the sourced CG or changing
+coefficients solely to make the power-step trial look calmer would not validate it.
+
+To inspect this behavior in the browser, restore the FT-22 original, select
+Northfield with calm wind and Hand throw, then use Chase. Start at calculated
+power, pause, change power and resume while leaving pitch neutral. Reset restores
+the calculated release controls. The setup now identifies high pitch trim; a
+failed solve is reported separately and does not claim a balanced release.

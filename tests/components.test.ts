@@ -245,6 +245,11 @@ it("reports used charge and conditional time to reserve without infinity", () =>
   });
   expect(batteryUsage(a, 0.15, 10)!.minutesToReserve).toBe(0);
   expect(batteryUsage(a, 0.75, 0)!.minutesToReserve).toBeNull();
+  expect(batteryUsage(a, 0.75, a.battery!.avionicsCurrentA)).toEqual({
+    usedMah: expect.closeTo(200, 8),
+    remainingMah: 750,
+    minutesToReserve: null,
+  });
 });
 
 it("all catalog entries apply to compatible assemblies and reject malformed identities", () => {

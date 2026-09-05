@@ -616,3 +616,25 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
 - This is documentation of existing behavior, not a fidelity or hardware claim.
 - Verification: docs link/script checks and repository formatting pass. Runtime
   statements were checked against the current source instead of historical notes.
+
+## Pass 29 · expose trim limits and avoid idle endurance claims
+
+- A full-power FT-22 hand-launch playtest looped and impacted at about 9 s. Pure
+  simulation reproduced it (about 8.7 s) while trimmed power retained the initial
+  climb. Investigation found +77.7% pitch / 31.1° elevon trim at 8.5 m/s. Rechecked
+  original PDF CG symbols and current manufacturer CG specification; neither
+  validates the independent-surface aerodynamic assumptions. Documented the
+  handling gap rather than changing CG/coefficients to hide it.
+- Existing flight-setup feedback now identifies high pitch trim and failed trim;
+  a failed solve no longer describes the release as trimmed. Corrected the trim
+  slider's ±80% clamp to represent the solver's full normalized range.
+- Battery reserve-time hints no longer extrapolate flight endurance from the
+  avionics-only current after impact or with stopped motors. Charge-used and
+  remaining-capacity values are preserved.
+- Browser verified the stock high-trim note, then a deliberately 1,000 g draft
+  showed Trim failed at 8.5 m/s and removed the balanced-release claim. The draft
+  is restored to the original before delivery. Force equations are unchanged.
+- Verification: 214 tests / 36 files, bundled validation, typecheck/build and docs
+  checks pass. Numerical report remains passed. Browser confirmed high/failed trim,
+  original mass restoration and no console errors. Narrow review found the setup
+  heading/Close could scroll away; that is the next layout correction.

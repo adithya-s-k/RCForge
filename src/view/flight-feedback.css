@@ -159,6 +159,9 @@
   margin: 8px 0;
   line-height: 1.45;
 }
+#flight-control-note.trim-limited {
+  color: #dfbd91;
+}
 @media (max-width: 1150px) {
   .field-label {
     top: 66px;

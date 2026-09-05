@@ -214,7 +214,7 @@ export function batteryUsage(a: Aircraft, soc: number, currentA: number) {
     usedMah: Math.max(0, b.initialSoc - soc) * b.capacityMah,
     remainingMah: Math.max(0, soc) * b.capacityMah,
     minutesToReserve:
-      currentA > 0.05
+      currentA > b.avionicsCurrentA + 0.05
         ? ((Math.max(0, soc - 0.2) * b.capacityMah) / (currentA * 1000)) * 60
         : null,
   };

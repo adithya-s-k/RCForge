@@ -41,6 +41,16 @@ Structural flexibility or failure, foamboard fold mechanics, CFD, automatic conv
 
 Reference geometry is intentionally simplified. Visual meshes represent the same dimensions used in flight calculations, but are not manufacturing drawings. Component mass allocations are estimates even when the total reference mass is published.
 
+## Known FT-22 handling limit
+
+The plan-reconstructed FT-22 currently needs high modeled elevon trim for its
+hand-launch equilibrium. An uncorrected full-power step can produce repeated
+pitch excursions and impact. This remains an uncalibrated aerodynamic limitation,
+not evidence that the physical FT-22 behaves that way. See the reproducible
+[trim and power-response review](flite-test-reconstruction.md#ft-22-trim-and-power-response-review).
+The workbench now identifies high pitch trim and failed trim solves; it does not
+add artificial stabilization to conceal them.
+
 ## Evidence needed for improved fidelity
 
 Measure assembled mass and CG, estimate or measure inertia, measure thrust against throttle/airspeed, obtain appropriate low-Reynolds-number aerodynamic polars, and compare trim speed, glide descent, stall onset and control response with recorded physical flights. Keep calibration data and uncertainty separate from implementation tests. Add regression cases when a model is calibrated.

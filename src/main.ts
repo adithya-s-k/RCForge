@@ -68,7 +68,11 @@ import { AircraftEditor } from "./app/editor";
 import { setupExperiments } from "./app/experiments";
 import { $, escape, download } from "./app/dom";
 import { ownsKeyboard } from "./input/ui-focus";
-import { flightAction, flightFeedback } from "./app/flight-session";
+import {
+  flightAction,
+  flightFeedback,
+  flightModelNote,
+} from "./app/flight-session";
 import { setupTabs } from "./app/tabs";
 $("app").innerHTML = workbenchMarkup();
 const flightOverlaySizes = new ResizeObserver((entries) => {
@@ -105,6 +109,7 @@ let baseline = preferredAircraft(originals),
   replay: Recording | null = null,
   replayIndex = 0,
   pitchTrim = 0,
+  releaseTrimConverged = true,
   accumulator = 0;
 let placement: Placement | null = null;
 const initialAircraft = physicalAircraft();
@@ -182,9 +187,15 @@ function updateFlightInfo() {
   $("experiment-description").textContent = quad
     ? "Starts in hover at 3 m with calculated power. Pitch and roll pulses test the configured controller. No altitude hold."
     : "Each aircraft starts at 12 m/s and 18 m with its own calculated trim. Field weather is retained.";
-  $("flight-control-note").textContent = quad
-    ? `${a.multirotor!.mode === "angle" ? "Self-leveling angle" : "Angular-rate"} control · manual throttle · estimated model`
-    : "Unstabilized controls. Aircraft coefficients are estimates.";
+  const note = flightModelNote({
+    quad,
+    controlMode: a.multirotor?.mode,
+    handLaunch: mode === "hand",
+    converged: releaseTrimConverged,
+    pitchTrim,
+  });
+  $("flight-control-note").textContent = note.text;
+  $("flight-control-note").classList.toggle("trim-limited", note.limited);
   if (quad)
     $("launch-description").textContent =
       mode === "ground"
@@ -195,8 +206,8 @@ function updateFlightInfo() {
       mode === "ground"
         ? "Start stationary on the ground. Build airspeed, then rotate."
         : mode === "hand"
-          ? `Release at ${placement?.altitudeM ?? 1.7} m and 8.5 m/s, trimmed for a gentle climb.`
-          : `Start at ${placement?.altitudeM ?? 22} m and 12 m/s with calculated trim.`;
+          ? `Release at ${placement?.altitudeM ?? 1.7} m and 8.5 m/s${releaseTrimConverged ? ", trimmed for a gentle climb" : ""}.`
+          : `Start at ${placement?.altitudeM ?? 22} m and 12 m/s${releaseTrimConverged ? " with calculated trim" : ""}.`;
   $("flight-mass").textContent =
     (massProperties(a).mass * 1000).toFixed(0) + " g";
   $("flight-model-info").textContent =
@@ -232,6 +243,7 @@ function reset() {
   const a = physicalAircraft(),
     trim = launchTrim(a, mode, environment);
   pitchTrim = trim.controls.pitch;
+  releaseTrimConverged = trim.converged;
   sim = new Simulation(
     a,
     environment,
@@ -690,6 +702,7 @@ $("throttle").oninput = () =>
 $("pitch-trim").oninput = () => {
   pitchTrim = Number($<HTMLInputElement>("pitch-trim").value) / 100;
   $("pitch-trim-value").textContent = Math.round(pitchTrim * 100) + "%";
+  updateFlightInfo();
 };
 $("help-button").onclick = () => {
   pause();
