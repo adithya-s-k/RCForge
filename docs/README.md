@@ -1,6 +1,17 @@
-# Welcome to RCForge
+# RCForge: a free, customizable RC flight simulator
 
-RCForge is a browser-based RC flight simulator and aircraft editor. Choose a plane or quad, set up your controls, and try changes to its components and balance. Your setups stay in your browser until you export them. No account or AI service is required.
+RCForge is a **free, open-source RC flight simulator** and aircraft editor that runs in your browser. Fly planes, drones and VTOL aircraft; customize components, balance, controls and flying environments. Your setups stay in your browser until you export them.
+
+The MIT-licensed [source code](https://github.com/adithya-s-k/RCForge) runs locally or on your own host without accounts, API keys or AI services. On [rcforge.adithyask.com](https://rcforge.adithyask.com), guests can fly Simple Trainer with the keyboard; free Google sign-in unlocks the other aircraft, inputs and editing tools.
+
+## Bring your own setup
+
+- **Plans and aircraft:** use your design references to create an [aircraft definition](aircraft-authoring.md). Plans provide geometry; component choices and flight parameters still need to be specified.
+- **Components:** choose batteries, motors, propellers and servos, then [move parts and check balance](aircraft-editor.md).
+- **Controllers:** map a gamepad or RC radio, or build a [PPM-to-USB bridge with a compatible Arduino](radio-setup.md#can-i-use-another-arduino).
+- **Environments:** choose a field and wind conditions, or [extend the scenery in code](scenery-rendering.md).
+
+RCForge emphasizes customization and transparent models. It does not claim measured real-aircraft equivalence.
 
 ## New here? Start with a flight
 

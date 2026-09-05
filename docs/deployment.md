@@ -66,3 +66,15 @@ Restrictions in browser code are presentation policy, not a security boundary.
 Authorize private APIs and cloud data on the server. Keep OAuth secrets out of
 bundles. A separate hosted build can include account/analytics integrations;
 community builds must not contact those services or require their credentials.
+
+## Search and link previews
+
+The build emits a root `sitemap.xml`, `robots.txt`, canonical URLs, page-specific descriptions, Open Graph/Twitter cards and JSON-LD for the simulator and documentation. The preview artwork lives in `public/brand/rcforge-social.svg` with its 1200 × 630 PNG counterpart. Keep both in sync when changing it.
+
+`site/seo.ts` owns the metadata and describes RCForge as free, open source and customizable. Do not add unmeasured fidelity claims, invented reviews or ratings. Aircraft plans are references for authoring definitions, not automatic imports of complete flight models.
+
+The canonical domain is set in `site/config.ts`. Canonical documentation URLs omit the trailing slash to match the hosted site's redirects. Self-hosters who want their own indexed site should change that domain and the root fallback links/artwork as appropriate. Keep deployment previews out of search using your host's `X-Robots-Tag: noindex` headers; OAuth callbacks must also be noindex. Do not block JavaScript or stylesheets in robots.txt.
+
+After deploying, check the canonical URL, social PNG and sitemap over HTTPS. Submit `/sitemap.xml` in Google Search Console for the verified domain. A valid sitemap helps discovery; it does not guarantee indexing or ranking. Hash-based simulator views share the root canonical; guides have separate crawlable HTML URLs.
+
+References: [Google JavaScript SEO](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics), [URL structure](https://developers.google.com/search/docs/crawling-indexing/url-structure), [search snippets](https://developers.google.com/search/docs/appearance/snippet) and [software application structured data](https://developers.google.com/search/docs/appearance/structured-data/software-app).

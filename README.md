@@ -2,13 +2,23 @@
 
 # RCForge
 
-**An open foundation for making RC aircraft programmable.**
+**A free, open-source RC flight simulator you can make your own.**
 
-Build an aircraft. Fly it. Change something. Understand what happened.
+Fly RC planes, drones and VTOL aircraft in your browser. Customize your aircraft, components, controllers and environments—or bring your own plans and build an editable flight model.
 
 [Simulator](https://rcforge.adithyask.com) · [Documentation](https://rcforge.adithyask.com/docs/) · [Contribute](CONTRIBUTING.md) · [Changelog](CHANGELOG.md)
 
 ![RCForge flight workbench](docs/images/workbench.png)
+
+RCForge is **MIT licensed** and runs locally without accounts, API keys or a backend. The [hosted simulator](https://rcforge.adithyask.com) offers a free Simple Trainer + keyboard session; free Google sign-in unlocks the other aircraft, inputs and editing tools. Self-hosting this repository keeps the full workbench available without sign-in.
+
+## Make it yours
+
+- **Aircraft and plans:** start with a preset or create a JSON aircraft definition from your own design references. Plan images need interpretation; they are not automatically converted.
+- **Components and balance:** change batteries, motors, propellers and servos; move parts to change mass distribution and center of gravity.
+- **Your controller:** keyboard, gamepad, flight stick, RC USB adapter or a compatible Arduino PPM-to-serial bridge.
+- **Your flying field:** choose the bundled environments, adjust wind, or extend scenery in code.
+- **Your workflow:** edit and save locally, export definitions, run repeatable experiments and contribute changes under MIT.
 
 ## Why it exists
 
