@@ -1,3 +1,4 @@
+import { bundledAircraft } from "./app/bundled-aircraft";
 import { setupReleaseInfo } from "./app/release-info";
 import { setupAircraftHistory } from "./app/aircraft-history";
 import {
@@ -26,8 +27,6 @@ import {
 } from "./core/scenery";
 import { powertrain } from "./core/powertrain";
 import { batteryUsage } from "./core/components";
-import largeQuadData from "../aircraft/quad-x-450.json";
-import detailedQuadData from "../aircraft/quad-x-6s.json";
 import { setupCatalog } from "./app/catalog";
 import {
   importedAircraft,
@@ -47,13 +46,7 @@ import { setupEditorWorkspace } from "./app/editor-workspace";
 import "./view/position-panel.css";
 import "./view/flight-feedback.css";
 import { ZodError } from "zod";
-import broncoData from "../aircraft/ft-bronco.json";
-import quadData from "../aircraft/quad-x-5inch.json";
-import tinyTrainerData from "../aircraft/ft-tiny-trainer.json";
-import raptorData from "../aircraft/ft-22-raptor.json";
-import broncoConventionalData from "../aircraft/ft-bronco-conventional.json";
 import { aircraftCredit } from "./app/aircraft-credit";
-import vortexTrainerData from "../aircraft/vt-simple-trainer.json";
 import { workbenchMarkup } from "./view/workbench";
 import { FlightScene, type CameraMode } from "./view/scene";
 import { FlightAudio } from "./view/audio";
@@ -111,16 +104,7 @@ const flightOverlaySizes = new ResizeObserver((entries) => {
 });
 for (const selector of [".flight-bottom", ".flight-key-guide"])
   flightOverlaySizes.observe(document.querySelector(selector)!);
-const originals = [
-  parseAircraft(broncoData),
-  parseAircraft(broncoConventionalData),
-  parseAircraft(tinyTrainerData),
-  parseAircraft(raptorData),
-  parseAircraft(vortexTrainerData),
-  parseAircraft(quadData),
-  parseAircraft(detailedQuadData),
-  parseAircraft(largeQuadData),
-];
+const originals = [...bundledAircraft];
 const bundledIds = new Set(originals.map((a) => a.id));
 originals.push(...importedAircraft(originals));
 let baseline = preferredAircraft(originals),

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { PilotResponseSchema } from "./pilot-response";
-export const AIRCRAFT_FORMAT_VERSION = 1;
+import { AIRCRAFT_FORMAT_VERSION } from "./versions";
+export { AIRCRAFT_FORMAT_VERSION } from "./versions";
 const finite = z.number().finite();
 const vec = z.tuple([finite, finite, finite]);
 const positive = finite.positive();
