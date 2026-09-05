@@ -1,5 +1,5 @@
 import type { Aircraft } from "./schema";
-import type { Component } from "./components";
+import { catalogMassParts, type Component } from "./components";
 
 // Compare authored specifications, allowing only floating-point roundoff.
 // Installation, starting charge and aircraft electrical load are not product specs.
@@ -23,6 +23,7 @@ export function componentDifferences(
   reference: Component,
 ): string[] {
   const changes: string[] = [];
+  const product = catalogMassParts(reference, a.vehicleType);
   const compare = (label: string, value: unknown, baseline: unknown) => {
     if (!equivalent(value, baseline)) changes.push(label);
   };
@@ -54,12 +55,12 @@ export function componentDifferences(
     );
     comparePart(
       a.parts.find((p) => p.id === motor?.partId),
-      reference.part,
+      product.part,
       "Motor: ",
     );
     comparePart(
       a.parts.find((p) => p.id === motor?.propPartId),
-      reference.prop,
+      product.prop!,
       "Propeller: ",
     );
     if (!motor) changes.push("Propulsion model missing");
@@ -75,7 +76,7 @@ export function componentDifferences(
       } = motor;
       compare("Propulsion model", performance, reference.motor);
     }
-  } else comparePart(installed, reference.part);
+  } else comparePart(installed, product.part);
   if (reference.type === "battery") {
     const battery = a.battery?.partId === partId ? a.battery : undefined;
     if (!battery) changes.push("Battery model missing");

@@ -2,6 +2,8 @@ import { expect, it } from "vitest";
 import catalogData from "../components/catalog.json";
 import raptor from "../aircraft/ft-22-raptor.json";
 import quad from "../aircraft/quad-x-450.json";
+import bronco from "../aircraft/ft-bronco.json";
+import tiny from "../aircraft/ft-tiny-trainer.json";
 import {
   ComponentCatalogSchema,
   batteryUsage,
@@ -175,9 +177,63 @@ it("motor packages replace motor and propeller mass without losing rotor install
   expect(powertrain(next, [1, 0, 0, 0]).thrust[0]).toBeCloseTo(
     powertrain(a, [1, 0, 0, 0]).thrust[0] * 0.8,
   );
-  expect(() => replaceComponent(parseAircraft(raptor), "motor", entry)).toThrow(
+  const legacy = parseAircraft(raptor);
+  delete legacy.motors[0].propPartId;
+  expect(() => replaceComponent(legacy, "motor", entry)).toThrow(
     /separate mass components/,
   );
+});
+
+it.each([bronco, tiny, raptor])(
+  "replaces paired FT motor and prop masses exactly once for $id",
+  (raw) => {
+    const a = parseAircraft(raw),
+      motor = a.motors[0];
+    const oldMotor = a.parts.find((p) => p.id === motor.partId)!;
+    const oldProp = a.parts.find((p) => p.id === motor.propPartId)!;
+    const entry = get("emax-mt2213-1045-3s");
+    if (entry.type !== "motor") throw new Error("Expected motor entry");
+    expect(oldProp.massKg).toBeGreaterThan(0);
+    const next = replaceComponent(a, oldMotor.id, entry);
+    expect(massProperties(next).mass - massProperties(a).mass).toBeCloseTo(
+      entry.part.massKg + entry.prop.massKg - oldMotor.massKg - oldProp.massKg,
+      10,
+    );
+    expect(next.parts.length).toBe(a.parts.length);
+    expect(next.parts.find((p) => p.id === oldProp.id)!.positionM).toEqual(
+      oldProp.positionM,
+    );
+    expect(next.motors[0].positionM).toEqual(motor.positionM);
+    expect(next.motors[0].maxThrustN).toBe(entry.motor.maxThrustN);
+    expect(componentDifferences(next, oldMotor.id, entry)).toEqual([]);
+    expect(componentDifferences(next, oldProp.id, entry)).toEqual([]);
+    expect(() =>
+      replaceComponent(next, oldProp.id, get("emax-blheli-12a")),
+    ).toThrow(/motor\/prop package/);
+  },
+);
+
+it("maps catalog motor/prop dimensions and principal inertia into the aircraft shaft frame", () => {
+  const entry = structuredClone(get("emax-mt2213-1045-3s"));
+  if (entry.type !== "motor") throw new Error("Expected motor entry");
+  entry.part.inertiaDiagonalKgM2 = [0.000012, 0.000024, 0.00003];
+  const plane = replaceComponent(parseAircraft(raptor), "motor", entry);
+  const motor = plane.parts.find((p) => p.id === "motor")!;
+  expect(motor.sizeM).toEqual([
+    entry.part.sizeM[2],
+    entry.part.sizeM[1],
+    entry.part.sizeM[0],
+  ]);
+  expect(motor.inertiaDiagonalKgM2).toEqual([0.00003, 0.000024, 0.000012]);
+  expect(
+    plane.parts.find((p) => p.id === plane.motors[0].propPartId)!.sizeM,
+  ).toEqual([entry.prop.sizeM[2], entry.prop.sizeM[1], entry.prop.sizeM[0]]);
+  expect(componentDifferences(plane, "motor", entry)).toEqual([]);
+  const multirotor = replaceComponent(parseAircraft(quad), "motor-1", entry);
+  expect(multirotor.parts.find((p) => p.id === "motor-1")!.sizeM).toEqual(
+    entry.part.sizeM,
+  );
+  expect(componentDifferences(multirotor, "motor-1", entry)).toEqual([]);
 });
 
 it("reports used charge and conditional time to reserve without infinity", () => {

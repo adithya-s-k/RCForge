@@ -489,3 +489,23 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   defect from this inspection. No speculative asset/lighting change was made.
 - Continue existing flight/editor/input/experiment UX and model consistency
   review until 02:28:46 UTC. Do not recreate the active continuation automation.
+
+## Pass 21 · FT motor/prop packages and installation consistency
+
+- Browser replacement of an FT motor previously ended in a missing-prop-mass
+  error. Bronco, Tiny and FT-22 now have explicit paired prop components, with
+  estimated allocations removed from their former structural buckets. Reference
+  total mass and longitudinal CG stay unchanged; inertia follows the ledger.
+- Catalog shaft-axis metadata maps motor/prop dimensions and principal inertia
+  correctly between quad and fixed-wing installations. The visible prop center
+  follows its linked part, and source comparisons use the installed axis frame.
+- The Propellers filter and paired-part buttons connect motor and prop editing.
+  Propeller parts cannot be replaced by unrelated electronics. Replacement
+  previews show diameter/reference voltage and flag larger-prop fit checks.
+- Browser applied the EMAX package to FT-22 (349 g), checked its correctly oriented
+  39.7 × 27.9 × 27.9 mm motor and paired navigation on desktop/390 px layout,
+  then restored/applied the original 320 g setup. This package is not claimed to
+  fit the FT-22 slot. No new browser errors or horizontal phone overflow.
+- Verification: 207 tests / 35 files, production build and numerical validation
+  pass. Bronco/Tiny remain 81/135 trim solutions and FT-22 57/135; zero nonfinite
+  loads. No new measured mass, thrust or flight evidence is claimed.

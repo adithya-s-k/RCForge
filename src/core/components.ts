@@ -27,6 +27,7 @@ export const ComponentSchema = z.discriminatedUnion("type", [
     .object({
       ...common,
       type: z.literal("motor"),
+      shaftAxis: z.enum(["x", "z"]).optional(),
       motor: AircraftSchema.shape.motors.element.omit({
         id: true,
         positionM: true,
@@ -84,6 +85,33 @@ export function componentType(p: Aircraft["parts"][number]) {
   return p.servo ? "servo" : p.kind;
 }
 
+/** Catalog dimensions may be recorded with a vertical or horizontal shaft.
+ * Convert the envelope/principal-axis ordering to the vehicle's motor axis.
+ * Omitted shaftAxis retains the original body-frame catalog convention. */
+export function catalogMassParts(
+  entry: Component,
+  vehicleType: Aircraft["vehicleType"],
+) {
+  const part = structuredClone(entry.part);
+  const prop = entry.type === "motor" ? structuredClone(entry.prop) : undefined;
+  const targetAxis = vehicleType === "multirotor" ? "z" : "x";
+  if (
+    entry.type === "motor" &&
+    entry.shaftAxis &&
+    entry.shaftAxis !== targetAxis
+  ) {
+    for (const p of [part, prop!]) {
+      [p.sizeM[0], p.sizeM[2]] = [p.sizeM[2], p.sizeM[0]];
+      if (p.inertiaDiagonalKgM2)
+        [p.inertiaDiagonalKgM2[0], p.inertiaDiagonalKgM2[2]] = [
+          p.inertiaDiagonalKgM2[2],
+          p.inertiaDiagonalKgM2[0],
+        ];
+    }
+  }
+  return { part, prop };
+}
+
 /** Translate an installed motor/prop unit without losing its authored offsets.
  * Other mass parts move independently; surface geometry has its own definition. */
 export function moveComponent(
@@ -128,8 +156,13 @@ export function replaceComponent(
   const old = out.parts[index];
   if (!old || componentType(old) !== entry.type)
     throw new Error("Choose a component of the same type.");
+  if (out.motors.some((m) => m.propPartId === partId))
+    throw new Error(
+      "Replace this propeller through its motor/prop package so the performance curve stays paired.",
+    );
+  const product = catalogMassParts(entry, out.vehicleType);
   out.parts[index] = {
-    ...structuredClone(entry.part),
+    ...product.part,
     id: old.id,
     positionM: old.positionM,
     orientationDeg: old.orientationDeg,
@@ -157,7 +190,7 @@ export function replaceComponent(
       );
     const oldProp = out.parts[propIndex];
     out.parts[propIndex] = {
-      ...structuredClone(entry.prop),
+      ...product.prop!,
       id: oldProp.id,
       positionM: oldProp.positionM,
       orientationDeg: oldProp.orientationDeg,

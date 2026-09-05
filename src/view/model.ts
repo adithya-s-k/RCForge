@@ -410,9 +410,7 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     color: isBronco ? "#e9e7df" : "#285982",
     roughness: 0.7,
   });
-  const propellerMaterial = isBronco
-    ? new T.MeshStandardMaterial({ color: "#c8c6bc", roughness: 0.62 })
-    : dark;
+  const propellerMaterials = new Map<string, T.Material>();
   for (const p of a.parts) {
     const firstChild = group.children.length;
     if ((p.kind === "body" || p.kind === "boom") && p.bodyLoft) {
@@ -800,6 +798,16 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
   for (const motor of a.motors) {
     const [x, y, z] = motor.positionM;
     const motorPart = a.parts.find((p) => p.id === motor.partId);
+    const propPart = a.parts.find((p) => p.id === motor.propPartId);
+    const propColor = propPart?.color ?? (isBronco ? "#c8c6bc" : "#23282d");
+    let propellerMaterial = propellerMaterials.get(propColor);
+    if (!propellerMaterial) {
+      propellerMaterial = new T.MeshStandardMaterial({
+        color: propColor,
+        roughness: 0.62,
+      });
+      propellerMaterials.set(propColor, propellerMaterial);
+    }
     // A pusher's mass sits ahead of its prop disk; use the authored installation.
     const shaft = motorPart && motorPart.positionM[0] > x + 0.001 ? -1 : 1;
     const center: Vec3 = motorPart?.positionM ?? [x - shaft * 0.012, y, z];
@@ -836,12 +844,14 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
       );
     }
     const prop = new T.Group();
-    prop.position.set(x + shaft * 0.008, y, z);
+    prop.position.set(
+      ...(propPart?.positionM ?? ([x + shaft * 0.008, y, z] as Vec3)),
+    );
     prop.rotation.x = Math.PI / 2;
     rod(
       group,
       [center[0], center[1], center[2]],
-      [prop.position.x, y, z],
+      [prop.position.x, prop.position.y, prop.position.z],
       Math.min(size[1], size[2]) * 0.075,
       aluminum,
     );

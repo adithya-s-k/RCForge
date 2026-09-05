@@ -52,6 +52,10 @@
     "motorInstallation": {
       "status": "estimated",
       "note": "Motor housing geometry now uses the motor component center and dimensions, instead of independent renderer constants. Housing stations are aligned with the existing reconstructed mount/prop assembly; housing dimensions and mass allocations remain estimates, not bench measurements. Battery moves aft to retain the same mass-weighted CG. Component box inertia changes with these revised dimensions and stations."
+    },
+    "propellerMass": {
+      "status": "estimated",
+      "note": "Separate 2 g mass entry per propeller, reallocated from the existing estimated powered-nose structural allocation. Published dry mass, existing motor masses, total aircraft mass and longitudinal CG are retained; battery station is rebalanced. Prop dimensions/inertia and the allocation are estimates, not weighed components. Propeller center follows the reconstructed rotor disk. This allows replacement of both motor and prop masses with a matching performance curve without adding the old prop mass again."
     }
   },
   "parts": [
@@ -129,7 +133,7 @@
       "id": "battery",
       "kind": "battery",
       "massKg": 0.06,
-      "positionM": [0.12100458369674082, 0, 0.041],
+      "positionM": [0.11790458369674081, 0, 0.041],
       "sizeM": [0.05, 0.025, 0.02],
       "color": "#343a40"
     },
@@ -247,7 +251,7 @@
     {
       "id": "powered-nose",
       "kind": "body",
-      "massKg": 0.012,
+      "massKg": 0.01,
       "positionM": [0.12, 0, 0.005],
       "sizeM": [0.15, 0.043, 0.05],
       "color": "#e9e7df",
@@ -287,6 +291,19 @@
         "name": "Paper-faced foamboard",
         "finish": "foam"
       }
+    },
+    {
+      "id": "nose-propeller",
+      "kind": "equipment",
+      "massKg": 0.002,
+      "positionM": [0.213, 0, 0],
+      "sizeM": [0.006350000000000001, 0.01778, 0.127],
+      "color": "#23282d",
+      "material": {
+        "name": "Propeller assembly (estimated allocation)",
+        "finish": "plastic"
+      },
+      "model": "5-inch two-blade propeller"
     }
   ],
   "surfaces": [
@@ -524,7 +541,8 @@
           }
         ]
       },
-      "partId": "motor"
+      "partId": "motor",
+      "propPartId": "nose-propeller"
     }
   ],
   "fuselageDragAreaM2": 0.0025,

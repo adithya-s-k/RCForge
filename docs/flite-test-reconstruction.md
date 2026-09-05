@@ -178,3 +178,19 @@ the specified rotor radius; geometry is shared between that propeller's blades.
 Chord, twist and section thickness remain visual estimates. They do not supply
 propeller polars, pitch-derived thrust or extra component mass. Specified CW/CCW
 spin now also controls fixed-wing propeller animation.
+
+## Separate propeller mass allocations
+
+All three FT presets now link a distinct prop mass component to each motor.
+Bronco allocates 6 g per prop from the former nacelle allocation; Tiny allocates
+2 g from the powered nose; FT-22 allocates 8 g from its fuselage allocation.
+These are explicit estimates, not weighed propellers. Reference all-up masses
+remain 830, 253 and 320 g, respectively; the battery stations are rebalanced to
+retain the longitudinal CG references. The changed distribution updates inertia.
+
+The prop's authored installation position drives its visible center, and motor
+package replacement updates both masses and the matching propulsion curve once.
+The component envelope represents the parked blade assembly approximately; it
+is not blade CAD or a spin-averaged inertia model. Catalog props can exceed the
+reconstructed opening. The baseline FT-22 clearance regression does not establish
+clearance for arbitrary replacements, flex or mounting tolerances.

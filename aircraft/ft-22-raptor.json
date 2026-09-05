@@ -57,13 +57,17 @@
       "status": "calculated",
       "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-22-plans.pdf",
       "note": "Printed-inch ruler establishes 72 pt/in, rather than scaling the outline to a conflicting store dimension. Structural span/chords/area/centers and inertia follow the corrected drawing scale. The fixed 9-inch prop now clears the main-plate slot in the reconstructed geometry; this is a geometry check, not a real-build clearance guarantee. The published 235 g dry mass and assumed 85 g battery remain. Battery is rebalanced to retain CG; no measured aerodynamic or propulsion curves were added."
+    },
+    "propellerMass": {
+      "status": "estimated",
+      "note": "Separate 8 g mass entry per propeller, reallocated from the existing estimated fuselage structural allocation. Published dry mass, existing motor masses, total aircraft mass and longitudinal CG are retained; battery station is rebalanced. Prop dimensions/inertia and the allocation are estimates, not weighed components. Propeller center follows the reconstructed rotor disk. This allows replacement of both motor and prop masses with a matching performance curve without adding the old prop mass again."
     }
   },
   "parts": [
     {
       "id": "fuselage",
       "kind": "body",
-      "massKg": 0.04,
+      "massKg": 0.032,
       "positionM": [0.1565037819444445, 0, 0],
       "sizeM": [0.48699243611111104, 0.046, 0.10224959444444444],
       "color": "#e9e7df",
@@ -280,7 +284,7 @@
       "id": "battery",
       "kind": "battery",
       "massKg": 0.085,
-      "positionM": [0.2158880881635086, 0, 0.025],
+      "positionM": [0.2421108467256001, 0, 0.025],
       "sizeM": [0.075, 0.034, 0.017],
       "color": "#252729",
       "material": {
@@ -546,6 +550,19 @@
           "bottom": 0.5
         }
       ]
+    },
+    {
+      "id": "pusher-propeller",
+      "kind": "equipment",
+      "massKg": 0.008,
+      "positionM": [-0.12211302777777777, 0, -0.012],
+      "sizeM": [0.011430000000000001, 0.032004000000000005, 0.2286],
+      "color": "#23282d",
+      "material": {
+        "name": "Propeller assembly (estimated allocation)",
+        "finish": "plastic"
+      },
+      "model": "9x4.7 slow-fly pusher"
     }
   ],
   "surfaces": [
@@ -855,7 +872,8 @@
           }
         ]
       },
-      "partId": "motor"
+      "partId": "motor",
+      "propPartId": "pusher-propeller"
     }
   ],
   "fuselageDragAreaM2": 0.0025,

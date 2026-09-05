@@ -78,6 +78,10 @@ export class ComponentWorkshop {
       }
     };
     const a = this.getAircraft();
+    const typeOf = (p: Aircraft["parts"][number]) =>
+      a.motors.some((m) => m.propPartId === p.id)
+        ? "propeller"
+        : componentType(p);
     if (this.aircraftId !== a.id) {
       this.aircraftId = a.id;
       this.partId = a.battery?.partId ?? a.parts[0].id;
@@ -88,7 +92,7 @@ export class ComponentWorkshop {
     const visible = a.parts.filter(
       (p) =>
         this.category === "all" ||
-        componentType(p) === this.category ||
+        typeOf(p) === this.category ||
         (this.category === "structure" &&
           ["body", "wing", "boom", "tail"].includes(p.kind)),
     );
@@ -102,6 +106,7 @@ export class ComponentWorkshop {
         ["battery", "Batteries"],
         ["servo", "Servos"],
         ["motor", "Motors"],
+        ["propeller", "Propellers"],
         ["equipment", "Electronics & hardware"],
         ["structure", "Structure"],
       ]
@@ -140,7 +145,8 @@ export class ComponentWorkshop {
       return;
     }
     const partIndex = a.parts.indexOf(part);
-    const type = componentType(part);
+    const type = typeOf(part);
+    const propMotor = a.motors.find((m) => m.propPartId === part.id);
     const choices = componentCatalog.entries.filter((e) => e.type === type);
     const linked = a.surfaces
       .map((s, i) => ({ s, i }))
@@ -176,7 +182,7 @@ export class ComponentWorkshop {
       }
     const delta = next ? massProperties(next) : undefined;
     $("component-detail").innerHTML =
-      `<div class="component-detail-heading"><div><span class="eyebrow">${escape(type)}</span><h3>${escape(part.model ?? part.id.replaceAll("-", " "))}</h3></div>${choices.length ? '<button id="browse-components" aria-expanded="' + this.browse + '">' + (this.browse ? "Close catalog" : "Replace component…") + "</button>" : ""}</div>
+      `<div class="component-detail-heading"><div><span class="eyebrow">${escape(type)}</span><h3>${escape(part.model ?? part.id.replaceAll("-", " "))}</h3></div>${propMotor?.partId ? '<button id="paired-motor">Motor / prop package</button>' : choices.length ? '<button id="browse-components" aria-expanded="' + this.browse + '">' + (this.browse ? "Close catalog" : "Replace component…") + "</button>" : ""}</div>
     ${
       this.browse
         ? `<div class="parts-catalog"><label for="parts-search">Find a replacement</label><input type="search" id="parts-search" placeholder="Name or manufacturer" value="${escape(this.query)}"/><div id="parts-matches">${
@@ -213,7 +219,7 @@ export class ComponentWorkshop {
                           .join(" · ") || "Unchanged"
                       }</strong></span></div>`
                     : ""
-                }<details id="part-evidence-${candidate.id}" class="component-evidence"><summary>Specifications & model assumptions</summary><p class="small muted">${escape(candidate.evidence)}</p><div class="component-sources">${candidate.sources.map((s) => (/^https?:/.test(s.url) ? `<a href="${escape(s.url)}" target="_blank" rel="noopener noreferrer">${escape(s.title)} ↗</a>` : "")).join("")}</div></details>${error ? `<p class="editor-error">${escape(error)}</p>` : '<button id="confirm-component" class="primary">Use this component</button>'}</div>`
+                }${candidate.type === "motor" && motor ? `<div class="component-effects"><span>Propeller diameter<strong>${(motor.propDiameterM * 1000).toFixed(0)} → ${(candidate.motor.propDiameterM * 1000).toFixed(0)} mm</strong></span><span>Curve voltage<strong>${candidate.motor.performance!.referenceVoltage.toFixed(1)} V</strong></span></div>${candidate.motor.propDiameterM > motor.propDiameterM + 0.001 ? '<p class="component-note">Larger propeller: inspect blade clearance and the mount before flight. Physical fit is not guaranteed.</p>' : ""}` : ""}<details id="part-evidence-${candidate.id}" class="component-evidence"><summary>Specifications & model assumptions</summary><p class="small muted">${escape(candidate.evidence)}</p><div class="component-sources">${candidate.sources.map((s) => (/^https?:/.test(s.url) ? `<a href="${escape(s.url)}" target="_blank" rel="noopener noreferrer">${escape(s.title)} ↗</a>` : "")).join("")}</div></details>${error ? `<p class="editor-error">${escape(error)}</p>` : '<button id="confirm-component" class="primary">Use this component</button>'}</div>`
               : '<p class="small muted">Select a part to review its effect before replacing.</p>'
           }</div>`
         : ""
@@ -236,7 +242,9 @@ export class ComponentWorkshop {
           }`
         : ""
     }
-    ${motor ? `<p class="small muted">${escape(motor.propeller ?? "Configured propeller")} · ${(motor.propDiameterM * 1000).toFixed(0)} mm · ${motor.performance ? motor.performance.referenceVoltage + " V curve" : "No current curve"}. Editing thrust scales the existing force curve; it does not invent measured current data.</p>` : ""}
+    ${propMotor ? '<p class="small muted">Mass and installation are editable here. Replace the motor/prop package together to keep the performance curve paired.</p>' : ""}
+    ${motor?.propPartId ? '<button id="paired-propeller" class="component-link">Inspect paired propeller →</button>' : ""}
+    ${motor ? `<p class="small muted">${escape(motor.propeller ?? "Configured propeller")} · ${(motor.propDiameterM * 1000).toFixed(0)} mm · ${motor.performance ? motor.performance.referenceVoltage.toFixed(1) + " V curve" : "No current curve"}. Editing thrust scales the existing force curve; it does not invent measured current data.</p>` : ""}
     <details id="part-installation-${partIndex}" class="component-position"><summary>Installation position & dimensions</summary><p class="small muted">Body axes: X forward · Y right · Z down. Millimeters from the aircraft datum.</p><div class="component-fields component-axis-fields">${part.positionM.map((v, i) => f(`pos-${i}`, `${["X", "Y", "Z"][i]} position · mm`, v * 1000, -10000, 10000, 0.5)).join("")}</div><div class="component-fields component-axis-fields">${part.sizeM.map((v, i) => f(`size-${i}`, `${["Length X", "Width Y", "Height Z"][i]} · mm`, v * 1000, 0.1, 10000, 0.5)).join("")}</div>${part.kind === "battery" || part.servo ? `<div class="component-fields component-axis-fields">${(part.orientationDeg ?? [0, 0, 0]).map((v, i) => f(`angle-${i}`, `Installation ${["roll", "pitch", "yaw"][i]} · °`, v, -180, 180, 1)).join("")}</div>` : ""}</details>
     ${part.catalogId && !reference ? `<small class="muted">External catalog reference: ${escape(part.catalogId)}. Specifications are stored in this aircraft; this catalog is not installed.</small>` : ""}</div>`;
     const bind = (key: string, edit: Edit) => this.register(id(key), edit);
@@ -309,6 +317,17 @@ export class ComponentWorkshop {
         out.motors[motorIndex].responseSeconds = v;
       });
     }
+    const inspectPair = (partId: string) =>
+      this.navigate(() => {
+        this.category = "all";
+        this.partId = partId;
+        this.browse = false;
+        this.candidate = "";
+      });
+    if (propMotor?.partId)
+      $("paired-motor").onclick = () => inspectPair(propMotor.partId!);
+    if (motor?.propPartId)
+      $("paired-propeller").onclick = () => inspectPair(motor.propPartId!);
     if (choices.length)
       $("browse-components").onclick = () =>
         this.navigate(() => {

@@ -33,7 +33,12 @@ Servo details expose speed, rated positional range, commanded travel, horn lengt
 and surface limit. The displayed effective angle and rate drive flight forces and
 animation. A motor package replaces its tested motor/prop curve and both mass
 components. Motor packages require explicit `motors[].partId` and `propPartId`
-links. The 450 mm quad provides this complete example. Older definitions that
+links. The Bronco, Tiny Trainer, FT-22 and 450 mm quad provide complete examples.
+The **Propellers** filter and paired-part buttons connect each blade assembly to
+its motor. Replace them as a package so a prop's mass and performance stay paired.
+The preview includes diameter and test voltage; a larger prop needs a clearance
+and mounting check. Catalog selection does not guarantee that hardware fits.
+Older definitions that
 combine prop mass elsewhere must first separate that allocation; the catalog
 refuses to invent or double-count it.
 
@@ -87,6 +92,10 @@ Types are `battery`, `servo`, `motor` and passive `equipment`.
 - Motor entries include `motor` settings without identity/installation/spin/yaw
   fields, a matching performance curve, and a separate `prop` mass part. Record
   the tested voltage, propeller, command convention and density uncertainty.
+  Optional `shaftAxis: "x" | "z"` declares the product envelope's shaft direction.
+  Installation converts dimensions and principal inertia to X for fixed-wing or
+  Z for multirotor use, retaining the existing component installation rotation.
+  Omission preserves the legacy body-frame convention. This does not model cant.
 - Passive equipment changes mass/inertia only. A printed ESC current rating does
   not magically implement firmware, thermal limits or battery cutoff behavior.
 

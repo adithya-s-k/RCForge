@@ -155,6 +155,13 @@ either linked component translates the complete motor/prop unit while retaining
 its authored offsets. Structural mass positions and aerodynamic surface positions
 remain independently specified.
 
+Catalog motor envelopes may declare `shaftAxis` as X or Z. Their dimensions and
+principal inertia axes are converted to the vehicle's shaft axis on replacement;
+the installation positions and rotation are retained. A linked propeller cannot
+be replaced with passive electronics: use its motor/prop package. The component
+panel previews diameter and reference voltage, but does not solve physical mount
+compatibility or blade clearance for arbitrary replacements.
+
 The browser component panel edits battery mass, capacity, cells, initial charge,
 DC resistance, servo speed/travel and linkage dimensions. Source notes stay with
 the exported definition. No mass is added merely by rendering a detail.

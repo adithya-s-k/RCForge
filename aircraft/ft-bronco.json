@@ -66,6 +66,10 @@
     "motorInstallation": {
       "status": "estimated",
       "note": "Motor housing geometry now uses the motor component center and dimensions, instead of independent renderer constants. Housing stations are aligned with the existing reconstructed mount/prop assembly; housing dimensions and mass allocations remain estimates, not bench measurements. Battery moves aft to retain the same mass-weighted CG. Component box inertia changes with these revised dimensions and stations."
+    },
+    "propellerMass": {
+      "status": "estimated",
+      "note": "Separate 6 g mass entry per propeller, reallocated from the existing estimated left-nacelle, right-nacelle structural allocation. Published dry mass, existing motor masses, total aircraft mass and longitudinal CG are retained; battery station is rebalanced. Prop dimensions/inertia and the allocation are estimates, not weighed components. Propeller center follows the reconstructed rotor disk. This allows replacement of both motor and prop masses with a matching performance curve without adding the old prop mass again."
     }
   },
   "parts": [
@@ -368,7 +372,7 @@
       "id": "battery",
       "kind": "battery",
       "massKg": 0.19,
-      "positionM": [0.24350526315789475, 0, 0.063],
+      "positionM": [0.2359263157894737, 0, 0.063],
       "sizeM": [0.075, 0.034, 0.027],
       "color": "#df743d"
     },
@@ -447,7 +451,7 @@
     {
       "id": "left-nacelle",
       "kind": "body",
-      "massKg": 0.02,
+      "massKg": 0.014,
       "positionM": [-0.012, -0.17960512242138307, 0.005],
       "sizeM": [0.21, 0.06, 0.075],
       "color": "#e9e7df",
@@ -485,7 +489,7 @@
     {
       "id": "right-nacelle",
       "kind": "body",
-      "massKg": 0.02,
+      "massKg": 0.014,
       "positionM": [-0.012, 0.17960512242138307, 0.005],
       "sizeM": [0.21, 0.06, 0.075],
       "color": "#e9e7df",
@@ -519,6 +523,32 @@
           "bottom": 0.35
         }
       ]
+    },
+    {
+      "id": "left-propeller",
+      "kind": "equipment",
+      "massKg": 0.006,
+      "positionM": [0.10800000000000001, -0.17960512242138307, 0],
+      "sizeM": [0.01016, 0.028448, 0.2032],
+      "color": "#c8c6bc",
+      "material": {
+        "name": "Propeller assembly (estimated allocation)",
+        "finish": "plastic"
+      },
+      "model": "8-inch two-blade propeller"
+    },
+    {
+      "id": "right-propeller",
+      "kind": "equipment",
+      "massKg": 0.006,
+      "positionM": [0.10800000000000001, 0.17960512242138307, 0],
+      "sizeM": [0.01016, 0.028448, 0.2032],
+      "color": "#c8c6bc",
+      "material": {
+        "name": "Propeller assembly (estimated allocation)",
+        "finish": "plastic"
+      },
+      "model": "8-inch two-blade propeller"
     }
   ],
   "surfaces": [
@@ -742,7 +772,8 @@
           }
         ]
       },
-      "partId": "left-motor"
+      "partId": "left-motor",
+      "propPartId": "left-propeller"
     },
     {
       "id": "right",
@@ -788,7 +819,8 @@
           }
         ]
       },
-      "partId": "right-motor"
+      "partId": "right-motor",
+      "propPartId": "right-propeller"
     }
   ],
   "fuselageDragAreaM2": 0.006,
