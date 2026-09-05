@@ -680,3 +680,21 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   altitude and still showed 4 m almost 180 m overhead. It now includes vertical
   separation from the pilot's eye, with `m to pilot` and a straight-line tooltip.
   The minimap intentionally remains a ground projection. No forces change.
+- At a fixed 180 m launch height, Pilot-view Locate and the distance instrument
+  both show 178 m from the 1.7 m eye position. Checked desktop and 390 px layouts.
+  Node 22/24 and Arduino compilation CI passed for commit 69e92cb.
+
+## Pass 33 · do not let notifications block recovery
+
+- At 390 px, returning to Controllers through Set up controller placed its notice
+  over Use keyboard for now. DOM hit testing showed the button center hitting the
+  notification text, so clicks did not switch input. The direct Keyboard tab worked.
+- Notices now size to their content within the viewport and ignore pointer input;
+  their Close button still receives it. Repeated the same sequence successfully
+  with the notice visible, then verified dismissal. No input mapping changes.
+- Final component walkthrough: Robu-listed 3300 mAh pack preview changes Bronco
+  830 → 900 g and shifts CG 18.6 mm forward / 3.6 mm down. Apply draft & run produces
+  changed power, pitch trim and consumption; charge plots remain legible at 390 px.
+  Restored the original 830 g / 2200 mAh / 51 mm CG afterward.
+- Visually inspected all three FT presets in the assembled editor, including
+  orthographic FT-22 top view. Reference masses and geometry remain as documented.

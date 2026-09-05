@@ -1016,12 +1016,15 @@ body[data-running="true"] .fly-page .flight-stage {
   display: flex;
   align-items: center;
   gap: 14px;
+  width: max-content;
   max-width: calc(100vw - 24px);
+  pointer-events: none;
 }
 .notification[hidden] {
   display: none;
 }
 .notification button {
+  pointer-events: auto;
   flex: 0 0 auto;
   min-height: 26px;
   padding: 0 7px;

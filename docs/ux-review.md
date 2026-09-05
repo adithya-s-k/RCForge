@@ -78,6 +78,13 @@ editor. Desktop retains the same compact panel size.
 
 ## Verification
 
+Notifications no longer intercept clicks on the page underneath. A 390 px
+transmitter-recovery check found the notice over `Use keyboard for now`; the
+button's center hit the notice instead. The notice now uses its content width
+within the viewport limit and ignores pointer events, while its Close button
+remains interactive. The same recovery sequence switches to Keyboard with the
+notice still visible, and manual dismissal still works.
+
 The flight distance instrument now measures the straight-line distance from the
 pilot's eye position to the aircraft CG, consistent with Pilot-view Locate. Its
 unit reads `m to pilot`. Previously the horizontal-only reading stayed at 4 m
