@@ -1,0 +1,171 @@
+// Progressive enhancement only: reading and navigation work without JavaScript.
+const dialog = document.querySelector("#docs-search");
+const query = document.querySelector("#search-query");
+const status = document.querySelector("#search-status");
+const results = document.querySelector("#search-results");
+let index;
+let loading;
+let searchRevision = 0;
+const searchable = (text) =>
+  text.toLowerCase().replace(/\b(\w{3,})ies\b/g, "$1y");
+const openSearch = () => {
+  dialog.showModal();
+  query.focus();
+};
+document.querySelector("#open-search").addEventListener("click", openSearch);
+document
+  .querySelector("#close-search")
+  .addEventListener("click", () => dialog.close());
+document.addEventListener("keydown", (event) => {
+  const editing =
+    event.target instanceof Element &&
+    event.target.closest("input,textarea,select,[contenteditable]");
+  if (event.key === "/" && !editing && !event.metaKey && !event.ctrlKey) {
+    event.preventDefault();
+    openSearch();
+  }
+});
+query.addEventListener("input", async () => {
+  const revision = ++searchRevision;
+  const terms = searchable(query.value.trim()).split(/\s+/).filter(Boolean);
+  results.replaceChildren();
+  if (!terms.length) {
+    status.textContent = "Type to search this documentation version.";
+    return;
+  }
+  status.textContent = "Searching…";
+  try {
+    loading ??= fetch(
+      `/docs/${document.body.dataset.docsVersion}/search.json`,
+    ).then((response) => {
+      if (!response.ok) throw Error();
+      return response.json();
+    });
+    index ??= await loading;
+    if (revision !== searchRevision) return;
+    const matches = index
+      .map((page) => ({
+        ...page,
+        score: terms.reduce(
+          (sum, term) =>
+            sum +
+            (searchable(page.title).includes(term) ? 10 : 0) +
+            (searchable(page.text).includes(term) ? 1 : 0),
+          0,
+        ),
+      }))
+      .filter((page) =>
+        terms.every((term) =>
+          searchable(page.title + " " + page.text).includes(term),
+        ),
+      )
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 20);
+    status.textContent = matches.length
+      ? `${matches.length} results`
+      : "No results. Try a different aircraft, component or control name.";
+    for (const page of matches) {
+      const a = document.createElement("a");
+      a.href = page.url;
+      const label = document.createElement("strong");
+      label.textContent = page.title;
+      const group = document.createElement("small");
+      group.textContent = page.group;
+      const preview = document.createElement("p");
+      const at = Math.max(0, searchable(page.text).indexOf(terms[0]) - 45);
+      preview.textContent =
+        (at ? "…" : "") + page.text.slice(at, at + 175) + "…";
+      a.append(group, label, preview);
+      results.append(a);
+    }
+  } catch {
+    loading = undefined;
+    if (revision === searchRevision)
+      status.textContent =
+        "Search could not load. Use the navigation, or try again.";
+  }
+});
+query.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    results.querySelector("a")?.click();
+  }
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    results.querySelector("a")?.focus();
+  }
+});
+results.addEventListener("keydown", (event) => {
+  const links = [...results.querySelectorAll("a")],
+    i = links.indexOf(document.activeElement);
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    links[Math.min(i + 1, links.length - 1)]?.focus();
+  }
+  if (event.key === "ArrowUp") {
+    event.preventDefault();
+    if (i <= 0) query.focus();
+    else links[i - 1].focus();
+  }
+});
+document.querySelector("#docs-version").addEventListener("change", (event) => {
+  location.href = event.target.value;
+});
+const menu = document.querySelector("#menu-toggle");
+const closeMenu = () => {
+  menu.setAttribute("aria-expanded", "false");
+  document.body.classList.remove("nav-open");
+};
+menu.addEventListener("click", () => {
+  const open = menu.getAttribute("aria-expanded") !== "true";
+  menu.setAttribute("aria-expanded", String(open));
+  document.body.classList.toggle("nav-open", open);
+});
+document.querySelector("#docs-sidebar").addEventListener("click", (event) => {
+  if (event.target.closest("a")) closeMenu();
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && menu.getAttribute("aria-expanded") === "true") {
+    closeMenu();
+    menu.focus();
+  }
+});
+document.addEventListener("click", (event) => {
+  if (
+    menu.getAttribute("aria-expanded") === "true" &&
+    !event.target.closest("#docs-sidebar, #menu-toggle")
+  )
+    closeMenu();
+});
+document.querySelectorAll(".copy-code").forEach((button) =>
+  button.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(
+        button.closest(".code-block").querySelector("code").textContent,
+      );
+      button.textContent = "Copied";
+      document.querySelector("#copy-status").textContent = "Code copied";
+      setTimeout(() => (button.textContent = "Copy"), 1500);
+    } catch {
+      button.textContent = "Select code to copy";
+    }
+  }),
+);
+if ("IntersectionObserver" in window) {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries)
+        if (entry.isIntersecting) {
+          document
+            .querySelectorAll(".page-contents a")
+            .forEach((a) =>
+              a.classList.toggle("active", a.hash === `#${entry.target.id}`),
+            );
+        }
+    },
+    { rootMargin: "-80px 0px -65% 0px" },
+  );
+  document
+    .querySelectorAll("article h2, article h3")
+    .forEach((h) => observer.observe(h));
+}

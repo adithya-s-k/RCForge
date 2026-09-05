@@ -11,3 +11,4 @@ test-results/
 .venv/
 __pycache__/
 *.py[cod]
+references/local/

@@ -1,3 +1,5 @@
+// Independent Flite Test / Vortex RC reconstructions. Designer and plan credits:
+// docs/plans.md and references/manifest.json; no original artwork is embedded.
 import { buildFpvHousing } from "./fpv-camera";
 import { orientComponent } from "./component-pose";
 import { surfaceActuation } from "../core/actuation";

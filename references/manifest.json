@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "plans": [
+    {
+      "id": "ft-bronco-v1",
+      "title": "FT Bronco v1.0",
+      "aircraftIds": ["ft-bronco", "ft-bronco-conventional"],
+      "creator": "Peter Sripol / Flite Test",
+      "drawingCredit": "Dan Sponholz",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT%20Bronco%20v1.0%20Full-Size.pdf",
+      "file": "ft-bronco-v1.pdf",
+      "sha256": "1e6dd0944a5f94c08a9824102ea0eeae5546cc0f4209117530b0122f96dc779e",
+      "bytes": 809182,
+      "retrieved": "2026-09-05",
+      "redistribution": "not-established",
+      "rightsUrl": "https://www.flitetest.com/support"
+    },
+    {
+      "id": "ft-tiny-trainer",
+      "title": "FT Tiny Trainer original sport and polyhedral plans",
+      "aircraftIds": ["ft-tiny-trainer"],
+      "creator": "Josh Bixler / Flite Test",
+      "drawingCredit": "Flite Test",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-Mini%20TinyTrainer-plans.pdf",
+      "file": "ft-tiny-trainer.pdf",
+      "sha256": "80668d6144803307b36f0c36758435e01dfe13d25c4261900bbc0ced7eec1465",
+      "bytes": 4070235,
+      "retrieved": "2026-09-05",
+      "redistribution": "not-established",
+      "rightsUrl": "https://www.flitetest.com/support"
+    },
+    {
+      "id": "ft-22",
+      "title": "FT-22 Raptor original plans",
+      "aircraftIds": ["ft-22-raptor"],
+      "creator": "Josh Bixler / Flite Test",
+      "drawingCredit": "Flite Test",
+      "url": "https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-22-plans.pdf",
+      "file": "ft-22.pdf",
+      "sha256": "186678f7c8f08921e0911f41224dab2012cd4320c12080cd9c4fe192c425c5b5",
+      "bytes": 8018012,
+      "retrieved": "2026-09-05",
+      "redistribution": "not-established",
+      "rightsUrl": "https://www.flitetest.com/support"
+    }
+  ]
+}

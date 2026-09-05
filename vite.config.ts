@@ -1,5 +1,7 @@
 import { defineConfig } from "vitest/config";
+import { documentationPlugin } from "./site/plugin.ts";
 export default defineConfig({
+  plugins: [documentationPlugin()],
   build: {
     rollupOptions: {
       output: {
@@ -8,6 +10,18 @@ export default defineConfig({
       },
     },
   },
-  server: { port: 5173, strictPort: true },
+  server: {
+    port: 5173,
+    strictPort: true,
+    fs: {
+      deny: [
+        ".env",
+        ".env.*",
+        "*.{crt,pem}",
+        "**/.git/**",
+        "**/references/local/**",
+      ],
+    },
+  },
   test: { include: ["tests/**/*.test.ts"] },
 });

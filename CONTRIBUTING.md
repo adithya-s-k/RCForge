@@ -47,7 +47,7 @@ npm run simulate -- aircraft/your-aircraft-id.json --scenario cruise --duration 
 npm run physics:envelope
 ```
 
-6. If it should be in the built-in catalog, add an explicit JSON import and an entry in `originals` in `src/main.ts`. Import-only aircraft do not need a catalog code change. Add relevant regression checks and a model guide identifying sourced, calculated and estimated values.
+6. If it should be in the built-in catalog, add an explicit JSON import and an entry in `bundledAircraft` in `src/app/bundled-aircraft.ts`. Import-only aircraft do not need a catalog code change. Add relevant regression checks and a model guide identifying sourced, calculated and estimated values.
 7. Include a rendered screenshot, the behavior you checked, and material limitations in the PR. Plans establish dimensions, not measured aerodynamic coefficients. Passing numerical checks does not establish real-flight fidelity.
 
 For a bug fix or UI contribution, the same branch/check/PR flow applies. Include the smallest reproduction and the observed before/after behavior.
@@ -65,12 +65,19 @@ Add behavior tests for dynamics, input, schema and compatibility changes. A scre
 ```sh
 npm run check
 npm run docs:check
+npm run references:check
 npm run format:check
 ```
 
 For physics changes, also run `npm run physics:validate` and a relevant scenario/replay. For UI changes, follow the [browser acceptance checks](docs/validation.md#browser-acceptance). For Arduino changes, run `bash scripts/check-arduino.sh` after installing Arduino CLI and the AVR core. No hardware is needed for compilation, but hardware claims require physical testing.
 
 Run `npm run format` to apply formatting. If a check cannot run, explain the missing dependency or hardware and what you verified instead. Do not represent an unrun check as passing.
+
+## Documentation and design references
+
+Edit the existing Markdown guide; the website renders that same file at `/docs/`. New public guides need an entry in `site/config.ts`. Follow [documentation maintenance](docs/documentation.md) for previews and link checks. Release snapshots are maintained separately; ordinary contributions update current docs only.
+
+For plan-based aircraft, add creator links to `credit`, parameter evidence to `provenance`, and source identity to `references/manifest.json` when a reviewed public PDF exists. Use `npm run references:fetch` to inspect existing plans locally. Keep originals in the ignored `references/local/` folder unless redistribution permission has been established and reviewed. Never substitute a new hash just to make a changed source pass. See [plans & design credits](docs/plans.md).
 
 ## Submit and iterate on a pull request
 

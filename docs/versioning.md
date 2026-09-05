@@ -4,13 +4,14 @@ RCForge separates application releases, simulation compatibility, file formats a
 
 ## What each version means
 
-| Version                  | Current value                   | When it changes                                                       |
-| ------------------------ | ------------------------------- | --------------------------------------------------------------------- |
-| Application              | 0.8.0 (development, unreleased) | A release of the whole workbench; source of truth is `package.json`   |
-| Physics and recordings   | 0.7.1                           | Dynamics or replay behavior changes; source of truth is `SIM_VERSION` |
-| Aircraft definition      | `schemaVersion: 1`              | An incompatible aircraft file format change                           |
-| Aircraft history archive | `formatVersion: 1`              | An incompatible backup format change                                  |
-| Local aircraft           | v1, v2, v3…                     | You save or apply a changed setup for that aircraft ID                |
+| Version                  | Current value                   | When it changes                                                             |
+| ------------------------ | ------------------------------- | --------------------------------------------------------------------------- |
+| Application              | 0.8.0 (development, unreleased) | A release of the whole workbench; source of truth is `package.json`         |
+| Physics and recordings   | 0.7.1                           | Dynamics or replay behavior changes; source of truth is `SIM_VERSION`       |
+| Aircraft definition      | `schemaVersion: 1`              | An incompatible aircraft file format change                                 |
+| Aircraft history archive | `formatVersion: 1`              | An incompatible backup format change                                        |
+| Documentation            | `next` (development)            | Current guides update with source; releases get immutable `X.Y.Z` snapshots |
+| Local aircraft           | v1, v2, v3…                     | You save or apply a changed setup for that aircraft ID                      |
 
 Application versions follow [Semantic Versioning](https://semver.org/): patch releases fix behavior, minor releases add capabilities, and major releases mark incompatible public changes after 1.0. During 0.x development, incompatible changes can arrive in a minor release; they must still be explained in the changelog with migration or rejection behavior. Released versions are not edited or reused.
 
@@ -69,6 +70,8 @@ Contributors normally leave version numbers alone. Maintainers prepare a release
 1. Choose the application version and document user-visible changes in [CHANGELOG.md](../CHANGELOG.md). Decide separately whether simulation or file compatibility changes.
 2. Run `npm version 0.8.0 --no-git-tag-version`, substituting the **next** intended version. This updates both package files; the UI reads that value directly. Do not run the example for a version already set.
 3. For physics changes, update `SIM_VERSION`, regression evidence and recording compatibility notes. For a format change, implement validation plus explicit migration or rejection and add tests. Never bump format numbers without the supporting implementation.
-4. Run `npm run format`, `npm run check`, `npm run docs:check` and `npm run format:check`, plus the task-specific checks in [CONTRIBUTING.md](../CONTRIBUTING.md).
-5. Review and merge the release PR. Set the release date, tag that exact reviewed commit as `vX.Y.Z`, publish release notes, then deploy its tested build. Tagging, publishing and deployment are explicit maintainer actions; a package version bump does not perform them.
-6. Verify the header's version, assets and first-run workflows at the deployed address. See [deployment](deployment.md).
+4. Update the current guides and compatibility table, set the release date and run `npm run format` followed by `npm run release:check`. This includes definitions, tests, build, documentation links, reference identity, formatting, numerical verification and the envelope survey. Complete the browser and relevant hardware checks in [CONTRIBUTING.md](../CONTRIBUTING.md).
+5. Commit the reviewed release content. With a clean working tree, run `npm run docs:freeze -- X.Y.Z`, replacing `X.Y.Z` with that application version. The command records the source commit, Markdown, approved downloads and hashes under `docs/versions/X.Y.Z/`. It refuses an existing version. See [documentation maintenance](documentation.md).
+6. Commit the new snapshot and rerun `npm run release:check`. Inspect the version selector and links at `/docs/X.Y.Z/`. The snapshot is release documentation; it does not emulate an older simulator or publish anything.
+7. Review and merge the release PR. Tag the tested release commit as `vX.Y.Z`, publish release notes and deploy its tested build. Tagging, publishing and deployment are explicit maintainer actions; changing package metadata or freezing docs does not perform them.
+8. Verify the header version, docs version, assets and first-run workflows at the deployed address. Follow [deployment](deployment.md). Never overwrite a published documentation snapshot; corrections belong to the next release.

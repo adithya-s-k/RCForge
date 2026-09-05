@@ -27,7 +27,7 @@ portable copy: clearing browser data also removes local aircraft. The local impo
 registry is bounded to 32 aircraft and 2 million JSON characters; storage quota or
 validation failures are reported without preventing flight.
 
-For a bundled example, add an explicit import to `src/main.ts` and register it in the `originals` array. This keeps the default aircraft list deliberate; the CLI discovers local JSON automatically.
+For a bundled example, add an explicit import and registry entry in `src/app/bundled-aircraft.ts`. This keeps the default aircraft list deliberate; the CLI discovers local JSON automatically.
 
 ## Sources and assumptions
 
@@ -144,3 +144,12 @@ The earlier generic `simple-trainer` now lives under `tests/fixtures/` to preser
 numerical regression inputs. It is not a catalog preset; use the Tiny Trainer
 or Vortex definition as an authoring starting point. Older exported definitions
 can still be imported as custom aircraft.
+
+## Preserve design references
+
+Set the original designer's `credit` link and record parameter evidence in
+`provenance`. Use [Plans & design credits](plans.md) and the reference manifest
+for reviewed PDFs. `npm run references:fetch` keeps original plans locally;
+`npm run references:check` verifies identity and preset attribution without a
+network call. Do not commit upstream plans or reference photos without reviewed
+redistribution rights. Document assembly choices and missing data beside the model.

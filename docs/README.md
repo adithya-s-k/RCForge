@@ -1,25 +1,48 @@
 # RCForge documentation
 
-Start with the [project overview and philosophy](../README.md). For code contributions, read [AGENTS.md](../AGENTS.md) and [CONTRIBUTING.md](../CONTRIBUTING.md).
+Build, fly and refine RC aircraft in an open, local-first workbench. Aircraft,
+components and experiments are editable files. Use your preferred editor or coding
+agent; RCForge needs no AI service or account.
 
-| I want to…                                          | Guide                                                          |
-| --------------------------------------------------- | -------------------------------------------------------------- |
-| Build an aircraft with a coding agent               | [Agent workflow](agent-workflow.md)                            |
-| Understand the core and coordinate systems          | [Architecture](architecture.md)                                |
-| Define or modify an aircraft                        | [Aircraft authoring](aircraft-authoring.md)                    |
-| Specify batteries, materials, inertia and motors    | [Component models](component-models.md)                        |
-| Create a quadcopter setup                           | [Multirotors](multirotors.md)                                  |
-| Understand the Bronco and Tiny Trainer presets      | [Reference reconstruction](flite-test-reconstruction.md)       |
-| Understand the Vortex RC Simple Trainer             | [Reconstruction and setup](vortex-simple-trainer.md)           |
-| Map a keyboard, gamepad, joystick or transmitter    | [Controller setup](controllers.md)                             |
-| Connect an FS-i6 through an adapter or Uno/Nano     | [FS-i6 wiring and firmware](flysky-fs-i6.md)                   |
-| Run numerical checks or compare measurements        | [Physics verification workflow](physics-validation.md)         |
-| Understand what has and has not been verified       | [Validation and model limits](validation.md)                   |
-| Rebuild lightweight scenery assets                  | [Scenery sources and preparation](../public/scenery/README.md) |
-| Review simulator UX changes and test coverage       | [UX review](ux-review.md)                                      |
-| Research realism and review the implementation plan | [Realism plan](realism-plan.md)                                |
-| See the project's intended direction                | [Roadmap](roadmap.md)                                          |
+## Start flying
 
-Save, compare or move aircraft setups with [local history](versioning.md). Maintainers can follow the [release workflow](versioning.md#maintainer-release-workflow) and [deployment guide](deployment.md).
+1. [Install & first flight](getting-started.md) — run the workbench and take off.
+2. [Controls & calibration](controllers.md) — set up a keyboard, gamepad or radio.
+3. [Edit & save an aircraft](aircraft-editor.md) — change components and keep versions.
 
-Definitions and runtime contracts are enforced by [`src/core/schema.ts`](../src/core/schema.ts). Simulation and recording compatibility are enforced by [`src/core/simulation.ts`](../src/core/simulation.ts) and [`src/core/experiment.ts`](../src/core/experiment.ts). Read the implementation when extending a field; documentation may describe a subset of the supported schema.
+The simulator and these docs build into one static website. Open **Docs** in the
+workbench header, or visit `/docs/` on your local or hosted address.
+
+## Build an aircraft
+
+Use [aircraft definitions](aircraft-authoring.md) for geometry and physical
+contracts, [components & batteries](component-models.md) for mass and power, and
+[FPV, rates & mixing](fpv-and-control-setup.md) for cameras and control response.
+The [quadcopters guide](multirotors.md) covers rotor layouts and controllers.
+
+[Plans & design credits](plans.md) connects the bundled aircraft to their creators,
+source plans and version-matched JSON files. Download verified originals for local
+inspection without adding their artwork to a public build.
+
+## Contribute
+
+Follow the [contribution workflow](../CONTRIBUTING.md) from fork to pull request.
+Read [architecture](architecture.md) for code boundaries or the
+[agent workflow](agent-workflow.md) for a guided aircraft implementation.
+Run [physics checks](physics-validation.md) when changing behavior.
+
+Maintainers can find [versions & aircraft history](versioning.md),
+[release & hosting](deployment.md), and [documentation maintenance](documentation.md)
+in the Develop section. Technical reconstruction notes, wiring, sources and
+community policies are grouped under Reference.
+
+## Understand the limits
+
+The bundled aircraft are engineering approximations. A realistic model or a
+passing numerical test does not establish real-aircraft fidelity. See
+[model limits & evidence](validation.md) for exactly what is covered and what
+requires measured bench or flight data.
+
+The documentation selector separates current development from explicitly frozen
+releases. Each page identifies the application, physics and aircraft format
+versions it describes. No historical release documentation is fabricated.

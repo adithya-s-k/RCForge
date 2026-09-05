@@ -4,6 +4,10 @@ Application releases are separate from physics/replay and aircraft format versio
 
 ## 0.8.0 — Unreleased
 
+- Add same-site documentation at `/docs/`, with local search, readable source guides, version-aware downloads and explicit immutable release snapshots.
+- Add a checksum-verified local plan library with original designer credits; upstream PDFs stay out of public builds.
+- Consolidate launch and contribution guides, archive historical review logs, and extract the bundled-aircraft registry from the browser entry point.
+
 - Correct the Bronco’s high-wing seating and add a separate conventional H-tail preset alongside the V-tail, with configuration-specific components and controls.
 - Remove the generic trainer from the bundled catalog. **Simple Trainer** now refers only to the Vortex RC design (`vt-simple-trainer`). Older exported generic builds still import normally.
 - Add discreet original-creator links to the editor and flight setup. Existing local physical edits are preserved; Restore original aircraft adopts the revised geometry.

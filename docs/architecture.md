@@ -111,3 +111,26 @@ Optional `fpv` references an equipment part. `core/fpv.ts` manages installation 
 `core/aircraft-history.ts` validates version-1 history archives and compares complete aircraft definitions. `app/aircraft-history-storage.ts` stores bounded, immutable snapshots under each aircraft ID with one atomic localStorage write. It preserves existing data on quota or validation failure; it does not silently prune. Backup imports merge unique revision IDs and reject conflicts, while retaining existing local revision numbers. Origin-scoped history is independent of the applied-aircraft and controller-profile storage keys.
 
 `app/aircraft-history.ts` owns the comparison dialog. Apply saves a changed version; explicit checkpoints can save an unapplied draft. Restore preserves the current draft before replacing it in the editor and does not alter the active simulation. Exported history travels between browser origins; ordinary aircraft JSON remains the contribution format. See [versioning and recovery](versioning.md) for limits and migration steps.
+
+Compatibility identifiers live in `core/versions.ts`; the schema and simulation
+re-export them for existing consumers. This keeps release/documentation tooling
+independent of the dynamics dependency tree.
+
+## Documentation and reference boundary
+
+`src/app/bundled-aircraft.ts` is the explicit browser aircraft registry. The CLI
+loads definitions independently; both paths validate with the shared schema.
+Keep new presets in that registry rather than growing browser composition code.
+
+`site/` is a build-time documentation system. `site/config.ts` selects canonical
+Markdown, `content.ts` verifies release snapshots, `markdown.ts` renders safe
+HTML and version-aware links, and `plugin.ts` integrates development serving and
+static output with Vite. The docs load their own small stylesheet/script, without
+Three.js or the simulation loop. No documentation backend or remote search runs.
+
+`references/manifest.json` identifies reviewed source plans, creators, checksums
+and rights. Local source PDFs live in `references/local/`, outside Git and the
+production artifact. Only the local development docs serve verified manifest
+entries. Public pages retain creator links and source identities. Snapshot files
+include permitted aircraft/component JSON and guides, never upstream plan PDFs.
+See [documentation maintenance](documentation.md) and [plans](plans.md).

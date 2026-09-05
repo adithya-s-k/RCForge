@@ -5,7 +5,7 @@ The implementation and verification snapshots below are preserved as that baseli
 RCForge 0.7.1 additionally has component replacement, individual servo/linkage
 models, battery-consumption comparisons, revised FT reconstructions and corrected
 ground-contact impulses. See [current component contracts](component-models.md),
-[model limits](validation.md) and the [iteration record](improvement-session.md).
+[model limits](validation.md) and the [iteration record](archive/improvement-session.md).
 The measurement and independent-validation work below remains outstanding.
 
 The target is a useful, testable model of a specified aircraft and operating range.

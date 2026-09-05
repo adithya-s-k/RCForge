@@ -3,3 +3,5 @@ dist
 results
 package-lock.json
 src/view/data/*-height.json
+references/local
+docs/versions
