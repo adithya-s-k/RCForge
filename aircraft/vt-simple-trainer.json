@@ -1,0 +1,698 @@
+{
+  "schemaVersion": 1,
+  "id": "vt-simple-trainer",
+  "name": "Simple Trainer \u00b7 Vortex RC",
+  "description": "Vortex RC 1.4 m foamboard trainer. Rudder, elevator and throttle; polyhedral wings bank through sideslip. Use Q/E to turn on keyboard, or map your preferred stick to yaw. Photo-reconstructed, not flight calibrated.",
+  "provenance": {
+    "publishedDimensions": {
+      "status": "sourced",
+      "note": "Vortex RC lists 1400 mm span, 800 mm length, 500 g AUW and 350 g without battery. Metric dimensions are used; the rounded inch equivalents differ slightly. Product shipping weight is not aircraft mass.",
+      "url": "https://www.vortex-rc.com/product/vt-simple-trainer/"
+    },
+    "equipmentSelection": {
+      "status": "sourced",
+      "note": "Selected the optional DYS CF2822 1200 KV / 30 A ESC / two TowerPro 9 g servos / 9x4.7 prop configuration. The page also lists alternative motors and packs; these are not simultaneous installations.",
+      "url": "https://www.vortex-rc.com/product/vt-simple-trainer/"
+    },
+    "motorMass": {
+      "status": "sourced",
+      "note": "DYS CF2822-14 1200 KV motor mass 50 g per Vortex RC. Motor dimensions and shaft installation are estimates.",
+      "url": "https://www.vortex-rc.com/product/dys-cf2822-14-1200kv-brushless-outrunner-motor/"
+    },
+    "assembledGeometry": {
+      "status": "estimated",
+      "note": "Independent reconstruction from assembled photographs and laser-cut sheet photos. 200 mm root chord, 395 mm inner half-panels, 12 degree outer polyhedral, rounded tips, 360 mm stabilizer, 130 mm fin, box-fuselage sections, incidence and wheel positions are proportional estimates, not dimensioned plans. Foamboard thickness assumed 5 mm. Outer wingtip cavity and folds are simplified.",
+      "url": "https://www.vortex-rc.com/wp-content/uploads/2019/03/trainer-left-wing.jpg"
+    },
+    "tailOutline": {
+      "status": "estimated",
+      "note": "Rounded swept stabilizer with elevator clearance notch and swept rounded fin traced as an independent polygon parameterization from sheet photographs. Tail areas are calculated from these estimated outlines.",
+      "url": "https://www.vortex-rc.com/wp-content/uploads/2019/03/trainer-fuse.jpg"
+    },
+    "massLedger": {
+      "status": "estimated",
+      "note": "Dry component ledger totals the published 350 g, including two-wheel wire gear, a tail skid allowance, two 9 g servos and a 50 g motor. Remaining masses, component locations and box inertia estimates are allocated, not weighed. A 150 g installed battery allocation closes the published 500 g AUW; this is not a measured branded 1300 mAh pack.",
+      "url": "https://www.vortex-rc.com/product/vt-simple-trainer/"
+    },
+    "balance": {
+      "status": "estimated",
+      "note": "The product says CG 58 mm from the nose, an ambiguous station inconsistent with a plausible wing balance in these photos. This model assumes 58 mm aft of the center-wing leading edge (29% of the estimated 200 mm chord). Confirm the physical kit CG marks before treating this as build guidance. Battery placement solves that provisional balance; no claim of a verified manufacturer CG.",
+      "url": "https://www.vortex-rc.com/product/vt-simple-trainer/"
+    },
+    "aerodynamics": {
+      "status": "estimated",
+      "note": "Independent quasi-steady estimates: wing lift slope 2*pi/(1+2*pi/(pi*0.82*AR)), zero-lift -2.5 degrees, stall 14 degrees, CD0 0.028 and CM -0.045. Tail slopes use the same finite-span estimate with e=0.78. No measured polar, downwash, dynamic-stall or flight calibration. Four wing elements resolve the polyhedral sideslip loads; no artificial self-leveling.",
+      "url": "https://www.vortex-rc.com/product/vt-simple-trainer/"
+    },
+    "actuation": {
+      "status": "estimated",
+      "note": "Two 9 g positional servos only, with provisional 0.12 s/60 degree no-load speed, 150 degree travel, 10/15 mm horn ratio and 20 degree elevator / 25 degree rudder limits. Rates are adjustable. Rudder is assigned to yaw, with no aileron or hidden roll-to-rudder mix; assign yaw to your preferred stick in Controllers.",
+      "url": "https://www.vortex-rc.com/product/vt-simple-trainer/"
+    },
+    "powertrain": {
+      "status": "estimated",
+      "note": "3S 1300 mAh LiPo with 0.065 ohm resistance and estimated OCV. DYS CF2822 / 9x4.7 static endpoint 6.2 N at 13.5 A and 11.1 V, quadratic command curve and 20 m/s zero-thrust speed are estimates, not measurements. Current curve, efficiency, endurance and actual ESC/BEC limits need bench data. Prop reaction torque is not identified for this preset; P-factor and gyroscopic effects are also omitted.",
+      "url": "https://www.vortex-rc.com/product/vt-simple-trainer/"
+    },
+    "operatingPoint": {
+      "status": "estimated",
+      "note": "Default cruise/airborne trim 9 m/s (about 1.8 times the analytical stall-speed estimate), hand release 8.5 m/s. Operating defaults, not measured flight speeds. Faster 12 m/s trim is available in headless tests but is a poor power-off glide trim for this low-wing-loading build."
+    }
+  },
+  "parts": [
+    {
+      "id": "fuselage",
+      "kind": "body",
+      "massKg": 0.065,
+      "positionM": [-0.09, 0, 0],
+      "sizeM": [0.745, 0.048, 0.055],
+      "color": "#eeede5",
+      "material": {
+        "name": "Vortex RC Fliteboard Pro (5 mm assumed)",
+        "finish": "foam"
+      },
+      "manufacturer": "Vortex RC",
+      "model": "Folded foamboard fuselage",
+      "bodyLoft": [
+        {
+          "x": -0.6308724832214766,
+          "width": 0.25,
+          "top": -0.14545454545454545,
+          "bottom": 0.03636363636363636
+        },
+        {
+          "x": -0.5369127516778524,
+          "width": 0.2916666666666667,
+          "top": -0.2181818181818182,
+          "bottom": 0.1090909090909091
+        },
+        {
+          "x": -0.01342281879194632,
+          "width": 1.0,
+          "top": -0.6,
+          "bottom": 0.4545454545454546
+        },
+        {
+          "x": 0.3087248322147651,
+          "width": 1.0,
+          "top": -0.6,
+          "bottom": 0.4545454545454546
+        },
+        {
+          "x": 0.3691275167785235,
+          "width": 1.0,
+          "top": -0.5090909090909091,
+          "bottom": 0.4545454545454546
+        }
+      ]
+    },
+    {
+      "id": "left-inner-wing",
+      "kind": "wing",
+      "massKg": 0.0345,
+      "positionM": [0, -0.1975, -0.041],
+      "sizeM": [0.2, 0.395, 0.024],
+      "color": "#eeede5",
+      "orientationDeg": [0, 2, 0],
+      "material": {
+        "name": "Vortex RC Fliteboard Pro (5 mm assumed)",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "left-outer-wing",
+      "kind": "wing",
+      "massKg": 0.0215,
+      "positionM": [0, -0.5475, -0.07341487565467839],
+      "sizeM": [0.2, 0.31181388143383393, 0.024],
+      "color": "#eeede5",
+      "orientationDeg": [12, 2, 0],
+      "material": {
+        "name": "Vortex RC Fliteboard Pro (5 mm assumed)",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "right-inner-wing",
+      "kind": "wing",
+      "massKg": 0.0345,
+      "positionM": [0, 0.1975, -0.041],
+      "sizeM": [0.2, 0.395, 0.024],
+      "color": "#eeede5",
+      "orientationDeg": [0, 2, 0],
+      "material": {
+        "name": "Vortex RC Fliteboard Pro (5 mm assumed)",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "right-outer-wing",
+      "kind": "wing",
+      "massKg": 0.0215,
+      "positionM": [0, 0.5475, -0.07341487565467839],
+      "sizeM": [0.2, 0.31181388143383393, 0.024],
+      "color": "#eeede5",
+      "orientationDeg": [-12, 2, 0],
+      "material": {
+        "name": "Vortex RC Fliteboard Pro (5 mm assumed)",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "stabilizer",
+      "kind": "tail",
+      "massKg": 0.011,
+      "positionM": [-0.495, 0, -0.01],
+      "sizeM": [0.12, 0.36, 0.005],
+      "color": "#eeede5",
+      "material": {
+        "name": "Vortex RC Fliteboard Pro (5 mm assumed)",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "fin",
+      "kind": "tail",
+      "massKg": 0.008,
+      "positionM": [-0.486, 0, -0.075],
+      "sizeM": [0.16, 0.005, 0.13],
+      "color": "#eeede5",
+      "material": {
+        "name": "Vortex RC Fliteboard Pro (5 mm assumed)",
+        "finish": "foam"
+      }
+    },
+    {
+      "id": "motor",
+      "kind": "motor",
+      "massKg": 0.05,
+      "positionM": [0.207, 0, 0],
+      "sizeM": [0.033, 0.0287, 0.0287],
+      "color": "#c64222",
+      "manufacturer": "DYS",
+      "model": "CF2822-14 1200 KV"
+    },
+    {
+      "id": "propeller",
+      "kind": "equipment",
+      "massKg": 0.009,
+      "positionM": [0.225, 0, 0],
+      "sizeM": [0.012, 0.2286, 0.022],
+      "color": "#e66e20",
+      "model": "9 \u00d7 4.7 slow-fly prop + saver (mass estimated)",
+      "material": {
+        "name": "Molded propeller",
+        "finish": "plastic"
+      }
+    },
+    {
+      "id": "esc",
+      "kind": "equipment",
+      "massKg": 0.025,
+      "positionM": [0.13, 0, 0.008],
+      "sizeM": [0.04, 0.024, 0.01],
+      "color": "#292d31",
+      "model": "30 A ESC + BEC (mass estimated)"
+    },
+    {
+      "id": "servo-elevator",
+      "kind": "equipment",
+      "massKg": 0.009,
+      "positionM": [0.01, -0.013, -0.012],
+      "sizeM": [0.023, 0.012, 0.024],
+      "color": "#30486d",
+      "manufacturer": "TowerPro",
+      "model": "9 g positional servo (speed/linkage estimated)",
+      "servo": {
+        "speedSecondsPer60Deg": 0.12,
+        "travelDeg": 150,
+        "ratedVoltage": 4.8
+      },
+      "material": {
+        "name": "Plastic servo housing",
+        "finish": "plastic"
+      }
+    },
+    {
+      "id": "servo-rudder",
+      "kind": "equipment",
+      "massKg": 0.009,
+      "positionM": [0.01, 0.013, -0.012],
+      "sizeM": [0.023, 0.012, 0.024],
+      "color": "#30486d",
+      "manufacturer": "TowerPro",
+      "model": "9 g positional servo (speed/linkage estimated)",
+      "servo": {
+        "speedSecondsPer60Deg": 0.12,
+        "travelDeg": 150,
+        "ratedVoltage": 4.8
+      },
+      "material": {
+        "name": "Plastic servo housing",
+        "finish": "plastic"
+      }
+    },
+    {
+      "id": "receiver",
+      "kind": "equipment",
+      "massKg": 0.008,
+      "positionM": [-0.025, 0, 0.012],
+      "sizeM": [0.027, 0.018, 0.009],
+      "color": "#292d31",
+      "model": "Receiver (mass estimated)"
+    },
+    {
+      "id": "pushrods",
+      "kind": "equipment",
+      "massKg": 0.008,
+      "positionM": [-0.25, 0, -0.013],
+      "sizeM": [0.52, 0.035, 0.006],
+      "color": "#eeede5",
+      "model": "Two steel pushrods, guides and horns (allocated)"
+    },
+    {
+      "id": "landing-gear",
+      "kind": "equipment",
+      "massKg": 0.02,
+      "positionM": [0.065, 0, 0.077],
+      "sizeM": [0.06, 0.27, 0.13],
+      "color": "#ccd0c9",
+      "model": "Wire gear, two foam wheels and tail skid allowance"
+    },
+    {
+      "id": "wing-retention",
+      "kind": "equipment",
+      "massKg": 0.003,
+      "positionM": [0, 0, -0.045],
+      "sizeM": [0.225, 0.058, 0.03],
+      "color": "#eeede5",
+      "model": "Bamboo dowels and rubber bands"
+    },
+    {
+      "id": "firewall",
+      "kind": "equipment",
+      "massKg": 0.007,
+      "positionM": [0.185, 0, -0.002],
+      "sizeM": [0.004, 0.048, 0.055],
+      "color": "#c2a776",
+      "model": "Aeroply firewall + motor mount"
+    },
+    {
+      "id": "wiring-hardware",
+      "kind": "equipment",
+      "massKg": 0.006,
+      "positionM": [0.015, 0, 0.01],
+      "sizeM": [0.08, 0.04, 0.02],
+      "color": "#eeede5",
+      "model": "Wiring, connectors, tape and glue allowance"
+    },
+    {
+      "id": "battery",
+      "kind": "battery",
+      "massKg": 0.15,
+      "positionM": [0.13262000000000002, 0, 0.006],
+      "sizeM": [0.075, 0.032, 0.026],
+      "color": "#b79d4f",
+      "model": "3S 1300 mAh installed mass allocation (estimated)",
+      "material": {
+        "name": "LiPo pouch pack, leads and retention",
+        "finish": "plastic"
+      }
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "left-inner-wing",
+      "kind": "wing",
+      "positionM": [0.05, -0.1975, -0.033],
+      "spanM": 0.395,
+      "chordM": 0.2,
+      "aspectRatio": 6.959936779670636,
+      "rollDeg": 0,
+      "incidenceDeg": 2,
+      "liftSlope": 4.652702753247248,
+      "zeroLiftDeg": -2.5,
+      "stallDeg": 14,
+      "cd0": 0.028,
+      "efficiency": 0.82,
+      "cm": -0.045,
+      "foamWing": {
+        "rootChordM": 0.2,
+        "boardThicknessM": 0.005,
+        "foldHeightM": 0.021,
+        "hingeFraction": 0.78,
+        "controlSpan": [0, 1],
+        "tipStations": [
+          [0, 0, 1],
+          [1, 0, 1]
+        ]
+      }
+    },
+    {
+      "id": "left-outer-wing",
+      "kind": "wing",
+      "positionM": [0.050446500000000005, -0.5475, -0.06541487565467838],
+      "spanM": 0.31181388143383393,
+      "chordM": 0.198214,
+      "aspectRatio": 6.959936779670636,
+      "rollDeg": 12,
+      "incidenceDeg": 2,
+      "liftSlope": 4.652702753247248,
+      "zeroLiftDeg": -2.5,
+      "stallDeg": 14,
+      "cd0": 0.028,
+      "efficiency": 0.82,
+      "cm": -0.045,
+      "foamWing": {
+        "rootChordM": 0.2,
+        "boardThicknessM": 0.005,
+        "foldHeightM": 0.021,
+        "hingeFraction": 0.78,
+        "controlSpan": [0, 1],
+        "tipStations": [
+          [0, 0, 1],
+          [0.8, 0, 1],
+          [0.9, 0.008, 0.992],
+          [0.96, 0.035, 0.965],
+          [0.99, 0.075, 0.925],
+          [1, 0.15, 0.85]
+        ]
+      }
+    },
+    {
+      "id": "right-inner-wing",
+      "kind": "wing",
+      "positionM": [0.05, 0.1975, -0.033],
+      "spanM": 0.395,
+      "chordM": 0.2,
+      "aspectRatio": 6.959936779670636,
+      "rollDeg": 0,
+      "incidenceDeg": 2,
+      "liftSlope": 4.652702753247248,
+      "zeroLiftDeg": -2.5,
+      "stallDeg": 14,
+      "cd0": 0.028,
+      "efficiency": 0.82,
+      "cm": -0.045,
+      "foamWing": {
+        "rootChordM": 0.2,
+        "boardThicknessM": 0.005,
+        "foldHeightM": 0.021,
+        "hingeFraction": 0.78,
+        "controlSpan": [0, 1],
+        "tipStations": [
+          [0, 0, 1],
+          [1, 0, 1]
+        ]
+      }
+    },
+    {
+      "id": "right-outer-wing",
+      "kind": "wing",
+      "positionM": [0.050446500000000005, 0.5475, -0.06541487565467838],
+      "spanM": 0.31181388143383393,
+      "chordM": 0.198214,
+      "aspectRatio": 6.959936779670636,
+      "rollDeg": -12,
+      "incidenceDeg": 2,
+      "liftSlope": 4.652702753247248,
+      "zeroLiftDeg": -2.5,
+      "stallDeg": 14,
+      "cd0": 0.028,
+      "efficiency": 0.82,
+      "cm": -0.045,
+      "foamWing": {
+        "rootChordM": 0.2,
+        "boardThicknessM": 0.005,
+        "foldHeightM": 0.021,
+        "hingeFraction": 0.78,
+        "controlSpan": [0, 1],
+        "tipStations": [
+          [0, 0, 1],
+          [0.8, 0, 1],
+          [0.9, 0.008, 0.992],
+          [0.96, 0.035, 0.965],
+          [0.99, 0.075, 0.925],
+          [1, 0.15, 0.85]
+        ]
+      }
+    },
+    {
+      "id": "elevator",
+      "kind": "horizontal-tail",
+      "positionM": [-0.475, 0, -0.01],
+      "spanM": 0.36,
+      "chordM": 0.08103333333333337,
+      "aspectRatio": 4.442616207322088,
+      "rollDeg": 0,
+      "incidenceDeg": 0,
+      "liftSlope": 3.9838591771549625,
+      "zeroLiftDeg": 0,
+      "stallDeg": 16,
+      "cd0": 0.025,
+      "efficiency": 0.78,
+      "cm": 0,
+      "panel": {
+        "outline": [
+          [0.6170300287947342, 0.0],
+          [0.3578774167009456, -0.22222222222222224],
+          [0.1110654051830516, -0.3805555555555556],
+          [-0.11106540518305229, -0.4638888888888889],
+          [-0.30851501439736745, -0.5],
+          [-0.44426162073220915, -0.49444444444444446],
+          [-0.5923488276429455, -0.4555555555555556],
+          [-0.7527766351295766, -0.3333333333333333],
+          [-0.8638420403126289, -0.07222222222222222],
+          [-0.5800082270670508, -0.03888888888888889],
+          [-0.5800082270670508, 0.03888888888888889],
+          [-0.8638420403126289, 0.07222222222222222],
+          [-0.7527766351295766, 0.3333333333333333],
+          [-0.5923488276429455, 0.4555555555555556],
+          [-0.44426162073220915, 0.49444444444444446],
+          [-0.30851501439736745, 0.5],
+          [-0.11106540518305229, 0.4638888888888889],
+          [0.1110654051830516, 0.3805555555555556],
+          [0.3578774167009456, 0.22222222222222224]
+        ],
+        "thicknessM": 0.005,
+        "controlHinge": [
+          [-0.44426162073220915, -0.51],
+          [-0.44426162073220915, 0.51]
+        ]
+      },
+      "control": {
+        "axis": "pitch",
+        "gain": -1,
+        "maxDeg": 20,
+        "effectiveness": 0.55,
+        "responseSeconds": 0.055,
+        "linkage": {
+          "servoPartId": "servo-elevator",
+          "servoTravelDeg": 45,
+          "servoArmM": 0.01,
+          "surfaceArmM": 0.015
+        }
+      }
+    },
+    {
+      "id": "rudder",
+      "kind": "vertical-tail",
+      "positionM": [-0.467, 0, -0.075],
+      "spanM": 0.13,
+      "chordM": 0.11186923076923083,
+      "aspectRatio": 1.1620710994980397,
+      "rollDeg": -90,
+      "incidenceDeg": 0,
+      "liftSlope": 1.9595189911810655,
+      "zeroLiftDeg": 0,
+      "stallDeg": 16,
+      "cd0": 0.025,
+      "efficiency": 0.78,
+      "cm": 0,
+      "panel": {
+        "outline": [
+          [0.5989135666643743, -0.5],
+          [0.4380114144261846, -0.2076923076923077],
+          [0.24135322835728537, 0.16153846153846146],
+          [0.06257305920374065, 0.4153846153846153],
+          [-0.0983290930344491, 0.5],
+          [-0.2502922368149621, 0.4769230769230769],
+          [-0.4290724059685068, 0.38461538461538464],
+          [-0.6167915835797287, 0.23846153846153845],
+          [-0.7508767104448874, 0.06923076923076918],
+          [-0.813449769648628, -0.10769230769230773],
+          [-0.8313277865639824, -0.3076923076923077],
+          [-0.7866327442755963, -0.5]
+        ],
+        "thicknessM": 0.005,
+        "controlHinge": [
+          [-0.3933163721377979, -0.51],
+          [-0.3933163721377979, 0.51]
+        ]
+      },
+      "control": {
+        "axis": "yaw",
+        "gain": 1,
+        "maxDeg": 25,
+        "effectiveness": 0.55,
+        "responseSeconds": 0.055,
+        "linkage": {
+          "servoPartId": "servo-rudder",
+          "servoTravelDeg": 45,
+          "servoArmM": 0.01,
+          "surfaceArmM": 0.015
+        }
+      }
+    }
+  ],
+  "motors": [
+    {
+      "id": "main-motor",
+      "positionM": [0.225, 0, 0],
+      "partId": "motor",
+      "propPartId": "propeller",
+      "model": "DYS CF2822-14 1200 KV (performance estimated)",
+      "propeller": "9 \u00d7 4.7 slow-fly",
+      "propBlades": 2,
+      "propDiameterM": 0.2286,
+      "maxThrustN": 6.2,
+      "zeroThrustSpeedMps": 20,
+      "responseSeconds": 0.1,
+      "yawMix": 0,
+      "performance": {
+        "referenceVoltage": 11.1,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0.0,
+            "currentA": 0.0
+          },
+          {
+            "command": 0.25,
+            "thrustN": 0.3875,
+            "currentA": 0.2109375
+          },
+          {
+            "command": 0.5,
+            "thrustN": 1.55,
+            "currentA": 1.6875
+          },
+          {
+            "command": 0.75,
+            "thrustN": 3.4875000000000003,
+            "currentA": 5.6953125
+          },
+          {
+            "command": 1,
+            "thrustN": 6.2,
+            "currentA": 13.5
+          }
+        ]
+      }
+    }
+  ],
+  "battery": {
+    "partId": "battery",
+    "chemistry": "LiPo",
+    "cells": 3,
+    "capacityMah": 1300,
+    "resistanceOhm": 0.065,
+    "initialSoc": 1,
+    "avionicsCurrentA": 0.2,
+    "voltageCurve": [
+      {
+        "soc": 0,
+        "voltsPerCell": 3.25
+      },
+      {
+        "soc": 0.1,
+        "voltsPerCell": 3.55
+      },
+      {
+        "soc": 0.25,
+        "voltsPerCell": 3.7
+      },
+      {
+        "soc": 0.5,
+        "voltsPerCell": 3.8
+      },
+      {
+        "soc": 0.8,
+        "voltsPerCell": 3.98
+      },
+      {
+        "soc": 1,
+        "voltsPerCell": 4.2
+      }
+    ]
+  },
+  "fuselageDragAreaM2": 0.0055,
+  "bodyDragAreaM2": [0.0055, 0.035, 0.032],
+  "angularDamping": [0.01, 0.022, 0.028],
+  "contactPoints": [
+    {
+      "id": "left-wheel",
+      "kind": "wheel",
+      "positionM": [0.075, -0.135, 0.132],
+      "strutAnchorM": [0.07, 0, 0.025],
+      "spanLinked": false,
+      "wheelRadiusM": 0.025,
+      "wheelColor": "#d9dbd0"
+    },
+    {
+      "id": "right-wheel",
+      "kind": "wheel",
+      "positionM": [0.075, 0.135, 0.132],
+      "strutAnchorM": [0.07, 0, 0.025],
+      "spanLinked": false,
+      "wheelRadiusM": 0.025,
+      "wheelColor": "#d9dbd0"
+    },
+    {
+      "id": "tail-skid",
+      "kind": "skid",
+      "positionM": [-0.54, 0, 0.025],
+      "strutAnchorM": [-0.51, 0, 0.001],
+      "spanLinked": false
+    },
+    {
+      "id": "nose",
+      "positionM": [0.185, 0, 0.027],
+      "spanLinked": false
+    },
+    {
+      "id": "prop-tip",
+      "positionM": [0.225, 0, 0.1143],
+      "spanLinked": false
+    },
+    {
+      "id": "tail-tip",
+      "positionM": [-0.56, 0, -0.005],
+      "spanLinked": false
+    },
+    {
+      "id": "left-wingtip",
+      "positionM": [0.02, -0.7, -0.09782975130935676],
+      "spanLinked": true
+    },
+    {
+      "id": "right-wingtip",
+      "positionM": [0.02, 0.7, -0.09782975130935676],
+      "spanLinked": true
+    }
+  ],
+  "reference": {
+    "spanM": 1.4,
+    "areaM2": 0.281611753389052,
+    "cgFromLeadingEdgeM": 0.058,
+    "leadingEdgeXM": 0.1,
+    "trimSpeedMps": 9
+  },
+  "pilotResponse": {
+    "preset": "standard",
+    "rates": [0.8, 0.75, 0.85],
+    "expo": 0.2,
+    "smoothingSeconds": 0.035
+  }
+}

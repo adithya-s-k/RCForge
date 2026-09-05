@@ -648,9 +648,9 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     }
     orientComponent(group, p, group.children.slice(firstChild));
   }
-  if (isTiny) {
+  if (isTiny || a.id === "vt-simple-trainer") {
     // Retention hardware is included in the structural mass allocation.
-    // These assembly positions are visual estimates around the measured wing chord.
+    // These assembly positions are visual estimates around the authored wing chord.
     const wing = a.surfaces.find((s) => s.foamWing);
     if (wing?.foamWing) {
       const leading = wing.positionM[0] + wing.chordM / 4;
@@ -690,6 +690,7 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
   }
   for (const s of a.surfaces) {
     const surface = new T.Group();
+    surface.name = `surface:${s.id}`;
     surface.position.set(...s.positionM);
     surface.rotation.x = radians(s.rollDeg);
     surface.rotation.y = radians(s.incidenceDeg);
@@ -890,8 +891,20 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
   for (const contact of a.contactPoints.filter((p) => p.kind === "wheel")) {
     const [x, y, z] = contact.positionM,
       r = contact.wheelRadiusM;
-    rod(group, [x * 0.6, y * 0.65, 0.065], [x, y, z - r], 0.0026, aluminum);
-    const wheel = mesh(new T.CylinderGeometry(r, r, 0.014, 24), dark, group, [
+    rod(
+      group,
+      contact.strutAnchorM ?? [x * 0.6, y * 0.65, 0.065],
+      [x, y, z - r],
+      contact.strutAnchorM ? 0.0016 : 0.0026,
+      aluminum,
+    );
+    const tire = contact.wheelColor
+      ? new T.MeshStandardMaterial({
+          color: contact.wheelColor,
+          roughness: 0.92,
+        })
+      : dark;
+    const wheel = mesh(new T.CylinderGeometry(r, r, 0.014, 24), tire, group, [
       x,
       y,
       z - r,
@@ -905,6 +918,11 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     wheel.name = contact.id;
     hub.name = contact.id + "-hub";
   }
+  for (const contact of a.contactPoints.filter(
+    (p) => p.kind === "skid" && p.strutAnchorM,
+  ))
+    rod(group, contact.strutAnchorM!, contact.positionM, 0.0015, dark).name =
+      contact.id;
   const properties = massProperties(a);
   const fpvHousing = buildFpvHousing(a);
   if (fpvHousing) group.add(fpvHousing);

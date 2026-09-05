@@ -19,7 +19,7 @@ import {
 /** Solve longitudinal steady flight only; not an autopilot or a fidelity guarantee. */
 export function findTrim(
   a: Aircraft,
-  speed = 12,
+  speed = a.reference.trimSpeedMps ?? 12,
   environment = calmEnvironment(),
   flightPathDeg = 0,
 ) {

@@ -255,7 +255,9 @@ export class AircraftEditor {
     const quad = a.vehicleType === "multirotor";
     $("mass-scope").textContent = quad
       ? "Includes all components and battery."
-      : "Ground starts add removable gear to this mass.";
+      : a.contactPoints.some((p) => p.kind === "wheel")
+        ? "Includes installed landing gear and battery."
+        : "Ground starts add removable gear to this mass.";
     $("mass-evidence").textContent = quad
       ? `Component total: ${(p.mass * 1000).toFixed(0)} g. Each listed component is counted once. Rendered detail adds no hidden mass; replace estimates with measured values.`
       : `Component total: ${(p.mass * 1000).toFixed(0)} g. Replace estimated component weights with measured values for your build.`;

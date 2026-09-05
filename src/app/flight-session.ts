@@ -15,13 +15,14 @@ export function flightModelNote(state: {
   handLaunch: boolean;
   converged: boolean;
   pitchTrim: number;
+  trimSpeedMps?: number;
 }) {
   if (!state.converged)
     return {
       limited: true,
       text: state.quad
         ? "Hover trim failed. Review mass, CG and rotor thrust."
-        : `Trim failed at ${state.handLaunch ? "8.5" : "12"} m/s. Review mass, CG and control authority.`,
+        : `Trim failed at ${state.trimSpeedMps ?? (state.handLaunch ? 8.5 : 12)} m/s. Review mass, CG and control authority.`,
     };
   if (state.quad)
     return {

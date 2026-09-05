@@ -111,7 +111,11 @@ export function runExperiment(
     throw new Error(
       "Use cruise (hover), pitch-pulse or roll-pulse for multirotors",
     );
-  const trim = findTrim(aircraft, 12, environment);
+  const trim = findTrim(
+    aircraft,
+    aircraft.reference.trimSpeedMps ?? 12,
+    environment,
+  );
   const sim = new Simulation(aircraft, environment, trim.state);
   const recording = createRecording(sim);
   for (

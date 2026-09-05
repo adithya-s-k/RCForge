@@ -322,6 +322,12 @@ export const AircraftSchema = z
             kind: z.enum(["body", "wheel", "skid"]).default("body"),
             steering: z.boolean().default(false),
             wheelRadiusM: positive.max(0.3).default(0.032),
+            // Optional visual wire/strut anchor, in aircraft-datum coordinates.
+            strutAnchorM: vec.optional(),
+            wheelColor: z
+              .string()
+              .regex(/^#[0-9a-fA-F]{6}$/)
+              .optional(),
           })
           .strict(),
       )
@@ -329,6 +335,8 @@ export const AircraftSchema = z
       .max(128),
     reference: z
       .object({
+        // Authored operating point for airborne starts and default experiments.
+        trimSpeedMps: positive.max(100).optional(),
         spanM: positive,
         areaM2: positive,
         cgFromLeadingEdgeM: finite,

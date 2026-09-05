@@ -23,7 +23,7 @@ try {
       `${a.id}: valid · ${a.surfaces.length} surfaces · ${a.motors.length} motors · ${(p.mass * 1000).toFixed(0)} g · CG [${p.cg.map((n) => n.toFixed(4)).join(", ")}] m`,
     );
     console.log(
-      `  ${a.vehicleType === "multirotor" ? "Hover" : "12 m/s trim"}: ${trim.converged ? "converged" : "NOT CONVERGED"} · pitch ${trim.pitchDeg.toFixed(2)}° · elevator ${trim.controls.pitch.toFixed(3)} · throttle ${trim.controls.throttle.toFixed(3)}`,
+      `  ${a.vehicleType === "multirotor" ? "Hover" : `${a.reference.trimSpeedMps ?? 12} m/s trim`}: ${trim.converged ? "converged" : "NOT CONVERGED"} · pitch ${trim.pitchDeg.toFixed(2)}° · elevator ${trim.controls.pitch.toFixed(3)} · throttle ${trim.controls.throttle.toFixed(3)}`,
     );
     if (!trim.converged)
       console.warn(

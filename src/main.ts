@@ -40,6 +40,7 @@ import quadData from "../aircraft/quad-x-5inch.json";
 import tinyTrainerData from "../aircraft/ft-tiny-trainer.json";
 import raptorData from "../aircraft/ft-22-raptor.json";
 import trainerData from "../aircraft/simple-trainer.json";
+import vortexTrainerData from "../aircraft/vt-simple-trainer.json";
 import { workbenchMarkup } from "./view/workbench";
 import { FlightScene, type CameraMode } from "./view/scene";
 import { FlightAudio } from "./view/audio";
@@ -57,6 +58,7 @@ import {
   fitLandingGear,
   launchState,
   launchTrim,
+  launchAirspeed,
   type LaunchMode,
 } from "./core/launch";
 import { aircraftChannels } from "./app/aircraft-channels";
@@ -96,6 +98,7 @@ const originals = [
   parseAircraft(broncoData),
   parseAircraft(tinyTrainerData),
   parseAircraft(raptorData),
+  parseAircraft(vortexTrainerData),
   parseAircraft(trainerData),
   parseAircraft(quadData),
   parseAircraft(detailedQuadData),
@@ -193,19 +196,21 @@ function updateFlightInfo() {
   });
   const scenario = $<HTMLSelectElement>("scenario");
   for (const option of scenario.options) {
-    option.disabled = quad && ["glide", "stall"].includes(option.value);
+    option.disabled =
+      (quad && ["glide", "stall"].includes(option.value)) ||
+      (option.value === "roll-pulse" && !aircraftChannels(a).includes("roll"));
     if (option.value === "cruise")
       option.textContent = quad ? "Stationary hover" : "Trimmed cruise";
   }
-  if (quad && ["glide", "stall"].includes(scenario.value))
-    scenario.value = "cruise";
+  if (scenario.selectedOptions[0]?.disabled) scenario.value = "cruise";
   $("experiment-description").textContent = quad
     ? "Starts in hover at 3 m with calculated power. Pitch and roll pulses test the configured controller. No altitude hold."
-    : "Each aircraft starts at 12 m/s and 18 m with its own calculated trim. Field weather is retained.";
+    : "Each aircraft starts at its authored trim speed and 18 m with calculated trim. Field weather is retained.";
   const note = flightModelNote({
     quad,
     controlMode: a.multirotor?.mode,
     handLaunch: mode === "hand",
+    trimSpeedMps: launchAirspeed(a, mode),
     converged: releaseTrimConverged,
     pitchTrim,
   });
@@ -222,16 +227,18 @@ function updateFlightInfo() {
         ? "Start stationary on the ground. Build airspeed, then rotate."
         : mode === "hand"
           ? `Release at ${placement?.altitudeM ?? 1.7} m and 8.5 m/s${releaseTrimConverged ? ", trimmed for a gentle climb" : ""}.`
-          : `Start at ${placement?.altitudeM ?? 22} m and 12 m/s${releaseTrimConverged ? " with calculated trim" : ""}.`;
+          : `Start at ${placement?.altitudeM ?? 22} m and ${launchAirspeed(a, mode)} m/s${releaseTrimConverged ? " with calculated trim" : ""}.`;
   $("flight-mass").textContent =
     (massProperties(a).mass * 1000).toFixed(0) + " g";
   $("flight-model-info").textContent =
     `${a.name} · ${(a.reference.spanM * 1000).toFixed(0)} mm ${quad ? "motor diagonal" : "span"} · ${quad ? "Four rotors" : a.motors.length === 2 ? "Twin motor" : "Single motor"}`;
   $("flight-gear").textContent = quad
     ? "Four landing feet"
-    : mode === "ground"
-      ? "Removable tricycle (+45 g)"
-      : "Belly landing";
+    : aircraft.contactPoints.some((p) => p.kind === "wheel")
+      ? `${aircraft.contactPoints.filter((p) => p.kind === "wheel").length} installed wheels${aircraft.contactPoints.some((p) => p.kind === "skid") ? " + tail skid" : ""}`
+      : mode === "ground"
+        ? "Removable tricycle (+45 g)"
+        : "Belly landing";
 }
 function showScenery(env: typeof environment) {
   const id = (
@@ -1104,7 +1111,7 @@ function frame(now: number) {
       previewStatus = !connected
         ? "Controller unavailable. Connect it in Input setup; motors off."
         : input.source === "keyboard"
-          ? `Arrow keys: pitch / roll${aircraftChannels(editor.draft).includes("yaw") ? " · Q / E: yaw" : ""}. Click the model to test. Motors off.`
+          ? `${aircraftChannels(editor.draft).includes("roll") ? "Arrow keys: pitch / roll" : "↑ / ↓: pitch"}${aircraftChannels(editor.draft).includes("yaw") ? " · Q / E: yaw" : ""}. Click the model to test. Motors off.`
           : "Live controller · motors off · deflections after rates and servo limits";
       const trim = $<HTMLInputElement>("test-trim").checked
         ? previewPitchTrim
