@@ -2,7 +2,7 @@ import { surfacePolar, STANDARD_AIR_VISCOSITY } from "./aerodynamics";
 import { powertrain } from "./powertrain";
 import { rotorCommands } from "./multirotor";
 import { surfaceCommand } from "./surface-control";
-import { surfaceActuation } from "./actuation";
+import { surfaceActuation, advanceSurfaceCommand } from "./actuation";
 import { resolveGroundContacts } from "./ground";
 import type { Aircraft } from "./schema";
 import { massProperties } from "./aircraft";
@@ -356,15 +356,7 @@ export class Simulation {
         if (!w.control) return 0;
         const target = surfaceCommand(w.control, c),
           previous = s.surfaceCommands?.[i] ?? 0;
-        const actuator = this.actuations[i];
-        const change =
-          (target - previous) *
-          (w.control.responseSeconds
-            ? 1 - Math.exp(-dt / w.control.responseSeconds)
-            : 1);
-        const limit =
-          (actuator.rateLimitDegS * dt) / Math.max(0.001, actuator.maxDeg);
-        return previous + clamp(change, -limit, limit);
+        return advanceSurfaceCommand(previous, target, this.actuations[i], dt);
       });
     }
     const k1 = this.acceleration(s, c);

@@ -1,3 +1,4 @@
+import { buildFpvHousing } from "./fpv-camera";
 import { orientComponent } from "./component-pose";
 import { surfaceActuation } from "../core/actuation";
 import { buildQuad } from "./quad-model";
@@ -413,6 +414,7 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
   const propellerMaterials = new Map<string, T.Material>();
   const servoMaterials = new Map<string, T.Material>();
   for (const p of a.parts) {
+    if (p.id === a.fpv?.partId) continue;
     const firstChild = group.children.length;
     if ((p.kind === "body" || p.kind === "boom") && p.bodyLoft) {
       const [x, y, z] = p.positionM,
@@ -904,6 +906,8 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     hub.name = contact.id + "-hub";
   }
   const properties = massProperties(a);
+  const fpvHousing = buildFpvHousing(a);
+  if (fpvHousing) group.add(fpvHousing);
   for (const child of group.children)
     child.position.sub(new T.Vector3(...properties.cg));
   const cg = new T.Group();

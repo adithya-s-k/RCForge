@@ -972,5 +972,8 @@
         "voltsPerCell": 4.2
       }
     ]
+  },
+  "pilotResponse": {
+    "preset": "gentle"
   }
 }

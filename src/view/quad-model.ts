@@ -1,3 +1,4 @@
+import { buildFpvHousing } from "./fpv-camera";
 import * as T from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import type { Aircraft } from "../core/schema";
@@ -340,7 +341,7 @@ export function buildQuad(a: Aircraft): AircraftVisual {
   // Legacy compact quad includes camera/wiring in its frame allocation.
   // Detailed ledgers only render a camera when they actually include one.
   const camera = a.parts.find((p) => p.id === "camera");
-  if (camera || (!authoredArms.length && !a.battery)) {
+  if (!a.fpv && (camera || (!authoredArms.length && !a.battery))) {
     const pos = camera?.positionM ?? [0.043 * frameScale, 0, -0.006];
     const size = camera?.sizeM ?? [0.019, 0.019, 0.017];
     box(size, pos, black, 0.003);
@@ -385,6 +386,8 @@ export function buildQuad(a: Aircraft): AircraftVisual {
     );
   }
   batchStatic(construction);
+  const fpvHousing = buildFpvHousing(a);
+  if (fpvHousing) group.add(fpvHousing);
   const cgValue = massProperties(a).cg;
   for (const child of group.children)
     child.position.sub(new T.Vector3(...cgValue));

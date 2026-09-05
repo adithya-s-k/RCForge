@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { PilotResponseSchema } from "./pilot-response";
 const finite = z.number().finite();
 const vec = z.tuple([finite, finite, finite]);
 const positive = finite.positive();
@@ -54,6 +55,14 @@ export const AircraftSchema = z
     id: z.string().regex(/^[a-z0-9-]+$/),
     name: z.string().min(1),
     description: z.string(),
+    pilotResponse: PilotResponseSchema.optional(),
+    fpv: z
+      .object({
+        partId: z.string().min(1),
+        fovDeg: finite.min(40).max(120).default(90),
+      })
+      .strict()
+      .optional(),
     provenance: z.record(z.string(), provenance),
     battery: z
       .object({
@@ -331,6 +340,16 @@ export const AircraftSchema = z
   .superRefine((a, ctx) => {
     const issue = (path: (string | number)[], message: string) =>
       ctx.addIssue({ code: "custom", path, message });
+    if (
+      a.fpv &&
+      !a.parts.some(
+        (p) => p.id === a.fpv!.partId && p.kind === "equipment" && !p.servo,
+      )
+    )
+      issue(
+        ["fpv", "partId"],
+        "FPV must reference an existing non-servo equipment mass component",
+      );
     if (a.battery) {
       if (
         !a.parts.some((p) => p.id === a.battery!.partId && p.kind === "battery")

@@ -409,5 +409,9 @@
       }
     ]
   },
-  "bodyDragAreaM2": [0.008, 0.012, 0.025]
+  "bodyDragAreaM2": [0.008, 0.012, 0.025],
+  "fpv": {
+    "partId": "camera",
+    "fovDeg": 90
+  }
 }
