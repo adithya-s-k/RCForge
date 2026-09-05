@@ -20,7 +20,10 @@ function setup() {
         parentElement: {},
         classList: { add: () => {}, remove: () => {} },
         querySelectorAll: () => [],
-        querySelector: () => null,
+        querySelector: (selector: string) =>
+          selector.includes("heading") ? el(selector) : null,
+        after: () => {},
+        scrollIntoView: () => {},
         toggleAttribute: () => {},
         setAttribute: (k: string, v: string) => attributes.set(k, v),
         removeAttribute: (k: string) => attributes.delete(k),
@@ -33,6 +36,7 @@ function setup() {
   };
   vi.stubGlobal("document", {
     getElementById: el,
+    createElement: (tag: string) => el("created-" + tag),
     querySelector: el,
     querySelectorAll: () =>
       [...elements.values()].filter((e) => e.getAttribute("aria-invalid")),
@@ -125,4 +129,31 @@ it("applies battery installation angles without moving its CG or changing mass",
   expect(after.mass).toBe(before.mass);
   expect(after.cg).toEqual(before.cg);
   expect(after.inertia[0][0]).not.toBeCloseTo(before.inertia[0][0], 8);
+});
+
+it("keeps surface mixing in the draft, commits pending gains and preserves linkage", () => {
+  const { editor, el } = setup();
+  const before = structuredClone(editor.draft.surfaces[0].control!.linkage);
+  const field = el("mix-0-pitch");
+  field.value = "-50";
+  field.oninput();
+  editor.commitPending();
+  expect(editor.draft.surfaces[0].control!.mix!.pitch).toBe(-0.5);
+  expect(editor.draft.surfaces[0].control!.linkage).toEqual(before);
+  field.value = "";
+  field.oninput();
+  expect(() => editor.commitPending()).toThrow("Enter a number");
+});
+
+it("stores exportable custom response settings without changing aircraft mass", () => {
+  const { editor } = setup(),
+    before = massProperties(editor.draft);
+  editor.setPilotResponse({
+    preset: "custom",
+    rates: [0.5, 0.35, 0.8],
+    expo: 0.3,
+    smoothingSeconds: 0.08,
+  });
+  expect(editor.draft.pilotResponse!.rates[1]).toBe(0.35);
+  expect(massProperties(editor.draft)).toEqual(before);
 });

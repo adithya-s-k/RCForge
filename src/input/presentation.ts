@@ -78,6 +78,7 @@ export const standardShortcuts: ActionBindings = {
   toggle: "b0",
   reset: "b2",
   camera: "b3",
+  response: "b4",
   settings: "b9",
   next: "b13",
   previous: "b12",

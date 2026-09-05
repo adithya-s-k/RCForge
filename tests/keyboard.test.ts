@@ -70,6 +70,21 @@ it("inactive input ignores throttle shortcuts", () => {
   key("Space");
   expect(input.throttle).toBe(0);
 });
+
+it("tests surface input without changing the stored flight throttle", () => {
+  const { input, key } = keyboard();
+  input.throttle = 0.43;
+  input.testBench = true;
+  key("Space");
+  key("ArrowDown");
+  const c = input.read(0.5);
+  expect(c.pitch).toBeGreaterThan(0.9);
+  expect(input.throttle).toBe(0.43);
+  key("Space", "keyup");
+  key("ShiftLeft");
+  input.read(0.5);
+  expect(input.throttle).toBe(0.43);
+});
 it("position panel SVG controls do not change throttle or steer the aircraft", () => {
   const { input, key, mapMarker } = keyboard();
   key("Space", "keydown", mapMarker);

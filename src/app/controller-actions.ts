@@ -166,7 +166,7 @@ export class ControllerActions {
         ? "<span><kbd>Enter</kbd> Start</span><span><kbd>P</kbd> Pause</span><span><kbd>R</kbd> Restart</span>"
         : !d
           ? '<div class="shortcut-empty"><strong>Flight shortcuts</strong><p>Connect hardware to see your button bindings.</p></div>'
-          : (["toggle", "reset", "camera", "settings"] as Action[])
+          : (["toggle", "reset", "camera", "response", "settings"] as Action[])
               .map(
                 (a) =>
                   `<span data-shortcut-action="${a}"><b>${escape(this.hint(a) || "Unassigned")}</b> ${actionNames[a]}</span>`,

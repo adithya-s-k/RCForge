@@ -9,6 +9,7 @@ import {
 import { setTotalMass, setLongitudinalCG } from "../core/editor";
 import { parseAircraft, type Aircraft } from "../core/schema";
 import { ZodError } from "zod";
+import { SurfaceMixer } from "./surface-mixer";
 import { ComponentWorkshop } from "./component-workshop";
 import { moveComponent } from "../core/components";
 function numericValue(field: HTMLInputElement) {
@@ -24,6 +25,7 @@ function numericValue(field: HTMLInputElement) {
 export class AircraftEditor {
   draft: Aircraft;
   private workshop: ComponentWorkshop;
+  private mixer: SurfaceMixer;
   private pending = new Map<string, string>();
   private editError: unknown = null;
   private errors = new Map<string, string>();
@@ -95,6 +97,31 @@ export class AircraftEditor {
       if (this.editError) throw this.editError;
     }
   }
+  private registerNumber(
+    id: string,
+    edit: (out: Aircraft, value: number) => void,
+  ) {
+    const field = $<HTMLInputElement>(id);
+    field.oninput = () => this.track(id, field.value);
+    field.onchange = () => {
+      const raw = field.value;
+      try {
+        const out = structuredClone(this.draft);
+        edit(out, numericValue(field));
+        out.provenance.componentEdits = {
+          status: "estimated",
+          note: "User-edited component specifications. Mass, CG, inertia, battery and actuation recomputed. Edited values are not manufacturer measurements.",
+        };
+        this.draft = parseAircraft(out);
+        this.pending.delete(id);
+        this.errors.delete(id);
+        this.update();
+        this.changed(this.draft);
+      } catch (e) {
+        this.fail(id, raw, e);
+      }
+    };
+  }
   constructor(
     a: Aircraft,
     private changed: (a: Aircraft) => void,
@@ -104,28 +131,7 @@ export class AircraftEditor {
     this.draft = structuredClone(a);
     this.workshop = new ComponentWorkshop(
       () => this.draft,
-      (id, edit) => {
-        const field = $<HTMLInputElement>(id);
-        field.oninput = () => this.track(id, field.value);
-        field.onchange = () => {
-          const raw = field.value;
-          try {
-            const out = structuredClone(this.draft);
-            edit(out, numericValue(field));
-            out.provenance.componentEdits = {
-              status: "estimated",
-              note: "User-edited component specifications. Mass, CG, inertia, battery and actuation recomputed. Edited values are not manufacturer measurements.",
-            };
-            this.draft = parseAircraft(out);
-            this.pending.delete(id);
-            this.errors.delete(id);
-            this.update();
-            this.changed(this.draft);
-          } catch (e) {
-            this.fail(id, raw, e);
-          }
-        };
-      },
+      (id, edit) => this.registerNumber(id, edit),
       () => this.commitPending(),
       (out) => {
         this.draft = out;
@@ -134,6 +140,17 @@ export class AircraftEditor {
       },
       this.notify,
       selected,
+    );
+    this.mixer = new SurfaceMixer(
+      () => this.draft,
+      (id, edit) => this.registerNumber(id, edit),
+      () => this.commitPending(),
+      (out) => {
+        this.draft = parseAircraft(out);
+        this.update();
+        this.changed(this.draft);
+      },
+      this.notify,
     );
     const action = (id: string, fn: (value: number) => Aircraft) => {
       $(id).oninput = () => this.track(id, $<HTMLInputElement>(id).value);
@@ -210,6 +227,19 @@ export class AircraftEditor {
     this.update();
     this.changed(this.draft);
   }
+  editFpv() {
+    $("editor-components-tab").click();
+    this.workshop.selectFpv();
+  }
+  setPilotResponse(settings: NonNullable<Aircraft["pilotResponse"]>) {
+    this.commitPending();
+    this.draft = parseAircraft({
+      ...this.draft,
+      pilotResponse: structuredClone(settings),
+    });
+    this.update();
+    this.changed(this.draft);
+  }
   update() {
     const a = this.draft,
       p = massProperties(a),
@@ -221,6 +251,7 @@ export class AircraftEditor {
     $("editor-component-status").textContent =
       `${(p.mass * 1000).toFixed(0)} g · ${a.parts.length} parts`;
     this.workshop.render();
+    this.mixer.render();
     const quad = a.vehicleType === "multirotor";
     $("mass-scope").textContent = quad
       ? "Includes all components and battery."

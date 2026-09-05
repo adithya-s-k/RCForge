@@ -1,3 +1,7 @@
+import { ControlPreview } from "./core/control-preview";
+import { renderControlTest, updateControlTest } from "./app/control-test";
+import { PilotResponseFilter, withPitchTrim } from "./core/pilot-response";
+import { ResponsePanel } from "./app/pilot-response";
 import "./view/flight-navigation.css";
 import { createFlightNavigation } from "./view/flight-navigation";
 import { setupArduino } from "./app/arduino";
@@ -122,7 +126,7 @@ let sim = new Simulation(
   recording = createRecording(sim),
   editorSim = sim;
 let scene: FlightScene | undefined;
-let flightCamera: "ground" | "chase" = "ground";
+let flightCamera: "ground" | "chase" | "fpv" = "ground";
 let locatorUntil = 0;
 const audio = new FlightAudio();
 let pauseReason = "";
@@ -160,6 +164,13 @@ function pause(reason?: string) {
   if (wasRunning) pauseReason = reason ?? "";
   audio.update(0, 0, false);
 }
+const responseFilter = new PilotResponseFilter();
+const responsePanel = new ResponsePanel();
+let controlPreview = new ControlPreview(aircraft);
+let previewAccumulator = 0;
+let previewPitchTrim = 0;
+let previewStatus = "Enable Test sticks to move the controls.";
+renderControlTest(controlPreview);
 const input = new InputManager((reason) => pause(reason));
 const controller = new ControllerPage(input, () => pause(), message);
 const arduino = setupArduino(input, controller, pause);
@@ -167,6 +178,10 @@ function physicalAircraft() {
   return mode === "ground" ? fitLandingGear(aircraft) : aircraft;
 }
 function updateFlightInfo() {
+  responsePanel.selectAircraft(aircraft);
+  $("setup-fpv-camera").textContent = aircraft.fpv
+    ? "Adjust FPV camera"
+    : "Set up FPV camera";
   const a = physicalAircraft();
   const quad = a.vehicleType === "multirotor";
   document.querySelectorAll<HTMLButtonElement>("[data-launch]").forEach((b) => {
@@ -240,6 +255,7 @@ function reset() {
   replay = null;
   replayIndex = 0;
   input.clear();
+  responseFilter.reset();
   const a = physicalAircraft(),
     trim = launchTrim(a, mode, environment);
   pitchTrim = trim.controls.pitch;
@@ -342,10 +358,14 @@ const editor = new AircraftEditor(
       ? "Unapplied changes"
       : "Applied to flight";
     $("editor-state").classList.toggle("pending", unapplied);
-    editorSim = new Simulation(a, calmEnvironment(), findTrim(a).state);
+    previewPitchTrim = launchTrim(a, mode, environment).controls.pitch;
+    controlPreview = new ControlPreview(a);
+    renderControlTest(controlPreview);
+    const studioTrim = findTrim(a);
+    editorSim = new Simulation(a, calmEnvironment(), studioTrim.state);
     editorSim.lastForces = editorSim.forces(
       editorSim.state,
-      findTrim(a).controls,
+      studioTrim.controls,
     );
     if (page === "aircraft") scene?.setAircraft(a);
   },
@@ -355,7 +375,28 @@ const editor = new AircraftEditor(
     scene?.setComponentInspection(part, componentsWorkspace);
   },
 );
-setupEditorWorkspace((components) => {
+responsePanel.onSaveToAircraft = (settings) => {
+  try {
+    editor.setPilotResponse(settings);
+    message(
+      "Response saved in the aircraft draft. Apply to keep it with the aircraft or export its JSON.",
+    );
+  } catch (e) {
+    message(errorText(e));
+  }
+};
+function enableControlTest(enabled: boolean) {
+  $<HTMLInputElement>("test-sticks").checked = enabled;
+  input.clear();
+  controlPreview.reset();
+  previewAccumulator = 0;
+  input.testBench = enabled && page === "aircraft";
+  input.active = page === "fly" || page === "controllers" || input.testBench;
+}
+$("test-sticks").onchange = () =>
+  enableControlTest($<HTMLInputElement>("test-sticks").checked);
+setupEditorWorkspace((components, test) => {
+  if (test) enableControlTest(true);
   componentsWorkspace = components;
   scene?.setComponentInspection(editorComponent, components);
 });
@@ -372,7 +413,11 @@ function route() {
     : "fly";
   pause();
   input.clear();
-  input.active = page === "fly" || page === "controllers";
+  responseFilter.reset();
+  input.testBench =
+    page === "aircraft" && $<HTMLInputElement>("test-sticks").checked;
+  input.active = page === "fly" || page === "controllers" || input.testBench;
+  controlPreview.reset();
   for (const id of ["fly", "aircraft", "controllers", "experiments"])
     $("page-" + id).hidden = id !== page;
   document.querySelectorAll<HTMLAnchorElement>("[data-route]").forEach((a) => {
@@ -387,6 +432,8 @@ function route() {
     setFlightCamera(flightCamera);
   }
   if (page === "aircraft") {
+    previewPitchTrim = launchTrim(editor.draft, mode, environment).controls
+      .pitch;
     $("editor-stage").append($("viewport"));
     scene?.setStudio(true);
     scene?.setAircraft(editor.draft);
@@ -634,8 +681,17 @@ for (const id of ["wind-speed", "wind-direction", "gusts"])
     reset();
     invalidate();
   };
-function setFlightCamera(camera: "ground" | "chase") {
+function setFlightCamera(camera: "ground" | "chase" | "fpv") {
+  if (camera === "fpv" && !sim.aircraft.fpv) camera = "ground";
   flightCamera = camera;
+  if (camera !== "ground") {
+    input.walking = false;
+    if (scene) scene.walking = false;
+    $<HTMLInputElement>("walk-mode").checked = false;
+  }
+  $("locate-aircraft").hidden = camera === "fpv";
+  $("aircraft-locator").hidden = true;
+  locatorUntil = 0;
   scene?.setCamera(camera);
   document
     .querySelectorAll<HTMLButtonElement>("[data-camera]")
@@ -645,11 +701,27 @@ function setFlightCamera(camera: "ground" | "chase") {
       button.setAttribute("aria-pressed", String(selected));
     });
   $("camera-description").textContent =
-    camera === "chase"
-      ? "Following aircraft · chase view"
-      : "Pilot view · eye height 1.7 m";
+    camera === "fpv"
+      ? `Onboard FPV · ${sim.aircraft.fpv?.fovDeg}° vertical view`
+      : camera === "chase"
+        ? "Following aircraft · chase view"
+        : "Pilot view · eye height 1.7 m";
 }
+function cycleFlightCamera() {
+  const views: ("ground" | "chase" | "fpv")[] = sim.aircraft.fpv
+    ? ["ground", "chase", "fpv"]
+    : ["ground", "chase"];
+  setFlightCamera(views[(views.indexOf(flightCamera) + 1) % views.length]);
+}
+function openFpvEditor() {
+  pause();
+  location.hash = "#/aircraft";
+  route();
+  editor.editFpv();
+}
+$("setup-fpv-camera").onclick = openFpvEditor;
 function locateAircraft() {
+  if (flightCamera === "fpv") setFlightCamera("ground");
   if (!scene) return;
   scene.locateAircraft();
   $<HTMLInputElement>("track-plane").checked = true;
@@ -661,7 +733,12 @@ document
   .querySelectorAll<HTMLButtonElement>("[data-camera]")
   .forEach((button) => {
     button.onclick = (event) => {
-      setFlightCamera(button.dataset.camera as "ground" | "chase");
+      if (button.dataset.camera === "fpv" && !sim.aircraft.fpv) {
+        openFpvEditor();
+        message("Add a camera in Components, then Apply & fly to use FPV.");
+        return;
+      }
+      setFlightCamera(button.dataset.camera as "ground" | "chase" | "fpv");
       // Pointer users can keep flying immediately; keyboard activation keeps native focus.
       if (event.detail > 0) scene?.renderer.domElement.focus();
     };
@@ -692,7 +769,7 @@ $("pilot-fov").oninput = () => {
   if (scene) {
     const value = Number($<HTMLInputElement>("pilot-fov").value);
     if (scene.mode === "chase") scene.chaseDistance = value;
-    else scene.pilotFov = value;
+    else if (scene.mode === "ground") scene.pilotFov = value;
   }
 };
 $("sound").onchange = () =>
@@ -716,10 +793,17 @@ window.addEventListener("keydown", (e) => {
     positioning.close();
     return;
   }
+  if (
+    page === "aircraft" &&
+    !ownsKeyboard(e.target) &&
+    e.code === "KeyC" &&
+    !e.repeat
+  )
+    responsePanel.cycle();
   if (page !== "fly" || ownsKeyboard(e.target)) return;
   if (e.code === "KeyF" && !e.repeat) locateAircraft();
-  if (e.code === "KeyV" && !e.repeat)
-    setFlightCamera(flightCamera === "ground" ? "chase" : "ground");
+  if (e.code === "KeyV" && !e.repeat) cycleFlightCamera();
+  if (e.code === "KeyC" && !e.repeat && !replay) responsePanel.cycle();
   if (e.code === "KeyP" && !e.repeat) {
     e.preventDefault();
     if (running) pause();
@@ -897,17 +981,23 @@ function stats() {
     sim.lastForces.airspeed < 3 ||
     !sim.lastForces.surfaces.some((f) => f.kind === "wing" && f.stalled);
   if (scene) {
-    const chase = scene.mode === "chase",
+    const fpv = scene.mode === "fpv",
+      chase = scene.mode === "chase",
       slider = $<HTMLInputElement>("pilot-fov");
-    $("view-range-label").textContent = chase
-      ? "Follow distance"
-      : "View angle";
+    slider.disabled = fpv;
+    $("view-range-label").textContent = fpv
+      ? "FPV lens · edit in Components"
+      : chase
+        ? "Follow distance"
+        : "View angle";
     slider.min = chase ? "2" : "20";
     slider.max = chase ? "20" : "80";
     slider.step = chase ? "0.1" : "1";
-    $("fov-value").textContent = chase
-      ? scene.chaseDistance.toFixed(1) + " m"
-      : Math.round(scene.pilotFov) + "°";
+    $("fov-value").textContent = fpv
+      ? `${sim.aircraft.fpv?.fovDeg}°`
+      : chase
+        ? scene.chaseDistance.toFixed(1) + " m"
+        : Math.round(scene.pilotFov) + "°";
     slider.value = String(chase ? scene.chaseDistance : scene.pilotFov);
   }
 }
@@ -941,18 +1031,18 @@ const controllerActions = new ControllerActions(input, (action) => {
     location.hash = page === "controllers" ? "#/fly" : "#/controllers";
     return;
   }
+  if (action === "response" && page === "aircraft") {
+    responsePanel.cycle();
+    return;
+  }
   if (page !== "fly" || (positioning.isOpen() && action !== "camera")) return;
   if (action === "reset") reset();
   if (action === "toggle") {
     if (running) pause();
     else void launch();
   }
-  if (action === "camera")
-    document
-      .querySelector<HTMLButtonElement>(
-        `[data-camera="${scene?.mode === "chase" ? "ground" : "chase"}"]`,
-      )
-      ?.click();
+  if (action === "camera") cycleFlightCamera();
+  if (action === "response" && !replay) responsePanel.cycle();
 });
 let previous = 0,
   lastDraw = 0,
@@ -979,12 +1069,12 @@ function frame(now: number) {
         } else {
           const raw = input.read(FIXED_DT);
           if (!running) break;
-          controls = cleanControls({
-            ...raw,
-            pitch:
-              pitchTrim +
-              raw.pitch * (raw.pitch >= 0 ? 1 - pitchTrim : 1 + pitchTrim),
-          });
+          controls = cleanControls(
+            withPitchTrim(
+              responseFilter.step(raw, responsePanel.settings, FIXED_DT),
+              pitchTrim,
+            ),
+          );
         }
         sim.step(controls);
         accumulator -= FIXED_DT;
@@ -1002,9 +1092,40 @@ function frame(now: number) {
         }
       }
     }
+    if (page === "aircraft" && input.testBench) {
+      const device = input.selected();
+      const connected =
+        input.source === "keyboard" ||
+        (device &&
+          device.id === input.profile.deviceId &&
+          Object.values(input.profile.bindings).every(
+            (b) => b.axis < device.axes.length,
+          ));
+      previewStatus = !connected
+        ? "Controller unavailable. Connect it in Input setup; motors off."
+        : input.source === "keyboard"
+          ? `Arrow keys: pitch / roll${aircraftChannels(editor.draft).includes("yaw") ? " · Q / E: yaw" : ""}. Click the model to test. Motors off.`
+          : "Live controller · motors off · deflections after rates and servo limits";
+      const trim = $<HTMLInputElement>("test-trim").checked
+        ? previewPitchTrim
+        : 0;
+      previewAccumulator += dt;
+      while (previewAccumulator >= FIXED_DT) {
+        const raw =
+          connected && document.hasFocus()
+            ? input.read(FIXED_DT)
+            : { roll: 0, pitch: 0, yaw: 0, throttle: 0 };
+        controlPreview.step(raw, responsePanel.settings, trim);
+        previewAccumulator -= FIXED_DT;
+      }
+    } else if (page === "aircraft")
+      previewStatus = "Enable Test sticks to move the controls.";
     if (page === "fly") scene?.moveObserver(input.keys, dt);
     const activeView =
-      running || input.keys.size > 0 || scene?.needsSmoothMotion;
+      running ||
+      (page === "aircraft" && controlPreview.moving) ||
+      input.keys.size > 0 ||
+      scene?.needsSmoothMotion;
     const renderInterval =
       1000 / (activeView ? 60 : renderBudget.idleFramesPerSecond);
     drawAccumulator += dt * 1000;
@@ -1025,8 +1146,9 @@ function frame(now: number) {
       } else if (page === "aircraft")
         scene?.render(
           editorSim,
-          { roll: 0, pitch: 0, yaw: 0, throttle: 0 },
+          controlPreview.controls,
           viewDt,
+          controlPreview.deflections,
         );
       drawAccumulator =
         Math.max(0, drawAccumulator - renderInterval) % renderInterval;
@@ -1042,6 +1164,7 @@ function frame(now: number) {
     );
     if (now - lastUI > 100) {
       stats();
+      if (page === "aircraft") updateControlTest(controlPreview, previewStatus);
       positioning.update();
       if (page === "fly")
         updateNavigation(sim.state, scene?.pilotPosition ?? { x: -8, z: -14 });

@@ -2714,3 +2714,201 @@ button.primary:hover {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* FPV equipment and personal transmitter response share the workbench surfaces. */
+.fpv-install-bar,
+.response-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.fpv-install-bar {
+  padding: 12px 16px;
+  margin: 0 0 14px;
+  border: 1px solid var(--ui-border);
+  background: var(--ui-panel);
+}
+.fpv-install-bar small {
+  display: block;
+  color: var(--ui-muted);
+  margin-top: 4px;
+}
+.fpv-install-bar button {
+  flex-shrink: 0;
+}
+.fpv-mount-fields {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--ui-border);
+  margin-bottom: 14px;
+}
+#flight-response {
+  padding-top: 12px;
+  border-top: 1px solid var(--ui-border);
+}
+.response-title {
+  margin-bottom: 10px;
+}
+.response-title small {
+  color: var(--ui-muted);
+}
+.response-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.response-fields label {
+  margin: 0;
+}
+.response-fields input {
+  width: 100%;
+  min-width: 0;
+}
+#response-save-state {
+  display: block;
+  margin-top: 10px;
+  font-size: 10px;
+}
+#quick-response {
+  width: 95px;
+  min-height: 28px;
+  height: 28px;
+  padding: 3px 20px 3px 8px;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .fpv-install-bar {
+    padding: 10px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .fpv-mount-fields .response-title {
+    align-items: flex-start;
+  }
+}
+.editor-page[data-workspace="controls"] .editor-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+}
+.editor-page[data-workspace="controls"] #quad-config,
+.editor-page[data-workspace="controls"] .component-details {
+  display: none;
+}
+.editor-page[data-workspace="controls"] .editor-view {
+  position: sticky;
+  top: calc(var(--ui-header-height) + 18px);
+}
+#editor-control-test {
+  padding: 16px;
+}
+.control-test-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 0;
+  font-size: 11px;
+  border-bottom: 1px solid var(--ui-border);
+}
+.control-test-row > span {
+  overflow-wrap: anywhere;
+}
+.control-test-row output {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.control-test-row small {
+  color: var(--ui-muted);
+  font-size: 10px;
+}
+.deflection-track {
+  grid-column: 1/-1;
+  position: relative;
+  height: 5px;
+  background: var(--ui-raised);
+}
+.deflection-track::before {
+  content: "";
+  position: absolute;
+  height: 9px;
+  top: -2px;
+  left: 50%;
+  width: 1px;
+  background: var(--ui-border-strong);
+}
+.deflection-track i {
+  position: absolute;
+  top: -1px;
+  width: 4px;
+  height: 7px;
+  margin-left: -2px;
+  background: var(--ui-text);
+}
+#control-test-readings {
+  max-height: 270px;
+  overflow-y: auto;
+}
+.editor-view-tools {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+@media (max-width: 900px) {
+  .editor-page[data-workspace="controls"] .editor-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .editor-page[data-workspace="controls"] .editor-view {
+    position: relative;
+    top: auto;
+  }
+}
+#editor-control-test .check-label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+#editor-control-test .check-label input {
+  width: auto;
+  flex: 0 0 auto;
+  margin: 0;
+}
+#editor-response > .wide {
+  margin-top: 12px;
+}
+#surface-mixer {
+  margin-top: 14px;
+}
+.surface-mix-fields {
+  min-width: 0;
+  margin: 14px 0;
+  padding: 10px;
+  border: 1px solid var(--ui-border);
+}
+.surface-mix-fields legend {
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.mix-axis-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.mix-output-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+}
+.surface-mix-fields input {
+  width: 100%;
+  min-width: 0;
+  padding: 6px;
+}
+.surface-mix-fields label {
+  font-size: 10px;
+}
+.mix-saturated {
+  color: #e8b668 !important;
+}

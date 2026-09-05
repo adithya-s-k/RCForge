@@ -19,6 +19,7 @@ export function keyboardDiagram() {
     KeyP: ["Pause", "session"],
     KeyR: ["Restart", "session"],
     KeyV: ["Camera", "view"],
+    KeyC: ["Rates", "flight"],
     KeyF: ["Locate", "view"],
     KeyI: ["Walk", "view"],
     KeyJ: ["Walk", "view"],

@@ -145,8 +145,8 @@ export function placementUI(options: PositionOptions) {
       ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][
         Math.round(draft.headingDeg / 45) % 8
       ];
-    $("track-plane").toggleAttribute("disabled", state.camera === "chase");
-    $("walk-mode").toggleAttribute("disabled", state.camera === "chase");
+    $("track-plane").toggleAttribute("disabled", state.camera !== "ground");
+    $("walk-mode").toggleAttribute("disabled", state.camera !== "ground");
   };
   const fit = () => {
     const p = options.get().pilot;

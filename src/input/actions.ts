@@ -1,7 +1,8 @@
 export const actionNames = {
   toggle: "Start / pause",
   reset: "Restart flight",
-  camera: "Pilot / chase",
+  camera: "Pilot / chase / FPV",
+  response: "Cycle control response",
   settings: "Open / close settings",
   next: "Next setting",
   previous: "Previous setting",

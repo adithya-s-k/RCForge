@@ -1,3 +1,4 @@
+import { fpvMount, placeFpvCamera } from "./fpv-camera";
 import { powertrain } from "../core/powertrain";
 import { sceneries, type SceneryId } from "../core/scenery";
 import { surfaceCommand } from "../core/surface-control";
@@ -23,7 +24,7 @@ const conversion = new T.Quaternion().setFromAxisAngle(
   new T.Vector3(1, 0, 0),
   Math.PI / 2,
 );
-export type CameraMode = "ground" | "chase" | "orbit";
+export type CameraMode = "ground" | "chase" | "fpv" | "orbit";
 /** Fixed physical pilot position; only head direction changes. No automatic zoom. */
 export class FlightScene {
   renderer: T.WebGLRenderer;
@@ -71,6 +72,7 @@ export class FlightScene {
   );
   onGroundPick?: (north: number, east: number) => void;
   private visual?: AircraftVisual;
+  private fpv?: ReturnType<typeof fpvMount>;
   private cg: Vec3 = [0, 0, 0];
   private span = 1.086;
   private shadowRadius = 1;
@@ -255,6 +257,7 @@ export class FlightScene {
     this.shadowRadius =
       Math.max(bounds.min.length(), bounds.max.length()) + 0.25;
     this.cg = massProperties(a).cg;
+    this.fpv = fpvMount(a, this.cg);
     this.setComponentInspection(
       a.parts.find((p) => p.id === this.selectedComponent?.id),
       this.inspectComponents,
@@ -296,7 +299,8 @@ export class FlightScene {
       : "";
   }
   setCamera(mode: CameraMode) {
-    this.mode = mode;
+    this.mode = mode === "fpv" && !this.fpv ? "ground" : mode;
+    this.dragging = false;
     this.snap = true;
   }
   locateAircraft() {
@@ -411,7 +415,12 @@ export class FlightScene {
     this.pilotPosition.y = 1.7;
   }
   clearTrail() {} // Retained call compatibility; trails are intentionally absent in pilot flight.
-  render(sim: Simulation, c: Controls, dt: number) {
+  render(
+    sim: Simulation,
+    c: Controls,
+    dt: number,
+    previewDeflections?: readonly number[],
+  ) {
     if (!this.visual) return;
     if (!this.studio && this.pilotDestination) {
       this.pilotPosition.lerp(this.pilotDestination, 1 - Math.exp(-dt * 10));
@@ -445,9 +454,11 @@ export class FlightScene {
         (s) => s.id === v.surfaceId,
       );
       const deflection =
-        (!this.studio && s.surfaceCommands?.[index] !== undefined
-          ? s.surfaceCommands[index]
-          : surfaceCommand(v.control, c)) * v.max;
+        (this.studio && previewDeflections
+          ? previewDeflections[index]
+          : !this.studio && s.surfaceCommands?.[index] !== undefined
+            ? s.surfaceCommands[index]
+            : surfaceCommand(v.control, c)) * v.max;
       if (v.hingeAxis)
         v.pivot.quaternion.setFromAxisAngle(v.hingeAxis, deflection);
       else v.pivot.rotation.y = deflection;
@@ -529,8 +540,13 @@ export class FlightScene {
       this.camera.position.copy(desired);
       this.camera.fov = 42;
     }
-    this.camera.up.set(0, 1, 0);
-    this.camera.lookAt(target);
+    if (this.mode === "fpv" && this.fpv && !this.studio) {
+      placeFpvCamera(this.camera, this.fpv, pos, this.visual.group.quaternion);
+    } else {
+      this.camera.near = 0.15;
+      this.camera.up.set(0, 1, 0);
+      this.camera.lookAt(target);
+    }
     this.camera.updateProjectionMatrix();
     let viewCamera: T.Camera = this.camera;
     if (this.studio && this.inspectionView !== "perspective") {

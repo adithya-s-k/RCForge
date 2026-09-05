@@ -132,6 +132,7 @@ export function loadProfile(
   return fallback;
 }
 export class InputManager {
+  testBench = false;
   walking = false;
   active = true;
   source: "keyboard" | "controller" = "keyboard";
@@ -171,7 +172,7 @@ export class InputManager {
       ) {
         e.preventDefault();
         this.keys.add(e.code);
-        if (!e.repeat && this.source === "keyboard") {
+        if (!e.repeat && this.source === "keyboard" && !this.testBench) {
           if (["Space", "Equal", "NumpadAdd"].includes(e.code))
             this.throttle = clamp(this.throttle + 0.05, 0, 1);
           if (
@@ -248,15 +249,16 @@ export class InputManager {
     for (const ch of ["roll", "pitch", "yaw"] as const)
       this.keyboard[ch] +=
         (target[ch] - this.keyboard[ch]) * (1 - Math.exp(-dt * 9));
-    this.throttle = clamp(
-      this.throttle +
-        (has("Space", "Equal", "NumpadAdd") -
-          has("ShiftLeft", "ShiftRight", "Minus", "NumpadSubtract")) *
-          dt *
-          0.35,
-      0,
-      1,
-    );
+    if (!this.testBench)
+      this.throttle = clamp(
+        this.throttle +
+          (has("Space", "Equal", "NumpadAdd") -
+            has("ShiftLeft", "ShiftRight", "Minus", "NumpadSubtract")) *
+            dt *
+            0.35,
+        0,
+        1,
+      );
     return { ...this.keyboard, throttle: this.throttle };
   }
 }

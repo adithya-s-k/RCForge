@@ -10,6 +10,7 @@ import { componentDifferences } from "../core/component-reference";
 import { surfaceActuation } from "../core/actuation";
 import { type Aircraft } from "../core/schema";
 import { $, escape } from "./dom";
+import { installFpvCamera, removeFpvCamera } from "../core/fpv";
 
 export const componentCatalog = ComponentCatalogSchema.parse(catalogData);
 type Edit = (out: Aircraft, value: number) => void;
@@ -32,6 +33,15 @@ export class ComponentWorkshop {
   private browse = false;
   private candidate = "";
   private query = "";
+  selectFpv() {
+    this.category = "all";
+    this.partId = this.getAircraft().fpv?.partId ?? "";
+    this.browse = false;
+    this.render();
+    $(this.partId ? "component-detail" : "add-fpv-camera").scrollIntoView({
+      block: "nearest",
+    });
+  }
   constructor(
     private getAircraft: () => Aircraft,
     private register: Register,
@@ -117,6 +127,30 @@ export class ComponentWorkshop {
         .join(
           "",
         )}</select><label class="compact-part-picker">Installed part<select id="component-picker">${visible.map((p) => `<option value="${escape(p.id)}" ${p.id === part?.id ? "selected" : ""}>${escape(p.id.replaceAll("-", " "))} · ${(p.massKg * 1000).toFixed(1)} g</option>`).join("")}</select></label><div class="workshop-parts" role="group" aria-label="Installed components">${visible.map((p) => `<button data-component-id="${escape(p.id)}" aria-pressed="${p.id === part?.id}" class="${p.id === part?.id ? "active" : ""}"><span><b>${escape(p.id.replaceAll("-", " "))}</b><small>${escape(p.model ?? p.material?.name ?? p.kind)}</small></span><strong>${(p.massKg * 1000).toFixed(1)}<small>g</small></strong></button>`).join("") || '<p class="muted">No components of this type.</p>'}</div></div><div id="component-detail" class="component-detail"></div></div>`;
+    const cameraBar = document.createElement("div");
+    cameraBar.className = "fpv-install-bar";
+    const mounted = a.parts.find((p) => p.id === a.fpv?.partId);
+    cameraBar.innerHTML = mounted
+      ? `<div><strong>FPV camera mounted</strong><small>${(mounted.massKg * 1000).toFixed(1)} g · ${a.fpv!.fovDeg}° vertical view</small></div><button id="edit-fpv-camera">Adjust camera</button>`
+      : '<div><strong>Onboard FPV camera</strong><small>Mount a camera to fly from the aircraft.</small></div><button id="add-fpv-camera">Add FPV camera</button>';
+    host.querySelector(".workshop-heading")!.after(cameraBar);
+    if (mounted)
+      $("edit-fpv-camera").onclick = () =>
+        this.navigate(() => {
+          this.category = "all";
+          this.partId = mounted.id;
+        });
+    else
+      $("add-fpv-camera").onclick = () =>
+        this.navigate(() => {
+          const next = installFpvCamera(this.getAircraft());
+          this.category = "all";
+          this.partId = next.fpv!.partId;
+          this.replace(next);
+          this.notify(
+            "Camera added to draft. Adjust its mount, then Apply & fly.",
+          );
+        });
     $("component-filter").onchange = () =>
       this.navigate(() => {
         this.category = $<HTMLSelectElement>("component-filter").value;
@@ -147,11 +181,14 @@ export class ComponentWorkshop {
     const partIndex = a.parts.indexOf(part);
     const type = typeOf(part);
     const propMotor = a.motors.find((m) => m.propPartId === part.id);
-    const choices = componentCatalog.entries.filter((e) => e.type === type);
+    const choices = componentCatalog.entries.filter(
+      (e) => e.type === type && a.fpv?.partId !== part.id,
+    );
     const linked = a.surfaces
       .map((s, i) => ({ s, i }))
       .filter(({ s }) => s.control?.linkage?.servoPartId === part.id);
     const b = a.battery?.partId === part.id ? a.battery : undefined;
+    const fpv = a.fpv?.partId === part.id ? a.fpv : undefined;
     const motorIndex = a.motors.findIndex((m) => m.partId === part.id);
     const motor = a.motors[motorIndex];
     const reference = componentCatalog.entries.find(
@@ -245,9 +282,25 @@ export class ComponentWorkshop {
     ${propMotor ? '<p class="small muted">Mass and installation are editable here. Replace the motor/prop package together to keep the performance curve paired.</p>' : ""}
     ${motor?.propPartId ? '<button id="paired-propeller" class="component-link">Inspect paired propeller →</button>' : ""}
     ${motor ? `<p class="small muted">${escape(motor.propeller ?? "Configured propeller")} · ${(motor.propDiameterM * 1000).toFixed(0)} mm · ${motor.performance ? motor.performance.referenceVoltage.toFixed(1) + " V curve" : "No current curve"}. Editing thrust scales the existing force curve; it does not invent measured current data.</p>` : ""}
-    <details id="part-installation-${partIndex}" class="component-position"><summary>Installation position & dimensions</summary><p class="small muted">Body axes: X forward · Y right · Z down. Millimeters from the aircraft datum.</p><div class="component-fields component-axis-fields">${part.positionM.map((v, i) => f(`pos-${i}`, `${["X", "Y", "Z"][i]} position · mm`, v * 1000, -10000, 10000, 0.5)).join("")}</div><div class="component-fields component-axis-fields">${part.sizeM.map((v, i) => f(`size-${i}`, `${["Length X", "Width Y", "Height Z"][i]} · mm`, v * 1000, 0.1, 10000, 0.5)).join("")}</div>${part.kind === "battery" || part.servo ? `<div class="component-fields component-axis-fields">${(part.orientationDeg ?? [0, 0, 0]).map((v, i) => f(`angle-${i}`, `Installation ${["roll", "pitch", "yaw"][i]} · °`, v, -180, 180, 1)).join("")}</div>` : ""}</details>
+    <details id="part-installation-${partIndex}" class="component-position"><summary>Installation position & dimensions</summary><p class="small muted">Body axes: X forward · Y right · Z down. Millimeters from the aircraft datum.</p><div class="component-fields component-axis-fields">${part.positionM.map((v, i) => f(`pos-${i}`, `${["X", "Y", "Z"][i]} position · mm`, v * 1000, -10000, 10000, 0.5)).join("")}</div><div class="component-fields component-axis-fields">${part.sizeM.map((v, i) => f(`size-${i}`, `${["Length X", "Width Y", "Height Z"][i]} · mm`, v * 1000, 0.1, 10000, 0.5)).join("")}</div>${part.kind === "battery" || part.servo || fpv ? `<div class="component-fields component-axis-fields">${(part.orientationDeg ?? [0, 0, 0]).map((v, i) => f(`angle-${i}`, `Installation ${["roll", "pitch", "yaw"][i]} · °`, v, -180, 180, 1)).join("")}</div>` : ""}</details>
     ${part.catalogId && !reference ? `<small class="muted">External catalog reference: ${escape(part.catalogId)}. Specifications are stored in this aircraft; this catalog is not installed.</small>` : ""}</div>`;
     const bind = (key: string, edit: Edit) => this.register(id(key), edit);
+    if (fpv) {
+      const cameraControls = document.createElement("div");
+      cameraControls.className = "fpv-mount-fields";
+      cameraControls.innerHTML = `<div class="response-title"><strong>Camera view</strong><button id="remove-fpv-camera">Remove camera</button></div><div class="component-fields">${f("fpv-fov", "Vertical field of view · °", fpv.fovDeg, 40, 120)}${f("fpv-tilt", "Camera tilt up · °", part.orientationDeg?.[1] ?? 0, -90, 90)}</div><p class="small muted">Rigid mount: the horizon rolls with the aircraft. Move X/Y/Z below to place it on the nose or above the airframe. Inspect clearance before applying.</p>`;
+      $("component-detail")
+        .querySelector(".component-detail-heading")!
+        .after(cameraControls);
+      bind("fpv-fov", (out, v) => (out.fpv!.fovDeg = v));
+      bind("fpv-tilt", (out, v) => {
+        out.parts[partIndex].orientationDeg ??= [0, 0, 0];
+        out.parts[partIndex].orientationDeg[1] = v;
+      });
+      $("remove-fpv-camera").onclick = () =>
+        this.navigate(() => this.replace(removeFpvCamera(this.getAircraft())));
+      $<HTMLDetailsElement>(`part-installation-${partIndex}`).open = true;
+    }
     bind("mass", (out, v) => {
       const p = out.parts[partIndex];
       if (p.inertiaDiagonalKgM2)
@@ -264,7 +317,7 @@ export class ComponentWorkshop {
         out.parts[partIndex].sizeM[j] = v / 1000;
         delete out.parts[partIndex].inertiaDiagonalKgM2;
       });
-      if (part.kind === "battery" || part.servo)
+      if (part.kind === "battery" || part.servo || fpv)
         bind(`angle-${j}`, (out, v) => {
           const p = out.parts[partIndex];
           p.orientationDeg ??= [0, 0, 0];
