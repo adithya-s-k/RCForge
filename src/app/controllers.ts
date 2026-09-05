@@ -47,12 +47,13 @@ export class ControllerPage {
     $("refresh-devices").onclick = () => {
       this.signature = "!";
       this.refresh();
-      this.status(
-        this.input.selected()
-          ? "Device found. Check mapping and direction."
-          : "No device detected. Connect USB or Bluetooth, then press a controller button.",
-      );
+      const message = this.input.selected()
+        ? "Device found. Check mapping and direction."
+        : "No input detected. Connect your adapter or controller, then move a stick with this page focused.";
+      this.status(message);
+      this.notify(message);
     };
+    $("transmitter-find-devices").onclick = () => $("refresh-devices").click();
     $("device-select").onchange = () => {
       this.cancel();
       input.deviceIndex = Number($<HTMLSelectElement>("device-select").value);
@@ -364,7 +365,7 @@ export class ControllerPage {
           : "Connect your gamepad";
     $("controller-empty-help").textContent =
       this.type === "transmitter"
-        ? "Use a USB simulator adapter, or connect the Arduino bridge above. Mapping appears when a signal is available."
+        ? "Choose a connection above. Mapping and calibration appear when your input signal is available."
         : "Connect by USB or Bluetooth, then press a button with this page focused. Mapping and calibration appear once it is detected.";
     for (const id of [
       "save-controller",
@@ -405,7 +406,7 @@ export class ControllerPage {
           (awaitingSelected
             ? `<option value="${this.input.deviceIndex}">Selected input disconnected — reconnect or choose a device</option>`
             : "")
-        : '<option value="-1">No controller connected</option>';
+        : '<option value="-1">Awaiting input</option>';
     if (
       (!old && !awaitingSelected) ||
       (old && old.id !== this.input.profile.deviceId)
@@ -461,7 +462,9 @@ export class ControllerPage {
         `${d.axes.length} axes · ${d.buttons.length} buttons · ${d.mapping || "Custom HID"} · Connected`;
     } else
       $("device-status").textContent =
-        "Connect a controller, focus this page, and move a stick to make it visible.";
+        this.type === "transmitter"
+          ? "Choose a connection below, then check for a live channel signal."
+          : "Connect a controller, focus this page, and move a stick to make it visible.";
     const live = this.type === "keyboard" || !!d;
     const pill = document.querySelector<HTMLElement>(".live-pill")!;
     pill.textContent = live ? "● LIVE" : "NO INPUT";

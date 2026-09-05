@@ -1,5 +1,12 @@
 # Validation and model limits
 
+## Current compatibility
+
+Simulation 0.7.1 corrects accumulated contact impulses. Existing aircraft format-1
+files remain compatible. Earlier recordings are rejected because contact
+trajectories change; use their original engine version or record a fresh flight.
+See [the contact correction](component-models.md#contact-correction-071).
+
 ## Automated checks
 
 `npm run check` validates all bundled aircraft, runs unit/behavior tests, checks TypeScript and creates a production build. Tests cover:
@@ -41,6 +48,16 @@ Structural flexibility or failure, foamboard fold mechanics, CFD, automatic conv
 
 Reference geometry is intentionally simplified. Visual meshes represent the same dimensions used in flight calculations, but are not manufacturing drawings. Component mass allocations are estimates even when the total reference mass is published.
 
+## Known FT-22 handling limit
+
+The plan-reconstructed FT-22 currently needs high modeled elevon trim for its
+hand-launch equilibrium. An uncorrected full-power step can produce repeated
+pitch excursions and impact. This remains an uncalibrated aerodynamic limitation,
+not evidence that the physical FT-22 behaves that way. See the reproducible
+[trim and power-response review](flite-test-reconstruction.md#ft-22-trim-and-power-response-review).
+The workbench now identifies high pitch trim and failed trim solves; it does not
+add artificial stabilization to conceal them.
+
 ## Evidence needed for improved fidelity
 
 Measure assembled mass and CG, estimate or measure inertia, measure thrust against throttle/airspeed, obtain appropriate low-Reynolds-number aerodynamic polars, and compare trim speed, glide descent, stall onset and control response with recorded physical flights. Keep calibration data and uncertainty separate from implementation tests. Add regression cases when a model is calibrated.
@@ -72,3 +89,21 @@ verify depletion. `physics:envelope` surveys speed, density, mass and charge and
 reports unsuccessful trim points. Neither command is measured-aircraft validation.
 See the [research and implementation plan](realism-plan.md) for prioritized work
 and the evidence needed before increasing fidelity claims.
+
+## Version 0.7 actuator changes
+
+Linked servo components constrain surface speed and travel through the configured
+horn ratio. The first step no longer jumps an uninitialized servo straight to its
+target. Trimmed launch states include servo positions. Tests cover rate limits,
+travel geometry, component mass changes, invalid references and deterministic
+replay. These are numerical checks of a rigid no-load linkage approximation, not
+servo bench validation or calibrated FT-22 handling. Older simulation recordings
+are rejected; aircraft JSON remains schema version 1.
+
+The 0.7 component catalog and editor copy actual physical fields into each aircraft,
+with catalog replacements tested for mass/CG/inertia, servo rate and motor/prop
+accounting. All bundled aircraft include consumption; the plane and basic-quad
+current curves remain induced-power estimates. Manufacturer samples in the larger
+quad cover a specific prop and voltage only, with command mapping still estimated.
+Numerical pass counts therefore do not establish battery endurance or handling
+accuracy. Constant-supply trim tests and discharge tests exercise different claims.

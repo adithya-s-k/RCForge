@@ -23,6 +23,14 @@ Regression coverage checks feedback priority, disconnected-input recovery, repla
 
 The narrow experiment walkthrough also exposed results arriving below the fold without clear feedback. Completed comparisons now move focus to the result region and bring it into view when needed. End states use readable labels; the duration is labeled as a maximum, and ground contact is included among the reasons a run can end early.
 
+Reloading now restores the last aircraft still available in the catalog and its
+validated applied definition. It starts parked in Pilot view with the observer
+beside it; launch/camera state is not resumed. Removed selections and malformed,
+oversized or mismatched-ID stored overrides fall back to the source definition.
+Unavailable browser storage does not prevent flying. This does not retain
+unapplied drafts. Applied custom imports also return in the local catalog, with
+the imported baseline available for restoration; they do not become bundled presets.
+
 ## Findings and changes
 
 | Reproduced problem                                                                            | Change                                                                                                                                                                                       |
@@ -45,7 +53,42 @@ The narrow experiment walkthrough also exposed results arriving below the fold w
 | Quad propeller tips could clip at narrow editor widths.                                       | Studio framing uses the rendered model bounds, including the propellers.                                                                                                                     |
 | The guide was a wall of text; narrow toolbars wrapped unevenly.                               | A compact shortcut reference with expandable details, orderly editor actions and smaller flight controls retain the minimal dark style.                                                      |
 
+## Visible flight area
+
+At 390 × 844, the wrapped instrument bar occupied 211 px but the camera still
+framed the full 788 px stage. The expanded attitude/map panel then covered the
+Tiny Trainer in Chase. The scene now ends at the measured top of the instrument
+bar, so framing uses the visible 577 px region. Locate uses an overlay with the
+same bounds; pointer picking already uses the canvas rectangle. The editor keeps
+its full inspection viewport. This also avoids rendering the pixels behind the
+opaque bar, without changing the graphics budget or physics loop.
+
+A 760 × 920 check exposed a separate toolbar/status-card overlap from an older
+breakpoint. Tablet camera controls now sit above the card. Browser checks covered
+390 px Chase, tablet Pilot and Locate, desktop Pilot/Chase, runway placement,
+Ground mode, and moving the observer beside the aircraft.
+
+## Setup panel scrolling
+
+The narrow Flight setup panel previously scrolled its heading and Close button
+out of reach. Its active tab content now owns scrolling; heading, section tabs
+and flight action remain fixed. The 390 × 844 check covered long Aircraft
+content, the high-trim note, the compact keyboard visual and navigation into the
+editor. Desktop retains the same compact panel size.
+
 ## Verification
+
+Notifications no longer intercept clicks on the page underneath. A 390 px
+transmitter-recovery check found the notice over `Use keyboard for now`; the
+button's center hit the notice instead. The notice now uses its content width
+within the viewport limit and ignores pointer events, while its Close button
+remains interactive. The same recovery sequence switches to Keyboard with the
+notice still visible, and manual dismissal still works.
+
+The flight distance instrument now measures the straight-line distance from the
+pilot's eye position to the aircraft CG, consistent with Pilot-view Locate. Its
+unit reads `m to pilot`. Previously the horizontal-only reading stayed at 4 m
+with a quad almost 180 m overhead. The minimap remains a north-up ground projection.
 
 Browser walkthroughs exercised keyboard launch, throttle increase/cut, pitch/roll input, pause/resume, impact/restart, Pilot/Chase, Locate, aircraft/observer placement, page navigation, Bronco/Tiny Trainer editing, inline errors, Apply & fly, draft-to-experiment handoff, roll-response plotting and metric switching, missing gamepad recovery, and catalog search. Desktop and narrow layouts were visually inspected.
 

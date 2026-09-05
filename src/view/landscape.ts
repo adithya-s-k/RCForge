@@ -52,9 +52,44 @@ export function landscapeHeight(x: number, z: number, profile: Scenery) {
   return elevation * rise - 1.5;
 }
 
-/** Distant visual terrain. The usable airfield retains its flat collision surface. */
-export function addLandscape(field: T.Group, profile: Scenery) {
-  const dry = profile.surface === "dirt";
+// The renderer and vegetation must sample the same triangles. Sampling the
+// underlying height function directly can leave trees metres above a coarse DEM.
+const terrainExtent = 6000;
+export function landscapeGridPosition(index: number) {
+  const unit = (index / renderBudget.terrainSegments) * 2 - 1;
+  return Math.sign(unit) * terrainExtent * Math.abs(unit) ** 1.45;
+}
+
+export function landscapeSurfaceHeight(x: number, z: number, profile: Scenery) {
+  const segments = renderBudget.terrainSegments;
+  const gridCoordinate = (value: number) => {
+    const unit = T.MathUtils.clamp(value / terrainExtent, -1, 1);
+    return (
+      ((Math.sign(unit) * Math.abs(unit) ** (1 / 1.45) + 1) / 2) * segments
+    );
+  };
+  const gx = gridCoordinate(x),
+    gz = gridCoordinate(z);
+  const col = Math.min(segments - 1, Math.floor(gx));
+  const row = Math.min(segments - 1, Math.floor(gz));
+  const x0 = landscapeGridPosition(col),
+    x1 = landscapeGridPosition(col + 1);
+  const z0 = landscapeGridPosition(row),
+    z1 = landscapeGridPosition(row + 1);
+  // Interpolate in world space, not the nonlinearly distributed grid coordinate.
+  const u = T.MathUtils.clamp((x - x0) / (x1 - x0), 0, 1);
+  const v = T.MathUtils.clamp((z - z0) / (z1 - z0), 0, 1);
+  const y10 = landscapeHeight(x1, z0, profile);
+  const y01 = landscapeHeight(x0, z1, profile);
+  if (u + v <= 1) {
+    const y00 = landscapeHeight(x0, z0, profile);
+    return y00 + u * (y10 - y00) + v * (y01 - y00);
+  }
+  const y11 = landscapeHeight(x1, z1, profile);
+  return y11 + (1 - u) * (y01 - y11) + (1 - v) * (y10 - y11);
+}
+
+export function createLandscapeGeometry(profile: Scenery) {
   const geometry = new T.PlaneGeometry(
     12000,
     12000,
@@ -63,16 +98,27 @@ export function addLandscape(field: T.Group, profile: Scenery) {
   );
   geometry.rotateX(-Math.PI / 2);
   const p = geometry.getAttribute("position");
+  const rowSize = renderBudget.terrainSegments + 1;
   for (let i = 0; i < p.count; i++) {
     // Same triangle budget, with more samples near the flight area and fewer
     // at the outer horizon. The DEM and shading use world-space metres.
-    const distribute = (v: number) =>
-      Math.sign(v) * 6000 * (Math.abs(v) / 6000) ** 1.45;
-    const x = distribute(p.getX(i)),
-      z = distribute(p.getZ(i));
+    const x = landscapeGridPosition(i % rowSize);
+    const z = landscapeGridPosition(Math.floor(i / rowSize));
     p.setXYZ(i, x, landscapeHeight(x, z, profile), z);
   }
   geometry.computeVertexNormals();
+  return geometry;
+}
+
+/** Distant visual terrain. The usable airfield retains its flat collision surface. */
+export function addLandscape(
+  field: T.Group,
+  profile: Scenery,
+  fieldMap: T.Texture,
+) {
+  const dry = profile.surface === "dirt";
+  const geometry = createLandscapeGeometry(profile);
+  const p = geometry.getAttribute("position");
   const occlusion = new Float32Array(p.count);
   for (let i = 0; i < p.count; i++) {
     const x = p.getX(i),
@@ -90,7 +136,9 @@ export function addLandscape(field: T.Group, profile: Scenery) {
     "terrainOcclusion",
     new T.BufferAttribute(occlusion, 1),
   );
-  field.add(new T.Mesh(geometry, mountainMaterial(geometry, profile)));
+  field.add(
+    new T.Mesh(geometry, mountainMaterial(geometry, profile, fieldMap)),
+  );
 
   const rand = seededRandom(profile.seed + 25),
     dummy = new T.Object3D();

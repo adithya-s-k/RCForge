@@ -1,0 +1,752 @@
+{
+  "schemaVersion": 1,
+  "vehicleType": "multirotor",
+  "id": "quad-x-450",
+  "name": "Quad X · 450 mm",
+  "description": "450 mm utility quad with 10-inch two-blade props and a 3S 3300 mAh pack. Manufacturer motor thrust/current samples; estimated command mapping, airframe and battery dynamics.",
+  "multirotor": {
+    "mode": "angle",
+    "maxTiltDeg": 30,
+    "maxRateDegS": 140,
+    "rateGain": 0.09,
+    "attitudeGain": 3.5
+  },
+  "provenance": {
+    "frameReference": {
+      "status": "sourced",
+      "note": "DJI F450 reference class: 450 mm diagonal, 282 g frame, 800–1600 g recommended takeoff mass. This is a generic X frame assembly, not a DJI flight-controller or exact CAD reproduction.",
+      "url": "https://www-v1.dji.com/it/flame-wheel-arf/spec.html"
+    },
+    "motorDimensions": {
+      "status": "sourced",
+      "note": "EMAX MT2213 935KV manufacturer specification image: 53 g, 27.9 mm diameter, 39.7 mm overall length. Overall length includes shaft/adapter; visual bell allocation is estimated.",
+      "url": "https://emaxmodel.com/collections/mt-series/products/emax-mt2213-935kv-multicopter-brushless-motor"
+    },
+    "benchSamples": {
+      "status": "sourced",
+      "note": "EMAX manufacturer table, 11.1 V and EMAX1045: thrust 130/220/290/360/430/490/540/580/620/640 gram-force at current 1/2/3/4/5/6/7/8/9/9.5 A and RPM 2940/3860/4400/4940/5340/5720/5980/6170/6410/6530. Converted with standard gravity 9.80665 m/s². No independent bench validation. Manufacturer does not supply PWM command or air density.",
+      "url": "https://cdn.shopify.com/s/files/1/0469/7358/3518/files/QQ_20220530165947_2048x2048.png?v=1653901291"
+    },
+    "commandMapping": {
+      "status": "estimated",
+      "note": "Normalized command is reported RPM divided by 6530 RPM; assumes linear RPM versus command, not measured ESC/PWM response. Adds zero-command zero-thrust/current endpoint. Reference density assumed 1.225 kg/m³. Electrical voltage/current scaling, rotor lag and torque ratio are estimated. Curves are not a calibrated complete powertrain."
+    },
+    "assembly": {
+      "status": "estimated",
+      "note": "Frame mass 282 g split into 102 g center plates plus four 45 g arms. All part positions, frame outlines, component box inertias and other component masses are estimated. 3S 3300 mAh battery 280 g, four 20 g ESCs, four 8 g props, 12 g FC, 14 g receiver, 35 g wiring, 50 g feet, 10 g straps. No camera, GPS, altitude hold or position hold."
+    },
+    "battery": {
+      "status": "estimated",
+      "note": "3S 3300 mAh LiPo, 35 milliohm pack resistance, initial SOC 95%, 0.2 A avionics. OCV curve is illustrative. Measure the actual pack. Depletion, sag and density are simulated; no thermal, cell imbalance, rotor ground effect, interference or vortex-ring model."
+    }
+  },
+  "parts": [
+    {
+      "id": "frame",
+      "kind": "body",
+      "massKg": 0.102,
+      "positionM": [0, 0, 0],
+      "sizeM": [0.16, 0.1, 0.018],
+      "color": "#303337",
+      "material": {
+        "name": "Glass-fiber center plates",
+        "finish": "plastic"
+      },
+      "model": "450 mm X frame center allocation"
+    },
+    {
+      "id": "battery",
+      "kind": "battery",
+      "massKg": 0.28,
+      "positionM": [0, 0, -0.048],
+      "sizeM": [0.135, 0.043, 0.025],
+      "color": "#3c4246",
+      "material": {
+        "name": "3S LiPo pack",
+        "finish": "plastic"
+      },
+      "model": "3300 mAh pack (estimated)"
+    },
+    {
+      "id": "arm-1",
+      "kind": "boom",
+      "massKg": 0.045,
+      "positionM": [0.07954951288348659, -0.07954951288348659, 0.003],
+      "sizeM": [0.225, 0.025, 0.018],
+      "color": "#9c493a",
+      "material": {
+        "name": "Glass-filled nylon arm",
+        "finish": "plastic"
+      },
+      "orientationDeg": [0, 0, -45.0]
+    },
+    {
+      "id": "motor-1",
+      "kind": "motor",
+      "massKg": 0.053,
+      "positionM": [0.15909902576697318, -0.15909902576697318, -0.015],
+      "sizeM": [0.0279, 0.0279, 0.0397],
+      "color": "#35393c",
+      "material": {
+        "name": "Aluminum, steel and copper",
+        "finish": "metal"
+      },
+      "manufacturer": "EMAX",
+      "model": "MT2213 935KV"
+    },
+    {
+      "id": "prop-1",
+      "kind": "equipment",
+      "massKg": 0.008,
+      "positionM": [0.15909902576697318, -0.15909902576697318, -0.033],
+      "sizeM": [0.254, 0.023, 0.005],
+      "color": "#3e4548",
+      "material": {
+        "name": "1045 two-blade nylon propeller",
+        "finish": "plastic"
+      }
+    },
+    {
+      "id": "esc-1",
+      "kind": "equipment",
+      "massKg": 0.02,
+      "positionM": [0.07636753236814713, -0.07636753236814713, -0.013],
+      "sizeM": [0.044, 0.023, 0.01],
+      "color": "#242628",
+      "material": {
+        "name": "20 A ESC with leads (estimated)"
+      },
+      "orientationDeg": [0, 0, -45.0]
+    },
+    {
+      "id": "leg-1",
+      "kind": "equipment",
+      "massKg": 0.0125,
+      "positionM": [0.09545941546018391, -0.09545941546018391, 0.035],
+      "sizeM": [0.014, 0.014, 0.07],
+      "color": "#26282a",
+      "material": {
+        "name": "Landing foot (estimated)",
+        "finish": "plastic"
+      }
+    },
+    {
+      "id": "arm-2",
+      "kind": "boom",
+      "massKg": 0.045,
+      "positionM": [0.07954951288348659, 0.07954951288348659, 0.003],
+      "sizeM": [0.225, 0.025, 0.018],
+      "color": "#9c493a",
+      "material": {
+        "name": "Glass-filled nylon arm",
+        "finish": "plastic"
+      },
+      "orientationDeg": [0, 0, 45.0]
+    },
+    {
+      "id": "motor-2",
+      "kind": "motor",
+      "massKg": 0.053,
+      "positionM": [0.15909902576697318, 0.15909902576697318, -0.015],
+      "sizeM": [0.0279, 0.0279, 0.0397],
+      "color": "#35393c",
+      "material": {
+        "name": "Aluminum, steel and copper",
+        "finish": "metal"
+      },
+      "manufacturer": "EMAX",
+      "model": "MT2213 935KV"
+    },
+    {
+      "id": "prop-2",
+      "kind": "equipment",
+      "massKg": 0.008,
+      "positionM": [0.15909902576697318, 0.15909902576697318, -0.033],
+      "sizeM": [0.254, 0.023, 0.005],
+      "color": "#3e4548",
+      "material": {
+        "name": "1045 two-blade nylon propeller",
+        "finish": "plastic"
+      }
+    },
+    {
+      "id": "esc-2",
+      "kind": "equipment",
+      "massKg": 0.02,
+      "positionM": [0.07636753236814713, 0.07636753236814713, -0.013],
+      "sizeM": [0.044, 0.023, 0.01],
+      "color": "#242628",
+      "material": {
+        "name": "20 A ESC with leads (estimated)"
+      },
+      "orientationDeg": [0, 0, 45.0]
+    },
+    {
+      "id": "leg-2",
+      "kind": "equipment",
+      "massKg": 0.0125,
+      "positionM": [0.09545941546018391, 0.09545941546018391, 0.035],
+      "sizeM": [0.014, 0.014, 0.07],
+      "color": "#26282a",
+      "material": {
+        "name": "Landing foot (estimated)",
+        "finish": "plastic"
+      }
+    },
+    {
+      "id": "arm-3",
+      "kind": "boom",
+      "massKg": 0.045,
+      "positionM": [-0.07954951288348659, 0.07954951288348659, 0.003],
+      "sizeM": [0.225, 0.025, 0.018],
+      "color": "#35383c",
+      "material": {
+        "name": "Glass-filled nylon arm",
+        "finish": "plastic"
+      },
+      "orientationDeg": [0, 0, 135.0]
+    },
+    {
+      "id": "motor-3",
+      "kind": "motor",
+      "massKg": 0.053,
+      "positionM": [-0.15909902576697318, 0.15909902576697318, -0.015],
+      "sizeM": [0.0279, 0.0279, 0.0397],
+      "color": "#35393c",
+      "material": {
+        "name": "Aluminum, steel and copper",
+        "finish": "metal"
+      },
+      "manufacturer": "EMAX",
+      "model": "MT2213 935KV"
+    },
+    {
+      "id": "prop-3",
+      "kind": "equipment",
+      "massKg": 0.008,
+      "positionM": [-0.15909902576697318, 0.15909902576697318, -0.033],
+      "sizeM": [0.254, 0.023, 0.005],
+      "color": "#3e4548",
+      "material": {
+        "name": "1045 two-blade nylon propeller",
+        "finish": "plastic"
+      }
+    },
+    {
+      "id": "esc-3",
+      "kind": "equipment",
+      "massKg": 0.02,
+      "positionM": [-0.07636753236814713, 0.07636753236814713, -0.013],
+      "sizeM": [0.044, 0.023, 0.01],
+      "color": "#242628",
+      "material": {
+        "name": "20 A ESC with leads (estimated)"
+      },
+      "orientationDeg": [0, 0, 135.0]
+    },
+    {
+      "id": "leg-3",
+      "kind": "equipment",
+      "massKg": 0.0125,
+      "positionM": [-0.09545941546018391, 0.09545941546018391, 0.035],
+      "sizeM": [0.014, 0.014, 0.07],
+      "color": "#26282a",
+      "material": {
+        "name": "Landing foot (estimated)",
+        "finish": "plastic"
+      }
+    },
+    {
+      "id": "arm-4",
+      "kind": "boom",
+      "massKg": 0.045,
+      "positionM": [-0.07954951288348659, -0.07954951288348659, 0.003],
+      "sizeM": [0.225, 0.025, 0.018],
+      "color": "#35383c",
+      "material": {
+        "name": "Glass-filled nylon arm",
+        "finish": "plastic"
+      },
+      "orientationDeg": [0, 0, -135.0]
+    },
+    {
+      "id": "motor-4",
+      "kind": "motor",
+      "massKg": 0.053,
+      "positionM": [-0.15909902576697318, -0.15909902576697318, -0.015],
+      "sizeM": [0.0279, 0.0279, 0.0397],
+      "color": "#35393c",
+      "material": {
+        "name": "Aluminum, steel and copper",
+        "finish": "metal"
+      },
+      "manufacturer": "EMAX",
+      "model": "MT2213 935KV"
+    },
+    {
+      "id": "prop-4",
+      "kind": "equipment",
+      "massKg": 0.008,
+      "positionM": [-0.15909902576697318, -0.15909902576697318, -0.033],
+      "sizeM": [0.254, 0.023, 0.005],
+      "color": "#3e4548",
+      "material": {
+        "name": "1045 two-blade nylon propeller",
+        "finish": "plastic"
+      }
+    },
+    {
+      "id": "esc-4",
+      "kind": "equipment",
+      "massKg": 0.02,
+      "positionM": [-0.07636753236814713, -0.07636753236814713, -0.013],
+      "sizeM": [0.044, 0.023, 0.01],
+      "color": "#242628",
+      "material": {
+        "name": "20 A ESC with leads (estimated)"
+      },
+      "orientationDeg": [0, 0, -135.0]
+    },
+    {
+      "id": "leg-4",
+      "kind": "equipment",
+      "massKg": 0.0125,
+      "positionM": [-0.09545941546018391, -0.09545941546018391, 0.035],
+      "sizeM": [0.014, 0.014, 0.07],
+      "color": "#26282a",
+      "material": {
+        "name": "Landing foot (estimated)",
+        "finish": "plastic"
+      }
+    },
+    {
+      "id": "flight-controller",
+      "kind": "equipment",
+      "massKg": 0.012,
+      "positionM": [0, 0, -0.018],
+      "sizeM": [0.036, 0.036, 0.009],
+      "color": "#295b49",
+      "material": {
+        "name": "Flight-controller board (estimated)"
+      }
+    },
+    {
+      "id": "receiver",
+      "kind": "equipment",
+      "massKg": 0.014,
+      "positionM": [0, 0, 0.018],
+      "sizeM": [0.045, 0.023, 0.012],
+      "color": "#393b3e",
+      "material": {
+        "name": "Six-channel receiver (estimated)"
+      }
+    },
+    {
+      "id": "wiring",
+      "kind": "equipment",
+      "massKg": 0.035,
+      "positionM": [0, 0, 0],
+      "sizeM": [0.14, 0.08, 0.01],
+      "color": "#35383c",
+      "material": {
+        "name": "Power distribution, wiring and connectors"
+      }
+    },
+    {
+      "id": "straps",
+      "kind": "equipment",
+      "massKg": 0.01,
+      "positionM": [0, 0, -0.048],
+      "sizeM": [0.09, 0.047, 0.028],
+      "color": "#27292a",
+      "material": {
+        "name": "Battery straps"
+      }
+    }
+  ],
+  "surfaces": [],
+  "motors": [
+    {
+      "id": "rotor-1",
+      "partId": "motor-1",
+      "positionM": [0.15909902576697318, -0.15909902576697318, -0.033],
+      "maxThrustN": 6.276256,
+      "zeroThrustSpeedMps": 35,
+      "responseSeconds": 0.085,
+      "yawMix": 0,
+      "propDiameterM": 0.254,
+      "propBlades": 2,
+      "spin": "cw",
+      "torquePerThrustM": 0.018,
+      "model": "EMAX MT2213 935KV",
+      "propeller": "EMAX1045 two blade",
+      "performance": {
+        "referenceVoltage": 11.1,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0
+          },
+          {
+            "command": 0.450229709035222,
+            "thrustN": 1.2748645,
+            "currentA": 1
+          },
+          {
+            "command": 0.5911179173047473,
+            "thrustN": 2.157463,
+            "currentA": 2
+          },
+          {
+            "command": 0.6738131699846861,
+            "thrustN": 2.8439285,
+            "currentA": 3
+          },
+          {
+            "command": 0.7565084226646248,
+            "thrustN": 3.5303940000000003,
+            "currentA": 4
+          },
+          {
+            "command": 0.8177641653905053,
+            "thrustN": 4.2168595,
+            "currentA": 5
+          },
+          {
+            "command": 0.8759571209800919,
+            "thrustN": 4.8052585,
+            "currentA": 6
+          },
+          {
+            "command": 0.9157733537519143,
+            "thrustN": 5.295591,
+            "currentA": 7
+          },
+          {
+            "command": 0.9448698315467075,
+            "thrustN": 5.687857,
+            "currentA": 8
+          },
+          {
+            "command": 0.9816232771822359,
+            "thrustN": 6.080123,
+            "currentA": 9
+          },
+          {
+            "command": 1.0,
+            "thrustN": 6.276256,
+            "currentA": 9.5
+          }
+        ]
+      },
+      "propPartId": "prop-1"
+    },
+    {
+      "id": "rotor-2",
+      "partId": "motor-2",
+      "positionM": [0.15909902576697318, 0.15909902576697318, -0.033],
+      "maxThrustN": 6.276256,
+      "zeroThrustSpeedMps": 35,
+      "responseSeconds": 0.085,
+      "yawMix": 0,
+      "propDiameterM": 0.254,
+      "propBlades": 2,
+      "spin": "ccw",
+      "torquePerThrustM": 0.018,
+      "model": "EMAX MT2213 935KV",
+      "propeller": "EMAX1045 two blade",
+      "performance": {
+        "referenceVoltage": 11.1,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0
+          },
+          {
+            "command": 0.450229709035222,
+            "thrustN": 1.2748645,
+            "currentA": 1
+          },
+          {
+            "command": 0.5911179173047473,
+            "thrustN": 2.157463,
+            "currentA": 2
+          },
+          {
+            "command": 0.6738131699846861,
+            "thrustN": 2.8439285,
+            "currentA": 3
+          },
+          {
+            "command": 0.7565084226646248,
+            "thrustN": 3.5303940000000003,
+            "currentA": 4
+          },
+          {
+            "command": 0.8177641653905053,
+            "thrustN": 4.2168595,
+            "currentA": 5
+          },
+          {
+            "command": 0.8759571209800919,
+            "thrustN": 4.8052585,
+            "currentA": 6
+          },
+          {
+            "command": 0.9157733537519143,
+            "thrustN": 5.295591,
+            "currentA": 7
+          },
+          {
+            "command": 0.9448698315467075,
+            "thrustN": 5.687857,
+            "currentA": 8
+          },
+          {
+            "command": 0.9816232771822359,
+            "thrustN": 6.080123,
+            "currentA": 9
+          },
+          {
+            "command": 1.0,
+            "thrustN": 6.276256,
+            "currentA": 9.5
+          }
+        ]
+      },
+      "propPartId": "prop-2"
+    },
+    {
+      "id": "rotor-3",
+      "partId": "motor-3",
+      "positionM": [-0.15909902576697318, 0.15909902576697318, -0.033],
+      "maxThrustN": 6.276256,
+      "zeroThrustSpeedMps": 35,
+      "responseSeconds": 0.085,
+      "yawMix": 0,
+      "propDiameterM": 0.254,
+      "propBlades": 2,
+      "spin": "cw",
+      "torquePerThrustM": 0.018,
+      "model": "EMAX MT2213 935KV",
+      "propeller": "EMAX1045 two blade",
+      "performance": {
+        "referenceVoltage": 11.1,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0
+          },
+          {
+            "command": 0.450229709035222,
+            "thrustN": 1.2748645,
+            "currentA": 1
+          },
+          {
+            "command": 0.5911179173047473,
+            "thrustN": 2.157463,
+            "currentA": 2
+          },
+          {
+            "command": 0.6738131699846861,
+            "thrustN": 2.8439285,
+            "currentA": 3
+          },
+          {
+            "command": 0.7565084226646248,
+            "thrustN": 3.5303940000000003,
+            "currentA": 4
+          },
+          {
+            "command": 0.8177641653905053,
+            "thrustN": 4.2168595,
+            "currentA": 5
+          },
+          {
+            "command": 0.8759571209800919,
+            "thrustN": 4.8052585,
+            "currentA": 6
+          },
+          {
+            "command": 0.9157733537519143,
+            "thrustN": 5.295591,
+            "currentA": 7
+          },
+          {
+            "command": 0.9448698315467075,
+            "thrustN": 5.687857,
+            "currentA": 8
+          },
+          {
+            "command": 0.9816232771822359,
+            "thrustN": 6.080123,
+            "currentA": 9
+          },
+          {
+            "command": 1.0,
+            "thrustN": 6.276256,
+            "currentA": 9.5
+          }
+        ]
+      },
+      "propPartId": "prop-3"
+    },
+    {
+      "id": "rotor-4",
+      "partId": "motor-4",
+      "positionM": [-0.15909902576697318, -0.15909902576697318, -0.033],
+      "maxThrustN": 6.276256,
+      "zeroThrustSpeedMps": 35,
+      "responseSeconds": 0.085,
+      "yawMix": 0,
+      "propDiameterM": 0.254,
+      "propBlades": 2,
+      "spin": "ccw",
+      "torquePerThrustM": 0.018,
+      "model": "EMAX MT2213 935KV",
+      "propeller": "EMAX1045 two blade",
+      "performance": {
+        "referenceVoltage": 11.1,
+        "referenceDensityKgM3": 1.225,
+        "points": [
+          {
+            "command": 0,
+            "thrustN": 0,
+            "currentA": 0
+          },
+          {
+            "command": 0.450229709035222,
+            "thrustN": 1.2748645,
+            "currentA": 1
+          },
+          {
+            "command": 0.5911179173047473,
+            "thrustN": 2.157463,
+            "currentA": 2
+          },
+          {
+            "command": 0.6738131699846861,
+            "thrustN": 2.8439285,
+            "currentA": 3
+          },
+          {
+            "command": 0.7565084226646248,
+            "thrustN": 3.5303940000000003,
+            "currentA": 4
+          },
+          {
+            "command": 0.8177641653905053,
+            "thrustN": 4.2168595,
+            "currentA": 5
+          },
+          {
+            "command": 0.8759571209800919,
+            "thrustN": 4.8052585,
+            "currentA": 6
+          },
+          {
+            "command": 0.9157733537519143,
+            "thrustN": 5.295591,
+            "currentA": 7
+          },
+          {
+            "command": 0.9448698315467075,
+            "thrustN": 5.687857,
+            "currentA": 8
+          },
+          {
+            "command": 0.9816232771822359,
+            "thrustN": 6.080123,
+            "currentA": 9
+          },
+          {
+            "command": 1.0,
+            "thrustN": 6.276256,
+            "currentA": 9.5
+          }
+        ]
+      },
+      "propPartId": "prop-4"
+    }
+  ],
+  "contactPoints": [
+    {
+      "id": "foot-1",
+      "positionM": [0.09545941546018391, -0.09545941546018391, 0.07],
+      "spanLinked": false,
+      "kind": "skid",
+      "steering": false,
+      "wheelRadiusM": 0.008
+    },
+    {
+      "id": "foot-2",
+      "positionM": [0.09545941546018391, 0.09545941546018391, 0.07],
+      "spanLinked": false,
+      "kind": "skid",
+      "steering": false,
+      "wheelRadiusM": 0.008
+    },
+    {
+      "id": "foot-3",
+      "positionM": [-0.09545941546018391, 0.09545941546018391, 0.07],
+      "spanLinked": false,
+      "kind": "skid",
+      "steering": false,
+      "wheelRadiusM": 0.008
+    },
+    {
+      "id": "foot-4",
+      "positionM": [-0.09545941546018391, -0.09545941546018391, 0.07],
+      "spanLinked": false,
+      "kind": "skid",
+      "steering": false,
+      "wheelRadiusM": 0.008
+    }
+  ],
+  "reference": {
+    "spanM": 0.45,
+    "areaM2": 0.2026829916389991,
+    "cgFromLeadingEdgeM": 0,
+    "leadingEdgeXM": 0
+  },
+  "fuselageDragAreaM2": 0.033,
+  "angularDamping": [0.003, 0.003, 0.005],
+  "battery": {
+    "partId": "battery",
+    "chemistry": "LiPo",
+    "cells": 3,
+    "capacityMah": 3300,
+    "resistanceOhm": 0.035,
+    "initialSoc": 0.95,
+    "avionicsCurrentA": 0.2,
+    "voltageCurve": [
+      {
+        "soc": 0,
+        "voltsPerCell": 3.3
+      },
+      {
+        "soc": 0.1,
+        "voltsPerCell": 3.65
+      },
+      {
+        "soc": 0.5,
+        "voltsPerCell": 3.8
+      },
+      {
+        "soc": 0.9,
+        "voltsPerCell": 4.1
+      },
+      {
+        "soc": 1,
+        "voltsPerCell": 4.2
+      }
+    ]
+  },
+  "bodyDragAreaM2": [0.024, 0.03, 0.07]
+}

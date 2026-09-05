@@ -11,10 +11,12 @@ import { launchState } from "../src/core/launch";
 import { rotorCommands } from "../src/core/multirotor";
 import { runExperiment, replayRecording } from "../src/core/experiment";
 const a = parseAircraft(quad);
-it("balances hover and holds its height for ten seconds", () => {
-  const trim = findTrim(a);
+it("balances hover at constant supply voltage for ten seconds", () => {
+  const constantSupply = structuredClone(a);
+  constantSupply.battery!.voltageCurve.forEach((p) => (p.voltsPerCell = 3.9));
+  const trim = findTrim(constantSupply);
   expect(trim.converged).toBe(true);
-  const sim = new Simulation(a, calmEnvironment(), trim.state);
+  const sim = new Simulation(constantSupply, calmEnvironment(), trim.state);
   for (let i = 0; i < 1200; i++) sim.step(trim.controls);
   expect(sim.state.position[2]).toBeCloseTo(-3, 5);
   expect(Math.hypot(...sim.state.omega)).toBeLessThan(1e-6);

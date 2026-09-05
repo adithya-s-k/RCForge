@@ -4,6 +4,19 @@ import { calmEnvironment, initialState, type State } from "./simulation";
 import { findTrim } from "./trim";
 import { radians, axisQ } from "./math";
 export type LaunchMode = "ground" | "hand" | "airborne";
+/** Trim the release operating point; this is initialization, never an autopilot. */
+export function launchTrim(
+  a: Aircraft,
+  mode: LaunchMode,
+  environment = calmEnvironment(),
+) {
+  return findTrim(
+    a,
+    mode === "hand" ? 8.5 : 12,
+    environment,
+    mode === "hand" ? 8 : 0,
+  );
+}
 /** Optional removable gear is a modeled modification, not part of the published Bronco. */
 export function fitLandingGear(source: Aircraft): Aircraft {
   const a = structuredClone(source);
@@ -43,7 +56,7 @@ export function launchState(
   mode: LaunchMode,
   environment = calmEnvironment(),
 ): State {
-  const trim = findTrim(a, 12, environment);
+  const trim = launchTrim(a, mode, environment);
   if (a.vehicleType === "multirotor") {
     if (mode !== "ground") return trim.state;
     const s = initialState(a, 0, 0, 0),
@@ -62,10 +75,8 @@ export function launchState(
     return s;
   }
   if (mode === "hand") {
-    const s = initialState(a, 8.5, 1.7, 8);
+    const s = trim.state;
     s.position = [-5, -10, -1.7];
-    s.velocity = [8.35, 0, -1.2];
-    s.motors.fill(0.65);
     return s;
   }
   if (!a.contactPoints.some((p) => p.kind === "wheel"))

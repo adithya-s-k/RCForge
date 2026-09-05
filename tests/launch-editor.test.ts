@@ -1,7 +1,10 @@
 import { describe, it, expect } from "vitest";
 import bronco from "../aircraft/ft-bronco.json";
+import tiny from "../aircraft/ft-tiny-trainer.json";
+import raptor from "../aircraft/ft-22-raptor.json";
+import trainer from "../aircraft/simple-trainer.json";
 import { parseAircraft } from "../src/core/schema";
-import { fitLandingGear, launchState } from "../src/core/launch";
+import { fitLandingGear, launchState, launchTrim } from "../src/core/launch";
 import { setTotalMass, setLongitudinalCG } from "../src/core/editor";
 import { massProperties } from "../src/core/aircraft";
 import {
@@ -35,6 +38,22 @@ describe("mass and balance editor", () => {
   });
 });
 describe("launch and wheel contact", () => {
+  it.each([bronco, tiny, raptor, trainer])(
+    "releases $id with trim for its hand-launch speed",
+    (data) => {
+      const model = parseAircraft(data),
+        initial = launchState(model, "hand");
+      const trim = launchTrim(model, "hand");
+      expect(trim.converged).toBe(true);
+      const sim = new Simulation(model, calmEnvironment(), initial);
+      expect(Math.hypot(...initial.velocity)).toBeCloseTo(8.5, 9);
+      expect(initial.motors[0]).toBeCloseTo(trim.controls.throttle, 9);
+      for (let i = 0; i < 600; i++) sim.step(trim.controls);
+      expect(sim.state.status).toBe("flying");
+      expect(-sim.state.position[2]).toBeGreaterThan(1.7);
+      expect(sim.state.position[0]).toBeGreaterThan(20);
+    },
+  );
   it("requires gear for ground launch and fits gear only once", () => {
     expect(() => launchState(a, "ground")).toThrow();
     const g = fitLandingGear(a);

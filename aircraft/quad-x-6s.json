@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "vehicleType": "multirotor",
   "id": "quad-x-6s",
-  "name": "Quad X \u00b7 6S powertrain",
+  "name": "Quad X · 6S powertrain",
   "description": "650 g example with 6S battery sag, discharge, bench-curve propulsion and a component bill of materials. All build and curve values are illustrative estimates.",
   "multirotor": {
     "mode": "angle",
@@ -197,7 +197,8 @@
             "currentA": 18
           }
         ]
-      }
+      },
+      "partId": "motor-1"
     },
     {
       "id": "rotor-2",
@@ -241,7 +242,8 @@
             "currentA": 18
           }
         ]
-      }
+      },
+      "partId": "motor-2"
     },
     {
       "id": "rotor-3",
@@ -285,7 +287,8 @@
             "currentA": 18
           }
         ]
-      }
+      },
+      "partId": "motor-3"
     },
     {
       "id": "rotor-4",
@@ -329,7 +332,8 @@
             "currentA": 18
           }
         ]
-      }
+      },
+      "partId": "motor-4"
     }
   ],
   "contactPoints": [

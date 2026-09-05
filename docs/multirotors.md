@@ -27,3 +27,61 @@ Tests cover hover equilibrium, vertical takeoff, axis torque signs, zero-throttl
 ### Visual construction and mass accounting
 
 The Quad X preview uses swept, pitched blades at the configured propeller diameter, motor stations from the rotor setup, and battery size and position from the battery part. Carbon plates, motor bell windows, winding detail, straps, camera and wiring are illustrative construction details, not a scan or CAD model of a commercial frame. The example remains an estimated 650 g build: 250 g battery, four 35 g motor allocations and 260 g frame/equipment allocation. Electronics, wiring and fasteners are included in that last allocation; visual detail adds no hidden mass. Inertia uses the component box approximations, not the rendered meshes. Measure the actual build and edit component masses/positions before comparing flight behavior.
+
+## 450 mm utility example
+
+**Quad X · 450 mm** (`aircraft/quad-x-450.json`) is a 1,007 g X-layout utility
+build with 254 mm two-blade props, a 3S 3300 mAh pack and slower rotor response
+than the 5-inch examples. It uses the same Angle/Rate controller, with manual
+collective power. It has no GPS, camera, altitude hold or position hold.
+
+The [DJI F450 specification](https://www-v1.dji.com/it/flame-wheel-arf/spec.html)
+provides the 450 mm diagonal and 282 g frame reference. The preset divides that
+frame allocation into center plates and four arms; their dimensions, mass
+allocation and inertias are estimates. It is not an exact DJI assembly or
+flight-controller emulation.
+
+The [EMAX MT2213 manufacturer page](https://emaxmodel.com/collections/mt-series/products/emax-mt2213-935kv-multicopter-brushless-motor)
+provides 53 g motor mass and 27.9 × 39.7 mm overall dimensions. Its
+[manufacturer performance table](https://cdn.shopify.com/s/files/1/0469/7358/3518/files/QQ_20220530165947_2048x2048.png?v=1653901291)
+provides ten thrust/current/RPM samples for EMAX1045 props at 11.1 V. The final
+sample is 640 gram-force at 9.5 A, converted to 6.276256 N. The 720 g headline
+on the specification image belongs to another operating condition and is not
+used for this 3S/1045 combination.
+
+**The table does not specify throttle/PWM commands.** The preset uses normalized
+RPM as an estimated command coordinate, adds a zero endpoint and assumes standard
+air density. This is manufacturer component evidence, not a calibrated ESC or
+complete aircraft. Rotor lag, torque ratio, battery resistance, OCV curve, drag,
+controller gains and all remaining component weights are estimates. Replace them
+with measurements of your assembly before comparing physical flight.
+
+At initial charge in calm standard air, hover trim is approximately 57.5%.
+Battery discharge means an unchanged collective command slowly loses height;
+this is not altitude hold. The numerical envelope solves hover at all 27 surveyed
+mass/charge/site combinations, with no nonfinite loads. This does not establish
+real-world fidelity.
+
+To reproduce:
+
+```sh
+npm run aircraft:validate
+npm run simulate -- quad-x-450 --scenario roll-pulse --duration 10
+npm run replay -- results/quad-x-450-roll-pulse/recording.json
+npm run physics:envelope -- quad-x-450
+```
+
+### Authored motor and propeller appearance
+
+Optional motor `partId` references an existing `kind: "motor"` mass component.
+It supplies the quad motor's dimensional envelope without adding mass again.
+The bell/shaft split remains cosmetic; a measured principal inertia override can
+replace the component box inertia independently. Optional `propBlades` (2–6)
+sets blade count; omitted values retain two blades on fixed-wing aircraft and
+three on quads. Neither blade count nor diameter infers new propulsion data.
+
+The larger quad's arm parts, battery dimensions, ESCs and landing feet guide its
+preview. Compact examples retain their existing illustrative frame construction.
+Static quad geometry is batched by shared material at construction time; animated
+propellers remain separate. This reduces draw submissions without adding a render
+loop, increasing texture resolution or changing dynamics.

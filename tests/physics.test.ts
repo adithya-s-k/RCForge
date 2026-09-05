@@ -147,8 +147,10 @@ describe("flight dynamics", () => {
     expect(f.force.every(Number.isFinite)).toBe(true);
   });
   it.each([a, parseAircraft(trainer)])(
-    "finds and holds level trim for $id",
-    (aircraft) => {
+    "finds and holds level trim at constant supply voltage for $id",
+    (definition) => {
+      const aircraft = structuredClone(definition);
+      aircraft.battery!.voltageCurve.forEach((p) => (p.voltsPerCell = 3.9));
       const trim = findTrim(aircraft);
       expect(trim.converged).toBe(true);
       const result = runExperiment(aircraft, calmEnvironment(), "cruise", 20);
@@ -233,6 +235,9 @@ describe("repeatable experiments", () => {
     const r = runExperiment(a, calmEnvironment(), "cruise", 0.1).recording;
     expect(() =>
       parseRecording({ ...r, simulationVersion: "future" }),
+    ).toThrow();
+    expect(() =>
+      parseRecording({ ...r, simulationVersion: "0.7.0" }),
     ).toThrow();
     r.frames[0].throttle = 2;
     expect(() => parseRecording(r)).toThrow();

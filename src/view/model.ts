@@ -1,4 +1,9 @@
+import { orientComponent } from "./component-pose";
+import { surfaceActuation } from "../core/actuation";
 import { buildQuad } from "./quad-model";
+import { buildPanel } from "./planform";
+import { buildFoamWing } from "./foam-wing";
+import { propellerBlade } from "./propeller";
 import { disposeModel } from "./dispose-model";
 import type { SurfaceControl } from "../core/surface-control";
 import * as T from "three";
@@ -12,6 +17,7 @@ export interface AircraftVisual {
   controls: {
     surfaceId: string;
     pivot: T.Group;
+    hingeAxis?: T.Vector3;
     axis: keyof Controls;
     gain: number;
     control: SurfaceControl;
@@ -54,7 +60,7 @@ export function disposeAircraft(root: T.Object3D) {
 }
 function mesh(
   g: T.BufferGeometry,
-  m: T.Material,
+  m: T.Material | T.Material[],
   parent: T.Object3D,
   pos: Vec3 = [0, 0, 0],
 ) {
@@ -71,12 +77,21 @@ function box(parent: T.Object3D, d: Vec3, p: Vec3, m: T.Material) {
 /** Sections follow assembled fuselage cross sections in the body frame. */
 function loft(
   parent: T.Object3D,
-  sections: { x: number; width: number; top: number; bottom: number }[],
+  sections: {
+    x: number;
+    width: number;
+    top: number;
+    bottom: number;
+    topColor?: string;
+  }[],
   material: T.Material,
   y = 0,
 ) {
   const vertices: number[] = [],
     indices: number[] = [];
+  const materials: T.Material[] = [material];
+  const colors = new Map<string, number>();
+  const groups: { start: number; material: number }[] = [];
   for (const s of sections) {
     vertices.push(
       s.x,
@@ -99,6 +114,18 @@ function loft(
         b = i * 4 + ((j + 1) % 4),
         c = (i + 1) * 4 + j,
         d = (i + 1) * 4 + ((j + 1) % 4);
+      let materialIndex = 0;
+      const color = sections[i].topColor;
+      if (j === 0 && color) {
+        if (!colors.has(color)) {
+          colors.set(color, materials.length);
+          materials.push(
+            new T.MeshStandardMaterial({ color, roughness: 0.55 }),
+          );
+        }
+        materialIndex = colors.get(color)!;
+      }
+      groups.push({ start: indices.length, material: materialIndex });
       indices.push(a, b, c, b, d, c);
     }
   indices.push(0, 2, 1, 0, 3, 2);
@@ -106,9 +133,21 @@ function loft(
   indices.push(n, n + 1, n + 2, n, n + 2, n + 3);
   const g = new T.BufferGeometry();
   g.setAttribute("position", new T.Float32BufferAttribute(vertices, 3));
-  g.setIndex(indices);
-  g.computeVertexNormals();
-  return mesh(g, material, parent);
+  // One draw group per finish, rather than one per face/section.
+  const ordered: number[] = [];
+  for (let index = 0; index < materials.length; index++) {
+    const start = ordered.length;
+    for (const entry of groups)
+      if (entry.material === index)
+        ordered.push(...indices.slice(entry.start, entry.start + 6));
+    if (index === 0) ordered.push(...indices.slice(-12));
+    g.addGroup(start, ordered.length - start, index);
+  }
+  g.setIndex(ordered);
+  const flat = g.toNonIndexed();
+  g.dispose();
+  flat.computeVertexNormals();
+  return mesh(flat, materials.length === 1 ? material : materials, parent);
 }
 function airfoil(chord: number, span: number, thickness = 0.105, cutoff = 1) {
   const v: number[] = [],
@@ -240,6 +279,122 @@ function rod(parent: T.Object3D, a: Vec3, b: Vec3, r: number, m: T.Material) {
   v.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), delta.normalize());
   return v;
 }
+/** Paint on the Bronco's folded cabin; photo-guided, not separate structure. */
+function broncoCabin(parent: T.Group, part: Aircraft["parts"][number]) {
+  const glass = new T.MeshStandardMaterial({
+    color: "#23262a",
+    roughness: 0.67,
+    metalness: 0,
+    side: T.DoubleSide,
+    polygonOffset: true,
+    polygonOffsetFactor: -1,
+    polygonOffsetUnits: -1,
+  });
+  const sx = part.sizeM[0] / 0.447,
+    sz = part.sizeM[2] / 0.132;
+  const px = (x: number) => part.positionM[0] + (x - 0.1035) * sx;
+  const pz = (z: number) => part.positionM[2] + (z - 0.045) * sz;
+  const panes = [
+    [
+      [0.077, -0.033],
+      [0.128, -0.037],
+      [0.128, 0.022],
+      [0.077, 0.018],
+    ],
+    [
+      [0.133, -0.037],
+      [0.17, -0.03],
+      [0.19, -0.014],
+      [0.207, 0.006],
+      [0.197, 0.022],
+      [0.133, 0.022],
+    ],
+  ];
+  for (const side of [-1, 1])
+    for (const pane of panes) {
+      const shape = new T.Shape(
+        pane.map(([x, z]) => new T.Vector2(px(x), pz(z))),
+      );
+      const geometry = new T.ShapeGeometry(shape);
+      const pos = geometry.getAttribute("position");
+      for (let i = 0; i < pos.count; i++)
+        pos.setXYZ(
+          i,
+          pos.getX(i),
+          part.positionM[1] + side * (part.sizeM[1] / 2 + 0.0003),
+          pos.getY(i),
+        );
+      geometry.computeVertexNormals();
+      mesh(geometry, glass, parent).name = "cockpit-window";
+    }
+  // Narrow white roof mullion follows each curved station instead of floating
+  // a flat rectangle above the skin. Paint adds no hidden component mass.
+  const positions: number[] = [],
+    indices: number[] = [];
+  const firstPaint = part.bodyLoft!.findIndex((s) => s.topColor);
+  const lastPaint = part.bodyLoft!.reduce(
+    (last, s, i) => (s.topColor ? i : last),
+    -1,
+  );
+  const stations = part.bodyLoft!.slice(firstPaint, lastPaint + 2);
+  for (const side of [-1, 0, 1]) {
+    const first = positions.length / 3;
+    for (const s of stations) {
+      const x = part.positionM[0] + s.x * part.sizeM[0];
+      const z = part.positionM[2] + s.top * part.sizeM[2] - 0.0004;
+      const centerY =
+        part.positionM[1] + side * ((s.width * part.sizeM[1]) / 2 - 0.0015);
+      positions.push(x, centerY - 0.0015, z, x, centerY + 0.0015, z);
+    }
+    for (let i = 0; i < stations.length - 1; i++) {
+      const n = first + i * 2;
+      indices.push(n, n + 1, n + 2, n + 1, n + 3, n + 2);
+    }
+  }
+  const roofHeight = (x: number) => {
+    const local = (x - part.positionM[0]) / part.sizeM[0];
+    const sections = part.bodyLoft!;
+    const i = Math.max(
+      1,
+      sections.findIndex((s) => s.x >= local),
+    );
+    const a = sections[i - 1],
+      b = sections[i];
+    return (
+      part.positionM[2] +
+      T.MathUtils.lerp(a.top, b.top, (local - a.x) / (b.x - a.x)) *
+        part.sizeM[2] -
+      0.0005
+    );
+  };
+  for (const center of [0.08, 0.131]) {
+    const x0 = px(center - 0.0014),
+      x1 = px(center + 0.0014);
+    const y0 = part.positionM[1] - part.sizeM[1] * 0.5;
+    const y1 = part.positionM[1] + part.sizeM[1] * 0.5;
+    const n = positions.length / 3;
+    positions.push(
+      x0,
+      y0,
+      roofHeight(x0),
+      x0,
+      y1,
+      roofHeight(x0),
+      x1,
+      y0,
+      roofHeight(x1),
+      x1,
+      y1,
+      roofHeight(x1),
+    );
+    indices.push(n, n + 1, n + 2, n + 1, n + 3, n + 2);
+  }
+  const roof = new T.BufferGeometry();
+  roof.setAttribute("position", new T.Float32BufferAttribute(positions, 3));
+  roof.setIndex(indices);
+  roof.computeVertexNormals();
+  mesh(roof, foam, parent).name = "cockpit-mullion";
+}
 export function buildAircraft(a: Aircraft): AircraftVisual {
   if (a.vehicleType === "multirotor") return buildQuad(a);
   const group = new T.Group(),
@@ -255,8 +410,27 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     color: isBronco ? "#e9e7df" : "#285982",
     roughness: 0.7,
   });
+  const propellerMaterials = new Map<string, T.Material>();
+  const servoMaterials = new Map<string, T.Material>();
   for (const p of a.parts) {
-    if (p.kind === "body" && isTiny) {
+    const firstChild = group.children.length;
+    if ((p.kind === "body" || p.kind === "boom") && p.bodyLoft) {
+      const [x, y, z] = p.positionM,
+        [l, w, h] = p.sizeM;
+      loft(
+        group,
+        p.bodyLoft.map((s) => ({
+          x: x + s.x * l,
+          width: s.width * w,
+          top: z + s.top * h,
+          bottom: z + s.bottom * h,
+          topColor: s.topColor,
+        })),
+        baseColor,
+        y,
+      );
+      if (isBronco && p.id === "fuselage") broncoCabin(group, p);
+    } else if (p.kind === "body" && isTiny) {
       const [x, y, z] = p.positionM,
         [l, w, h] = p.sizeM;
       loft(
@@ -275,25 +449,6 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
         baseColor,
         y,
       );
-      for (const dx of [-0.055, 0.05]) {
-        rod(group, [dx, -0.031, -0.026], [dx, 0.031, -0.026], 0.0014, aluminum);
-      }
-      for (const sy of [-1, 1]) {
-        rod(
-          group,
-          [-0.054, sy * 0.025, -0.026],
-          [0.048, -sy * 0.025, -0.026],
-          0.0008,
-          new T.MeshStandardMaterial({ color: "#bfa77a", roughness: 0.9 }),
-        );
-        rod(
-          group,
-          [-0.08, sy * 0.021, 0],
-          [-0.35, sy * 0.006, -0.025],
-          0.0005,
-          aluminum,
-        );
-      }
     } else if (p.kind === "body") {
       const [x, y, z] = p.positionM,
         [l, w, h] = p.sizeM;
@@ -316,13 +471,13 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
           },
           {
             x: x + l * 0.46,
-            width: w * 0.48,
+            width: w * (isBronco ? 0.78 : 0.48),
             top: z + h * 0.02,
             bottom: z + h * 0.28,
           },
           {
             x: x + l * 0.5,
-            width: w * 0.12,
+            width: w * (isBronco ? 0.5 : 0.12),
             top: z + h * 0.12,
             bottom: z + h * 0.18,
           },
@@ -331,9 +486,9 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
         y,
       );
       const glass = new T.MeshStandardMaterial({
-        color: "#1d2f3b",
-        roughness: 0.2,
-        metalness: 0.3,
+        color: "#191b1e",
+        roughness: 0.42,
+        metalness: 0,
       });
       if (isBronco)
         for (const side of [-1, 1]) {
@@ -422,7 +577,11 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
         baseColor,
         y,
       );
-    } else if (p.kind === "motor" && !isTiny) {
+    } else if (
+      p.kind === "motor" &&
+      !isTiny &&
+      !a.parts.some((p) => p.bodyLoft)
+    ) {
       const [x, y, z] = p.positionM;
       loft(
         group,
@@ -434,10 +593,97 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
         baseColor,
         y,
       );
+    } else if (p.servo) {
+      const housing = new T.Group();
+      housing.position.set(...p.positionM);
+      group.add(housing);
+      let plastic = servoMaterials.get(p.color);
+      if (!plastic) {
+        plastic = new T.MeshStandardMaterial({
+          color: p.color,
+          roughness: 0.62,
+          metalness: 0,
+        });
+        servoMaterials.set(p.color, plastic);
+      }
+      box(housing, p.sizeM, [0, 0, 0], plastic).name = `servo-housing:${p.id}`;
+      const surface = a.surfaces.find(
+        (s) => s.control?.linkage?.servoPartId === p.id,
+      );
+      if (surface?.control?.linkage) {
+        const control = surface.control,
+          linkage = control.linkage!;
+        const horn = new T.Group();
+        horn.position.z = -p.sizeM[2] / 2 - 0.002;
+        housing.add(horn);
+        box(
+          horn,
+          [linkage.servoArmM + 0.003, 0.003, 0.002],
+          [linkage.servoArmM / 2, 0, 0],
+          baseColor,
+        );
+        controls.push({
+          surfaceId: surface.id,
+          pivot: horn,
+          axis: control.axis,
+          gain: control.gain,
+          control,
+          hingeAxis: new T.Vector3(0, 0, 1),
+          max: radians(
+            (surfaceActuation(a, surface).maxDeg * linkage.surfaceArmM) /
+              linkage.servoArmM,
+          ),
+        });
+      }
     } else if (p.kind === "battery") {
-      const battery = box(group, p.sizeM, p.positionM, orange);
+      const battery = box(
+        group,
+        p.sizeM,
+        p.positionM,
+        new T.MeshStandardMaterial({ color: p.color, roughness: 0.66 }),
+      );
       battery.name = "battery";
-      battery.visible = false;
+    }
+    orientComponent(group, p, group.children.slice(firstChild));
+  }
+  if (isTiny) {
+    // Retention hardware is included in the structural mass allocation.
+    // These assembly positions are visual estimates around the measured wing chord.
+    const wing = a.surfaces.find((s) => s.foamWing);
+    if (wing?.foamWing) {
+      const leading = wing.positionM[0] + wing.chordM / 4;
+      const trailing = leading - wing.foamWing.rootChordM;
+      const rootZ =
+        wing.positionM[2] -
+        ((Math.sign(wing.positionM[1]) * wing.spanM) / 2) *
+          Math.sin(radians(wing.rollDeg));
+      const dowelZ = rootZ + 0.005;
+      const band = new T.MeshStandardMaterial({
+        color: "#aa9871",
+        roughness: 0.95,
+      });
+      for (const x of [leading + 0.009, trailing - 0.009])
+        rod(group, [x, -0.029, dowelZ], [x, 0.029, dowelZ], 0.0013, aluminum);
+      for (const side of [-1, 1]) {
+        const points: Vec3[] = [
+          [leading + 0.009, side * 0.025, dowelZ],
+          [leading - 0.003, side * 0.021, rootZ - 0.003],
+          [
+            leading - wing.foamWing.rootChordM * 0.25,
+            side * 0.012,
+            rootZ - wing.foamWing.foldHeightM - 0.003,
+          ],
+          [
+            leading - wing.foamWing.rootChordM * 0.48,
+            -side * 0.001,
+            rootZ - wing.foamWing.foldHeightM - 0.003,
+          ],
+          [trailing, -side * 0.021, rootZ - 0.004],
+          [trailing - 0.009, -side * 0.025, dowelZ],
+        ];
+        for (let j = 1; j < points.length; j++)
+          rod(group, points[j - 1], points[j], 0.0007, band);
+      }
     }
   }
   for (const s of a.surfaces) {
@@ -446,6 +692,23 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     surface.rotation.x = radians(s.rollDeg);
     surface.rotation.y = radians(s.incidenceDeg);
     group.add(surface);
+    if (s.panel || s.foamWing) {
+      const panel = s.foamWing
+        ? buildFoamWing(s, baseColor)
+        : buildPanel(s, baseColor);
+      surface.add(panel.group);
+      if (s.control && panel.pivot)
+        controls.push({
+          surfaceId: s.id,
+          pivot: panel.pivot,
+          hingeAxis: panel.hingeAxis,
+          axis: s.control.axis,
+          gain: s.control.gain,
+          control: s.control,
+          max: radians(surfaceActuation(a, s).maxDeg),
+        });
+      continue;
+    }
     const side = Math.sign(s.positionM[1]) || 1,
       hinge = planModel ? (isBronco ? 0.765 : 0.77) : 0.72;
     if (s.kind === "wing") {
@@ -471,12 +734,13 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
           dark,
         );
       }
-      box(
-        surface,
-        [isTiny ? 0.019 : 0.028, isTiny ? 0.009 : 0.014, 0.009],
-        [-s.chordM * 0.3, -side * s.spanM * 0.16, -0.014],
-        dark,
-      );
+      if (!s.control?.linkage)
+        box(
+          surface,
+          [isTiny ? 0.019 : 0.028, isTiny ? 0.009 : 0.014, 0.009],
+          [-s.chordM * 0.3, -side * s.spanM * 0.16, -0.014],
+          dark,
+        );
     } else {
       mesh(
         planModel
@@ -537,55 +801,89 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
         axis: s.control.axis,
         gain: s.control.gain,
         control: s.control,
-        max: radians(s.control.maxDeg),
+        max: radians(surfaceActuation(a, s).maxDeg),
       });
     }
   }
   for (const motor of a.motors) {
     const [x, y, z] = motor.positionM;
+    const motorPart = a.parts.find((p) => p.id === motor.partId);
+    const propPart = a.parts.find((p) => p.id === motor.propPartId);
+    const propColor = propPart?.color ?? (isBronco ? "#c8c6bc" : "#23282d");
+    let propellerMaterial = propellerMaterials.get(propColor);
+    if (!propellerMaterial) {
+      propellerMaterial = new T.MeshStandardMaterial({
+        color: propColor,
+        roughness: 0.62,
+      });
+      propellerMaterials.set(propColor, propellerMaterial);
+    }
+    // A pusher's mass sits ahead of its prop disk; use the authored installation.
+    const shaft = motorPart && motorPart.positionM[0] > x + 0.001 ? -1 : 1;
+    const center: Vec3 = motorPart?.positionM ?? [x - shaft * 0.012, y, z];
+    const size: Vec3 =
+      motorPart?.sizeM ??
+      (isTiny ? [0.019, 0.024, 0.024] : [0.027, 0.034, 0.034]);
     const engine = mesh(
-      new T.CylinderGeometry(
-        isTiny ? 0.012 : 0.017,
-        isTiny ? 0.012 : 0.017,
-        isTiny ? 0.019 : 0.027,
-        18,
-      ),
+      new T.CylinderGeometry(0.5, 0.5, 1, 24),
       orange,
       group,
-      [x - 0.012, y, z],
+      center,
     );
+    // Cylinder local Y becomes body X. The housing follows the same dimensions
+    // as the component ledger; cosmetic vents add no separate mass.
+    engine.scale.set(size[1], size[0], size[2]);
     engine.rotation.z = Math.PI / 2;
+    engine.name = `motor-housing:${motor.id}`;
     for (let i = 0; i < 8; i++) {
       const ang = (i * Math.PI) / 4;
       rod(
         group,
-        [x - 0.025, y + Math.cos(ang) * 0.018, z + Math.sin(ang) * 0.018],
-        [x - 0.005, y + Math.cos(ang) * 0.018, z + Math.sin(ang) * 0.018],
-        0.0012,
+        [
+          center[0] - size[0] * 0.35,
+          center[1] + Math.cos(ang) * size[1] * 0.46,
+          center[2] + Math.sin(ang) * size[2] * 0.46,
+        ],
+        [
+          center[0] + size[0] * 0.35,
+          center[1] + Math.cos(ang) * size[1] * 0.46,
+          center[2] + Math.sin(ang) * size[2] * 0.46,
+        ],
+        Math.min(size[1], size[2]) * 0.035,
         dark,
       );
     }
     const prop = new T.Group();
-    prop.position.set(x + 0.008, y, z);
+    prop.position.set(
+      ...(propPart?.positionM ?? ([x + shaft * 0.008, y, z] as Vec3)),
+    );
+    prop.rotation.x = Math.PI / 2;
+    rod(
+      group,
+      [center[0], center[1], center[2]],
+      [prop.position.x, prop.position.y, prop.position.z],
+      Math.min(size[1], size[2]) * 0.075,
+      aluminum,
+    );
     group.add(prop);
     propellers.push(prop);
     const radius = motor.propDiameterM / 2;
-    for (const sign of [-1, 1]) {
-      const blade = mesh(new T.SphereGeometry(1, 12, 8), dark, prop, [
-        0,
-        sign * radius * 0.49,
-        0,
-      ]);
-      blade.scale.set(0.003, radius * 0.52, 0.014);
-      blade.rotation.y = sign * 0.15;
+    const bladeCount = motor.propBlades ?? 2;
+    const bladeGeometry = propellerBlade(radius, motor.spin === "ccw" ? -1 : 1);
+    for (let i = 0; i < bladeCount; i++) {
+      const bladeRoot = new T.Group();
+      bladeRoot.rotation.x = (i * Math.PI * 2) / bladeCount;
+      prop.add(bladeRoot);
+      mesh(bladeGeometry, propellerMaterial, bladeRoot).name =
+        "propeller-blade";
     }
     const hub = mesh(
       new T.ConeGeometry(isTiny ? 0.006 : 0.01, isTiny ? 0.01 : 0.018, 20),
       aluminum,
       prop,
-      [0.009, 0, 0],
+      [shaft * 0.009, 0, 0],
     );
-    hub.rotation.z = -Math.PI / 2;
+    hub.rotation.z = (-shaft * Math.PI) / 2;
   }
   for (const contact of a.contactPoints.filter((p) => p.kind === "wheel")) {
     const [x, y, z] = contact.positionM,

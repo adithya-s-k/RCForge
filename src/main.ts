@@ -9,20 +9,32 @@ import {
   type SceneryId,
 } from "./core/scenery";
 import { powertrain } from "./core/powertrain";
+import { batteryUsage } from "./core/components";
+import largeQuadData from "../aircraft/quad-x-450.json";
 import detailedQuadData from "../aircraft/quad-x-6s.json";
 import { setupCatalog } from "./app/catalog";
+import {
+  importedAircraft,
+  preferredAircraft,
+  rememberAircraft,
+  saveAppliedAircraft,
+  savedAircraft,
+} from "./app/aircraft-storage";
 import { ControllerActions, navigateSetting } from "./app/controller-actions";
 import { rotate } from "./core/math";
 import { placedLaunch, type Placement } from "./core/placement";
 import { placementUI } from "./app/placement";
 import "./style.css";
 import "./workbench.css";
+import "./view/editor-workspace.css";
+import { setupEditorWorkspace } from "./app/editor-workspace";
 import "./view/position-panel.css";
 import "./view/flight-feedback.css";
 import { ZodError } from "zod";
 import broncoData from "../aircraft/ft-bronco.json";
 import quadData from "../aircraft/quad-x-5inch.json";
 import tinyTrainerData from "../aircraft/ft-tiny-trainer.json";
+import raptorData from "../aircraft/ft-22-raptor.json";
 import trainerData from "../aircraft/simple-trainer.json";
 import { workbenchMarkup } from "./view/workbench";
 import { FlightScene, type CameraMode } from "./view/scene";
@@ -37,7 +49,13 @@ import {
 } from "./core/simulation";
 import { massProperties } from "./core/aircraft";
 import { findTrim } from "./core/trim";
-import { fitLandingGear, launchState, type LaunchMode } from "./core/launch";
+import {
+  fitLandingGear,
+  launchState,
+  launchTrim,
+  type LaunchMode,
+} from "./core/launch";
+import { aircraftChannels } from "./app/aircraft-channels";
 import {
   createRecording,
   parseRecording,
@@ -50,7 +68,11 @@ import { AircraftEditor } from "./app/editor";
 import { setupExperiments } from "./app/experiments";
 import { $, escape, download } from "./app/dom";
 import { ownsKeyboard } from "./input/ui-focus";
-import { flightAction, flightFeedback } from "./app/flight-session";
+import {
+  flightAction,
+  flightFeedback,
+  flightModelNote,
+} from "./app/flight-session";
 import { setupTabs } from "./app/tabs";
 $("app").innerHTML = workbenchMarkup();
 const flightOverlaySizes = new ResizeObserver((entries) => {
@@ -69,11 +91,15 @@ for (const selector of [".flight-bottom", ".flight-key-guide"])
 const originals = [
   parseAircraft(broncoData),
   parseAircraft(tinyTrainerData),
+  parseAircraft(raptorData),
   parseAircraft(trainerData),
   parseAircraft(quadData),
   parseAircraft(detailedQuadData),
+  parseAircraft(largeQuadData),
 ];
-let baseline = originals[0],
+const bundledIds = new Set(originals.map((a) => a.id));
+originals.push(...importedAircraft(originals));
+let baseline = preferredAircraft(originals),
   aircraft = structuredClone(baseline),
   environment = calmEnvironment(),
   mode: LaunchMode = "ground",
@@ -83,6 +109,7 @@ let baseline = originals[0],
   replay: Recording | null = null,
   replayIndex = 0,
   pitchTrim = 0,
+  releaseTrimConverged = true,
   accumulator = 0;
 let placement: Placement | null = null;
 const initialAircraft = physicalAircraft();
@@ -160,9 +187,15 @@ function updateFlightInfo() {
   $("experiment-description").textContent = quad
     ? "Starts in hover at 3 m with calculated power. Pitch and roll pulses test the configured controller. No altitude hold."
     : "Each aircraft starts at 12 m/s and 18 m with its own calculated trim. Field weather is retained.";
-  $("flight-control-note").textContent = quad
-    ? `${a.multirotor!.mode === "angle" ? "Self-leveling angle" : "Angular-rate"} control · manual throttle · estimated model`
-    : "Unstabilized controls. Aircraft coefficients are estimates.";
+  const note = flightModelNote({
+    quad,
+    controlMode: a.multirotor?.mode,
+    handLaunch: mode === "hand",
+    converged: releaseTrimConverged,
+    pitchTrim,
+  });
+  $("flight-control-note").textContent = note.text;
+  $("flight-control-note").classList.toggle("trim-limited", note.limited);
   if (quad)
     $("launch-description").textContent =
       mode === "ground"
@@ -173,8 +206,8 @@ function updateFlightInfo() {
       mode === "ground"
         ? "Start stationary on the ground. Build airspeed, then rotate."
         : mode === "hand"
-          ? `Release at ${placement?.altitudeM ?? 1.7} m and 8.5 m/s with 65% power.`
-          : `Start at ${placement?.altitudeM ?? 22} m and 12 m/s with calculated trim.`;
+          ? `Release at ${placement?.altitudeM ?? 1.7} m and 8.5 m/s${releaseTrimConverged ? ", trimmed for a gentle climb" : ""}.`
+          : `Start at ${placement?.altitudeM ?? 22} m and 12 m/s${releaseTrimConverged ? " with calculated trim" : ""}.`;
   $("flight-mass").textContent =
     (massProperties(a).mass * 1000).toFixed(0) + " g";
   $("flight-model-info").textContent =
@@ -208,8 +241,9 @@ function reset() {
   replayIndex = 0;
   input.clear();
   const a = physicalAircraft(),
-    trim = findTrim(a, 12, environment);
+    trim = launchTrim(a, mode, environment);
   pitchTrim = trim.controls.pitch;
+  releaseTrimConverged = trim.converged;
   sim = new Simulation(
     a,
     environment,
@@ -219,8 +253,7 @@ function reset() {
     roll: 0,
     pitch: pitchTrim,
     yaw: 0,
-    throttle:
-      mode === "ground" ? 0 : mode === "hand" ? 0.65 : trim.controls.throttle,
+    throttle: mode === "ground" ? 0 : trim.controls.throttle,
   };
   input.throttle = controls.throttle;
   sim.lastForces = sim.forces(sim.state, controls);
@@ -273,6 +306,7 @@ async function launch() {
   accumulator = 0;
   input.clear();
   document.body.dataset.running = "true";
+  $("page-fly").classList.add("setup-collapsed");
   $("pause").hidden = false;
   $("toggle-flight-setup").setAttribute("aria-expanded", "false");
   stats();
@@ -282,11 +316,8 @@ async function launch() {
 }
 function loadAircraft(a: Aircraft) {
   baseline = originals.find((v) => v.id === a.id) ?? a;
-  aircraft = structuredClone(a);
-  try {
-    const saved = localStorage.getItem("rcforge.aircraft.v3." + a.id);
-    if (saved) aircraft = parseAircraft(JSON.parse(saved));
-  } catch {}
+  aircraft = savedAircraft(a);
+  rememberAircraft(aircraft.id);
   editor.switchTo(aircraft);
   reset();
   invalidate();
@@ -300,6 +331,8 @@ function fillSelects() {
     $<HTMLSelectElement>(id).value = aircraft.id;
   }
 }
+let editorComponent: Aircraft["parts"][number] | undefined;
+let componentsWorkspace = false;
 const editor = new AircraftEditor(
   aircraft,
   (a) => {
@@ -317,7 +350,15 @@ const editor = new AircraftEditor(
     if (page === "aircraft") scene?.setAircraft(a);
   },
   message,
+  (part) => {
+    editorComponent = part;
+    scene?.setComponentInspection(part, componentsWorkspace);
+  },
 );
+setupEditorWorkspace((components) => {
+  componentsWorkspace = components;
+  scene?.setComponentInspection(editorComponent, components);
+});
 const invalidate = setupExperiments(
   () => ({ baseline, aircraft, environment }),
   () => pause(),
@@ -349,6 +390,7 @@ function route() {
     $("editor-stage").append($("viewport"));
     scene?.setStudio(true);
     scene?.setAircraft(editor.draft);
+    scene?.setComponentInspection(editorComponent, componentsWorkspace);
     if (scene) scene.showCG = $<HTMLInputElement>("show-cg").checked;
   }
   if (page === "controllers") controller.refresh();
@@ -476,11 +518,7 @@ setupCatalog(
   () =>
     originals.map((a) => {
       if (a.id === aircraft.id) return aircraft;
-      try {
-        const saved = localStorage.getItem("rcforge.aircraft.v3." + a.id);
-        if (saved) return parseAircraft(JSON.parse(saved));
-      } catch {}
-      return a;
+      return savedAircraft(a);
     }),
   () => aircraft.id,
   () => {
@@ -505,28 +543,25 @@ function applyDraft() {
     editor.commitPending();
     aircraft = parseAircraft(editor.draft);
     findTrim(aircraft);
-    let stored = true;
-    try {
-      localStorage.setItem(
-        "rcforge.aircraft.v3." + aircraft.id,
-        JSON.stringify(aircraft),
-      );
-    } catch {
-      stored = false;
-    }
+    rememberAircraft(aircraft.id);
+    const stored = saveAppliedAircraft(
+      aircraft,
+      bundledIds.has(aircraft.id) ? undefined : baseline,
+    );
     $("editor-state").textContent = "Applied to flight";
     $("editor-state").classList.remove("pending");
     reset();
     if (page === "aircraft") {
       scene?.setStudio(true);
       scene?.setAircraft(editor.draft);
+      scene?.setComponentInspection(editorComponent, componentsWorkspace);
     }
     invalidate();
     updateExperimentInfo();
     message(
       stored
         ? "Aircraft saved locally and applied to flight."
-        : "Aircraft applied. Browser storage unavailable; export JSON to keep your changes.",
+        : "Aircraft applied, but could not be saved locally. Export JSON to keep your changes.",
     );
     return true;
   } catch (e) {
@@ -565,6 +600,7 @@ $<HTMLInputElement>("import-aircraft").onchange = async (e) => {
     findTrim(a);
     const index = originals.findIndex((v) => v.id === a.id);
     if (index < 0) originals.push(a);
+    else if (!bundledIds.has(a.id)) originals[index] = a;
     baseline = a;
     aircraft = structuredClone(a);
     editor.set(a);
@@ -574,7 +610,7 @@ $<HTMLInputElement>("import-aircraft").onchange = async (e) => {
     scene?.setAircraft(a);
     invalidate();
     message(
-      "Aircraft imported. Review mass, CG and assumptions before flight.",
+      "Aircraft imported for this session. Apply to flight to save it locally; export JSON to keep a file.",
     );
   } catch (e) {
     message(errorText(e), true);
@@ -666,6 +702,7 @@ $("throttle").oninput = () =>
 $("pitch-trim").oninput = () => {
   pitchTrim = Number($<HTMLInputElement>("pitch-trim").value) / 100;
   $("pitch-trim-value").textContent = Math.round(pitchTrim * 100) + "%";
+  updateFlightInfo();
 };
 $("help-button").onclick = () => {
   pause();
@@ -807,9 +844,13 @@ function stats() {
   $("battery-hud-voltage").textContent =
     `${power.voltage.toFixed(1)} V · ${power.current.toFixed(1)} A`;
   $("battery-hud").classList.toggle("low-battery", power.soc < 0.2);
+  const usage = batteryUsage(sim.aircraft, power.soc, power.current);
+  $("battery-hud").title = usage
+    ? `${usage.usedMah.toFixed(0)} mAh used · ${usage.remainingMah.toFixed(0)} mAh remaining${usage.minutesToReserve === null ? "" : ` · about ${usage.minutesToReserve.toFixed(1)} min to 20% at this current`}. Model estimate; load changes in flight.`
+    : "";
   if (sim.aircraft.battery)
     $("battery-telemetry").textContent =
-      `${sim.aircraft.battery.cells}S ${sim.aircraft.battery.chemistry} · ${(power.soc * 100).toFixed(0)}% · ${power.voltage.toFixed(1)} V · ${power.current.toFixed(1)} A`;
+      `${sim.aircraft.battery.cells}S ${sim.aircraft.battery.chemistry} · ${(power.soc * 100).toFixed(0)}% · ${power.voltage.toFixed(1)} V · ${power.current.toFixed(1)} A · ${usage!.usedMah.toFixed(0)} / ${sim.aircraft.battery.capacityMah} mAh used`;
 
   const s = sim.state;
   $("speed").textContent = sim.lastForces.airspeed.toFixed(1);
@@ -817,6 +858,7 @@ function stats() {
   $("distance").textContent = Math.hypot(
     s.position[0] - (scene?.pilotPosition.x ?? -8),
     s.position[1] - (scene?.pilotPosition.z ?? -14),
+    -s.position[2] - (scene?.pilotPosition.y ?? 1.7),
   ).toFixed(0);
   $("vertical-speed").textContent = (-s.velocity[2]).toFixed(1);
   $("throttle-value").textContent =
@@ -842,7 +884,9 @@ function stats() {
           ? replay
             ? "REPLAY"
             : s.status === "grounded"
-              ? "GROUND ROLL"
+              ? sim.aircraft.vehicleType === "multirotor"
+                ? "GROUNDED"
+                : "GROUND ROLL"
               : "IN FLIGHT"
           : started
             ? "PAUSED"
@@ -891,7 +935,7 @@ const controllerActions = new ControllerActions(input, (action) => {
     navigateSetting(action);
     return;
   }
-  if (controller.calibrating) return;
+  if (controller.calibrating || document.querySelector("dialog[open]")) return;
   if (action === "settings") {
     pause();
     location.hash = page === "controllers" ? "#/fly" : "#/controllers";
@@ -919,9 +963,7 @@ function frame(now: number) {
   previous = now;
   try {
     arduino.poll();
-    controllerActions.update(
-      document.hasFocus() && !document.querySelector("dialog[open]"),
-    );
+    controllerActions.update(document.hasFocus());
     if (!running && page === "fly" && input.source === "keyboard" && !replay)
       input.read(dt);
     if (running && page === "fly") {
@@ -1018,13 +1060,26 @@ function frame(now: number) {
         hardware && !input.selected(),
       );
       const bindings = hardware
-        ? (["roll", "pitch", "yaw", "throttle"] as const)
+        ? !input.selected()
+          ? "<span>Connect your controller or choose Keyboard.</span>"
+          : aircraftChannels(aircraft)
+              .map(
+                (ch) =>
+                  `<span><kbd>A${input.profile.bindings[ch].axis + 1}</kbd> ${ch}</span>`,
+              )
+              .join("")
+        : aircraftChannels(aircraft)
             .map(
               (ch) =>
-                `<span><kbd>A${input.profile.bindings[ch].axis + 1}</kbd> ${ch}</span>`,
+                ({
+                  pitch: "<span><kbd>↑ ↓</kbd> Pitch</span>",
+                  roll: "<span><kbd>← →</kbd> Roll</span>",
+                  yaw: "<span><kbd>Q E</kbd> Yaw</span>",
+                  throttle:
+                    '<span class="power-hint"><kbd>Space</kbd> Power + <kbd>Shift</kbd> −</span>',
+                })[ch],
             )
-            .join("")
-        : '<span><kbd>↑ ↓</kbd> Pitch</span><span><kbd>← →</kbd> Roll</span><span><kbd>Q E</kbd> Yaw</span><span class="power-hint"><kbd>Space</kbd> Power + <kbd>Shift</kbd> −</span>';
+            .join("");
       if ($("flight-input-guide").innerHTML !== bindings)
         $("flight-input-guide").innerHTML = bindings;
       const resetHint = hardware ? controllerActions.hint("reset") : "R";
@@ -1043,6 +1098,15 @@ function frame(now: number) {
 }
 try {
   scene = new FlightScene($("viewport"));
+  scene.onInspectionView = (view) => {
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-inspect]")
+      .forEach((button) => {
+        const selected = button.dataset.inspect === view;
+        button.classList.toggle("active", selected);
+        button.setAttribute("aria-pressed", String(selected));
+      });
+  };
   scene.onGroundPick = (north, east) => positioning.pickGround(north, east);
 } catch (e) {
   message("3D rendering unavailable: " + errorText(e), true);

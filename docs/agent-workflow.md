@@ -13,7 +13,7 @@ npm run aircraft:validate
 npm run dev
 ```
 
-Read the actual schema and nearby code before inventing a field or extension point. Use the local URL printed by Vite. The five bundled presets are in `aircraft/`; the built-in browser catalog is assembled through `originals` in `src/main.ts`. Importing a JSON file in the editor is enough to try an unbundled aircraft.
+Read the actual schema and nearby code before inventing a field or extension point. Use the local URL printed by Vite. Bundled presets are in `aircraft/`; the built-in browser catalog is assembled through `originals` in `src/main.ts`. Importing a JSON file in the editor is enough to try an unbundled aircraft. The FT-22 shows how to author foamboard panel outlines and a shaped fuselage directly in JSON.
 
 | Task                                | Read first                                                                                        | Main entry points                                                                             |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
@@ -56,7 +56,7 @@ Investigate numerical or sign errors in the model. Do not adjust unrelated physi
 
 ### 4. Inspect and fly
 
-Open **Aircraft editor → Import JSON**. Inspect the assembled model and CG from several angles, then **Apply to flight** or **Apply & fly**. Switching aircraft retains each unfinished draft for this browser session; apply or export before reloading. Invalid numeric entries remain visible and prevent applying. Experiments offers **Apply draft & run** when edits have not reached the active model. Start with a calm airborne/hover case, then test the appropriate launch and landing conditions. Check actual input mapping before judging the dynamics.
+Open **Aircraft editor → Import JSON**. Inspect the assembled model and CG from several angles, then **Apply to flight** or **Apply & fly**. Switching aircraft retains each unfinished draft for this browser session; apply or export before reloading. Applied custom imports remain in the local catalog after reload, with their imported source preserved for restoration. Export JSON for a portable file; browser storage is not a backup. Invalid numeric entries remain visible and prevent applying. Experiments offers **Apply draft & run** when edits have not reached the active model. Start with a calm airborne/hover case, then test the appropriate launch and landing conditions. Check actual input mapping before judging the dynamics.
 
 For a preset intended for everyone, add an explicit import to `src/main.ts` and append the parsed definition to `originals`. Check its catalog preview and any model-specific rendering assumptions. Register extra numerical report cases intentionally; do not assume every CLI report automatically discovers new aircraft.
 

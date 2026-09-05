@@ -2,7 +2,7 @@ import * as T from "three";
 import type { Scenery } from "../core/scenery";
 import { seededRandom, surfaceTexture, terrainNoise } from "./terrain-material";
 import { renderBudget } from "./render-budget";
-import { landscapeHeight } from "./landscape";
+import { landscapeSurfaceHeight } from "./landscape";
 
 /** Crossed foliage cards retain parallax without thousands of solid canopy blobs. */
 function plantGeometry(kind: number) {
@@ -123,11 +123,13 @@ export function addVegetation(field: T.Group, profile: Scenery) {
     shader.fragmentShader = shader.fragmentShader.replace(
       "#include <map_fragment>",
       `#include <map_fragment>
-       // Soft self-occlusion makes crowns sit above the shaded lower branches.
-       diffuseColor.rgb *= 1.5 * mix(0.7, 1.0, smoothstep(0.0, 0.8, plantHeight));`,
+       // The atlas already contains lit foliage. Keep its gain at unity;
+       // boosting it washes out leaf highlights against the terrain.
+       // Soft self-occlusion shades lower branches without another texture tap.
+       diffuseColor.rgb *= mix(0.7, 1.0, smoothstep(0.0, 0.8, plantHeight));`,
     );
   };
-  foliage.customProgramCacheKey = () => "foliage-v2";
+  foliage.customProgramCacheKey = () => "foliage-v3";
   const variants = dry ? [5, 4] : alpine ? [2, 2, 1, 4] : [0, 1, 3, 4];
   const counts = new Map<number, number>();
   for (let i = 0; i < profile.treeCount; i++) {
@@ -179,7 +181,7 @@ export function addVegetation(field: T.Group, profile: Scenery) {
           : kind === 2
             ? 12 + rand() * 12
             : 7 + rand() * 11;
-      const ground = Math.max(0, landscapeHeight(x, z, profile));
+      const ground = Math.max(0, landscapeSurfaceHeight(x, z, profile));
       dummy.position.set(x, ground - 0.06, z);
       dummy.rotation.set(0, rand() * Math.PI * 2, 0);
       dummy.scale.set(height * (0.8 + rand() * 0.35), height, height);

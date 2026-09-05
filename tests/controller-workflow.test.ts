@@ -14,6 +14,7 @@ function setup() {
         value: "",
         textContent: "",
         hidden: false,
+        click: () => el(id).onclick?.(),
       });
     return elements.get(id);
   };
@@ -38,13 +39,10 @@ function setup() {
     selected: () => device,
     read: () => ({ roll: 0, pitch: 0, yaw: 0, throttle: 0 }),
   } as unknown as InputManager;
-  const page = new ControllerPage(
-    input,
-    () => {},
-    () => {},
-  );
+  const notify = vi.fn();
+  const page = new ControllerPage(input, () => {}, notify);
   page.selectType("joystick");
-  return { el, input, page, device };
+  return { el, input, page, device, notify };
 }
 it("cancel restores the exact original profile after partial capture", () => {
   const { el, input, page, device } = setup(),
@@ -107,4 +105,18 @@ it("keeps a disconnected input selected instead of falling back to another contr
   page.refresh();
   expect(input.deviceIndex).toBe(0);
   expect(page.ready()).toBe(true);
+});
+
+it("reports adapter discovery even when calibration controls are hidden", () => {
+  const { el, input, page, notify } = setup();
+  input.devices = () => [];
+  input.selected = () => undefined;
+  input.deviceIndex = -1;
+  page.selectType("transmitter");
+  el("transmitter-find-devices").click();
+  expect(el("calibration-status").hidden).toBe(true);
+  expect(notify).toHaveBeenCalledWith(
+    expect.stringContaining("No input detected"),
+  );
+  expect(el("device-select").innerHTML).toContain("Awaiting input");
 });

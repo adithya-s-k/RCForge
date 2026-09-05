@@ -20,6 +20,7 @@ function setup() {
         parentElement: {},
         classList: { add: () => {}, remove: () => {} },
         querySelectorAll: () => [],
+        querySelector: () => null,
         toggleAttribute: () => {},
         setAttribute: (k: string, v: string) => attributes.set(k, v),
         removeAttribute: (k: string) => attributes.delete(k),
@@ -94,4 +95,34 @@ it("uses the applied saved model on initial selection, not the constructor basel
   editor.switchTo(saved);
   expect(massProperties(editor.draft).mass).toBeCloseTo(0.93);
   expect(el("edit-mass").value).toBe("930.0");
+});
+it("commits capacity edits through Apply and retains invalid component values", () => {
+  const { editor, el } = setup();
+  const i = editor.draft.parts.findIndex((p) => p.id === "battery");
+  const capacity = `part-detail-${i}-capacity`;
+  el(capacity).value = "3000";
+  el(capacity).oninput();
+  editor.commitPending();
+  expect(editor.draft.battery!.capacityMah).toBe(3000);
+  expect(massProperties(editor.draft).mass).toBeCloseTo(0.83);
+  el(capacity).value = "";
+  el(capacity).oninput();
+  expect(() => editor.commitPending()).toThrow("Enter a number");
+  expect(el(capacity).value).toBe("");
+  expect(editor.draft.battery!.capacityMah).toBe(3000);
+});
+
+it("applies battery installation angles without moving its CG or changing mass", () => {
+  const { editor, el } = setup();
+  const i = editor.draft.parts.findIndex((p) => p.id === "battery");
+  const before = massProperties(editor.draft);
+  const field = el(`part-detail-${i}-angle-2`);
+  field.value = "90";
+  field.oninput();
+  editor.commitPending();
+  const after = massProperties(editor.draft);
+  expect(editor.draft.parts[i].orientationDeg).toEqual([0, 0, 90]);
+  expect(after.mass).toBe(before.mass);
+  expect(after.cg).toEqual(before.cg);
+  expect(after.inertia[0][0]).not.toBeCloseTo(before.inertia[0][0], 8);
 });

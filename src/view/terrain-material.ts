@@ -21,9 +21,16 @@ export const noiseGLSL = /* glsl */ `
   }
 `;
 
-export function terrainMaterial(dry: boolean, prepared = false) {
+export function terrainMaterial(
+  dry: boolean,
+  prepared = false,
+  options: { map?: T.Texture; mountain?: boolean } = {},
+) {
   const material = new T.MeshStandardMaterial({
-    map: surfaceTexture(`lite/${dry ? "dry-ground" : "turf"}-color.jpg`, true),
+    map:
+      options.map ??
+      surfaceTexture(`lite/${dry ? "dry-ground" : "turf"}-color.jpg`, true),
+    vertexColors: options.mountain ?? false,
     color: dry ? "#e8ddd0" : "#bdc4b0",
     roughness: 1,
   });
@@ -76,17 +83,53 @@ export function terrainMaterial(dry: boolean, prepared = false) {
       }
       fieldAlbedo = mix(vec3(dot(fieldAlbedo, vec3(0.299,0.587,0.114))), fieldAlbedo, 0.72);
       diffuseColor.rgb *= fieldAlbedo;
+      ${
+        options.mountain
+          ? `
+      // The airfield and foothills use identical albedo and lighting at their
+      // intersection. Rock/altitude colors emerge gradually above that join.
+      vec2 mountainPoint = vFieldPosition.xz;
+      float mountainLarge = fieldNoise(mountainPoint * 0.008);
+      float mountainRidge = fieldNoise(mountainPoint * 0.037
+        + vec2(mountainLarge * 4.0, vFieldPosition.y * 0.018));
+      float mountainDetail = 1.0 - smoothstep(4.0, 35.0, footprint);
+      vec3 mountainAlbedo = vColor.rgb * (0.83 + mountainLarge * 0.23
+        + (mountainRidge - 0.5) * 0.24 * mountainDetail);
+      ${
+        dry
+          ? `
+      float strata = sin(vFieldPosition.y * 0.12 + mountainLarge * 8.0 + mountainRidge) * 0.5 + 0.5;
+      mountainAlbedo *= 0.90 + strata * 0.15 * mountainDetail;
+      `
+          : `
+      mountainAlbedo = mix(mountainAlbedo, mountainAlbedo * vec3(0.88, 0.94, 0.88),
+        smoothstep(0.42, 0.75, mountainRidge) * 0.38);
+      `
+      }
+      diffuseColor.rgb = mix(diffuseColor.rgb, mountainAlbedo,
+        smoothstep(2.0, 85.0, vFieldPosition.y));
+      `
+          : ""
+      }
       float fieldHeight = ((grain - 0.5) * ${dry ? "0.035" : "0.018"}
         + dot(fieldAlbedo - fieldMean, vec3(0.299, 0.587, 0.114)) * 0.025)
         * fineDetail * (1.0 - preparedStrip * 0.65);
     `,
     );
+    // Vertex colors already form the altitude layer above. Multiplying them a
+    // second time would reintroduce a dark seam where the landscape meets Y=0.
+    if (options.mountain)
+      shader.fragmentShader = shader.fragmentShader.replace(
+        "#include <color_fragment>",
+        "",
+      );
     shader.fragmentShader = shader.fragmentShader.replace(
       "#include <normal_fragment_maps>",
       "#include <normal_fragment_maps>\nnormal = surfaceRelief(-vViewPosition, normal, fieldHeight);",
     );
   };
-  material.customProgramCacheKey = () => `field-natural-v3-${dry}-${prepared}`;
+  material.customProgramCacheKey = () =>
+    `field-natural-v4-${dry}-${prepared}-${!!options.mountain}`;
   return material;
 }
 

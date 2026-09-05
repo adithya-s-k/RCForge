@@ -94,3 +94,32 @@ supplement vertex slope/height shading, without new terrain textures. Ground
 macro variation is restrained to reduce the blurry cloud appearance. None of
 these changes adds terrain collision. Research references and the next physics
 and scenery steps are in the [realism plan](realism-plan.md).
+
+## Field-to-hill continuity
+
+The surrounding mesh now uses the field's standard lighting and the same
+world-space surface shader at low elevation. Slope/altitude vertex colors and
+strata blend in between 2 and 85 metres above the field; they no longer begin
+at a differently colored mesh intersection. Field, adjoining strip and hills
+share the existing color texture. Ground and strip also share one material.
+
+This adds the existing three-tap surface sampling to hill fragments and changes
+those fragments from Lambert to standard lighting. It adds no texture assets,
+triangles or shadow passes, but is additional fragment work rather than a claim
+of unchanged GPU time. The shared sampler preserves consistent filtering at the
+join; the same pixel ratio and terrain budgets apply.
+
+Vegetation samples the actual distributed triangle mesh, including its diagonal
+split. Sampling the underlying DEM directly can differ by metres from its coarse
+rendered approximation. A ray-intersection regression checks all three sites.
+This is visual tree placement only; aircraft ground contact remains flat.
+
+## Foliage tonal balance
+
+The prelit foliage atlas uses unity gain instead of the earlier 1.5× boost. This
+reduces washed-out leaf highlights against the field while retaining lower-branch
+occlusion, alpha-to-coverage and the same species/instance counts. Comparison used
+Northfield Chase at N 160 m, E 90 m, 12 m altitude, followed by Alpine and Desert
+checks. It is a modest tonal correction: the crossed cards and pale source leaves
+remain visible on close inspection. No new samples, assets, geometry or shadow
+passes were added, and no photorealistic vegetation claim is made.

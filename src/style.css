@@ -2174,3 +2174,235 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* Component workshop: a single installed-part list and one focused detail view. */
+#component-workshop {
+  scroll-margin-top: 76px;
+}
+.workshop-heading,
+.component-detail-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.workshop-heading h2,
+.component-detail h3,
+.component-detail h4 {
+  margin: 0 0 4px;
+}
+.workshop-heading h2 {
+  font-size: 18px;
+}
+.workshop-heading span {
+  color: var(--ui-muted);
+  font-size: 12px;
+}
+.workshop-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 24px;
+}
+.workshop-inventory {
+  min-width: 0;
+}
+.workshop-inventory select {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.workshop-parts {
+  max-height: 330px;
+  overflow-y: auto;
+  border: 1px solid var(--ui-border);
+}
+.workshop-parts button {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px solid var(--ui-border);
+  padding: 12px;
+  background: transparent;
+}
+.workshop-parts button.active {
+  background: var(--ui-hover);
+  box-shadow: inset 2px 0 var(--ui-text);
+}
+.workshop-parts button span {
+  min-width: 0;
+}
+.workshop-parts b {
+  display: block;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+.workshop-parts small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 175px;
+  color: var(--ui-muted);
+}
+.workshop-parts strong {
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.component-detail {
+  min-width: 0;
+}
+.component-detail h3 {
+  font-size: 17px;
+}
+.component-detail .eyebrow {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+.component-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+  gap: 14px;
+  margin: 16px 0;
+}
+.component-fields label {
+  display: block;
+  color: var(--ui-muted);
+  font-size: 11px;
+}
+.component-fields input {
+  display: block;
+  margin-top: 7px;
+  min-width: 0;
+}
+.component-effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  padding: 12px 0;
+  border-top: 1px solid var(--ui-border);
+  border-bottom: 1px solid var(--ui-border);
+}
+.component-effects span {
+  color: var(--ui-muted);
+  font-size: 11px;
+}
+.component-effects strong {
+  display: block;
+  color: var(--ui-text);
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.component-detail p {
+  line-height: 1.6;
+}
+.component-position {
+  margin: 20px 0 12px;
+  border-top: 1px solid var(--ui-border);
+  padding-top: 14px;
+}
+.component-position summary {
+  font-size: 12px;
+  cursor: pointer;
+}
+.linkage-fields {
+  border: 1px solid var(--ui-border);
+  padding: 14px;
+  margin: 16px 0;
+  min-width: 0;
+}
+.linkage-fields legend {
+  color: var(--ui-text);
+  font-size: 12px;
+  padding: 0 7px;
+}
+.linkage-fields .component-fields {
+  margin-top: 2px;
+}
+.parts-catalog {
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border);
+  padding: 16px;
+  margin-bottom: 22px;
+}
+.parts-catalog > label {
+  font-size: 12px;
+  display: block;
+  margin-bottom: 8px;
+}
+.parts-catalog input {
+  margin-bottom: 12px;
+}
+#parts-matches {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+}
+.part-choice {
+  text-align: left;
+  padding: 12px;
+}
+.part-choice[aria-pressed="true"] {
+  border-color: var(--ui-text);
+  background: var(--ui-hover);
+}
+.part-choice b {
+  font-size: 12px;
+}
+.part-choice small {
+  white-space: normal;
+  color: var(--ui-muted);
+  line-height: 1.5;
+}
+.part-replacement {
+  margin-top: 18px;
+}
+.component-sources {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11px;
+  margin: 12px 0 18px;
+}
+.component-note {
+  border-left: 2px solid #b09a69;
+  padding-left: 10px;
+  color: var(--ui-muted);
+  font-size: 12px;
+}
+.component-summary > button {
+  margin-top: 18px;
+}
+@media (max-width: 800px) {
+  .workshop-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .workshop-parts {
+    max-height: 170px;
+  }
+  .workshop-heading,
+  .component-detail-heading {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .component-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.component-evidence {
+  margin: 14px 0;
+  font-size: 12px;
+}
+.component-evidence summary {
+  cursor: pointer;
+  color: var(--ui-muted);
+}

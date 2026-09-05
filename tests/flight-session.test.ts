@@ -1,5 +1,46 @@
 import { expect, it } from "vitest";
-import { flightAction, flightFeedback } from "../src/app/flight-session";
+import {
+  flightAction,
+  flightFeedback,
+  flightModelNote,
+} from "../src/app/flight-session";
+
+it("distinguishes failed trim, limited pitch authority and quad control modes", () => {
+  const normal = {
+    quad: false,
+    handLaunch: true,
+    converged: true,
+    pitchTrim: 0.1,
+  };
+  expect(flightModelNote(normal).limited).toBe(false);
+  for (const pitchTrim of [0.78, -0.83]) {
+    const note = flightModelNote({ ...normal, pitchTrim });
+    expect(note.limited).toBe(true);
+    expect(note.text).toContain(`${Math.round(pitchTrim * 100)}%`);
+  }
+  const failed = flightModelNote({ ...normal, converged: false, pitchTrim: 1 });
+  expect(failed.text).toContain("Trim failed at 8.5 m/s");
+  expect(failed.text).not.toContain("High pitch trim");
+  expect(
+    flightModelNote({ ...normal, handLaunch: false, converged: false }).text,
+  ).toContain("12 m/s");
+  expect(
+    flightModelNote({
+      ...normal,
+      quad: true,
+      controlMode: "angle",
+      pitchTrim: 1,
+    }).text,
+  ).toContain("Self-leveling angle");
+  expect(
+    flightModelNote({
+      ...normal,
+      quad: true,
+      controlMode: "rate",
+      converged: false,
+    }).text,
+  ).toContain("Hover trim failed");
+});
 const ready = {
   running: false,
   started: false,

@@ -77,6 +77,7 @@ export function setupCatalog(
         })
         .join("") ||
       '<div class="catalog-empty"><h3>No matching aircraft</h3><p>Try a different search or clear the filters above.</p></div>';
+    $("catalog-grid").scrollTop = 0;
     $("catalog-grid")
       .querySelectorAll<HTMLButtonElement>("[data-catalog-id]")
       .forEach(

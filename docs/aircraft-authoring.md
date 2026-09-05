@@ -17,7 +17,17 @@ npm run simulate -- aircraft/my-aircraft.json --scenario cruise
 npm run simulate -- aircraft/my-aircraft.json --scenario pitch-pulse
 ```
 
-Load the JSON through the browser's **Aircraft editor → Import JSON** control. For a bundled example, add an explicit import to `src/main.ts` and register it in the `originals` array. This keeps the default aircraft list deliberate; the CLI discovers local JSON automatically.
+Load the JSON through the browser's **Aircraft editor → Import JSON** control.
+**Apply to flight** or **Apply & fly** saves the imported aircraft in this browser's
+catalog. Reload restores its applied setup; **Restore original aircraft** uses the
+imported source definition. Importing the same custom ID again updates that
+baseline when applied. A bundled ID keeps the repository preset as its original.
+Unapplied imports and drafts last only for the current session. Export JSON for a
+portable copy: clearing browser data also removes local aircraft. The local import
+registry is bounded to 32 aircraft and 2 million JSON characters; storage quota or
+validation failures are reported without preventing flight.
+
+For a bundled example, add an explicit import to `src/main.ts` and register it in the `originals` array. This keeps the default aircraft list deliberate; the CLI discovers local JSON automatically.
 
 ## Sources and assumptions
 
@@ -44,3 +54,50 @@ A surface control can supply an optional `mix` object with additional `roll`, `p
 ## Detailed component and powertrain inputs
 
 See [component-models.md](component-models.md) for material/BOM metadata, principal inertia, battery voltage and charge, motor/prop current-thrust tables, surface polars and servo dynamics. `aircraft/quad-x-6s.json` is the full electrical example; all its hardware/curve values are labeled estimates.
+
+## Plan-shaped foamboard without a custom renderer
+
+`aircraft/ft-22-raptor.json` demonstrates optional `surface.panel` geometry.
+`outline` contains 3–64 `[x,y]` pairs, measured in chord and span fractions from
+the surface aerodynamic center. Positive X is forward; positive Y follows the
+surface span. `thicknessM` is the actual board thickness. Concave simple polygons
+work; avoid crossing edges and repeated vertices. Divide openings at a surface
+boundary, as the FT-22 does around its propeller slot.
+
+For a controlled panel, `controlHinge: [[x0,y0],[x1,y1]]` splits the outline into
+fixed and moving regions. Endpoints use the same normalized coordinates and must
+run from smaller to larger Y. Geometry aft of the line moves around that hinge;
+a hinge at the leading edge produces a fully moving elevon. Omit the hinge to
+use X = -0.5. The physical control mix and servo state drive its animation.
+
+`parts[].bodyLoft` supplies cross-sections for a body or boom component. Each section has
+`x`, `width`, `top` and `bottom`, in fractions of that part's corresponding
+`sizeM` dimension, relative to its `positionM`. Sections must increase in X;
+`top < bottom` because Z points down. Optional `topColor` colors the top face
+between this section and the next, without adding mass. Sections render as flat
+foam facets, grouped by finish to limit draw calls. The FT-22's folded nose is an example.
+
+For a folded wing, use `surface.foamWing` instead of `panel`. The Bronco and Tiny
+Trainer are examples. `rootChordM`, `boardThicknessM` and `foldHeightM` describe
+the folded section. `tipStations` contains increasing `[outboardFraction,
+leadingEdgeFraction, trailingEdgeFraction]` triples, from span fraction 0 to 1;
+chord fractions run from the root leading edge toward the trailing edge. The
+surface's Y position chooses the left or right half. Use separate half-wings.
+`hingeFraction` specifies a straight hinge at that fraction of root chord;
+`controlSpan: [start,end]` bounds its outboard span. The hinge must remain inside
+the wing throughout the moving region. Ailerons follow a tapered trailing edge
+without extending beyond the tip. The folded skin is one mesh per half-wing;
+only the control panel moves. Fold height is a visual cross-section, not an
+airfoil coefficient or automatic aerodynamic calculation.
+
+These fields describe appearance only. Set surface area (`spanM * chordM`),
+aerodynamic center, coefficients, component mass and inertia separately, with
+their own evidence. A detailed outline does not add vortex lift, flexibility or
+CAD-derived inertia. Span edits scale wing outlines with their physical span;
+mass/CG edits retain the authored shape. Existing definitions remain compatible.
+
+Optional motor `partId` references an existing motor component. Fixed-wing motor
+housings use its position and body X/Y/Z dimensions; quad housings use its envelope
+around the authored rotor assembly. It never adds mass. `propBlades` sets 2–6 rendered blades, with existing
+defaults preserved when omitted. These appearance fields do not generate new
+thrust/current or torque curves. See the [450 mm quad example](multirotors.md).

@@ -7,6 +7,37 @@ export interface FlightSessionState {
   replayComplete: boolean;
   inputReady?: boolean;
 }
+
+/** A solved release is not evidence of realistic handling away from that point. */
+export function flightModelNote(state: {
+  quad: boolean;
+  controlMode?: "angle" | "rate";
+  handLaunch: boolean;
+  converged: boolean;
+  pitchTrim: number;
+}) {
+  if (!state.converged)
+    return {
+      limited: true,
+      text: state.quad
+        ? "Hover trim failed. Review mass, CG and rotor thrust."
+        : `Trim failed at ${state.handLaunch ? "8.5" : "12"} m/s. Review mass, CG and control authority.`,
+    };
+  if (state.quad)
+    return {
+      limited: false,
+      text: `${state.controlMode === "angle" ? "Self-leveling angle" : "Angular-rate"} control · manual throttle · estimated model`,
+    };
+  if (Math.abs(state.pitchTrim) >= 0.65)
+    return {
+      limited: true,
+      text: `High pitch trim (${state.pitchTrim >= 0 ? "+" : ""}${Math.round(state.pitchTrim * 100)}%). Power changes need pitch correction. Aircraft coefficients are estimates.`,
+    };
+  return {
+    limited: false,
+    text: "Unstabilized controls. Aircraft coefficients are estimates.",
+  };
+}
 export function flightAction(state: FlightSessionState) {
   if (state.running) return "Pause flight";
   if (state.replay)
@@ -89,7 +120,9 @@ export function flightFeedback(
     return {
       title: "On the ground",
       detail: state.quad
-        ? `Gradually ${power} to lift off.`
+        ? state.keyboard
+          ? "Hold Space to raise power gradually and lift off."
+          : "Raise throttle gradually to lift off."
         : `Build airspeed, then gently pull back${state.keyboard ? " (↓)" : ""}.`,
       tone: "ground",
     };

@@ -3,14 +3,26 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 import type { Aircraft } from "../core/schema";
 import { massProperties } from "../core/aircraft";
 import type { AircraftVisual } from "./model";
+import { orientComponent, componentRotation } from "./component-pose";
+import { batchStatic } from "./batch-static";
 
 /** Cosmetic construction detail. SI dimensions and rotor stations come from the aircraft definition.
- * Electronics/wiring are included in the frame mass allocation, not added as hidden mass. */
+ * The component ledger is authoritative; rendered detail adds no hidden mass. */
 export function buildQuad(a: Aircraft): AircraftVisual {
   const group = new T.Group(),
     propellers: T.Group[] = [];
-  const mat = (color: string, roughness = 0.6, metalness = 0) =>
-    new T.MeshStandardMaterial({ color, roughness, metalness });
+  const construction = new T.Group();
+  group.add(construction);
+  const palette = new Map<string, T.MeshStandardMaterial>();
+  const mat = (color: string, roughness = 0.6, metalness = 0) => {
+    const key = `${color}/${roughness}/${metalness}`;
+    if (!palette.has(key))
+      palette.set(
+        key,
+        new T.MeshStandardMaterial({ color, roughness, metalness }),
+      );
+    return palette.get(key)!;
+  };
   const canvas = document.createElement("canvas");
   canvas.width = canvas.height = 128;
   const ctx = canvas.getContext("2d")!;
@@ -47,7 +59,7 @@ export function buildQuad(a: Aircraft): AircraftVisual {
     g: T.BufferGeometry,
     m: T.Material,
     p: number[],
-    parent: T.Object3D = group,
+    parent: T.Object3D = construction,
   ) => {
     const o = new T.Mesh(g, m);
     o.position.set(p[0], p[1], p[2]);
@@ -61,16 +73,18 @@ export function buildQuad(a: Aircraft): AircraftVisual {
     p: number[],
     m: T.Material,
     r = 0.001,
-    parent: T.Object3D = group,
+    parent: T.Object3D = construction,
   ) =>
     mesh(
-      new RoundedBoxGeometry(
-        size[0],
-        size[1],
-        size[2],
-        2,
-        Math.min(r, ...size.map((v) => v / 3)),
-      ),
+      r <= 0.0005
+        ? new T.BoxGeometry(...(size as [number, number, number]))
+        : new RoundedBoxGeometry(
+            size[0],
+            size[1],
+            size[2],
+            2,
+            Math.min(r, ...size.map((v) => v / 3)),
+          ),
       m,
       p,
       parent,
@@ -80,7 +94,7 @@ export function buildQuad(a: Aircraft): AircraftVisual {
     h: number,
     p: number[],
     m: T.Material,
-    parent: T.Object3D = group,
+    parent: T.Object3D = construction,
   ) => {
     const o = mesh(new T.CylinderGeometry(r, r, h, 24), m, p, parent);
     o.rotation.x = Math.PI / 2;
@@ -102,18 +116,21 @@ export function buildQuad(a: Aircraft): AircraftVisual {
     );
   // Thin sandwich plates, standoffs, flight-controller stack and arm clamps.
   const frameScale = a.reference.spanM / 0.225;
-  box(
-    [0.098 * frameScale, 0.043 * frameScale, 0.003],
-    [0, 0, 0.003],
-    carbon,
-    0.004,
-  );
-  box(
-    [0.088 * frameScale, 0.039 * frameScale, 0.0025],
-    [0, 0, -0.002],
-    carbon,
-    0.004,
-  );
+  const frame = a.parts.find((p) => p.kind === "body");
+  const authoredArms = a.parts.filter((p) => p.kind === "boom");
+  if (frame?.material?.finish === "plastic") {
+    carbon.map = null;
+    weave.dispose();
+    carbon.color.set(frame.color);
+    carbon.roughness = 0.72;
+    carbon.metalness = 0;
+  }
+  const plate =
+    authoredArms.length && frame
+      ? frame.sizeM
+      : [0.098 * frameScale, 0.043 * frameScale, 0.003];
+  box([plate[0], plate[1], 0.003], [0, 0, 0.003], carbon, 0.004);
+  box([plate[0] * 0.9, plate[1] * 0.9, 0.0025], [0, 0, -0.002], carbon, 0.004);
   for (const x of [-0.032, 0.032])
     for (const y of [-0.015, 0.015]) {
       cylinder(0.0025, 0.013, [x * frameScale, y * frameScale, -0.0065], black);
@@ -132,9 +149,26 @@ export function buildQuad(a: Aircraft): AircraftVisual {
       box([0.002, 0.0015, 0.001], [x, y, -0.0075], metal, 0.0002);
   const battery = a.parts.find((p) => p.kind === "battery");
   if (battery) {
+    const firstChild = construction.children.length;
     const [x, y, z] = battery.positionM,
       [l, w, h] = battery.sizeM;
-    box([l, w, h], [x, y, z], mat("#343b43", 0.48), 0.004);
+    // A raised pack needs a visible tray and standoffs, rather than floating
+    // above the controller. This cosmetic structure belongs to the frame ledger.
+    const underside = z + h / 2;
+    if (underside < -0.02) {
+      box([l + 0.006, w + 0.008, 0.002], [x, y, underside + 0.001], carbon);
+      const supportHeight = -0.003 - (underside + 0.002);
+      for (const dx of [-0.4, 0.4])
+        for (const dy of [-0.42, 0.42])
+          cylinder(
+            0.0025,
+            supportHeight,
+            [x + l * dx, y + w * dy, -0.003 - supportHeight / 2],
+            black,
+          );
+    }
+    const pack = box([l, w, h], [x, y, z], mat(battery.color, 0.48), 0.004);
+    pack.name = "battery";
     // Shrink-wrap seams, label and two full retention straps follow edited battery dimensions.
     for (const side of [-1, 1])
       box(
@@ -187,27 +221,53 @@ export function buildQuad(a: Aircraft): AircraftVisual {
       mat("#b79b3d"),
       0.001,
     );
+    orientComponent(
+      construction,
+      battery,
+      construction.children.slice(firstChild),
+    );
   }
   for (const m of a.motors) {
     const [x, y, z] = m.positionM;
-    const arm = box(
-      [Math.hypot(x, y), 0.012, 0.005],
-      [x / 2, y / 2, 0.002],
-      carbon,
+    const armPart = authoredArms.find(
+      (p) =>
+        Math.sign(p.positionM[0]) === Math.sign(x) &&
+        Math.sign(p.positionM[1]) === Math.sign(y),
     );
-    arm.rotation.z = Math.atan2(y, x);
-    cylinder(0.014, 0.003, [x, y, z + 0.023], carbon);
-    cylinder(0.0125, 0.003, [x, y, z + 0.021], black);
-    cylinder(0.0105, 0.009, [x, y, z + 0.014], copper);
-    cylinder(0.013, 0.003, [x, y, z + 0.008], black);
-    // Open bell windows reveal copper stator windings.
+    const arm = box(
+      armPart?.sizeM ?? [Math.hypot(x, y), 0.012, 0.005],
+      armPart?.positionM ?? [x / 2, y / 2, 0.002],
+      armPart ? mat(armPart.color, 0.75) : carbon,
+    );
+    if (armPart?.orientationDeg)
+      arm.quaternion.copy(componentRotation(armPart));
+    else arm.rotation.z = Math.atan2(y, x);
+    // Motor body scales from its component's envelope; shaft/adapter occupy
+    // roughly a third of the declared overall height (cosmetic estimate).
+    const component = m.partId
+      ? a.parts.find((p) => p.id === m.partId)
+      : undefined;
+    const bell = new T.Group();
+    bell.position.set(x, y, z);
+    if (component)
+      bell.scale.set(
+        component.sizeM[0] / 0.026,
+        component.sizeM[1] / 0.026,
+        (component.sizeM[2] * 0.63) / 0.02,
+      );
+    construction.add(bell);
+    cylinder(0.014, 0.003, [0, 0, 0.023], carbon, bell);
+    cylinder(0.0125, 0.003, [0, 0, 0.021], black, bell);
+    cylinder(0.0105, 0.009, [0, 0, 0.014], copper, bell);
+    cylinder(0.013, 0.003, [0, 0, 0.008], black, bell);
     for (let i = 0; i < 12; i++) {
       const angle = (i * Math.PI) / 6;
       const rib = box(
         [0.002, 0.003, 0.009],
-        [x + Math.cos(angle) * 0.0118, y + Math.sin(angle) * 0.0118, z + 0.014],
+        [Math.cos(angle) * 0.0118, Math.sin(angle) * 0.0118, 0.014],
         black,
         0.0005,
+        bell,
       );
       rib.rotation.z = angle;
     }
@@ -235,7 +295,8 @@ export function buildQuad(a: Aircraft): AircraftVisual {
     // Swept, tapered, pitched airfoil blades. Rotation axis remains local X for animation.
     const radius = m.propDiameterM / 2,
       sign = m.spin === "cw" ? 1 : -1;
-    for (let blade = 0; blade < 3; blade++) {
+    const bladeCount = m.propBlades ?? 3;
+    for (let blade = 0; blade < bladeCount; blade++) {
       const positions: number[] = [],
         indices: number[] = [];
       const stations = 18;
@@ -271,38 +332,59 @@ export function buildQuad(a: Aircraft): AircraftVisual {
       geom.computeVertexNormals();
       plastic.side = T.DoubleSide;
       const o = mesh(geom, plastic, [0, 0, 0], prop);
-      o.rotation.x = (blade * Math.PI * 2) / 3;
+      o.rotation.x = (blade * Math.PI * 2) / bladeCount;
     }
     const nut = cylinder(0.0035, 0.004, [x, y, z - 0.004], metal);
     nut.name = "propeller-locknut";
   }
-  box([0.019, 0.019, 0.017], [0.043 * frameScale, 0, -0.006], black, 0.003);
-  const lens = cylinder(0.006, 0.008, [0.056 * frameScale, 0, -0.009], black);
-  lens.rotation.set(0, 0, Math.PI / 2);
-  const glass = cylinder(
-    0.0046,
-    0.0007,
-    [0.0605 * frameScale, 0, -0.009],
-    mat("#1f4959", 0.12, 0.65),
-  );
-  glass.rotation.set(0, 0, Math.PI / 2);
-  wire(
-    [
-      [-0.035 * frameScale, 0, -0.003],
-      [-0.055 * frameScale, 0, -0.015],
-      [-0.069 * frameScale, 0, -0.035],
-    ],
-    black,
-    0.0013,
-  );
-  cylinder(0.004, 0.012, [-0.069 * frameScale, 0, -0.04], rubber);
-  for (const p of a.contactPoints)
+  // Legacy compact quad includes camera/wiring in its frame allocation.
+  // Detailed ledgers only render a camera when they actually include one.
+  const camera = a.parts.find((p) => p.id === "camera");
+  if (camera || (!authoredArms.length && !a.battery)) {
+    const pos = camera?.positionM ?? [0.043 * frameScale, 0, -0.006];
+    const size = camera?.sizeM ?? [0.019, 0.019, 0.017];
+    box(size, pos, black, 0.003);
+    const lens = cylinder(
+      0.006,
+      0.008,
+      [pos[0] + size[0] / 2 + 0.002, pos[1], pos[2]],
+      black,
+    );
+    lens.rotation.set(0, 0, Math.PI / 2);
+    const glass = cylinder(
+      0.0046,
+      0.0007,
+      [pos[0] + size[0] / 2 + 0.0065, pos[1], pos[2]],
+      mat("#1f4959", 0.12, 0.65),
+    );
+    glass.rotation.set(0, 0, Math.PI / 2);
+  }
+  for (const part of a.parts.filter((p) => p.id.startsWith("esc-"))) {
+    const esc = box(part.sizeM, part.positionM, black, 0.001);
+    esc.quaternion.copy(componentRotation(part));
+  }
+  if (!authoredArms.length || a.parts.some((p) => p.id === "vtx")) {
+    wire(
+      [
+        [-0.035 * frameScale, 0, -0.003],
+        [-0.055 * frameScale, 0, -0.015],
+        [-0.069 * frameScale, 0, -0.035],
+      ],
+      black,
+      0.0013,
+    );
+    cylinder(0.004, 0.012, [-0.069 * frameScale, 0, -0.04], rubber);
+  }
+  for (const p of a.contactPoints) {
+    const height = Math.max(0.023, p.positionM[2]);
     box(
-      [0.012, 0.014, 0.023],
-      [p.positionM[0], p.positionM[1], p.positionM[2] - 0.0115],
+      [0.012, 0.014, height],
+      [p.positionM[0], p.positionM[1], p.positionM[2] - height / 2],
       rubber,
       0.003,
     );
+  }
+  batchStatic(construction);
   const cgValue = massProperties(a).cg;
   for (const child of group.children)
     child.position.sub(new T.Vector3(...cgValue));

@@ -3,6 +3,15 @@ const finite = z.number().finite();
 const vec = z.tuple([finite, finite, finite]);
 const positive = finite.positive();
 const dims = z.tuple([positive, positive, positive]);
+const panelPoint = z.tuple([finite.min(-10).max(10), finite.min(-10).max(10)]);
+const panel = z
+  .object({
+    // Coordinates are chord/span fractions, relative to the surface aerodynamic center.
+    outline: z.array(panelPoint).min(3).max(64),
+    thicknessM: positive.max(0.1),
+    controlHinge: z.tuple([panelPoint, panelPoint]).optional(),
+  })
+  .strict();
 const polarTable = z
   .array(
     z
@@ -96,10 +105,39 @@ export const AircraftSchema = z
               .optional(),
             manufacturer: z.string().optional(),
             model: z.string().optional(),
+            catalogId: z.string().min(1).optional(),
+            servo: z
+              .object({
+                speedSecondsPer60Deg: positive.max(5),
+                travelDeg: positive.max(270),
+                ratedVoltage: positive.max(24),
+                stallTorqueNm: positive.max(20).optional(),
+              })
+              .strict()
+              .optional(),
             inertiaDiagonalKgM2: z
               .tuple([positive, positive, positive])
               .optional(),
             orientationDeg: vec.optional(),
+            // Dimensionless sections relative to component position and size.
+            bodyLoft: z
+              .array(
+                z
+                  .object({
+                    x: finite.min(-2).max(2),
+                    width: positive.max(2),
+                    top: finite.min(-2).max(2),
+                    bottom: finite.min(-2).max(2),
+                    topColor: z
+                      .string()
+                      .regex(/^#[0-9a-fA-F]{6}$/)
+                      .optional(),
+                  })
+                  .strict(),
+              )
+              .min(2)
+              .max(32)
+              .optional(),
             positionM: vec,
             sizeM: dims,
             color: z.string().regex(/^#[0-9a-fA-F]{6}$/),
@@ -118,6 +156,31 @@ export const AircraftSchema = z
           aspectRatio: positive,
           rollDeg: finite.min(-180).max(180),
           incidenceDeg: finite.min(-20).max(20),
+          panel: panel.optional(),
+          foamWing: z
+            .object({
+              rootChordM: positive.max(5),
+              boardThicknessM: positive.max(0.03),
+              foldHeightM: positive.max(0.3),
+              hingeFraction: finite.min(0.4).max(0.95),
+              controlSpan: z.tuple([
+                finite.min(0).max(1),
+                finite.min(0).max(1),
+              ]),
+              // Outboard span fraction, leading-edge fraction, trailing-edge fraction.
+              tipStations: z
+                .array(
+                  z.tuple([
+                    finite.min(0).max(1),
+                    finite.min(0).max(1),
+                    finite.min(0).max(1),
+                  ]),
+                )
+                .min(2)
+                .max(20),
+            })
+            .strict()
+            .optional(),
           reynoldsPolars: z
             .object({
               // A 2-D section table must first be converted to finite-wing data.
@@ -180,6 +243,15 @@ export const AircraftSchema = z
               effectiveness: finite.min(0).max(1),
               responseSeconds: positive.max(2).optional(),
               rateLimitDegS: positive.max(2000).optional(),
+              linkage: z
+                .object({
+                  servoPartId: z.string().min(1),
+                  servoTravelDeg: positive.max(135),
+                  servoArmM: positive.max(0.2),
+                  surfaceArmM: positive.max(0.2),
+                })
+                .strict()
+                .optional(),
             })
             .strict()
             .optional(),
@@ -212,6 +284,10 @@ export const AircraftSchema = z
             .optional(),
           model: z.string().optional(),
           propeller: z.string().optional(),
+          // Optional visual dimensions from the motor already present in the mass ledger.
+          partId: z.string().min(1).optional(),
+          propPartId: z.string().min(1).optional(),
+          propBlades: z.number().int().min(2).max(6).optional(),
           maxThrustN: positive.max(1000),
           zeroThrustSpeedMps: positive,
           responseSeconds: positive,
@@ -285,6 +361,23 @@ export const AircraftSchema = z
         );
     }
     a.parts.forEach((p, i) => {
+      if (p.servo && p.kind !== "equipment")
+        issue(
+          ["parts", i, "servo"],
+          "A servo must be an equipment mass component",
+        );
+      if (
+        p.bodyLoft &&
+        ((p.kind !== "body" && p.kind !== "boom") ||
+          p.bodyLoft.some(
+            (s, j) =>
+              s.top >= s.bottom || (j > 0 && s.x <= p.bodyLoft![j - 1].x),
+          ))
+      )
+        issue(
+          ["parts", i, "bodyLoft"],
+          "Body lofts need increasing X sections and top below bottom in the body Z-down frame",
+        );
       const d = p.inertiaDiagonalKgM2;
       if (d && d.some((v, j) => v > d[(j + 1) % 3] + d[(j + 2) % 3] + 1e-12))
         issue(
@@ -293,6 +386,30 @@ export const AircraftSchema = z
         );
     });
     a.motors.forEach((m, i) => {
+      if (
+        m.propPartId &&
+        (!a.parts.some(
+          (p) => p.id === m.propPartId && p.kind === "equipment",
+        ) ||
+          a.motors.some((n, j) => j < i && n.propPartId === m.propPartId))
+      )
+        issue(
+          ["motors", i, "propPartId"],
+          "Propeller must reference its own equipment mass component",
+        );
+      if (
+        m.partId &&
+        !a.parts.some((p) => p.id === m.partId && p.kind === "motor")
+      )
+        issue(
+          ["motors", i, "partId"],
+          "Motor must reference an existing motor mass component",
+        );
+      if (m.partId && a.motors.some((n, j) => j < i && n.partId === m.partId))
+        issue(
+          ["motors", i, "partId"],
+          "A motor mass component cannot represent two motors",
+        );
       const p = m.performance?.points;
       if (
         p &&
@@ -318,6 +435,77 @@ export const AircraftSchema = z
         );
     });
     a.surfaces.forEach((s, i) => {
+      if (s.foamWing) {
+        const w = s.foamWing,
+          stations = w.tipStations;
+        if (
+          s.kind !== "wing" ||
+          s.panel ||
+          w.controlSpan[0] >= w.controlSpan[1] ||
+          stations[0][0] !== 0 ||
+          stations.at(-1)![0] !== 1 ||
+          stations.some(
+            (p, j) => p[1] >= p[2] || (j > 0 && p[0] <= stations[j - 1][0]),
+          )
+        )
+          issue(
+            ["surfaces", i, "foamWing"],
+            "Foam wings need ordered full-span tip stations, a nonzero control span and no flat panel",
+          );
+        if (s.control) {
+          const [start, end] = w.controlSpan;
+          for (let j = 1; j < stations.length; j++) {
+            const a = stations[j - 1],
+              b = stations[j];
+            if (b[0] <= a[0] || b[0] < start || a[0] > end) continue;
+            for (const f of [Math.max(start, a[0]), Math.min(end, b[0])]) {
+              const t = (f - a[0]) / (b[0] - a[0]);
+              const leading = a[1] + (b[1] - a[1]) * t;
+              const trailing = a[2] + (b[2] - a[2]) * t;
+              if (
+                leading >= w.hingeFraction ||
+                trailing <= w.hingeFraction + 0.0006 / w.rootChordM
+              )
+                issue(
+                  ["surfaces", i, "foamWing", "controlSpan"],
+                  "The entire aileron hinge must lie inside the wing outline",
+                );
+            }
+          }
+        }
+      }
+      const linkage = s.control?.linkage;
+      if (linkage) {
+        const servo = a.parts.find((p) => p.id === linkage.servoPartId)?.servo;
+        if (!servo)
+          issue(
+            ["surfaces", i, "control", "linkage"],
+            "Linkage must reference a servo mass component",
+          );
+        else if (linkage.servoTravelDeg * 2 > servo.travelDeg + 1e-6)
+          issue(
+            ["surfaces", i, "control", "linkage", "servoTravelDeg"],
+            "Commanded servo travel exceeds its rated range",
+          );
+      }
+      if (s.panel) {
+        const points = s.panel.outline;
+        const twiceArea = points.reduce((sum, p, j) => {
+          const next = points[(j + 1) % points.length];
+          return sum + p[0] * next[1] - next[0] * p[1];
+        }, 0);
+        if (Math.abs(twiceArea) < 1e-8)
+          issue(
+            ["surfaces", i, "panel", "outline"],
+            "Panel outline must enclose an area",
+          );
+        const hinge = s.panel.controlHinge;
+        if (hinge && (!s.control || hinge[1][1] <= hinge[0][1]))
+          issue(
+            ["surfaces", i, "panel", "controlHinge"],
+            "A control hinge needs a control and must run from lower to higher span coordinate",
+          );
+      }
       if (s.polar && s.reynoldsPolars)
         issue(["surfaces", i], "Choose polar or reynoldsPolars, not both");
       if (
