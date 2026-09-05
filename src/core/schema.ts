@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { PilotResponseSchema } from "./pilot-response";
+export const AIRCRAFT_FORMAT_VERSION = 1;
 const finite = z.number().finite();
 const vec = z.tuple([finite, finite, finite]);
 const positive = finite.positive();
@@ -40,7 +41,7 @@ const provenance = z
   .strict();
 export const AircraftSchema = z
   .object({
-    schemaVersion: z.literal(1),
+    schemaVersion: z.literal(AIRCRAFT_FORMAT_VERSION),
     vehicleType: z.enum(["fixed-wing", "multirotor"]).default("fixed-wing"),
     multirotor: z
       .object({

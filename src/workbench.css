@@ -1582,8 +1582,8 @@ dialog::backdrop {
   gap: 8px;
 }
 .brand-mark {
-  width: 29px;
-  height: 29px;
+  width: 34px;
+  height: 34px;
 }
 .brand-wordmark {
   font-size: 19px;
@@ -1617,8 +1617,8 @@ dialog::backdrop {
   color: var(--ui-text);
 }
 .app-header nav .ui-icon {
-  width: 16px;
-  height: 16px;
+  width: 21px;
+  height: 21px;
 }
 .header-meta {
   gap: 16px;
@@ -2240,8 +2240,8 @@ button.primary:hover {
     font-size: 9px;
   }
   .app-header nav .ui-icon {
-    width: 15px;
-    height: 15px;
+    width: 19px;
+    height: 19px;
   }
   .brand-mark {
     width: 25px;
@@ -2623,12 +2623,20 @@ button.primary:hover {
 @media (max-width: 700px) {
   .editor-page .heading-actions {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     width: 100%;
   }
   .editor-page .heading-actions > :not([hidden]) {
     width: 100%;
     min-width: 0;
+    grid-column: span 3;
+  }
+  .editor-page
+    .heading-actions
+    > :is(#import-aircraft-button, #export-aircraft, #aircraft-history) {
+    grid-column: span 2;
+    justify-content: center;
+    padding-inline: 8px;
   }
   .flight-controls kbd {
     display: none;

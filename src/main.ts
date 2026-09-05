@@ -1,3 +1,14 @@
+import { setupReleaseInfo } from "./app/release-info";
+import { setupAircraftHistory } from "./app/aircraft-history";
+import {
+  saveAircraftRevision,
+  importAircraftHistory,
+} from "./app/aircraft-history-storage";
+import {
+  MAX_HISTORY_BYTES,
+  parseAircraftHistory,
+  sameAircraft,
+} from "./core/aircraft-history";
 import { ControlPreview } from "./core/control-preview";
 import { FpvPlacementDialog } from "./app/fpv-placement";
 import { renderControlTest, updateControlTest } from "./app/control-test";
@@ -82,6 +93,10 @@ import {
 } from "./app/flight-session";
 import { setupTabs } from "./app/tabs";
 $("app").innerHTML = workbenchMarkup();
+setupReleaseInfo(() => {
+  pause();
+  input.clear();
+});
 const flightOverlaySizes = new ResizeObserver((entries) => {
   for (const entry of entries) {
     const variable = entry.target.classList.contains("flight-bottom")
@@ -617,8 +632,15 @@ function updateExperimentInfo() {
 function applyDraft() {
   try {
     editor.commitPending();
-    aircraft = parseAircraft(editor.draft);
-    findTrim(aircraft);
+    const next = parseAircraft(editor.draft);
+    findTrim(next);
+    let historyError = "";
+    try {
+      saveAircraftRevision(next, { kind: "applied", previous: aircraft });
+    } catch (e) {
+      historyError = errorText(e);
+    }
+    aircraft = next;
     rememberAircraft(aircraft.id);
     const stored = saveAppliedAircraft(
       aircraft,
@@ -635,9 +657,12 @@ function applyDraft() {
     invalidate();
     updateExperimentInfo();
     message(
-      stored
-        ? "Aircraft saved locally and applied to flight."
-        : "Aircraft applied, but could not be saved locally. Export JSON to keep your changes.",
+      !stored
+        ? "Aircraft applied, but could not be saved locally. Export JSON to keep your changes."
+        : historyError
+          ? `Aircraft applied. History could not be saved: ${historyError} Export JSON to keep a backup.`
+          : "Aircraft saved locally with a version and applied to flight.",
+      !stored || Boolean(historyError),
     );
     return true;
   } catch (e) {
@@ -654,9 +679,28 @@ $("apply-and-fly").onclick = () => {
 $("apply-experiment-draft").onclick = () => {
   if (applyDraft()) $("run-experiment").click();
 };
+setupAircraftHistory({
+  getDraft: () => {
+    editor.commitPending();
+    return editor.draft;
+  },
+  getApplied: () => aircraft,
+  restore: (snapshot) => editor.set(snapshot),
+  notify: message,
+});
 $("restore-aircraft").onclick = () => {
-  editor.set(baseline);
-  message("Original aircraft restored in the editor. Apply to flight to save.");
+  try {
+    // A deliberate reset can also recover from invalid, uncommitted input.
+    if (!sameAircraft(editor.draft, baseline))
+      saveAircraftRevision(editor.draft, {
+        name: "Before restoring original",
+        previous: aircraft,
+      });
+    editor.set(baseline);
+    message("Original restored to draft. Apply to flight when ready.");
+  } catch (e) {
+    message(errorText(e), true);
+  }
 };
 $("export-aircraft").onclick = () => {
   try {
@@ -671,13 +715,34 @@ $<HTMLInputElement>("import-aircraft").onchange = async (e) => {
   const file = (e.target as HTMLInputElement).files?.[0];
   if (!file) return;
   try {
-    if (file.size > 1000000) throw new Error("Aircraft file exceeds 1 MB");
-    const a = parseAircraft(JSON.parse(await file.text()));
+    if (file.size > MAX_HISTORY_BYTES)
+      throw new Error("Import exceeds the 1.8 MB limit.");
+    const text = await file.text(),
+      data: unknown = JSON.parse(text);
+    const archive =
+      data &&
+      typeof data === "object" &&
+      "format" in data &&
+      data.format === "rcforge-aircraft-history"
+        ? parseAircraftHistory(text)
+        : undefined;
+    if (archive && !archive.entries.length)
+      throw new Error("This history has no aircraft versions to import.");
+    if (!archive && file.size > 1_000_000)
+      throw new Error("Aircraft file exceeds 1 MB.");
+    const a = archive ? archive.entries.at(-1)!.aircraft : parseAircraft(data);
     findTrim(a);
+    if (!sameAircraft(editor.draft, aircraft))
+      saveAircraftRevision(editor.draft, {
+        name: "Before importing aircraft",
+        previous: aircraft,
+      });
+    if (archive) importAircraftHistory(text);
+    const source = archive?.entries[0].aircraft ?? a;
     const index = originals.findIndex((v) => v.id === a.id);
-    if (index < 0) originals.push(a);
-    else if (!bundledIds.has(a.id)) originals[index] = a;
-    baseline = a;
+    if (index < 0) originals.push(source);
+    else if (!bundledIds.has(a.id)) originals[index] = source;
+    baseline = originals.find((v) => v.id === a.id) ?? source;
     aircraft = structuredClone(a);
     editor.set(a);
     fillSelects();
@@ -686,7 +751,9 @@ $<HTMLInputElement>("import-aircraft").onchange = async (e) => {
     scene?.setAircraft(a);
     invalidate();
     message(
-      "Aircraft imported for this session. Apply to flight to save it locally; export JSON to keep a file.",
+      archive
+        ? "History imported. Latest backup version opened for review; Apply to flight to save this aircraft locally."
+        : "Aircraft imported for this session. Apply to flight to save it locally; export JSON to keep a file.",
     );
   } catch (e) {
     message(errorText(e), true);

@@ -1,5 +1,8 @@
 /** Small, shared outline icons. Labels belong to the surrounding control. */
 const paths = {
+  github:
+    '<path d="M9 19c-4 1-4-2-6-2m12 5v-4a3.5 3.5 0 0 0-1-2.8c3.3-.4 6.8-1.6 6.8-7.2a5.6 5.6 0 0 0-1.5-3.9A5.2 5.2 0 0 0 19.2.2S18 .0 15.2 1.7a13.4 13.4 0 0 0-7.2 0C5.2 0 4 .2 4 .2a5.2 5.2 0 0 0-.1 4A5.6 5.6 0 0 0 2.4 8c0 5.6 3.5 6.8 6.8 7.2A3.5 3.5 0 0 0 8.2 18v4" transform="translate(1 1) scale(.9)"/>',
+  history: '<path d="M3 11a9 9 0 1 1 2.6 7M3 4v7h7M12 7v5l3 2"/>',
   fly: '<path d="m12 3 2 7 7 5v2l-8-2v5l-1 1-1-1v-5l-8 2v-2l7-5Z"/>',
   aircraft:
     '<path d="M4 20 20 4M4 4h6M4 4v6M20 20h-6M20 20v-6M8 12l4 4M12 8l4 4"/>',

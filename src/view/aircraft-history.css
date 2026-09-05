@@ -1,0 +1,261 @@
+.aircraft-history-dialog {
+  width: min(1020px, calc(100vw - 36px));
+  max-height: calc(100dvh - 36px);
+  padding: 0;
+  color: var(--ui-text);
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border-strong);
+  border-radius: 10px;
+}
+.aircraft-history-dialog::backdrop,
+.release-dialog::backdrop {
+  background: #000a;
+}
+.aircraft-history-dialog button {
+  white-space: nowrap;
+}
+.history-header,
+.history-footer,
+.history-detail-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.history-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--ui-border);
+}
+.history-header h2 {
+  font-size: 20px;
+  margin: 0 0 5px;
+}
+.history-header p,
+.history-detail-heading p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ui-muted);
+}
+#history-count {
+  display: block;
+  margin-top: 5px;
+  color: var(--ui-faint);
+  font-size: 11px;
+}
+.history-checkpoint {
+  padding: 16px 24px;
+  background: var(--ui-panel);
+  border-bottom: 1px solid var(--ui-border);
+}
+.history-checkpoint label {
+  margin: 0 0 8px;
+  color: var(--ui-muted);
+}
+.history-checkpoint > div {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.history-checkpoint input {
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+}
+.history-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  min-height: 340px;
+  height: min(48vh, 470px);
+}
+.history-list {
+  padding: 12px;
+  overflow-y: auto;
+  border-right: 1px solid var(--ui-border);
+}
+.history-list button {
+  display: flex;
+  text-align: left;
+  width: 100%;
+  gap: 12px;
+  padding: 12px;
+  margin: 0 0 6px;
+  background: transparent;
+  border-color: transparent;
+}
+.history-list button > span:last-child {
+  min-width: 0;
+}
+.history-list button strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.history-list small {
+  display: block;
+  color: var(--ui-muted);
+  font-size: 10px;
+  margin-top: 5px;
+}
+.history-version {
+  color: var(--ui-muted);
+  font-variant-numeric: tabular-nums;
+}
+.history-detail {
+  padding: 22px;
+  overflow-y: auto;
+  min-width: 0;
+}
+.history-detail h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+.history-detail h4 {
+  font-size: 12px;
+  margin: 24px 0 12px;
+}
+.history-metrics {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--ui-border);
+}
+.history-metrics span {
+  display: block;
+  color: var(--ui-muted);
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+.history-metrics strong {
+  font-size: 14px;
+}
+.history-differences {
+  overflow-x: auto;
+}
+.history-differences table {
+  width: 100%;
+  table-layout: fixed;
+  font-size: 11px;
+  border-collapse: collapse;
+}
+.history-differences :is(th, td) {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--ui-border);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.history-differences th {
+  font-weight: 500;
+  color: var(--ui-muted);
+}
+.history-differences th:first-child {
+  width: 45%;
+}
+.history-differences td {
+  font-variant-numeric: tabular-nums;
+}
+.history-matches {
+  color: var(--ui-muted);
+  background: var(--ui-panel);
+  padding: 16px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+.history-restore {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin: 22px 0;
+}
+.history-restore p,
+.history-manage p,
+.history-empty p {
+  font-size: 12px;
+  color: var(--ui-muted);
+  line-height: 1.6;
+}
+.history-manage {
+  border-top: 1px solid var(--ui-border);
+  padding-top: 14px;
+  font-size: 11px;
+}
+.history-empty {
+  padding: 24px 12px;
+}
+.history-empty h3 {
+  font-size: 15px;
+}
+.history-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--ui-border);
+}
+.history-footer p {
+  max-width: 530px;
+  margin: 0;
+  font-size: 11px;
+  color: var(--ui-muted);
+}
+.history-footer > div {
+  display: flex;
+  gap: 8px;
+}
+#history-status.history-error {
+  color: #f2ba92;
+}
+@media (max-width: 650px) {
+  .aircraft-history-dialog {
+    width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+  .history-header,
+  .history-footer,
+  .history-checkpoint {
+    padding: 14px;
+  }
+  .history-layout {
+    display: flex;
+    flex-direction: column;
+    height: 50dvh;
+    min-height: 260px;
+  }
+  .history-list {
+    flex-shrink: 0;
+    display: flex;
+    gap: 6px;
+    max-height: 104px;
+    overflow-x: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--ui-border);
+  }
+  .history-list button {
+    flex: 0 0 190px;
+    margin: 0;
+  }
+  .history-list .history-empty {
+    padding: 0;
+  }
+  .history-list .history-empty p {
+    display: none;
+  }
+  .history-detail {
+    padding: 16px;
+  }
+  .history-footer {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .history-footer > div > button {
+    flex: 1;
+  }
+  .history-metrics {
+    gap: 18px;
+  }
+  .history-restore {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+}
