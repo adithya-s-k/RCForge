@@ -1077,6 +1077,8 @@ body[data-running="true"] .fly-page .flight-stage {
 .catalog-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: max-content;
+  align-content: start;
   gap: 12px;
   padding: 4px 24px 20px;
   overflow-y: auto;
@@ -1194,15 +1196,19 @@ body[data-running="true"] .fly-page .flight-stage {
     padding: 0 12px 16px;
   }
   .catalog-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     padding: 0 12px 14px;
-    flex-wrap: wrap;
     gap: 8px;
   }
   #aircraft-catalog .dialog-header {
     padding: 16px 12px;
   }
   #catalog-count {
-    width: 100%;
+    width: auto;
+  }
+  #catalog-clear {
+    justify-self: end;
   }
 }
 /* Aircraft silhouette and registration corners remain legible at toolbar scale. */

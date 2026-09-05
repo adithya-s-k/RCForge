@@ -920,7 +920,7 @@ const controllerActions = new ControllerActions(input, (action) => {
     navigateSetting(action);
     return;
   }
-  if (controller.calibrating) return;
+  if (controller.calibrating || document.querySelector("dialog[open]")) return;
   if (action === "settings") {
     pause();
     location.hash = page === "controllers" ? "#/fly" : "#/controllers";
@@ -948,9 +948,7 @@ function frame(now: number) {
   previous = now;
   try {
     arduino.poll();
-    controllerActions.update(
-      document.hasFocus() && !document.querySelector("dialog[open]"),
-    );
+    controllerActions.update(document.hasFocus());
     if (!running && page === "fly" && input.source === "keyboard" && !replay)
       input.read(dt);
     if (running && page === "fly") {
@@ -1047,12 +1045,14 @@ function frame(now: number) {
         hardware && !input.selected(),
       );
       const bindings = hardware
-        ? aircraftChannels(aircraft)
-            .map(
-              (ch) =>
-                `<span><kbd>A${input.profile.bindings[ch].axis + 1}</kbd> ${ch}</span>`,
-            )
-            .join("")
+        ? !input.selected()
+          ? "<span>Connect your controller or choose Keyboard.</span>"
+          : aircraftChannels(aircraft)
+              .map(
+                (ch) =>
+                  `<span><kbd>A${input.profile.bindings[ch].axis + 1}</kbd> ${ch}</span>`,
+              )
+              .join("")
         : aircraftChannels(aircraft)
             .map(
               (ch) =>

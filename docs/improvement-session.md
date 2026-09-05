@@ -397,3 +397,22 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
 - Continuation permits one cleanup wake after the deadline so the automation can
   explicitly pause itself and report. The work deadline remains 02:28:46 UTC;
   no new work may start after it. Continue reviewing existing workflows before it.
+
+## Pass 17 · catalog readability and controller navigation
+
+- Actual catalog inspection exposed all aircraft names/specifications being clipped:
+  auto-sized grid rows shrank inside the height-limited dialog. Rows now retain
+  their content height and scroll, preserving preview, name, dimensions and action.
+  Phone filters use two columns; changing a filter starts at the first result.
+- Controller navigation starts at the correct end when nothing has focus, skips
+  hidden/inert/disabled controls and unavailable options, and avoids redundant
+  numeric change events at limits. Navigation now works inside native dialogs,
+  stays scoped to their controls, and cannot activate a background launch button.
+  Direct flight/settings shortcuts remain blocked while a dialog is open.
+- Missing-device flight hints no longer display axis assignments as if connected.
+  Browser verified the disconnected Gamepad → setup → Keyboard → flight recovery,
+  guide, catalog keyboard End navigation, filtering and full cards on desktop and
+  narrow layouts. Hardware shortcut behavior is covered by DOM/edge regressions;
+  no physical controller was available for this pass.
+- Verification: 198 tests / 34 files, definitions/catalog, production build and
+  local docs checks pass. No dynamics or model-definition change.

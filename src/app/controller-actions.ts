@@ -264,23 +264,34 @@ export class ControllerActions {
 }
 /** Visible controls can be traversed using explicitly assigned controller shortcuts. */
 export function navigateSetting(action: Action) {
+  // Native modal dialogs make the rest of the document inert, even though
+  // those controls still have layout rectangles.
+  const scope = document.querySelector("dialog[open]") ?? document;
   const controls = Array.from(
-    document.querySelectorAll<HTMLElement>(
-      "button,input,select,summary,a[href]",
-    ),
+    scope.querySelectorAll<HTMLElement>("button,input,select,summary,a[href]"),
   ).filter(
     (e) =>
       e.getClientRects().length &&
-      !e.closest("[hidden]") &&
+      !e.closest("[hidden],[inert]") &&
       !e.matches(":disabled") &&
       (e.tabIndex >= 0 || e.getAttribute("role") === "tab"),
   );
   const current = document.activeElement as HTMLElement,
     index = controls.indexOf(current);
+  if (!controls.length) return;
   if (action === "next" || action === "previous") {
     controls[
-      (index + (action === "next" ? 1 : -1) + controls.length) % controls.length
+      index < 0
+        ? action === "next"
+          ? 0
+          : controls.length - 1
+        : (index + (action === "next" ? 1 : -1) + controls.length) %
+          controls.length
     ]?.focus();
+    return;
+  }
+  if (index < 0) {
+    controls[0]?.focus();
     return;
   }
   if (action === "activate") {
@@ -289,19 +300,29 @@ export function navigateSetting(action: Action) {
     } else current?.click();
     return;
   }
+  if (action !== "increase" && action !== "decrease") return;
   const direction = action === "increase" ? 1 : -1;
   if (current instanceof HTMLSelectElement) {
-    current.selectedIndex = Math.max(
-      0,
-      Math.min(current.options.length - 1, current.selectedIndex + direction),
-    );
-    current.dispatchEvent(new Event("change", { bubbles: true }));
+    for (
+      let i = current.selectedIndex + direction;
+      i >= 0 && i < current.options.length;
+      i += direction
+    ) {
+      const option = current.options[i]!;
+      if (option.hidden || option.matches(":disabled")) continue;
+      current.selectedIndex = i;
+      current.dispatchEvent(new Event("change", { bubbles: true }));
+      break;
+    }
   }
   if (
     current instanceof HTMLInputElement &&
-    ["range", "number"].includes(current.type)
+    ["range", "number"].includes(current.type) &&
+    !current.readOnly
   ) {
+    const previous = current.value;
     direction > 0 ? current.stepUp() : current.stepDown();
+    if (current.value === previous) return;
     current.dispatchEvent(new Event("input", { bubbles: true }));
     current.dispatchEvent(new Event("change", { bubbles: true }));
   }
