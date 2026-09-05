@@ -146,6 +146,7 @@ export function placementUI(options: PositionOptions) {
         Math.round(draft.headingDeg / 45) % 8
       ];
     $("track-plane").toggleAttribute("disabled", state.camera !== "ground");
+    $("focus-plane").toggleAttribute("disabled", state.camera !== "ground");
     $("walk-mode").toggleAttribute("disabled", state.camera !== "ground");
   };
   const fit = () => {

@@ -1,3 +1,6 @@
+import { landscapeSurfaceHeight } from "./landscape";
+import { ImpactDebris } from "./impact-debris";
+import { focusedPilotFov } from "./pilot-focus";
 import { ComponentPlacementView } from "./component-placement";
 import { fpvMount, placeFpvCamera } from "./fpv-camera";
 import { powertrain } from "../core/powertrain";
@@ -27,7 +30,7 @@ const conversion = new T.Quaternion().setFromAxisAngle(
   Math.PI / 2,
 );
 export type CameraMode = "ground" | "chase" | "fpv" | "orbit";
-/** Fixed physical pilot position; only head direction changes. No automatic zoom. */
+/** Fixed physical pilot position; head tracking uses bounded optical focus at distance. */
 export class FlightScene {
   renderer: T.WebGLRenderer;
   scene = new T.Scene();
@@ -56,6 +59,7 @@ export class FlightScene {
   pilotFov = 55;
   walking = false;
   trackAircraft = true;
+  focusAircraft = true;
   chaseDistance = 4.8;
   private lookYaw = 0;
   private lookPitch = 0;
@@ -83,6 +87,11 @@ export class FlightScene {
   );
   onGroundPick?: (north: number, east: number) => void;
   private visual?: AircraftVisual;
+  private debris = new ImpactDebris((x, z) =>
+    Math.max(0, landscapeSurfaceHeight(x, z, sceneries[this.scenery])),
+  );
+  private impactVelocity = new T.Vector3();
+  private focusFov = 55;
   private fpv?: ReturnType<typeof fpvMount>;
   private cg: Vec3 = [0, 0, 0];
   private span = 1.086;
@@ -139,7 +148,7 @@ export class FlightScene {
     sun.shadow.normalBias = 0.006;
     this.scene.add(sun, sun.target);
     this.field = createField(this.scene);
-    this.scene.add(this.forces, this.studioGroup);
+    this.scene.add(this.forces, this.studioGroup, this.debris.group);
     this.placementMarker.visible = false;
     this.placementRing.rotation.x = -Math.PI / 2;
     this.placementMarker.add(this.placementRing, this.placementArrow);
@@ -256,6 +265,7 @@ export class FlightScene {
   }
   get needsSmoothMotion() {
     return (
+      this.debris.moving ||
       this.dragging ||
       this.componentPlacement?.dragging ||
       this.cameraPlacement?.dragging ||
@@ -273,6 +283,8 @@ export class FlightScene {
     this.camera.updateProjectionMatrix();
   }
   private disposeVisual() {
+    this.debris.clear();
+    this.impactVelocity.set(0, 0, 0);
     if (!this.visual) return;
     this.scene.remove(this.visual.group);
     disposeAircraft(this.visual.group);
@@ -415,6 +427,9 @@ export class FlightScene {
       return null;
     return { x: (point.x + 1) * 50, y: (1 - point.y) * 50, distance };
   }
+  get fieldObstacles() {
+    return this.field.obstacles;
+  }
   setScenery(id: SceneryId) {
     if (this.scenery === id) return;
     this.scenery = id;
@@ -462,6 +477,7 @@ export class FlightScene {
   setStudio(value: boolean) {
     this.studio = value;
     this.field.field.visible = !value;
+    this.debris.group.visible = !value;
     this.field.sky.visible = !value;
     this.studioGroup.visible = value;
     const site = sceneries[this.scenery];
@@ -470,8 +486,8 @@ export class FlightScene {
     this.sun.shadow.intensity = value ? 0.45 : 1;
     this.sun.shadow.normalBias = value ? 0.001 : 0.006;
     this.hemisphere.color.set(value ? "#e7edf5" : "#d6e3f1");
-    this.hemisphere.groundColor.set(value ? "#73777d" : "#788266");
-    this.hemisphere.intensity = value ? 3 : 2.1;
+    this.hemisphere.groundColor.set(value ? "#73777d" : "#596348");
+    this.hemisphere.intensity = value ? 3 : 1.55;
     this.updateStudioBackground();
     if (value) this.setCamera("orbit");
     this.resize();
@@ -537,6 +553,9 @@ export class FlightScene {
       this.pilotPosition.add(motion.normalize().multiplyScalar(2.2 * dt));
     }
     this.pilotPosition.y = 1.7;
+  }
+  captureImpactVelocity(velocity: Vec3) {
+    this.impactVelocity.set(velocity[0], -velocity[2], velocity[1]);
   }
   clearTrail() {} // Retained call compatibility; trails are intentionally absent in pilot flight.
   render(
@@ -643,12 +662,36 @@ export class FlightScene {
           260 *
           (sim.aircraft.motors[i].spin === "ccw" ? -1 : 1)),
     );
+    if (!this.studio && s.status === "crashed") {
+      if (!this.debris.active) {
+        this.visual.cg.visible = false;
+        this.debris.start(this.visual.group, sim.aircraft, this.impactVelocity);
+      }
+      this.visual.group.visible = !this.debris.active;
+      this.debris.update(dt);
+    } else {
+      this.debris.clear();
+      this.visual.group.visible = true;
+    }
     let desired: T.Vector3,
       target = this.studio ? this.modelCenter.clone() : pos.clone();
     if (this.mode === "ground") {
       desired = this.pilotPosition;
       this.camera.position.copy(desired);
-      this.camera.fov = this.pilotFov;
+      const focused = focusedPilotFov(
+        this.pilotFov,
+        this.span,
+        pos.distanceTo(desired),
+        this.trackAircraft &&
+          this.focusAircraft &&
+          !this.dragging &&
+          Math.abs(this.lookYaw) < 0.1 &&
+          Math.abs(this.lookPitch) < 0.1,
+      );
+      this.focusFov = this.snap
+        ? this.pilotFov
+        : T.MathUtils.lerp(this.focusFov, focused, 1 - Math.exp(-dt * 1.5));
+      this.camera.fov = this.focusFov;
       const direction = this.trackAircraft
         ? pos.clone().sub(desired).normalize()
         : this.heading.clone();

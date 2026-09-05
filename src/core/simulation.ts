@@ -1,3 +1,4 @@
+import { ObstacleCollisions, type Obstacle } from "./obstacles";
 import { initialVtolState, vtolCommands, vtolRotorLoads } from "./vtol";
 import type { VtolCommand, VtolState } from "./vtol-config";
 import { surfacePolar, STANDARD_AIR_VISCOSITY } from "./aerodynamics";
@@ -49,6 +50,7 @@ export interface Environment {
   densityKgM3: number;
   kinematicViscosityM2S?: number;
   sceneryId?: string;
+  obstacles?: Obstacle[];
   surface?: "asphalt" | "grass" | "dirt";
 }
 export const calmEnvironment = (): Environment => ({
@@ -140,6 +142,7 @@ export function cleanControls(c: Controls): Controls {
 }
 export class Simulation {
   readonly properties: ReturnType<typeof massProperties>;
+  private collisions: ObstacleCollisions;
   readonly actuations: ReturnType<typeof surfaceActuation>[];
   state: State;
   lastForces: Forces = {
@@ -154,6 +157,7 @@ export class Simulation {
     state?: State,
   ) {
     this.properties = massProperties(aircraft);
+    this.collisions = new ObstacleCollisions(aircraft, this.properties.cg);
     this.actuations = aircraft.surfaces.map((s) =>
       surfaceActuation(aircraft, s),
     );
@@ -457,7 +461,10 @@ export class Simulation {
       throw new Error(
         "Non-finite flight state: inspect aircraft coefficients or reduce timestep",
       );
-    this.resolveGround(c, dt);
+    if (
+      !this.collisions.resolve(s, this.state, this.environment.obstacles ?? [])
+    )
+      this.resolveGround(c, dt);
     this.lastForces = this.forces(this.state, c);
     return this.state;
   }

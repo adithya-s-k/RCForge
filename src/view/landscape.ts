@@ -1,3 +1,4 @@
+import { skyPhotograph } from "./sky-photograph";
 import * as T from "three";
 import type { Scenery } from "../core/scenery";
 import { seededRandom, terrainNoise as noise } from "./terrain-material";
@@ -171,11 +172,13 @@ export function addLandscape(
     dummy.updateMatrix();
     rocks.setMatrixAt(i, dummy.matrix);
   }
+  rocks.userData.collision = "solid";
+  rocks.name = "rock";
   rocks.receiveShadow = true;
   field.add(rocks);
 }
 
-/** Quiet sky gradient and a soft sun; no HDR download or atmospheric scattering pass. */
+/** Photographic clouds over field haze; one compact texture and no scattering pass. */
 export function createSky(profile: Scenery) {
   const dry = profile.surface === "dirt";
   const sky = new T.Mesh(
@@ -185,6 +188,18 @@ export function createSky(profile: Scenery) {
       depthWrite: false,
       fog: false,
       uniforms: {
+        photograph: { value: null },
+        photoReady: { value: 0 },
+        photoRotation: { value: new T.Matrix3() },
+        photoTint: {
+          value: new T.Color(
+            dry
+              ? "#ffe4c8"
+              : profile.surface === "grass"
+                ? "#e4edff"
+                : "#fff8eb",
+          ),
+        },
         zenith: { value: new T.Color(dry ? "#91b3c6" : "#81aecd") },
         horizon: { value: new T.Color(profile.fog) },
         sunDirection: { value: new T.Vector3(...profile.sun).normalize() },
@@ -193,11 +208,19 @@ export function createSky(profile: Scenery) {
       vertexShader: `varying vec3 skyDirection;
       void main() { skyDirection = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
       fragmentShader: `varying vec3 skyDirection;
-      uniform vec3 zenith, horizon, sunDirection, sunTint;
+      uniform vec3 zenith, horizon, sunDirection, sunTint, photoTint;
+      uniform sampler2D photograph;
+      uniform mat3 photoRotation;
+      uniform float photoReady;
       void main() {
         vec3 direction = normalize(skyDirection);
         float elevation = pow(max(direction.y, 0.0), 0.45);
         vec3 color = mix(horizon, zenith, elevation);
+        vec3 photoDirection = photoRotation * direction;
+        vec2 photoUV = vec2(atan(photoDirection.z, photoDirection.x) / 6.2831853 + 0.5, asin(clamp(photoDirection.y,-1.0,1.0)) / 3.14159265 + 0.5);
+        vec3 photo = exp(texture2D(photograph, photoUV).rgb * log(17.0)) - 1.0;
+        // Keep the horizon tied to field haze, but preserve photographic cloud structure.
+        color = mix(color, photo * photoTint, photoReady * smoothstep(-0.025, 0.18, direction.y) * 0.92);
         float sun = max(dot(direction, sunDirection), 0.0);
         color += sunTint * (pow(sun, 64.0) * 0.08 + smoothstep(0.9997, 0.99995, sun) * 1.1);
         gl_FragColor = vec4(color, 1.0);
@@ -206,6 +229,21 @@ export function createSky(profile: Scenery) {
       }`,
     }),
   );
+  skyPhotograph()
+    .then(({ texture, direction }) => {
+      const turn = new T.Quaternion().setFromUnitVectors(
+        new T.Vector3(...profile.sun).normalize(),
+        direction,
+      );
+      sky.material.uniforms.photoRotation.value.setFromMatrix4(
+        new T.Matrix4().makeRotationFromQuaternion(turn),
+      );
+      sky.material.uniforms.photograph.value = texture;
+      sky.material.uniforms.photoReady.value = 1;
+    })
+    .catch(() => {
+      /* The local gradient remains usable if the optional asset cannot load. */
+    });
   sky.renderOrder = -10;
   return sky;
 }

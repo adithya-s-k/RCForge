@@ -1,3 +1,4 @@
+import { ObstaclesSchema } from "./obstacles";
 import { VtolCommandSchema, VtolStateSchema } from "./vtol-config";
 import { z } from "zod";
 import { AircraftSchema, type Aircraft } from "./schema";
@@ -219,6 +220,7 @@ export function parseRecording(raw: unknown): Recording {
           densityKgM3: finite.positive().max(3),
           kinematicViscosityM2S: finite.min(1e-6).max(0.001).optional(),
           sceneryId: z.string().optional(),
+          obstacles: ObstaclesSchema.optional(),
           surface: z.enum(["asphalt", "grass", "dirt"]).optional(),
         })
         .strict(),

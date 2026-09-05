@@ -282,6 +282,7 @@ function showScenery(env: typeof environment) {
 function reset() {
   const cameraMode = flightCamera;
   showScenery(environment);
+  environment = { ...environment, obstacles: scene?.fieldObstacles ?? [] };
   pause();
   if (
     (aircraft.vehicleType === "multirotor" || aircraft.vtol) &&
@@ -892,6 +893,9 @@ $("walk-mode").onchange = () => {
   if (scene) scene.walking = input.walking;
   input.clear();
 };
+$("focus-plane").onchange = () => {
+  if (scene) scene.focusAircraft = $<HTMLInputElement>("focus-plane").checked;
+};
 $("track-plane").onchange = () => {
   if (scene) scene.trackAircraft = $<HTMLInputElement>("track-plane").checked;
 };
@@ -1248,6 +1252,7 @@ function frame(now: number) {
           );
           if (sim.aircraft.vtol) controls.vtol = { ...vtolFlight.command };
         }
+        scene?.captureImpactVelocity(sim.state.velocity);
         sim.step(controls);
         accumulator -= FIXED_DT;
         if (!replay) {
