@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="970" viewBox="0 0 1200 970" role="img" aria-labelledby="title desc">
+<title id="title">FS-i6 trainer socket to Arduino Nano</title>
+<desc id="desc">An outside rear view locates the trainer socket below the antenna. The socket contacts have no verified electrical assignments. Use a documented breakout: PPM OUT through 1 kiloohm to D2, 47 kiloohms from D2 to ground, and shared ground. Transmitter and Nano have separate power. Read diagnostics before using the bridge.</desc>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#263442}.small{font-size:16px;fill:#526273}.label{font-size:13px;letter-spacing:2px;fill:#526273}.heading{font-size:22px;font-weight:700}.mono{font-family:monospace;font-size:18px}.signal{stroke:#8b5915;fill:none;stroke-width:4;stroke-linejoin:round}.ground{stroke:#536574;fill:none;stroke-width:4}.panel{fill:#edf1f5;stroke:#c2cbd5}.outline{stroke:#647283;stroke-width:2;fill:none}</style>
+<rect width="1200" height="970" rx="20" fill="#f7f9fb"/>
+<text x="40" y="40" class="label">RCFORGE / BENCH CONNECTION GUIDE</text>
+<text x="40" y="86" font-size="34" font-weight="700">Your transmitter. Two signal connections.</text>
+<text x="40" y="118" class="small">FS-i6 → verified trainer breakout → classic Nano → USB</text>
+
+<rect x="32" y="152" width="390" height="586" rx="14" class="panel"/>
+<text x="56" y="187" class="label">01 / FIND THE SOCKET</text>
+<text x="56" y="220" class="heading">Looking at the back</text>
+<!-- Original simplified rear case with antenna and battery hatch. -->
+<path d="M98 281 Q227 243 356 281 L375 565 Q227 600 79 565Z" fill="#e1e7ee" stroke="#647283" stroke-width="2"/>
+<path d="M207 265V244Q227 232 247 244V265" class="outline"/>
+<path d="M215 322V272H239V322" fill="#edf1f5" stroke="#647283" stroke-width="2"/>
+<rect x="190" y="337" width="74" height="76" rx="8" fill="#f7f9fb" stroke="#647283"/>
+<circle cx="227" cy="369" r="23" class="outline"/>
+<text x="227" y="402" font-size="9" text-anchor="middle">TRAINER</text>
+<rect x="120" y="458" width="214" height="92" rx="12" fill="#edf1f5" stroke="#647283"/>
+<text x="227" y="500" class="small" text-anchor="middle">Battery compartment</text>
+<path d="M203 522h48" class="outline"/>
+<!-- Enlargement is deliberately separate from all electrical wires. -->
+<path d="M252 369H365V586H227V600" fill="none" stroke="#647283" stroke-dasharray="4 5"/>
+<circle cx="227" cy="639" r="45" fill="#e1e7ee" stroke="#536574" stroke-width="3"/>
+<circle cx="227" cy="639" r="35" fill="#edf1f5" stroke="#647283"/>
+<rect x="218" y="610" width="18" height="10" rx="2" fill="#f7f9fb"/>
+<rect x="206" y="626" width="8" height="9" fill="#f7f9fb" stroke="#647283"/>
+<rect x="239" y="626" width="8" height="9" fill="#f7f9fb" stroke="#647283"/>
+<rect x="209" y="645" width="8" height="9" fill="#f7f9fb" stroke="#647283"/>
+<rect x="237" y="645" width="8" height="9" fill="#f7f9fb" stroke="#647283"/>
+<text x="227" y="709" class="small" text-anchor="middle">Orientation only · contacts unassigned</text>
+
+<rect x="438" y="152" width="730" height="586" rx="14" class="panel"/>
+<text x="462" y="187" class="label">02 / WIRE VERIFIED SIGNALS</text>
+<text x="462" y="220" class="heading">Use a documented PPM OUT breakout</text>
+<text x="462" y="250" class="small">Socket front ≠ plug solder side. Do not guess a contact.</text>
+<rect x="462" y="286" width="180" height="243" rx="10" fill="#f7f9fb" stroke="#c2cbd5"/>
+<text x="480" y="319" font-size="18" font-weight="700">TRAINER CABLE</text>
+<text x="480" y="344" class="small">Verified terminals</text>
+<text x="480" y="398" class="mono" style="fill:#8b5915">PPM OUT</text>
+<text x="480" y="474" class="mono">GND</text>
+<circle cx="636" cy="392" r="6" fill="#8b5915"/>
+<circle cx="636" cy="468" r="6" fill="#536574"/>
+
+<!-- Resistor and branch after the series resistor; no crossing wires. -->
+<path d="M642 392H698 M758 392H982" class="signal"/>
+<rect x="698" y="382" width="60" height="20" fill="#f6ecd8" stroke="#8b5915" stroke-width="3"/>
+<text x="728" y="367" text-anchor="middle" class="mono" style="fill:#8b5915">1 kΩ</text>
+<path d="M822 392V418 M822 446V468" class="ground"/>
+<rect x="812" y="418" width="20" height="28" fill="#e1e7ee" stroke="#536574" stroke-width="2"/>
+<text x="846" y="438" class="mono">47 kΩ</text>
+<path d="M642 468H982" class="ground"/>
+<circle cx="822" cy="392" r="6" fill="#8b5915"/>
+<circle cx="822" cy="468" r="6" fill="#536574"/>
+<text x="706" y="506" class="small">Common ground</text>
+
+<rect x="982" y="286" width="162" height="243" rx="10" fill="#f7f9fb" stroke="#236c7d"/>
+<text x="1063" y="319" text-anchor="middle" font-size="20" font-weight="700">NANO</text>
+<text x="1063" y="344" text-anchor="middle" class="small">ATmega328P</text>
+<circle cx="984" cy="392" r="6" fill="#8b5915"/>
+<text x="1003" y="399" class="mono" style="fill:#8b5915">D2</text>
+<circle cx="984" cy="468" r="6" fill="#536574"/>
+<text x="1003" y="475" class="mono">GND</text>
+<path d="M1063 529V553" stroke="#236c7d" stroke-width="6"/>
+<rect x="962" y="553" width="190" height="39" rx="7" fill="#f7f9fb" stroke="#236c7d"/>
+<text x="1057" y="578" text-anchor="middle" font-size="16" style="fill:#236c7d">USB → computer</text>
+<text x="462" y="565" class="small">Nano pins shown by name,</text>
+<text x="462" y="588" class="small">not physical header position.</text>
+<path d="M462 614H1144" stroke="#c2cbd5"/>
+<text x="462" y="647" font-size="18" font-weight="700" style="fill:#b24338">No transmitter VCC / 5 V wire to the Nano</text>
+<text x="462" y="676" class="small">Radio: its own batteries. Nano: USB power. Receiver: disconnected.</text>
+<text x="462" y="708" class="small">PPM must be 0–3.3/5 V logic. Resistors are not voltage converters.</text>
+
+<text x="40" y="782" class="label">03 / VERIFY, THEN FLY</text>
+<rect x="32" y="804" width="360" height="110" rx="10" class="panel"/>
+<text x="54" y="836" class="heading">1. Confirm the cable</text>
+<text x="54" y="865" class="small">Identify PPM OUT + GND and levels.</text>
+<text x="54" y="890" class="small">Unplug power before wiring.</text>
+<rect x="408" y="804" width="368" height="110" rx="10" class="panel"/>
+<text x="430" y="836" class="heading">2. Read the channels</text>
+<text x="430" y="865" class="small">Upload ppm_monitor.ino.</text>
+<text x="430" y="890" class="small">Serial Monitor → 115200 baud.</text>
+<rect x="792" y="804" width="376" height="110" rx="10" class="panel"/>
+<text x="814" y="836" class="heading">3. Connect RCForge</text>
+<text x="814" y="865" class="small">Upload rcforge_bridge.ino instead.</text>
+<text x="814" y="890" class="small">Six channels + CH6 RUN → calibrate.</text>
+<text x="40" y="947" font-size="13" fill="#647283">Original schematic / FS-i6 rear reference / not a cable pinout or hardware-tested installation</text>
+<style>.keyboard-body{fill:#e5ebf0;stroke:#8c9bab}.keyboard-key rect{fill:#f8fafb;stroke:#c2cbd5}.key-letter{fill:#607182}.key-function,.mapped .key-letter{fill:#263442}.mapped.flight rect{fill:#dbeaf0;stroke:#547f91}.mapped.power rect{fill:#f6ecd8;stroke:#987032}.mapped.session rect{fill:#e2ecdf;stroke:#64865e}.mapped.view rect{fill:#ebe4f3;stroke:#8b74a4}</style></svg>

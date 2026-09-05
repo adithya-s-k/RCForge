@@ -14,4 +14,5 @@ for board in arduino:avr:uno arduino:avr:nano:cpu=atmega328 arduino:avr:nano:cpu
       --build-property "compiler.cpp.extra_flags=-DRCF_INPUT_MODE=$mode" \
       hardware/rcforge_bridge
   done
+  "$RCF_CLI" "${RCF_ARGS[@]}" --fqbn "$board" hardware/ppm_monitor
 done

@@ -70,6 +70,7 @@ export function workingDocs(root: string): DocsContent {
     for (const name of readdirSync(join(root, folder)))
       if (/\.(png|svg|json)$/.test(name)) names.add(`${folder}/${name}`);
   names.add("hardware/rcforge_bridge/rcforge_bridge.ino");
+  names.add("hardware/ppm_monitor/ppm_monitor.ino");
   names.add("references/manifest.json");
   const files = new Map(
     [...names].map((name) => [name, readFileSync(join(root, name))]),

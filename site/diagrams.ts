@@ -1,4 +1,5 @@
 import { lightDiagram } from "./diagram-theme";
+import { trainerNanoDiagram } from "./trainer-visual";
 import { staticBalanceDiagram } from "./balance-visual";
 import { hardwareIllustration as hardware } from "./hardware-illustrations";
 import { componentIcon } from "../src/view/component-icon";
@@ -564,6 +565,7 @@ export function documentationDiagrams() {
       "diagram-input-conditioning.svg": conditioning(),
       "diagram-receiver-ppm.svg": ppm(),
       "diagram-trainer-ppm.svg": ppm(true),
+      "fs-i6-trainer-nano.svg": trainerNanoDiagram(),
       "diagram-receiver-pwm.svg": pwm(),
       "diagram-keyboard.svg": keyboard(),
       "diagram-gamepads.svg": pads(),

@@ -26,6 +26,12 @@ export const pages = [
     file: "docs/fs-i6-ia6b-nano-setup.md",
   },
   {
+    slug: "trainer-nano",
+    title: "Trainer socket → Nano",
+    group: "Start here",
+    file: "docs/trainer-nano.md",
+  },
+  {
     slug: "aircraft-editor",
     title: "Edit & save an aircraft",
     group: "Start here",

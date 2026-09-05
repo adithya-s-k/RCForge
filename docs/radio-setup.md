@@ -68,6 +68,8 @@ same bare-receiver power conditions as the PPM route. Leave D0/RX and D1/TX free
 
 ## 4. Trainer PPM
 
+See the [rear-socket drawing and Nano diagnostic walkthrough](trainer-nano.md) for a closer view and a sketch that displays the incoming channels.
+
 This route connects the transmitter directly to the Arduino. Start with a breakout
 whose **PPM OUT** and **GND** contacts are documented for your exact FS-i6 cable.
 The drawing uses signal names, not guessed DIN pin numbers or wire colors.
