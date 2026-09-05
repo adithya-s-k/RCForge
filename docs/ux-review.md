@@ -78,6 +78,11 @@ editor. Desktop retains the same compact panel size.
 
 ## Verification
 
+The flight distance instrument now measures the straight-line distance from the
+pilot's eye position to the aircraft CG, consistent with Pilot-view Locate. Its
+unit reads `m to pilot`. Previously the horizontal-only reading stayed at 4 m
+with a quad almost 180 m overhead. The minimap remains a north-up ground projection.
+
 Browser walkthroughs exercised keyboard launch, throttle increase/cut, pitch/roll input, pause/resume, impact/restart, Pilot/Chase, Locate, aircraft/observer placement, page navigation, Bronco/Tiny Trainer editing, inline errors, Apply & fly, draft-to-experiment handoff, roll-response plotting and metric switching, missing gamepad recovery, and catalog search. Desktop and narrow layouts were visually inspected.
 
 Automated coverage includes draft retention and correction, initial saved-model selection, flight/replay action labels, UI keyboard ownership, active-controller reselection, and controller navigation through inactive setup tabs. The existing dynamics, replay, calibration and signal-loss tests also run through `npm run check`.

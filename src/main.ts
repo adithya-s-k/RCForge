@@ -858,6 +858,7 @@ function stats() {
   $("distance").textContent = Math.hypot(
     s.position[0] - (scene?.pilotPosition.x ?? -8),
     s.position[1] - (scene?.pilotPosition.z ?? -14),
+    -s.position[2] - (scene?.pilotPosition.y ?? 1.7),
   ).toFixed(0);
   $("vertical-speed").textContent = (-s.velocity[2]).toFixed(1);
   $("throttle-value").textContent =

@@ -110,8 +110,8 @@ Changing wing span in the editor removes that wing's finite-wing tables and adds
 an estimated-data provenance note. Mass/CG-only changes preserve aerodynamic
 tables. Supply new tables for modified geometry before claiming calibrated loads.
 
-Simulation version 0.7.0 records viscosity and these aircraft fields. Older
-recordings are rejected; do not relabel their version to bypass the check.
+Recordings include viscosity and these aircraft fields. Only recordings with
+the current simulation version are accepted; do not relabel a version to bypass the check.
 Aircraft schema version 1 remains compatible because the fields are optional.
 
 ## Individual servos and pushrods (0.7)
@@ -142,8 +142,9 @@ CG; transverse inertia reflects their newly specified positions.
 In 0.7, a servo starts from neutral when no initial deflection is supplied, so the
 first control step obeys its speed limit. Trimmed and hand launches explicitly
 initialize the trimmed deflections. Recordings preserve these states. Simulation
-version **0.7.0** rejects older recordings instead of silently replaying them under
-new actuator behavior. Aircraft format remains version 1 with optional fields.
+version **0.7.0** introduced the actuator change and rejected earlier recordings.
+The current compatibility requirement is given at the top of this guide.
+Aircraft format remains version 1 with optional fields.
 
 ## Catalog and discharge presets (0.7)
 
@@ -204,9 +205,9 @@ used (mAh). The comparison table reports charge consumed and remaining charge at
 the actual endpoint, including an early landing or impact. New telemetry CSVs and
 recordings include optional `batterySoc` (0–1), `batteryVoltageV`,
 `batteryCurrentA` and `batteryUsedMah` when an electrical model is present.
-Older 0.7 recordings without those telemetry fields remain readable; missing
-electrical samples are not reported as zero. This adds observations of the
-existing model and does not change the physics or replay version.
+Telemetry fields are optional within the matching simulation version; missing
+electrical samples are not reported as zero. Adding these observations did not
+change physics, but the later contact correction requires a matching 0.7.1 engine.
 
 ## Contact correction (0.7.1)
 

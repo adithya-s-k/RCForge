@@ -669,3 +669,14 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   The envelope survey has zero nonfinite loads; unsolved trim points remain
   reported, including the FT-22's existing limits. Browser idle reaches 26 s with
   heading still 000°, zero displayed airspeed and stopped motors.
+
+## Pass 32 · pilot distance and final ground-flight checks
+
+- Browser ground launches after the solver correction: Quad 450 lifts vertically;
+  Tiny Trainer reaches 15.5 m AGL after 9 s and Bronco reaches 52 m after 12 s at
+  full power. Pause, reset and Chase work. These are model regression observations,
+  not evidence of measured climb performance.
+- The quad's vertical climb exposed a misleading Distance instrument: it ignored
+  altitude and still showed 4 m almost 180 m overhead. It now includes vertical
+  separation from the pilot's eye, with `m to pilot` and a straight-line tooltip.
+  The minimap intentionally remains a ground projection. No forces change.
