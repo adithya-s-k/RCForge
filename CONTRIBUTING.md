@@ -12,16 +12,45 @@ Contributions from builders, pilots, developers, artists and coding-agent users 
 
 Use the [issue templates](https://github.com/adithya-s-k/RCForge/issues/new/choose). Open an issue before a large feature or compatibility change so the design and scope can be discussed. Small fixes and documentation improvements can go directly to a pull request. There is no requirement to use a coding agent.
 
-## Local development
+## From fork to running simulator
 
-Fork the repository and clone your fork, or work on a branch if you have repository access. Use a supported Node version from `package.json` (Node 24 is a convenient default):
+You need Git, a GitHub account to submit a pull request, and a supported Node version from `package.json` (Node 24 is a convenient default). Trying RCForge locally does not need an account.
+
+1. Open [RCForge on GitHub](https://github.com/adithya-s-k/RCForge) and select **Fork**. Keep the default repository name.
+2. Replace `YOUR_GITHUB_USERNAME` below, then run:
 
 ```sh
+git clone https://github.com/YOUR_GITHUB_USERNAME/RCForge.git
+cd RCForge
+git remote add upstream https://github.com/adithya-s-k/RCForge.git
+git switch -c feat/my-change
 npm ci
 npm run dev
 ```
 
-Read [AGENTS.md](AGENTS.md) for architecture contracts and [the docs index](docs/README.md) for the relevant guide. Browser edits live in local storage: export aircraft JSON to make changes reviewable in Git. The project has no required API keys or backend service.
+3. Open the URL Vite prints. Change a source file and the workbench updates locally. No API keys, AI services or backend setup are required.
+4. Read [AGENTS.md](AGENTS.md), [architecture](docs/architecture.md), then the task's guide in the [docs index](docs/README.md). A coding agent can use the same instructions; it is optional.
+
+`origin` is your fork; `upstream` is the shared RCForge repository. Give your branch a descriptive name such as `fix/controller-labels` or `feat/my-trainer`. Work on that branch so your main branch stays easy to update.
+
+## An aircraft contribution, end to end
+
+1. Start from a bundled aircraft or import a definition in **Aircraft → Import JSON**. Use **History → Save version** to keep a checkpoint before experimenting.
+2. Adjust the airframe, components and controls. Inspect the 3D model and use **Control test** to verify surface direction and travel. Use **Apply & fly**, and compare scenarios in **Experiments**. History can restore an earlier setup into your draft without applying it.
+3. **Export** the final aircraft JSON from the editor. Browser edits and checkpoints do not rewrite repository files. A `.history.json` archive is a personal backup; do not commit it as an aircraft definition.
+4. For a new aircraft, give it a unique `id`, descriptive name and source/assumption metadata. Save the ordinary definition as `aircraft/your-aircraft-id.json`. Follow [aircraft authoring](docs/aircraft-authoring.md) and [component models](docs/component-models.md); read [multirotors](docs/multirotors.md) for a quad.
+5. Validate and simulate it. Replace the example path with your file:
+
+```sh
+npm run aircraft:validate -- aircraft/your-aircraft-id.json
+npm run simulate -- aircraft/your-aircraft-id.json --scenario cruise --duration 20 --out results/my-aircraft
+npm run physics:envelope
+```
+
+6. If it should be in the built-in catalog, add an explicit JSON import and an entry in `originals` in `src/main.ts`. Import-only aircraft do not need a catalog code change. Add relevant regression checks and a model guide identifying sourced, calculated and estimated values.
+7. Include a rendered screenshot, the behavior you checked, and material limitations in the PR. Plans establish dimensions, not measured aerodynamic coefficients. Passing numerical checks does not establish real-flight fidelity.
+
+For a bug fix or UI contribution, the same branch/check/PR flow applies. Include the smallest reproduction and the observed before/after behavior.
 
 ## Make a focused change
 
@@ -43,11 +72,37 @@ For physics changes, also run `npm run physics:validate` and a relevant scenario
 
 Run `npm run format` to apply formatting. If a check cannot run, explain the missing dependency or hardware and what you verified instead. Do not represent an unrun check as passing.
 
-## Submit the pull request
+## Submit and iterate on a pull request
 
-Use several focused commits when they help separate behavior, tests and documentation. Describe the user-visible problem and resulting behavior; include reproducible verification and material limitations. Reference a related issue where one exists.
+1. Run the checks above and inspect `git diff`. Commit only intended source, tests, docs and permitted assets. Use explicit paths rather than adding generated files:
 
-The PR template asks for the change, validation, provenance and remaining uncertainty. Maintainers may request revisions or more evidence. Breaking changes need an explicit version/migration plan for definitions or recordings. Passing CI is a prerequisite for review, not proof of real-flight fidelity or a promise of acceptance.
+```sh
+git status --short
+git diff
+git add path/to/changed-file path/to/another-file
+git commit -m "Explain the concrete change"
+git push -u origin feat/my-change
+```
+
+Replace the paths and branch name with yours. Use several focused commits when they help separate behavior, tests and documentation. Do not commit `dist/`, `results/`, dependencies, local history backups or credentials.
+
+2. Open your fork on GitHub and choose **Compare & pull request**. Set the base to **adithya-s-k/RCForge · main** and compare to your branch.
+3. Fill in the PR template: what changed and why, exact checks run, source/license information, and what remains unverified. Link the issue if there is one. Screenshots help reviewers with UI or model changes.
+4. Address review comments on the **same branch**, commit, and `git push`. The PR updates automatically. Explain checks that could not run; do not report them as passing.
+5. After merge, update your local main branch:
+
+```sh
+git switch main
+git fetch upstream
+git merge --ff-only upstream/main
+git push origin main
+```
+
+If a fast-forward is not possible, inspect the divergent commits rather than force-pushing or discarding work. Start your next contribution from the updated main branch.
+
+Maintainers review scope, implementation, evidence and licensing; passing CI is required but does not guarantee acceptance. Large or compatibility-changing work benefits from an issue discussion first. Small documentation and usability fixes can go straight to a PR.
+
+**Do not bump the release number in an ordinary contribution.** Maintainers coordinate application releases and separately review changes to aircraft format or physics/replay compatibility. See [the versioning and release workflow](docs/versioning.md#maintainer-release-workflow).
 
 ### Contributions made with agents
 

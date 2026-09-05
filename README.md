@@ -9,7 +9,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license" /></a>
   <a href="AGENTS.md"><img src="https://img.shields.io/badge/coding_agents-welcome-3997dc" alt="Coding agents welcome" /></a>
 </p>
-<p align="center"><a href="#get-started">Get started</a> · <a href="docs/agent-workflow.md">Build with an agent</a> · <a href="CONTRIBUTING.md">Contribute</a> · <a href="docs/roadmap.md">Roadmap</a></p>
+<p align="center"><a href="https://rcforge.adithyask.com">Website</a> · <a href="#get-started">Get started</a> · <a href="docs/agent-workflow.md">Build with an agent</a> · <a href="CONTRIBUTING.md">Contribute</a> · <a href="docs/roadmap.md">Roadmap</a></p>
 
 RCForge is an open-source codebase for building and running RC aircraft in a digital environment. Aircraft definitions, physics, controllers, environments and experiments live in ordinary files that you can read, modify and share.
 
@@ -20,6 +20,8 @@ Clone the project, open it with your preferred coding agent or editor, and start
 ![RCForge flight view with the Bronco, ground observer, attitude display and minimap](docs/images/workbench.png)
 
 _The current local workbench. Scenery is illustrative; flight models remain experimental._
+
+The intended hosted address is [rcforge.adithyask.com](https://rcforge.adithyask.com). Development version **0.8.0** is not yet a tagged release. [Changelog](CHANGELOG.md) · [Versioning & local aircraft history](docs/versioning.md) · [Hosting guide](docs/deployment.md).
 
 See [FPV cameras, response tuning and live control tests](docs/fpv-and-control-setup.md) for onboard views, configurable rates and surface mixing.
 
@@ -65,6 +67,12 @@ New sessions start with the aircraft parked on the runway, throttle at zero, and
 | Enter / P / R  | Start or resume / pause or resume / reset |
 
 Start, pause and reset remain available in the bottom bar when setup is closed. Click the flight view before using shortcuts. Holding a throttle key changes power continuously; releasing it holds the setting. Focus loss pauses flight. [More controls and observer movement →](docs/controllers.md)
+
+## Keep and share aircraft changes
+
+In **Aircraft → History**, save a named checkpoint before experimenting. Applying an edited aircraft automatically saves a version. Compare any saved setup against your draft, then restore it for inspection before applying it to flight. Component weights, installation positions, servos, control response and FPV mounts are included.
+
+Use **Export history** for a portable backup, or **Export** for aircraft JSON that can be contributed to the repository. Versions stay in the current browser; moving from localhost to the public domain requires export and import. [Full workflow and limits →](docs/versioning.md)
 
 ## What you can do today
 

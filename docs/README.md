@@ -20,4 +20,6 @@ Start with the [project overview and philosophy](../README.md). For code contrib
 | Research realism and review the implementation plan | [Realism plan](realism-plan.md)                                |
 | See the project's intended direction                | [Roadmap](roadmap.md)                                          |
 
+Save, compare or move aircraft setups with [local history](versioning.md). Maintainers can follow the [release workflow](versioning.md#maintainer-release-workflow) and [deployment guide](deployment.md).
+
 Definitions and runtime contracts are enforced by [`src/core/schema.ts`](../src/core/schema.ts). Simulation and recording compatibility are enforced by [`src/core/simulation.ts`](../src/core/simulation.ts) and [`src/core/experiment.ts`](../src/core/experiment.ts). Read the implementation when extending a field; documentation may describe a subset of the supported schema.
