@@ -120,7 +120,9 @@ export function flightFeedback(
     return {
       title: "On the ground",
       detail: state.quad
-        ? `Gradually ${power} to lift off.`
+        ? state.keyboard
+          ? "Hold Space to raise power gradually and lift off."
+          : "Raise throttle gradually to lift off."
         : `Build airspeed, then gently pull back${state.keyboard ? " (↓)" : ""}.`,
       tone: "ground",
     };

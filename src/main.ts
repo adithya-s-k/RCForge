@@ -883,7 +883,9 @@ function stats() {
           ? replay
             ? "REPLAY"
             : s.status === "grounded"
-              ? "GROUND ROLL"
+              ? sim.aircraft.vehicleType === "multirotor"
+                ? "GROUNDED"
+                : "GROUND ROLL"
               : "IN FLIGHT"
           : started
             ? "PAUSED"

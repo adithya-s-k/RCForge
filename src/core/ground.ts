@@ -46,7 +46,14 @@ export function resolveGroundContacts(
     1 / mass + dot(n, cross(inverseWorld(cross(r, n)), r));
   const contacts = a.contactPoints.map((p) => {
     const r = bodyToWorld(sub(p.positionM, cg));
-    return { p, r, depth: add(s.position, r)[2] };
+    return {
+      p,
+      r,
+      depth: add(s.position, r)[2],
+      normalImpulse: 0,
+      lateralImpulse: 0,
+      rollingImpulse: 0,
+    };
   });
   const touching = contacts.filter((v) => v.depth >= -0.001);
   if (!touching.length) {
@@ -77,26 +84,35 @@ export function resolveGroundContacts(
         n: Vec3 = [0, 0, -1];
       let velocity = pointVelocity(r);
       const bias = (Math.max(0, depth - 0.0001) * 0.15) / dt;
-      const j = Math.max(0, (-dot(velocity, n) + bias) / effectiveMass(r, n));
-      apply(r, scale(n, j));
+      // Project accumulated impulses, not each iteration's increment. Later
+      // contacts must be able to release excess support from earlier iterations.
+      const previousNormal = wheel.normalImpulse;
+      wheel.normalImpulse = Math.max(
+        0,
+        previousNormal + (-dot(velocity, n) + bias) / effectiveMass(r, n),
+      );
+      apply(r, scale(n, wheel.normalImpulse - previousNormal));
       const steer = p.steering ? c.yaw * 0.45 : 0;
       const bodyForward = bodyToWorld([Math.cos(steer), Math.sin(steer), 0]);
       const forward = unit([bodyForward[0], bodyForward[1], 0]),
         side: Vec3 = [-forward[1], forward[0], 0];
       velocity = pointVelocity(r);
-      const lateral = clamp(
-        -dot(velocity, side) / effectiveMass(r, side),
-        -lateralFriction * j,
-        lateralFriction * j,
+      const previousLateral = wheel.lateralImpulse;
+      wheel.lateralImpulse = clamp(
+        previousLateral - dot(velocity, side) / effectiveMass(r, side),
+        -lateralFriction * wheel.normalImpulse,
+        lateralFriction * wheel.normalImpulse,
       );
-      apply(r, scale(side, lateral));
+      apply(r, scale(side, wheel.lateralImpulse - previousLateral));
       velocity = pointVelocity(r);
-      const roll = clamp(
-        -dot(velocity, forward) / effectiveMass(r, forward),
-        -(p.kind === "skid" ? lateralFriction : rollingFriction) * j,
-        (p.kind === "skid" ? lateralFriction : rollingFriction) * j,
+      const previousRolling = wheel.rollingImpulse;
+      const friction = p.kind === "skid" ? lateralFriction : rollingFriction;
+      wheel.rollingImpulse = clamp(
+        previousRolling - dot(velocity, forward) / effectiveMass(r, forward),
+        -friction * wheel.normalImpulse,
+        friction * wheel.normalImpulse,
       );
-      apply(r, scale(forward, roll));
+      apply(r, scale(forward, wheel.rollingImpulse - previousRolling));
     }
   const depth = Math.max(0, ...wheels.map((v) => v.depth));
   s.position[2] -= depth * 0.65;

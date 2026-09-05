@@ -1,5 +1,12 @@
 # Validation and model limits
 
+## Current compatibility
+
+Simulation 0.7.1 corrects accumulated contact impulses. Existing aircraft format-1
+files remain compatible. Earlier recordings are rejected because contact
+trajectories change; use their original engine version or record a fresh flight.
+See [the contact correction](component-models.md#contact-correction-071).
+
 ## Automated checks
 
 `npm run check` validates all bundled aircraft, runs unit/behavior tests, checks TypeScript and creates a production build. Tests cover:

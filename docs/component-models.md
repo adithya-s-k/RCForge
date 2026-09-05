@@ -1,6 +1,6 @@
 # Component fidelity in RCForge 0.7
 
-The schema remains aircraft format 1 with optional extensions. Simulation version 0.7.0 rejects recordings from earlier physics versions. These features support measured inputs; their existence does not make an aircraft flight-test calibrated.
+The schema remains aircraft format 1 with optional extensions. Simulation version 0.7.1 rejects recordings from earlier physics versions. These features support measured inputs; their existence does not make an aircraft flight-test calibrated.
 
 ## Mass, materials and inertia
 
@@ -207,3 +207,26 @@ recordings include optional `batterySoc` (0–1), `batteryVoltageV`,
 Older 0.7 recordings without those telemetry fields remain readable; missing
 electrical samples are not reported as zero. This adds observations of the
 existing model and does not change the physics or replay version.
+
+## Contact correction (0.7.1)
+
+The flat-ground solver now accumulates each contact's normal and friction impulses
+within the existing eight iterations. It projects the accumulated totals onto
+the unilateral/friction limits and applies the difference, allowing a later
+iteration to undo excess impulse. Previously only positive increments were
+allowed for support, and each friction budget used that increment. A motors-off
+Quad 450 could rotate approximately 11.65° in 20 seconds. The corrected same-case
+run drifts about 0.00082° with micrometre-scale horizontal travel.
+
+This follows the accumulated-impulse principle described in
+[Erin Catto's Solver2D](https://box2d.org/posts/2024/02/solver2d/). It retains the
+same step, contact geometry, eight iterations, friction coefficients and position
+correction. There is no between-step warm starting or new collision backend.
+Stationary tests include three quads, rotated headings and reversed contact order;
+wheel takeoff, gentle touchdown and surface friction regressions remain required.
+
+Ground-contact trajectories change, so simulation/recording version is **0.7.1**.
+Older recordings, including 0.7.0, are rejected; replay them with the matching
+older engine and record a new flight for this version. Changing a recording's
+version string does not migrate its physical trajectory. Aircraft JSON remains
+format 1 and local aircraft/controller preferences remain compatible.

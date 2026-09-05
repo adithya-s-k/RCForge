@@ -24,7 +24,7 @@ import {
   type Vec3,
   type Quat,
 } from "./math";
-export const SIM_VERSION = "0.7.0";
+export const SIM_VERSION = "0.7.1";
 export const FIXED_DT = 1 / 120;
 export const GRAVITY = 9.80665;
 export interface Controls {

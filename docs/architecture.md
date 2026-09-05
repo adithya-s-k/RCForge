@@ -28,7 +28,7 @@ The pre-stall lift slope blends into a flat-plate approximation over 12 degrees 
 
 The equations integrate body angular momentum with the gyroscopic `omega × I omega` term and world translation using midpoint integration. Attitude uses an exponential quaternion update. Motor response uses its exact first-order exponential over the step. Fixed dt is 1/120 s; tests compare smaller steps for numerical convergence.
 
-Wheel contacts use sequential normal impulses, lateral friction, rolling resistance and nose-wheel steering on a flat plane. They allow ground rolls, takeoff and gentle rolling touchdowns. Severe impacts and body contacts terminate flight. This is a rigid contact approximation without suspension or deformable tires. Ground launch optionally adds removable gear through `core/launch.ts`.
+Wheel contacts use sequential normal impulses, lateral friction, rolling resistance and nose-wheel steering on a flat plane. Normal and friction impulses accumulate within each step; each of eight iterations clamps the total and applies only its change, allowing excess support to be released. They allow ground rolls, takeoff and gentle rolling touchdowns. Severe impacts and body contacts terminate flight. This is a rigid contact approximation without suspension or deformable tires. Ground launch optionally adds removable gear through `core/launch.ts`.
 
 ## Components, power and actuation
 

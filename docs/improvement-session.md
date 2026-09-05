@@ -649,3 +649,23 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
 - Verification: desktop retains the same compact setup and full inspection view;
   typecheck/build/docs checks pass. Switching FT-22 Hand throw to Quad 450 selects
   Ground and disables hand throw; start/pause/reset remain reachable.
+
+## Pass 31 · eliminate artificial parked-quad yaw
+
+- Browser Quad 450, Ground, zero throttle drifted roughly 12° in 20 s. Pure
+  simulation reproduced 11.648° with motors [0,0,0,0]. The contact loop clamped
+  each increment instead of the accumulated support/friction impulses.
+- Corrected per-step accumulated projection with the same eight iterations,
+  coefficients and 120 Hz step. Compared the method with Catto's primary solver
+  explanation. The same 20 s case now drifts about 0.00082° and 2 micrometres
+  horizontally. This fixes implementation behavior, not measured tire fidelity.
+- Added stationary regressions for all three quads with 0°/90° headings and
+  reversed contact order. Existing takeoff, landing and friction tests pass.
+- Simulation/package version is 0.7.1; 0.7.0 recordings are explicitly incompatible.
+  Aircraft format 1 and preferences remain compatible. The grounded quad badge
+  now says Grounded rather than Ground roll.
+- Verification: all 217 tests / 37 files, seven bundled definitions, typecheck,
+  production build, numerical physics report, docs and formatting checks pass.
+  The envelope survey has zero nonfinite loads; unsolved trim points remain
+  reported, including the FT-22's existing limits. Browser idle reaches 26 s with
+  heading still 000°, zero displayed airspeed and stopped motors.

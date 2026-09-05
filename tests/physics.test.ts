@@ -236,6 +236,9 @@ describe("repeatable experiments", () => {
     expect(() =>
       parseRecording({ ...r, simulationVersion: "future" }),
     ).toThrow();
+    expect(() =>
+      parseRecording({ ...r, simulationVersion: "0.7.0" }),
+    ).toThrow();
     r.frames[0].throttle = 2;
     expect(() => parseRecording(r)).toThrow();
   });
