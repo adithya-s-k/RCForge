@@ -3,7 +3,7 @@
   "version": "0.8.0",
   "private": true,
   "type": "module",
-  "description": "An open foundation for programmable RC aircraft",
+  "description": "Free, open-source RC flight simulator with customizable aircraft, components, controllers and environments",
   "license": "MIT",
   "engines": {
     "node": "^22.12.0 || ^24.0.0 || >=26.0.0"

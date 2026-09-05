@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<title>RCForge — Free, open-source RC flight simulator</title>
+<desc>Your aircraft, components, controls and environments. MIT licensed.</desc>
+<defs>
+  <radialGradient id="halo"><stop stop-color="#303138"/><stop offset="1" stop-color="#101113"/></radialGradient>
+</defs>
+<rect width="1200" height="630" fill="#101113"/>
+<ellipse cx="986" cy="284" rx="335" ry="340" fill="url(#halo)"/>
+<g transform="translate(60 55) scale(1.1)" fill="none">
+  <path d="M5 17V7a2 2 0 0 1 2-2h10M31 5h10a2 2 0 0 1 2 2v10M43 31v10a2 2 0 0 1-2 2H31M17 43H7a2 2 0 0 1-2-2V31" stroke="#8d8e96" stroke-width="2"/>
+  <path d="m21 17-13 12v5l14-6Zm6 0 13 12v5l-14-6Z" fill="#a1a1aa"/>
+  <path d="m24 8 3 9-1 16 5 5v3l-7-3-7 3v-3l5-5-1-16Z" fill="#f4f4f5"/>
+</g>
+<g font-family="Arial, Helvetica, sans-serif">
+<text x="130" y="94" font-size="37" font-weight="700" letter-spacing="-1" fill="#f4f4f5">RC<tspan fill="#a1a1aa">Forge</tspan></text>
+<text x="64" y="202" font-size="17" letter-spacing="3" fill="#b8b9c2">FREE &amp; OPEN SOURCE</text>
+<text x="60" y="278" font-size="64" font-weight="700" letter-spacing="-2" fill="#f4f4f5">RC flight simulator.</text>
+<text x="60" y="352" font-size="64" font-weight="700" letter-spacing="-2" fill="#f4f4f5">Make it yours.</text>
+<text x="64" y="415" font-size="23" fill="#acadb6">Aircraft. Components. Controls. Environments.</text>
+<path d="M64 516H1136" stroke="#36363d"/>
+<text x="64" y="564" font-size="21" fill="#b8b9c2">rcforge.adithyask.com</text>
+<text x="1136" y="564" text-anchor="end" font-size="17" fill="#9b9ca5">IN YOUR BROWSER · MIT LICENSE</text>
+</g>
+<!-- Original abstract aircraft drawing; no third-party plan or model artwork. -->
+<g transform="translate(974 290) rotate(22)" stroke-linejoin="round">
+<path d="m0-163 14 39 3 64 115 62 0 28L16-3 12 98 47 126v18L0 125-47 144v-18l35-28-4-101L-132 30V2L-17-60l3-64Z" fill="#222329" stroke="#81838e" stroke-width="2"/>
+<path d="M0-160V125M-17-60 17-60M-16-3 16-3M-12 98h24M-125 6-20-35M125 6 20-35" fill="none" stroke="#51535d"/>
+<path d="M-8-103Q0-122 8-103L7-68H-7Z" fill="#40434d" stroke="#696c79"/>
+<circle cy="-15" r="6" fill="#d1b888"/>
+<path d="M-23-15H23M0-38V8" stroke="#d1b888" stroke-width="1.5"/>
+</g>
+</svg>

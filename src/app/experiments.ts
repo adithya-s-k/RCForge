@@ -1,3 +1,4 @@
+import { requireHostAccess, hostAllows } from "./host";
 import { uiIcon } from "../view/icons";
 import { $, download, escape } from "./dom";
 import { runExperiment, samplesToCsv, type Scenario } from "../core/experiment";
@@ -69,6 +70,7 @@ export function setupExperiments(
       "50 seconds: hover, convert to cruise at 3 s, return to hover at 24 s. Starts at 15 m. Inspect altitude loss, tilt and rear motor power.";
   };
   $("run-experiment").onclick = () => {
+    if (!requireHostAccess({ kind: "workspace", id: "experiments" })) return;
     pause();
     latest = null;
     comparison = null;
@@ -80,6 +82,12 @@ export function setupExperiments(
     $("experiment-results").textContent =
       "Running baseline and edited configurations…";
     setTimeout(() => {
+      if (!hostAllows({ kind: "workspace", id: "experiments" })) {
+        $("run-experiment").removeAttribute("disabled");
+        $("run-experiment").textContent = "Run comparison";
+        $("experiment-results").removeAttribute("aria-busy");
+        return;
+      }
       try {
         const { baseline, aircraft, environment } = get(),
           scenario = $<HTMLSelectElement>("scenario").value as Scenario,

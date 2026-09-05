@@ -46,3 +46,35 @@ A restrictive Permissions Policy should allow `gamepad` and, where supported, `s
 - Check missing documentation paths return 404, and local-plan URLs are unavailable in production.
 
 Localhost storage does not migrate to the domain automatically. Share the [history migration steps](versioning.md#move-from-localhost-to-the-hosted-workbench) when announcing the hosted site. Keep the previous deployment available for rollback; an older build may reject newer file formats, so retain exported backups before rolling back.
+
+## Optional hosted integration
+
+The MIT standalone build remains unrestricted and has no authentication or
+analytics service. An embedding application can call `configureHost` from
+`src/app/host.ts` before importing `src/main.ts`. It supplies capability checks
+for aircraft, workspaces and input devices, plus its own account UI. Call
+`notifyHostAccessChange` when authenticated access changes. The workbench pauses,
+clears held controls and applies the new policy without automatically resuming.
+
+The host receives `prepareToLeave` to pause and checkpoint a pending aircraft
+draft before an account redirect. If validation or storage fails, it returns
+false and the host must cancel navigation. `open` returns a signed-in visitor to
+the requested workspace, aircraft or device setup; hardware permission still
+requires an explicit connection action.
+
+Restrictions in browser code are presentation policy, not a security boundary.
+Authorize private APIs and cloud data on the server. Keep OAuth secrets out of
+bundles. A separate hosted build can include account/analytics integrations;
+community builds must not contact those services or require their credentials.
+
+## Search and link previews
+
+The build emits a root `sitemap.xml`, `robots.txt`, canonical URLs, page-specific descriptions, Open Graph/Twitter cards and JSON-LD for the simulator and documentation. The preview artwork lives in `public/brand/rcforge-social.svg` with its 1200 × 630 PNG counterpart. Keep both in sync when changing it.
+
+`site/seo.ts` owns the metadata and describes RCForge as free, open source and customizable. Do not add unmeasured fidelity claims, invented reviews or ratings. Aircraft plans are references for authoring definitions, not automatic imports of complete flight models.
+
+The canonical domain is set in `site/config.ts`. Canonical documentation URLs omit the trailing slash to match the hosted site's redirects. Self-hosters who want their own indexed site should change that domain and the root fallback links/artwork as appropriate. Keep deployment previews out of search using your host's `X-Robots-Tag: noindex` headers; OAuth callbacks must also be noindex. Do not block JavaScript or stylesheets in robots.txt.
+
+After deploying, check the canonical URL, social PNG and sitemap over HTTPS. Submit `/sitemap.xml` in Google Search Console for the verified domain. A valid sitemap helps discovery; it does not guarantee indexing or ranking. Hash-based simulator views share the root canonical; guides have separate crawlable HTML URLs.
+
+References: [Google JavaScript SEO](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics), [URL structure](https://developers.google.com/search/docs/crawling-indexing/url-structure), [search snippets](https://developers.google.com/search/docs/appearance/snippet) and [software application structured data](https://developers.google.com/search/docs/appearance/structured-data/software-app).

@@ -1206,3 +1206,191 @@ article a.balance-download {
     padding: 0 18px 16px;
   }
 }
+
+/* Shared workspace navigation: same order and utility placement as the simulator. */
+.docs-header {
+  height: 60px;
+  padding: 0 24px;
+  gap: 34px;
+  justify-content: flex-start;
+}
+.docs-brand {
+  flex: none;
+  min-width: 126px;
+  gap: 8px;
+  text-decoration: none;
+}
+.docs-brand strong {
+  font-size: 19px;
+}
+.docs-header .workspace-navigation {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.docs-header .workspace-navigation a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 13px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.docs-header .workspace-navigation a:hover {
+  background: var(--docs-panel, #1b1c20);
+  color: var(--docs-text, #dadade);
+}
+.docs-header .ui-icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+.docs-header .workspace-navigation .ui-icon {
+  width: 21px;
+  height: 21px;
+}
+.docs-header .header-actions {
+  margin-left: auto;
+  gap: 8px;
+}
+.docs-header .header-docs {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: var(--docs-text, #dadade);
+  background: var(--docs-panel, #1b1c20);
+  text-decoration: none;
+}
+.docs-header .header-actions .github,
+.docs-header .header-actions #open-search,
+.docs-header .header-actions .theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  width: 32px;
+  height: 32px;
+  padding: 7px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  box-shadow: none;
+  border-radius: 6px;
+}
+.docs-header .header-actions .theme-toggle {
+  border-radius: 50%;
+}
+.docs-header .header-actions #open-search::before {
+  content: none;
+}
+.docs-header .header-actions .theme-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+.docs-header .header-actions :is(button, a):hover {
+  color: var(--docs-text, #dadade);
+  background: var(--docs-panel, #1b1c20);
+}
+.docs-header :is(a, button):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+#docs-sidebar,
+.page-contents {
+  top: 60px;
+  height: calc(100vh - 60px);
+}
+@media (max-width: 960px) {
+  .docs-header {
+    gap: 16px;
+    padding: 0 16px;
+  }
+  .docs-brand {
+    min-width: 110px;
+  }
+  .docs-header .workspace-navigation a {
+    padding: 0 8px;
+    gap: 5px;
+  }
+}
+@media (max-width: 760px) {
+  .docs-header {
+    height: 116px;
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-content: center;
+  }
+  .docs-brand {
+    order: 0;
+    min-width: 0;
+  }
+  .docs-brand img {
+    width: 28px;
+    height: 28px;
+  }
+  .docs-brand strong {
+    font-size: 18px;
+  }
+  .docs-header .header-actions {
+    order: 1;
+    gap: 4px;
+  }
+  .docs-header .workspace-navigation {
+    order: 2;
+    width: 100%;
+    justify-content: space-between;
+    gap: 4px;
+  }
+  .docs-header .workspace-navigation a {
+    flex: 1;
+    height: 44px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    padding: 3px;
+    font-size: 10px;
+  }
+  .docs-header .workspace-navigation .ui-icon {
+    width: 18px;
+    height: 18px;
+  }
+  .docs-header .header-docs span {
+    display: none;
+  }
+  .docs-header .header-docs {
+    width: 30px;
+    padding: 6px;
+    justify-content: center;
+  }
+  .docs-header .header-actions .github {
+    display: none;
+  }
+  .docs-header #menu-toggle {
+    display: block;
+    min-width: 0;
+    font-size: 11px;
+    padding: 6px;
+  }
+  #docs-sidebar,
+  .page-contents {
+    top: 116px;
+    height: calc(100dvh - 116px);
+  }
+  article :is(h1, h2, h3, h4) {
+    scroll-margin-top: 136px;
+  }
+}
+@media print {
+  .docs-header {
+    display: none;
+  }
+}

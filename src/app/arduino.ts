@@ -1,3 +1,4 @@
+import { hostAllows, requireHostAccess } from "./host";
 import { $ } from "./dom";
 import {
   ArduinoInput,
@@ -37,7 +38,10 @@ export function setupArduino(
     $("arduino-status").dataset.state = state;
     if (state === "live" && selectWhenReady) {
       selectWhenReady = false;
-      if (controller.type === "transmitter") {
+      if (
+        controller.type === "transmitter" &&
+        hostAllows({ kind: "input", id: "transmitter" })
+      ) {
         input.deviceIndex = SERIAL_DEVICE_INDEX;
         controller.selectType("transmitter");
       }
@@ -59,7 +63,8 @@ export function setupArduino(
     $("arduino-status").textContent =
       "Arduino USB requires a browser with Web Serial, such as desktop Chrome, at localhost or HTTPS. USB joystick adapters use Find devices.";
   connect.onclick = () => {
-    if (!api) return;
+    if (!api || !requireHostAccess({ kind: "input", id: "transmitter" }))
+      return;
     pause();
     input.clear();
     selectWhenReady = true;

@@ -1,3 +1,6 @@
+import { canonicalUrl, docsMetadata } from "./seo.ts";
+import { workspaceNavigation, documentationLink } from "../src/view/navigation";
+import { uiIcon } from "../src/view/icons";
 import { balanceWidget } from "./balance-visual";
 import { parseAircraft } from "../src/core/schema";
 import { themeControl } from "../src/view/theme-control";
@@ -116,6 +119,22 @@ export function buildDocs(root: string, localPlans = false) {
       -1,
     ),
   );
+  const urls = [
+    canonicalUrl("/"),
+    ...versions.flatMap((v) =>
+      v.pages.map((p) => canonicalUrl(docUrl(v.id, p.slug))),
+    ),
+  ];
+  add(
+    "/sitemap.xml",
+    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map((url) => `<url><loc>${e(url)}</loc></url>`).join("")}</urlset>`,
+    "application/xml; charset=utf-8",
+  );
+  add(
+    "/robots.txt",
+    `User-agent: *\nAllow: /\nSitemap: ${CANONICAL}/sitemap.xml\n`,
+    "text/plain; charset=utf-8",
+  );
   return files;
 }
 function references(content: DocsContent, root: string, local: boolean) {
@@ -171,9 +190,8 @@ function layout(
   const previous = content.pages[index - 1],
     next = content.pages[index + 1];
   const versionLabel = `${content.version}${content.frozen ? "" : " · Development"}`;
-  const canonical = docUrl(content.id, page.slug);
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${e(page.title)} · RCForge docs</title><meta name="description" content="RCForge ${e(versionLabel)} documentation: ${e(page.title)}"><link rel="canonical" href="${CANONICAL}${canonical}"><link rel="icon" href="/brand/rcforge-mark.svg"><script src="/theme.js"></script><link rel="stylesheet" href="/docs/assets/docs.css"><script src="/docs/assets/docs.js" defer></script></head>
-<body data-docs-version="${content.id}"><a class="skip-link" href="#content">Skip to content</a><header class="docs-header"><a class="docs-brand" href="/docs/"><img src="/brand/rcforge-mark.svg" width="32" height="32" alt=""><strong>RC<span>Forge</span></strong><span class="docs-label">Docs</span></a><div class="header-actions">${themeControl()}<button id="open-search" aria-label="Search documentation">Search docs <kbd>/</kbd></button><a class="github" href="${REPOSITORY}" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a class="open-simulator" href="/#/fly">Open simulator ↗</a><button id="menu-toggle" aria-expanded="false" aria-controls="docs-sidebar">Menu</button></div></header>
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">${docsMetadata(page, content.id, content.version, content.frozen)}<link rel="icon" href="/brand/rcforge-mark.svg"><script src="/theme.js"></script><link rel="stylesheet" href="/docs/assets/docs.css"><script src="/docs/assets/docs.js" defer></script></head>
+<body data-docs-version="${content.id}"><a class="skip-link" href="#content">Skip to content</a><header class="docs-header"><a class="docs-brand" href="/#/fly" aria-label="RCForge"><img src="/brand/rcforge-mark.svg" width="34" height="34" alt=""><strong>RC<span>Forge</span></strong></a>${workspaceNavigation(true)}<div class="header-actions">${documentationLink(true)}${themeControl()}<a class="github" href="${REPOSITORY}" target="_blank" rel="noopener noreferrer" aria-label="RCForge on GitHub" title="Source code & contributions">${uiIcon("github")}</a><button id="open-search" aria-label="Search documentation" title="Search documentation (/)"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button><button id="menu-toggle" aria-expanded="false" aria-controls="docs-sidebar" aria-label="Documentation contents">Menu</button></div></header>
 <div class="docs-layout"><aside id="docs-sidebar"><div class="version-control"><label for="docs-version">Documentation</label><select id="docs-version" aria-label="Documentation version">${versions.map((v) => `<option value="${docUrl(v.id, v.pages.some((p) => p.slug === page.slug) ? page.slug : "")}" ${v.id === content.id ? "selected" : ""}>${e(v.version)}${v.frozen ? "" : " · Development"}</option>`).join("")}</select></div><nav aria-label="Documentation navigation">${nav}</nav><a class="sidebar-footer" href="${docUrl(content.id, "credits")}">Credits & licenses ↗</a></aside>
 <main id="content" tabindex="-1"><div class="breadcrumbs"><a href="${docUrl(content.id)}">Docs</a><span>/</span><span>${e(page.group)}</span></div><div class="version-note">${content.frozen ? `Release ${e(content.version)} · archived snapshot` : `${e(content.version)} · Development documentation`}</div><article>${html}</article><nav class="page-navigation" aria-label="Next and previous pages">${previous ? `<a href="${docUrl(content.id, previous.slug)}"><small>Previous</small>← ${e(previous.title)}</a>` : "<span></span>"}${next && index >= 0 ? `<a href="${docUrl(content.id, next.slug)}"><small>Next</small>${e(next.title)} →</a>` : ""}</nav><footer class="page-footer"><span>App ${e(content.version)} · Physics ${e(content.simulation)} · Aircraft format ${content.aircraftFormat}</span>${page.file ? `<a href="${REPOSITORY}/blob/${content.sourceRef}/${page.file}" target="_blank" rel="noopener noreferrer">${content.frozen ? "Source at release" : "Edit on GitHub"} ↗</a>` : ""}</footer></main>
 <aside class="page-contents"><nav aria-label="On this page"><h2>On this page</h2>${headings.map((h) => `<a class="depth-${h.depth}" href="#${e(h.id)}">${e(h.text)}</a>`).join("")}</nav><p>RCForge is experimental.<br><a href="${docUrl(content.id, "validation")}">Understand the model limits ↗</a></p></aside></div>

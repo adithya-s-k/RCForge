@@ -107,6 +107,35 @@ and its current fits the board/USB budget. The FS-iA6B is rated **4.0–8.4 V**.
 Connect no ESC, BEC, other supply, motors or servos to this circuit.
 [FlySky receiver specifications](https://www.flysky-cn.com/ia6b-canshu).
 
+## Can I use another Arduino?
+
+**Yes—the bridge does not have to be a classic Uno or Nano.** Its job is to read the radio's PPM pulses and send channel values in a format RCForge understands. Another Arduino or microcontroller can do this if it supports suitable signal capture and USB serial, with firmware adapted to that board.
+
+```text
+Transmitter PPM OUT ──→ compatible input pin
+Transmitter GND ─────→ board GND
+                          │
+                  Arduino / microcontroller
+                  Decode pulses → RCF1 packets
+                          │ USB serial
+                          ▼
+               RCForge → Connect Arduino
+```
+
+The important distinction is **compatible hardware versus ready-to-upload firmware**:
+
+| Board / route                                                                | What you need                                                                                                                                                                                |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Classic ATmega328P Uno R3 or Nano                                            | The included sketch; use the wiring and board selection below.                                                                                                                               |
+| Other Arduino boards, including Leonardo, Uno R4, Nano Every or 3.3 V boards | A board-specific port of the bridge. Adapt interrupt/timer code, input pins and serial setup; check electrical levels. These boards are not covered by the supplied sketch's compile checks. |
+| Board running USB joystick firmware                                          | Use **Find USB adapter**, provided it enumerates as a compatible gamepad. This is a different firmware/USB route.                                                                            |
+
+For **Connect Arduino**, printing raw channel numbers is not enough. Send the documented [RCF1 serial protocol](flysky-fs-i6.md#serial-protocol): channel widths, sequence number, input-valid status and CRC checksum at **115200 baud**. Preserve the CH6 RUN/STOP guard and signal-loss detection. A new bridge must stop reporting valid input when its signal is lost.
+
+Do not copy the classic Nano's D2 wiring to another board without checking its pinout and interrupt support. A 3.3 V board may require level conversion; the illustrated resistors alone are not a level shifter. Power the board from USB for the trainer route, share ground, and leave the transmitter's power contacts unused. Verify the exact board's [Arduino documentation](https://docs.arduino.cc/hardware/) and [interrupt-capable pins](https://docs.arduino.cc/language-reference/en/functions/external-interrupts/attachInterrupt/).
+
+**Receiver PPM/PWM connections remain unverified on the reported setup.** Supporting another board in code does not establish a physical wiring or flight test.
+
 ## Load the bridge and connect
 
 Download the version-matched [RCForge bridge sketch](../hardware/rcforge_bridge/rcforge_bridge.ino),
@@ -162,7 +191,7 @@ Cable / breakout information: {{Cable labels or pinout link}}
 
 Read AGENTS.md, docs/radio-setup.md, docs/flysky-fs-i6.md and hardware/rcforge_bridge/rcforge_bridge.ino first. Treat the current checked-out firmware as authoritative. Ask for missing model names, clear connector photos or manufacturer pinouts. Never guess DIN pin numbers from wire colors or assume a USB programming cable is a joystick adapter.
 
-For my chosen route, produce a labeled connection table with source pin, resistor, board pin, common ground and power arrangement. PPM uses D2; six-channel PWM uses CH1–CH6 to D2–D7. Each input needs 1 kΩ in series and 47 kΩ to ground on the Arduino side. Verify signal voltage and receiver supply requirements from primary sources. Do not join USB 5 V to an ESC/BEC or another supply. Use a bare bench receiver without motors or servos.
+For my chosen route, produce a labeled connection table with source pin, resistor, board pin, common ground and power arrangement. For the supplied classic ATmega328P sketch, PPM uses D2 and six-channel PWM uses CH1–CH6 to D2–D7. For another board, verify its pinout and port the input capture and USB serial code while preserving the RCF1 protocol, guard and signal-loss behavior. Each input needs 1 kΩ in series and 47 kΩ to ground on the Arduino side. Verify signal voltage and receiver supply requirements from primary sources. Do not join USB 5 V to an ESC/BEC or another supply. Use a bare bench receiver without motors or servos.
 
 For Arduino, prepare exact compile commands for my board and input mode, keeping CH6 RUN guard enabled on receiver routes. Classic Nano bootloaders differ. Use the existing RCF1 bridge; do not replace it with a generic serial sketch. List ports, but do not choose a port or upload without my explicit selection and instruction. For a USB joystick adapter, skip firmware and explain Find USB adapter instead of Connect Arduino. If my board or protocol is unsupported, explain that before proposing changes.
 

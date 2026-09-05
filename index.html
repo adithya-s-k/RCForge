@@ -6,17 +6,68 @@
     <meta name="theme-color" content="#0c0c0e" />
     <script src="/theme.js"></script>
     <link rel="icon" type="image/svg+xml" href="/brand/rcforge-favicon.svg" />
-    <meta
-      name="description"
-      content="Build, fly, and experiment with programmable RC aircraft. An open-source flight workbench."
-    />
-    <link rel="canonical" href="https://rcforge.adithyask.com/" />
-    <meta property="og:url" content="https://rcforge.adithyask.com/" />
-    <meta property="og:site_name" content="RCForge" />
-    <title>RCForge — Flight workbench</title>
+    <!-- rcforge:seo -->
+    <style>
+      .boot-intro {
+        max-width: 640px;
+        margin: 12vh auto;
+        padding: 24px;
+        font:
+          16px/1.6 system-ui,
+          sans-serif;
+        color: #dadade;
+      }
+      .boot-intro h1 {
+        font-size: 32px;
+        line-height: 1.2;
+        letter-spacing: -1px;
+      }
+      .boot-intro a {
+        color: inherit;
+      }
+      html {
+        background: #0c0c0e;
+      }
+      html[data-theme="light"] {
+        background: #f6f7f9;
+      }
+      html[data-theme="light"] .boot-intro {
+        color: #252b35;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <main class="boot-intro">
+        <img
+          src="/brand/rcforge-mark.svg"
+          width="48"
+          height="48"
+          alt="RCForge"
+        />
+        <h1>Free, open-source RC flight simulator</h1>
+        <p>Your aircraft. Your components. Your controls.</p>
+        <p>
+          Fly RC planes, drones and VTOL aircraft in your browser. Customize
+          components and balance, connect your controller, or extend aircraft
+          and environments in code.
+        </p>
+        <p>
+          Bring your own plans as a reference for an editable aircraft
+          definition. RCForge is MIT licensed; its flight models are
+          experimental.
+        </p>
+        <nav aria-label="Getting started">
+          <a href="/docs/next">Read the guides</a> ·
+          <a href="https://github.com/adithya-s-k/RCForge">Get the source</a>
+        </nav>
+        <p role="status">Opening the simulator…</p>
+        <noscript
+          >Enable JavaScript and use a WebGL2-capable browser to fly. The
+          documentation works without JavaScript.</noscript
+        >
+      </main>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

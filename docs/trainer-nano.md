@@ -2,6 +2,8 @@
 
 Connect the transmitter directly to USB through your **classic ATmega328P Nano**. The receiver is not used. This guide pairs a socket illustration with a PPM diagnostic sketch and the existing RCForge bridge.
 
+Using another Arduino? The same PPM-to-USB-serial approach can work with board-specific firmware. See [other Arduino boards](radio-setup.md#can-i-use-another-arduino) before copying this Nano wiring.
+
 ![Rear trainer socket orientation, verified breakout, signal conditioning and Nano wiring. Builder-reported upper-left PPM OUT and outer metal shell GND, with the key at the top.](images/fs-i6-trainer-nano.svg)
 
 ## What has been tested

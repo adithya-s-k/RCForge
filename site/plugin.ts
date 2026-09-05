@@ -1,3 +1,4 @@
+import { indexMetadata } from "./seo.ts";
 import type { Plugin } from "vite";
 import { buildDocs, type SiteFile } from "./build.ts";
 import { cachedPlan, readReferences } from "../references/library.ts";
@@ -11,6 +12,10 @@ export function documentationPlugin(): Plugin {
   const content = () => (cached ??= buildDocs(root, true));
   return {
     name: "rcforge-documentation",
+    transformIndexHtml: {
+      order: "pre",
+      handler: (html) => html.replace("<!-- rcforge:seo -->", indexMetadata()),
+    },
     configResolved(config) {
       root = config.root;
     },
@@ -24,7 +29,13 @@ export function documentationPlugin(): Plugin {
       });
       server.middlewares.use((req, res, next) => {
         const path = new URL(req.url ?? "/", "http://localhost").pathname;
-        if (path !== "/docs" && !path.startsWith("/docs/")) return next();
+        if (
+          path !== "/sitemap.xml" &&
+          path !== "/robots.txt" &&
+          path !== "/docs" &&
+          !path.startsWith("/docs/")
+        )
+          return next();
         if (req.method !== "GET" && req.method !== "HEAD") {
           res.statusCode = 405;
           res.end();
