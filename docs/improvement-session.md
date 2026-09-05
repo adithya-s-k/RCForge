@@ -476,3 +476,16 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   numerical validation pass. FT-22 survey is now 57/135 trim solutions (previously
   54/135) with zero nonfinite loads. More trim solutions are not flight-validation
   evidence. Browser restored/applied 649.3 mm and inspected top/perspective views.
+
+### Checkpoint · 00:36 UTC
+
+- Passes 17–20 committed/pushed through 6f15c5f. Latest branch CI 33933394049
+  passed on Node 22/24 with the Arduino compile jobs. Main remains untouched.
+- FT-22 hand/chase flight paused at 40.6 s, 8.5 m/s, 48.8 m AGL, 38% power and
+  93% charge. Ground/Pilot restored, editor left on the corrected FT-22. One
+  browser tab, no viewport override, and no new browser errors.
+- Foliage follow-up inspected the actual RGBA atlas and material. Pale birch
+  bark/leaf highlights exist in the source; there is no confirmed new white-halo
+  defect from this inspection. No speculative asset/lighting change was made.
+- Continue existing flight/editor/input/experiment UX and model consistency
+  review until 02:28:46 UTC. Do not recreate the active continuation automation.
