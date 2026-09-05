@@ -1,6 +1,6 @@
 # Add an aircraft
 
-1. Copy `aircraft/simple-trainer.json` to a new lowercase, hyphenated ID, and update `id`, `name`, `description` and `provenance`.
+1. Copy `aircraft/ft-tiny-trainer.json` to a new lowercase, hyphenated ID, and update `id`, `name`, `description`, `credit` and `provenance`.
 2. Establish a fixed datum and use meters, kilograms, seconds and Newtons. Angular definition fields ending in `Deg` use degrees. Physical state uses radians.
 3. Add `parts` with mass, position, cuboid dimensions and a visual color. Account for the battery, motors, servos, structure and payload exactly once. Wing/tail parts contribute mass; their visible lifting surfaces come from `surfaces`.
 4. Add wing halves and tail surfaces, assigning `kind` (`wing`, `horizontal-tail`, `vertical-tail` or `other`) independently of control assignments. `positionM` is the aerodynamic center (normally near quarter chord), not the leading edge. The renderer constructs the chord around that point. `rollDeg: 0` is horizontal and `rollDeg: 90` is a vertical surface. `aspectRatio` on a half-wing should describe the full wing, not that half alone.
@@ -128,3 +128,19 @@ fields add no mass or forces. Account for gear in `parts` and use the contact's
 a rear skid initialize at their common ground-support pitch. Existing tricycle
 and multirotor launch defaults remain unchanged. Optional fields retain aircraft
 format 1 and need an updated app; older strict parsers reject them.
+
+## Creator links and catalog identity
+
+Set optional `credit: { "name": "Original designer", "url": "https://example.org/design" }`
+to credit the original design in the editor and flight setup. Use the original
+build or product page, not a reference for an unrelated physics equation. HTTP
+and HTTPS links are accepted; other protocols are rejected. Files without credit
+remain valid. Keep each configuration under its own ID, for example `ft-bronco`
+(V-tail) and `ft-bronco-conventional` (fixed fins and elevator), so their local
+histories stay separate.
+
+The only bundled **Simple Trainer** is `vt-simple-trainer`, the Vortex RC design.
+The earlier generic `simple-trainer` now lives under `tests/fixtures/` to preserve
+numerical regression inputs. It is not a catalog preset; use the Tiny Trainer
+or Vortex definition as an authoring starting point. Older exported definitions
+can still be imported as custom aircraft.

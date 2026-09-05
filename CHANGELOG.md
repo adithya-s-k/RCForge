@@ -4,6 +4,10 @@ Application releases are separate from physics/replay and aircraft format versio
 
 ## 0.8.0 — Unreleased
 
+- Correct the Bronco’s high-wing seating and add a separate conventional H-tail preset alongside the V-tail, with configuration-specific components and controls.
+- Remove the generic trainer from the bundled catalog. **Simple Trainer** now refers only to the Vortex RC design (`vt-simple-trainer`). Older exported generic builds still import normally.
+- Add discreet original-creator links to the editor and flight setup. Existing local physical edits are preserved; Restore original aircraft adopts the revised geometry.
+
 - Add local aircraft history: named snapshots, automatic versions on apply, component-level comparison, safe restore into a draft, and portable history backups.
 - Enlarge navigation icons and add a GitHub link and application-version dialog. Configure the intended canonical address, `rcforge.adithyask.com`.
 - Document the first-contribution workflow, release process, static hosting and transfer of aircraft between browser origins.
@@ -11,4 +15,4 @@ Application releases are separate from physics/replay and aircraft format versio
 - Add configurable control response rates and surface mixers, with live control tests in the aircraft editor.
 - Add the Vortex RC Simple Trainer with documented source dimensions and estimated component/aerodynamic assumptions.
 
-**Compatibility:** aircraft definitions remain format 1. Physics/recording compatibility is 0.7.1; recordings from a different simulation version are rejected. Local history begins at format 1 and does not change the shared aircraft JSON format. Presets remain engineering approximations, not flight-test-calibrated aircraft.
+**Compatibility:** aircraft definitions remain format 1. Optional `credit` metadata is accepted by the current reader; older strict readers may reject new files containing it. No replay equations changed in this preset update. Physics/recording compatibility is 0.7.1; recordings from a different simulation version are rejected. Local history begins at format 1 and does not change the shared aircraft JSON format. Presets remain engineering approximations, not flight-test-calibrated aircraft.

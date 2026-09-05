@@ -66,7 +66,7 @@ The estimated Quad X adds upward rotor thrust, reaction torque, actuator lag and
 
 ## Version 0.2 additions
 
-Regression tests cover mass scaling, requested CG, optional gear mass, stationary wheel support, powered takeoff, gentle rolling touchdown, hard impact, and all three launch states. These are numerical behavior checks, not real flight calibration. The default Bronco uses an inverted-V/A-tail based on the supplied build image. Geometry and coefficients remain estimated. Tests check panel endpoint joins, symmetric pitch/differential yaw mixing, saturation, and yaw torque with motors removed.
+Regression tests cover mass scaling, requested CG, optional gear mass, stationary wheel support, powered takeoff, gentle rolling touchdown, hard impact, and all three launch states. These are numerical behavior checks, not real flight calibration. The default Bronco uses an inverted-V/A-tail based on the supplied build image. A separate conventional preset uses the sheet-3 H-tail, two fixed fins, one elevator servo and differential motor yaw; it is not a rudder-equipped digital twin. Geometry and coefficients remain estimated. Tests check panel endpoint joins, symmetric pitch/differential yaw mixing, saturation, and yaw torque with motors removed.
 
 Runway appearance uses a single weathered asphalt/paint surface with a three-metre photographic aggregate tile and painted markings. These are cosmetic material details; the runway remains a flat collision plane. Quad construction details are illustrative, and component masses and box-based inertia remain estimates unless supplied from measurements.
 
@@ -123,3 +123,14 @@ control, ground-rest, takeoff, glide, servo and replay checks are not real-fligh
 validation. Existing recordings retain their recorded state and controls; the
 new optional reference speed changes initialization only, not dynamics formulas
 or simulation version 0.7.1.
+
+## Bronco assembly variants
+
+The [reconstruction guide](flite-test-reconstruction.md) records the raised wing,
+conventional tail tracing, separate mass ledgers and survey limits. Regression
+checks cover lateral balance after removing one tail servo, wing-to-saddle
+clearance in the rendered geometry, tail orientation and positive control signs.
+The conventional variant retains the published shared 830 g reference using
+estimated allocations; no independently weighed conventional build or measured
+flight data is available. Passing these checks does not validate the aerodynamic
+coefficients or certify the physical assembly.

@@ -79,7 +79,7 @@ Use **Export history** for a portable backup, or **Export** for aircraft JSON th
 | Area        | Included                                                                                                                                                                                |
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Fly         | Ground, hand-launch and airborne starts; ground pilot and chase views; aircraft placement; wind and seeded gusts                                                                        |
-| Aircraft    | FT Bronco with inverted-V/A-tail, FT Tiny Trainer Sport, FT-22 Raptor, Vortex RC Simple Trainer, a generic trainer, and three Quad X examples (5-inch, 6S and 450 mm)                   |
+| Aircraft    | FT Bronco (V-tail and conventional), FT Tiny Trainer Sport, FT-22 Raptor, Simple Trainer by Vortex RC, and three Quad X examples (5-inch, 6S and 450 mm)                                |
 | Edit        | Component catalog, battery/servo setup, mass and CG, linkage travel, wingspan and propulsion; JSON import/export                                                                        |
 | Input       | Keyboard, browser-compatible gamepads, flight sticks and RC USB adapters; mapping, reversal, calibration and shortcuts                                                                  |
 | Arduino     | Classic Uno/Nano bridge for trainer PPM, receiver PPM or six PWM channels through Web Serial                                                                                            |
@@ -166,4 +166,4 @@ npm run format:check
 
 RCForge code and original aircraft parameterizations are [MIT licensed](LICENSE). Bundled assets and elevation data retain their respective terms and credits in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the [scenery manifest](public/scenery/README.md).
 
-The FT Bronco, Tiny Trainer and FT-22 Raptor are credited to their original Flite Test designers. Original plan PDFs and reference photographs are not bundled. RCForge is an independent project, with no affiliation or endorsement implied by aircraft or hardware names.
+The FT Bronco, Tiny Trainer and FT-22 Raptor are credited to their original Flite Test designers; Simple Trainer is credited to Vortex RC. Small creator links appear in the aircraft editor and flight setup. Original plan PDFs and reference photographs are not bundled. RCForge is an independent project, with no affiliation or endorsement implied by aircraft or hardware names.

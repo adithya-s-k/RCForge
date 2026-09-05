@@ -1,10 +1,11 @@
 # Simple Trainer · Vortex RC
 
 `aircraft/vt-simple-trainer.json` is an independent reconstruction of the
-**Vortex RC VT-Simple Trainer**. Select **Simple Trainer · Vortex RC** in the
-hangar or aircraft selector. The old RCForge example is now **Generic Trainer**;
-its `simple-trainer` ID and physical definition are preserved. Previously saved
-copies can retain their older display name. The FT Tiny Trainer is unchanged.
+**Vortex RC VT-Simple Trainer**. Select **Simple Trainer** in the
+hangar or aircraft selector. The old generic RCForge example is no longer a
+bundled preset; its definition is retained only as a numerical test fixture.
+Previously exported copies still import as custom aircraft. The FT Tiny Trainer
+remains a separate design.
 
 ## Evidence and reconstruction
 
