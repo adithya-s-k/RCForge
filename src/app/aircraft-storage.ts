@@ -97,7 +97,17 @@ export function savedAircraft(base: Aircraft, storage?: ReadStorage): Aircraft {
     );
     if (text && text.length <= 1_000_000) {
       const saved = parseAircraft(JSON.parse(text));
-      if (saved.id === base.id) return saved;
+      if (saved.id === base.id) {
+        // Refresh catalog metadata without replacing a user's physical setup.
+        saved.credit ??= structuredClone(base.credit);
+        if (
+          (base.id === "vt-simple-trainer" &&
+            saved.name === "Simple Trainer · Vortex RC") ||
+          (base.id === "ft-bronco" && saved.name === "FT Bronco")
+        )
+          saved.name = base.name;
+        return saved;
+      }
     }
   } catch {
     // Invalid/obsolete local data falls back to the source definition.

@@ -56,6 +56,18 @@ export const AircraftSchema = z
     id: z.string().regex(/^[a-z0-9-]+$/),
     name: z.string().min(1),
     description: z.string(),
+    credit: z
+      .object({
+        name: z.string().min(1).max(120),
+        url: z
+          .string()
+          .url()
+          .refine((value) => /^https?:\/\//i.test(value), {
+            message: "Creator links must use HTTP or HTTPS",
+          }),
+      })
+      .strict()
+      .optional(),
     pilotResponse: PilotResponseSchema.optional(),
     fpv: z
       .object({

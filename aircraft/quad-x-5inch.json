@@ -339,5 +339,9 @@
         "voltsPerCell": 4.2
       }
     ]
+  },
+  "credit": {
+    "name": "RCForge",
+    "url": "https://github.com/adithya-s-k/RCForge"
   }
 }

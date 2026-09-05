@@ -401,7 +401,7 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
   const group = new T.Group(),
     propellers: T.Group[] = [],
     controls: AircraftVisual["controls"] = [];
-  const isBronco = a.id === "ft-bronco",
+  const isBronco = a.id === "ft-bronco" || a.id === "ft-bronco-conventional",
     isTiny = a.id === "ft-tiny-trainer",
     planModel = isBronco || isTiny,
     baseColor = isBronco
@@ -648,7 +648,7 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
     }
     orientComponent(group, p, group.children.slice(firstChild));
   }
-  if (isTiny || a.id === "vt-simple-trainer") {
+  if (isBronco || isTiny || a.id === "vt-simple-trainer") {
     // Retention hardware is included in the structural mass allocation.
     // These assembly positions are visual estimates around the authored wing chord.
     const wing = a.surfaces.find((s) => s.foamWing);
@@ -660,16 +660,29 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
         ((Math.sign(wing.positionM[1]) * wing.spanM) / 2) *
           Math.sin(radians(wing.rollDeg));
       const dowelZ = rootZ + 0.005;
+      const halfWidth = isBronco ? 0.043 : 0.029;
+      const incidence = Math.tan(radians(wing.incidenceDeg));
+      const mountPoint = ([x, y, z]: Vec3): Vec3 => [
+        x,
+        y,
+        z - (x - wing.positionM[0]) * incidence,
+      ];
       const band = new T.MeshStandardMaterial({
         color: "#aa9871",
         roughness: 0.95,
       });
       for (const x of [leading + 0.009, trailing - 0.009])
-        rod(group, [x, -0.029, dowelZ], [x, 0.029, dowelZ], 0.0013, aluminum);
+        rod(
+          group,
+          mountPoint([x, -halfWidth, dowelZ]),
+          mountPoint([x, halfWidth, dowelZ]),
+          0.0013,
+          aluminum,
+        );
       for (const side of [-1, 1]) {
         const points: Vec3[] = [
-          [leading + 0.009, side * 0.025, dowelZ],
-          [leading - 0.003, side * 0.021, rootZ - 0.003],
+          [leading + 0.009, side * (halfWidth - 0.004), dowelZ],
+          [leading - 0.003, side * (halfWidth - 0.008), rootZ - 0.003],
           [
             leading - wing.foamWing.rootChordM * 0.25,
             side * 0.012,
@@ -680,11 +693,17 @@ export function buildAircraft(a: Aircraft): AircraftVisual {
             -side * 0.001,
             rootZ - wing.foamWing.foldHeightM - 0.003,
           ],
-          [trailing, -side * 0.021, rootZ - 0.004],
-          [trailing - 0.009, -side * 0.025, dowelZ],
+          [trailing, -side * (halfWidth - 0.008), rootZ - 0.004],
+          [trailing - 0.009, -side * (halfWidth - 0.004), dowelZ],
         ];
         for (let j = 1; j < points.length; j++)
-          rod(group, points[j - 1], points[j], 0.0007, band);
+          rod(
+            group,
+            mountPoint(points[j - 1]),
+            mountPoint(points[j]),
+            0.0007,
+            band,
+          );
       }
     }
   }

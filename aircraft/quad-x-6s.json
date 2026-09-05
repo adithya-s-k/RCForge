@@ -413,5 +413,9 @@
   "fpv": {
     "partId": "camera",
     "fovDeg": 90
+  },
+  "credit": {
+    "name": "RCForge",
+    "url": "https://github.com/adithya-s-k/RCForge"
   }
 }

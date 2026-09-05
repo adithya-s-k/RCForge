@@ -748,5 +748,9 @@
       }
     ]
   },
-  "bodyDragAreaM2": [0.024, 0.03, 0.07]
+  "bodyDragAreaM2": [0.024, 0.03, 0.07],
+  "credit": {
+    "name": "RCForge",
+    "url": "https://github.com/adithya-s-k/RCForge"
+  }
 }

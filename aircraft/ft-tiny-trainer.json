@@ -616,5 +616,9 @@
         "voltsPerCell": 4.2
       }
     ]
+  },
+  "credit": {
+    "name": "Flite Test",
+    "url": "https://www.flitetest.com/articles/flite-test-tiny-trainer"
   }
 }

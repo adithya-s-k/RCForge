@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "vt-simple-trainer",
-  "name": "Simple Trainer \u00b7 Vortex RC",
+  "name": "Simple Trainer",
   "description": "Vortex RC 1.4 m foamboard trainer. Rudder, elevator and throttle; polyhedral wings bank through sideslip. Use Q/E to turn on keyboard, or map your preferred stick to yaw. Photo-reconstructed, not flight calibrated.",
   "provenance": {
     "publishedDimensions": {
@@ -694,5 +694,9 @@
     "rates": [0.8, 0.75, 0.85],
     "expo": 0.2,
     "smoothingSeconds": 0.035
+  },
+  "credit": {
+    "name": "Vortex RC",
+    "url": "https://www.vortex-rc.com/product/vt-simple-trainer/"
   }
 }

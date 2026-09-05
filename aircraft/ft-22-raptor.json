@@ -975,5 +975,9 @@
   },
   "pilotResponse": {
     "preset": "gentle"
+  },
+  "credit": {
+    "name": "Flite Test",
+    "url": "https://www.flitetest.com/articles/ft-22-raptor-build"
   }
 }

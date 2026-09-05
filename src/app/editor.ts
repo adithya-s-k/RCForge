@@ -1,4 +1,5 @@
 import { powertrain } from "../core/powertrain";
+import { aircraftCredit } from "./aircraft-credit";
 import { findTrim } from "../core/trim";
 import { $, escape } from "./dom";
 import {
@@ -257,6 +258,7 @@ export class AircraftEditor {
       p = massProperties(a),
       cg = a.reference.leadingEdgeXM - p.cg[0];
     $("editor-model-name").textContent = a.name;
+    $("editor-credit").innerHTML = aircraftCredit(a);
     $("component-summary").innerHTML =
       `<button id="open-components" class="wide">Edit components →</button><small class="muted">${a.battery ? `${a.battery.cells}S · ${a.battery.capacityMah} mAh · ` : ""}${a.parts.length} installed parts</small>`;
     $("open-components").onclick = () => $("editor-components-tab").click();

@@ -51,7 +51,8 @@ import broncoData from "../aircraft/ft-bronco.json";
 import quadData from "../aircraft/quad-x-5inch.json";
 import tinyTrainerData from "../aircraft/ft-tiny-trainer.json";
 import raptorData from "../aircraft/ft-22-raptor.json";
-import trainerData from "../aircraft/simple-trainer.json";
+import broncoConventionalData from "../aircraft/ft-bronco-conventional.json";
+import { aircraftCredit } from "./app/aircraft-credit";
 import vortexTrainerData from "../aircraft/vt-simple-trainer.json";
 import { workbenchMarkup } from "./view/workbench";
 import { FlightScene, type CameraMode } from "./view/scene";
@@ -112,10 +113,10 @@ for (const selector of [".flight-bottom", ".flight-key-guide"])
   flightOverlaySizes.observe(document.querySelector(selector)!);
 const originals = [
   parseAircraft(broncoData),
+  parseAircraft(broncoConventionalData),
   parseAircraft(tinyTrainerData),
   parseAircraft(raptorData),
   parseAircraft(vortexTrainerData),
-  parseAircraft(trainerData),
   parseAircraft(quadData),
   parseAircraft(detailedQuadData),
   parseAircraft(largeQuadData),
@@ -248,6 +249,7 @@ function updateFlightInfo() {
     (massProperties(a).mass * 1000).toFixed(0) + " g";
   $("flight-model-info").textContent =
     `${a.name} · ${(a.reference.spanM * 1000).toFixed(0)} mm ${quad ? "motor diagonal" : "span"} · ${quad ? "Four rotors" : a.motors.length === 2 ? "Twin motor" : "Single motor"}`;
+  $("flight-aircraft-credit").innerHTML = aircraftCredit(a);
   $("flight-gear").textContent = quad
     ? "Four landing feet"
     : aircraft.contactPoints.some((p) => p.kind === "wheel")

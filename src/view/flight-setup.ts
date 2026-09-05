@@ -11,6 +11,7 @@ export function flightSetupMarkup() {
       <label for="flight-aircraft">Aircraft</label><select id="flight-aircraft"></select>
       <button data-open-catalog="flight" class="wide browse-aircraft">Browse aircraft <span>↗</span></button>
       <p class="muted small" id="flight-model-info"></p>
+      <p class="aircraft-credit" id="flight-aircraft-credit"></p>
       <label>Launch from</label><div class="segmented launch-options" role="group" aria-label="Launch mode"><button data-launch="ground" class="active">Ground</button><button data-launch="hand">Hand throw</button><button data-launch="airborne">In flight</button></div>
       <p class="small muted" id="launch-description"></p>
       <div class="setup-divider"></div><div class="setup-line"><span>All-up weight</span><strong id="flight-mass"></strong></div><div class="setup-line"><span>Landing gear</span><strong id="flight-gear"></strong></div>
