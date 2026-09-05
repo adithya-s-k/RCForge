@@ -123,11 +123,13 @@ export function addVegetation(field: T.Group, profile: Scenery) {
     shader.fragmentShader = shader.fragmentShader.replace(
       "#include <map_fragment>",
       `#include <map_fragment>
-       // Soft self-occlusion makes crowns sit above the shaded lower branches.
-       diffuseColor.rgb *= 1.5 * mix(0.7, 1.0, smoothstep(0.0, 0.8, plantHeight));`,
+       // The atlas already contains lit foliage. Keep its gain at unity;
+       // boosting it washes out leaf highlights against the terrain.
+       // Soft self-occlusion shades lower branches without another texture tap.
+       diffuseColor.rgb *= mix(0.7, 1.0, smoothstep(0.0, 0.8, plantHeight));`,
     );
   };
-  foliage.customProgramCacheKey = () => "foliage-v2";
+  foliage.customProgramCacheKey = () => "foliage-v3";
   const variants = dry ? [5, 4] : alpine ? [2, 2, 1, 4] : [0, 1, 3, 4];
   const counts = new Map<number, number>();
   for (let i = 0; i < profile.treeCount; i++) {

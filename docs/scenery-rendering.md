@@ -113,3 +113,13 @@ Vegetation samples the actual distributed triangle mesh, including its diagonal
 split. Sampling the underlying DEM directly can differ by metres from its coarse
 rendered approximation. A ray-intersection regression checks all three sites.
 This is visual tree placement only; aircraft ground contact remains flat.
+
+## Foliage tonal balance
+
+The prelit foliage atlas uses unity gain instead of the earlier 1.5× boost. This
+reduces washed-out leaf highlights against the field while retaining lower-branch
+occlusion, alpha-to-coverage and the same species/instance counts. Comparison used
+Northfield Chase at N 160 m, E 90 m, 12 m altitude, followed by Alpine and Desert
+checks. It is a modest tonal correction: the crossed cards and pale source leaves
+remain visible on close inspection. No new samples, assets, geometry or shadow
+passes were added, and no photorealistic vegetation claim is made.

@@ -591,3 +591,15 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   then Restore original → Apply returned 253 g. Import registry recovery was
   tested through the storage boundary; the browser tool has no file-upload
   capability, so no synthetic browser import is claimed.
+
+## Pass 27 · restrain foliage highlights
+
+- Compared the same Northfield Chase position before/after removing the 1.5×
+  brightness boost on prelit foliage. Crowns now blend more naturally with the
+  ground. Checked Alpine conifers and Desert scrub afterward. The source retains
+  pale leaves and birch bark; this is not a claim that every edge artifact is gone.
+- Retained the RGBA atlas, alpha-to-coverage, lower-branch shading and all existing
+  instance/render budgets. No new texture tap, geometry or shadow pass.
+- Passes 25 and 26 CI passed on both Node versions and Arduino compile targets.
+- Verification: production typecheck/build and docs checks pass. Shader compiled
+  during the browser comparisons without console errors. No dynamics change.
