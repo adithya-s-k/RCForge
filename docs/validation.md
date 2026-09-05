@@ -107,3 +107,7 @@ current curves remain induced-power estimates. Manufacturer samples in the large
 quad cover a specific prop and voltage only, with command mapping still estimated.
 Numerical pass counts therefore do not establish battery endurance or handling
 accuracy. Constant-supply trim tests and discharge tests exercise different claims.
+
+## FPV and input response
+
+An FPV view is an ideal perspective projection, without lens distortion or a video-link model. Installing a camera changes component mass properties, but does not automatically supply its drag, electrical load or collision geometry. Gentle rates reduce pilot sensitivity and authority; they do not stabilize a fixed-wing aircraft or resolve an inadequate aerodynamic model. The control bench reproduces the simulated servo/linkage response without actual hardware, hinge loads or airframe motion. See [setup and verification](fpv-and-control-setup.md).

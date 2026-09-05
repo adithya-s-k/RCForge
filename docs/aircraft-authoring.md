@@ -101,3 +101,7 @@ housings use its position and body X/Y/Z dimensions; quad housings use its envel
 around the authored rotor assembly. It never adds mass. `propBlades` sets 2–6 rendered blades, with existing
 defaults preserved when omitted. These appearance fields do not generate new
 thrust/current or torque curves. See the [450 mm quad example](multirotors.md).
+
+## Camera mounts and pilot controls
+
+See [FPV and control setup](fpv-and-control-setup.md) for optional `fpv` and `pilotResponse` fields, the camera mass/pose contract, configurable surface mixers, and live servo/linkage testing in the editor.

@@ -95,3 +95,9 @@ The browser updates physics independently at 120 Hz and polls input every animat
 `src/input/rc-serial.ts` validates a bounded, CRC-protected USB serial stream before exposing channel axes through the same `InputDevice` interface as Gamepad input. The AVR sketch supports trainer/receiver PPM and six PWM inputs. `src/app/arduino.ts` handles the user-initiated port chooser and connection state. Invalid or stale input removes the device, pauses its active flight and requires deliberate resume. Receiver-held pulses require a configured guard-channel failsafe; see `docs/flysky-fs-i6.md`.
 
 `src/view/flight-navigation.ts` draws the attitude instrument and north-up minimap with SVG at 10 Hz. It reads the existing simulation quaternion and position, keeps a bounded trail, and opens the shared positioning panel. It adds no render loop, WebGL context, terrain assets or physics behavior.
+
+## Onboard views and control bench
+
+Optional `fpv` references an equipment part. `core/fpv.ts` manages installation mass; `view/fpv-camera.ts` shares its mount between geometry and the camera pose. The optical center is relative to CG and follows full body attitude in the existing single render pass.
+
+`core/pilot-response.ts` shapes pilot commands at 120 Hz before trim and surface mixing. `app/pilot-response.ts` owns per-aircraft browser preferences and the optional authored default. Replay bypasses input shaping. `core/control-preview.ts` runs only the same servo step used by flight, without rigid-body integration, motors or charge consumption. `app/surface-mixer.ts` edits existing surface controls through the editor draft validation flow. See [FPV and control setup](fpv-and-control-setup.md) for field contracts and limits.

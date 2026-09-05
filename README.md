@@ -21,6 +21,8 @@ Clone the project, open it with your preferred coding agent or editor, and start
 
 _The current local workbench. Scenery is illustrative; flight models remain experimental._
 
+See [FPV cameras, response tuning and live control tests](docs/fpv-and-control-setup.md) for onboard views, configurable rates and surface mixing.
+
 ## Why RCForge exists
 
 Trying a new RC aircraft usually means finding plans, understanding the construction, choosing electronics, building the airframe and learning to fly it. A design mistake may only become obvious after a crash.

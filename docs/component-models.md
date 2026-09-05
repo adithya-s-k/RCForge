@@ -231,3 +231,7 @@ Older recordings, including 0.7.0, are rejected; replay them with the matching
 older engine and record a new flight for this version. Changing a recording's
 version string does not migrate its physical trajectory. Aircraft JSON remains
 format 1 and local aircraft/controller preferences remain compatible.
+
+## Camera mounts and pilot controls
+
+See [FPV and control setup](fpv-and-control-setup.md) for optional `fpv` and `pilotResponse` fields, the camera mass/pose contract, configurable surface mixers, and live servo/linkage testing in the editor.
