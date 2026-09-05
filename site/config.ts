@@ -20,6 +20,12 @@ export const pages = [
     file: "docs/radio-setup.md",
   },
   {
+    slug: "fs-i6-ia6b-nano-setup",
+    title: "FS-i6 + iA6B + Nano · step by step",
+    group: "Start here",
+    file: "docs/fs-i6-ia6b-nano-setup.md",
+  },
+  {
     slug: "aircraft-editor",
     title: "Edit & save an aircraft",
     group: "Start here",

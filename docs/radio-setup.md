@@ -16,6 +16,8 @@ receivers, boards and cable pinouts need their own checks.
 Need help with your exact parts? [Configure a prompt for your coding agent](#set-up-with-an-ai-agent).
 The [detailed FS-i6 reference](flysky-fs-i6.md) includes troubleshooting and protocol details.
 
+Have an **FS-i6, FS-iA6B and classic Nano**? Follow the [step-by-step bench guide](fs-i6-ia6b-nano-setup.md), including binding, resistor wiring, upload and the CH6 RUN switch.
+
 ## 1. USB joystick adapter
 
 Use an adapter documented for the **FS-i6 trainer output** that presents itself as
