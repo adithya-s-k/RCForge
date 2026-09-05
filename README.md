@@ -71,7 +71,7 @@ Start, pause and reset remain available in the bottom bar when setup is closed. 
 | Area        | Included                                                                                                                                                                                |
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Fly         | Ground, hand-launch and airborne starts; ground pilot and chase views; aircraft placement; wind and seeded gusts                                                                        |
-| Aircraft    | FT Bronco with inverted-V/A-tail, FT Tiny Trainer Sport, FT-22 Raptor, a generic trainer, and three Quad X examples (5-inch, 6S and 450 mm)                                             |
+| Aircraft    | FT Bronco with inverted-V/A-tail, FT Tiny Trainer Sport, FT-22 Raptor, Vortex RC Simple Trainer, a generic trainer, and three Quad X examples (5-inch, 6S and 450 mm)                   |
 | Edit        | Component catalog, battery/servo setup, mass and CG, linkage travel, wingspan and propulsion; JSON import/export                                                                        |
 | Input       | Keyboard, browser-compatible gamepads, flight sticks and RC USB adapters; mapping, reversal, calibration and shortcuts                                                                  |
 | Arduino     | Classic Uno/Nano bridge for trainer PPM, receiver PPM or six PWM channels through Web Serial                                                                                            |
@@ -80,6 +80,8 @@ Start, pause and reset remain available in the bottom bar when setup is closed. 
 | Experiments | Headless scenarios, baseline comparisons, telemetry CSV, recordings, replay and numerical verification reports                                                                          |
 
 In **Aircraft editor → Components**, choose an installed battery, servo, motor or hardware part. Review a catalog replacement before applying it: mass, CG and inertia update together. The initial catalog includes Orange packs listed by Robu.in and manufacturer-referenced TowerPro/EMAX parts. Battery capacity, starting charge, resistance and servo linkage values are editable. See the [component catalog guide](components/README.md) for evidence and authoring.
+
+The [Vortex RC Simple Trainer](docs/vortex-simple-trainer.md) reconstructs the 1.4 m polyhedral, rudder/elevator kit with an explicit component ledger and documented CG uncertainty.
 
 The aircraft presets combine referenced dimensions with estimated aerodynamic and component data. The optional electrical model is simplified; scenery collision remains a flat surface. **A convincing picture or a passing test is not flight validation.** The [realism plan](docs/realism-plan.md) documents simulator research, Reynolds-dependent data support, operating-point surveys and the remaining measurement work. See [component models](docs/component-models.md), [reconstruction notes](docs/flite-test-reconstruction.md) and [physics verification](docs/physics-validation.md).
 

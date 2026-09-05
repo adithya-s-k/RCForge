@@ -105,3 +105,26 @@ thrust/current or torque curves. See the [450 mm quad example](multirotors.md).
 ## Camera mounts and pilot controls
 
 See [FPV and control setup](fpv-and-control-setup.md) for optional `fpv` and `pilotResponse` fields, the camera mass/pose contract, configurable surface mixers, and live servo/linkage testing in the editor.
+
+## Polyhedral trainers and installed gear
+
+The [Vortex RC Simple Trainer](vortex-simple-trainer.md) uses four wing panels
+and only elevator/rudder control. `reference.trimSpeedMps` optionally selects the
+airborne/default experiment operating point; omission retains 12 m/s. Hand
+release remains 8.5 m/s. Record an estimate or measurement for that choice.
+Explicit speed arguments to `findTrim` and the envelope survey take precedence.
+
+Span edits preserve panel heights about each side's innermost root. Give each
+structural wing component the same ID as its aerodynamic panel to preserve its
+vertical offset during a resize. Wingtip contacts with `spanLinked` follow the
+same root-height scaling. This is a span change at fixed panel angles, not a new
+polyhedral design. Review unconventional wings rather than assuming this rule
+fits every multi-wing arrangement.
+
+`contactPoints[].strutAnchorM` optionally locates a visible wheel strut or skid
+anchor at the aircraft datum; `wheelColor` sets tire appearance. These visual
+fields add no mass or forces. Account for gear in `parts` and use the contact's
+`positionM` for its ground-touch point. Two aligned main wheels ahead of CG and
+a rear skid initialize at their common ground-support pitch. Existing tricycle
+and multirotor launch defaults remain unchanged. Optional fields retain aircraft
+format 1 and need an updated app; older strict parsers reject them.

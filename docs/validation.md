@@ -111,3 +111,15 @@ accuracy. Constant-supply trim tests and discharge tests exercise different clai
 ## FPV and input response
 
 An FPV view is an ideal perspective projection, without lens distortion or a video-link model. Installing a camera changes component mass properties, but does not automatically supply its drag, electrical load or collision geometry. Gentle rates reduce pilot sensitivity and authority; they do not stabilize a fixed-wing aircraft or resolve an inadequate aerodynamic model. The control bench reproduces the simulated servo/linkage response without actual hardware, hinge loads or airframe motion. See [setup and verification](fpv-and-control-setup.md).
+
+## Vortex RC Simple Trainer
+
+The [Vortex trainer reconstruction](vortex-simple-trainer.md) distinguishes
+published dimensions/totals from proportional geometry, component and aerodynamic
+estimates. The product CG wording is ambiguous; the 58 mm wing-relative station
+is provisional. Its 9 m/s starting trim is an authored operating choice. A
+power-off experiment without landing input still ends in impact. Numerical
+control, ground-rest, takeoff, glide, servo and replay checks are not real-flight
+validation. Existing recordings retain their recorded state and controls; the
+new optional reference speed changes initialization only, not dynamics formulas
+or simulation version 0.7.1.

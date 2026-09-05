@@ -10,6 +10,7 @@ Start with the [project overview and philosophy](../README.md). For code contrib
 | Specify batteries, materials, inertia and motors    | [Component models](component-models.md)                        |
 | Create a quadcopter setup                           | [Multirotors](multirotors.md)                                  |
 | Understand the Bronco and Tiny Trainer presets      | [Reference reconstruction](flite-test-reconstruction.md)       |
+| Understand the Vortex RC Simple Trainer             | [Reconstruction and setup](vortex-simple-trainer.md)           |
 | Map a keyboard, gamepad, joystick or transmitter    | [Controller setup](controllers.md)                             |
 | Connect an FS-i6 through an adapter or Uno/Nano     | [FS-i6 wiring and firmware](flysky-fs-i6.md)                   |
 | Run numerical checks or compare measurements        | [Physics verification workflow](physics-validation.md)         |

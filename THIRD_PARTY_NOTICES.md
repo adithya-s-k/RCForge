@@ -28,3 +28,7 @@ FT Tiny Trainer design is credited to Josh Bixler / Flite Test. The preset is an
 FT-22 Raptor design is credited to Josh Bixler / Flite Test. The independent RCForge approximation references the [original plans](https://s3.amazonaws.com/plans.flitetest.com/stonekap/FT-22-plans.pdf) and [build article](https://www.flitetest.com/articles/ft-22-raptor-build). Original artwork is not redistributed, and no endorsement is implied.
 
 The 450 mm utility quad references [DJI F450 frame specifications](https://www-v1.dji.com/it/flame-wheel-arf/spec.html) and [EMAX MT2213 component data](https://emaxmodel.com/collections/mt-series/products/emax-mt2213-935kv-multicopter-brushless-motor). Manufacturer dimensions and factual thrust/current samples are attributed in the aircraft JSON and [multirotor guide](docs/multirotors.md). Original imagery is not redistributed. The generic assembly and estimated command mapping are independent RCForge approximations; no endorsement is implied.
+
+## Vortex RC Simple Trainer
+
+The VT-Simple Trainer is credited to Vortex RC. This independent parameterization references the [product page](https://www.vortex-rc.com/product/vt-simple-trainer/) and its assembled/laser-cut sheet photographs. Original artwork, photographs and video are not redistributed. Geometry and component estimates are documented in [the reconstruction guide](docs/vortex-simple-trainer.md). No affiliation, endorsement or rights to upstream artwork are implied.
