@@ -1,7 +1,11 @@
-# Install & first flight
+# Your first flight
 
 RCForge runs in your browser. You can fly, edit aircraft and save local versions
 without signing in or connecting an AI service.
+
+## Before you start
+
+You need a modern desktop browser and a keyboard. A controller is optional. For local development, install Node.js 24 first, then follow the commands below. If you already have RCForge open, skip to [Choose an aircraft](#choose-an-aircraft).
 
 ## Run locally
 
@@ -27,7 +31,7 @@ npm run dev -- --port 5180
 Open **Fly → Flight setup → Aircraft → Browse aircraft**. The hangar shows the
 actual simulator models. **FT Tiny Trainer · Sport** has roll, pitch and yaw
 controls. **Simple Trainer** is Vortex RC's polyhedral rudder/elevator trainer:
-use yaw to turn it. Both **FT Bronco** tail configurations are available.
+use yaw to turn it. Keyboard left/right arrows also steer its rudder. Both **FT Bronco** tail configurations are available.
 
 The published examples have estimated physics. See [model limits](validation.md)
 before treating simulator performance as a prediction of a physical build.
@@ -48,7 +52,7 @@ Press **Start flight**. Click the field before using keyboard controls.
 | Key            | Action                                                   |
 | -------------- | -------------------------------------------------------- |
 | ↑ / ↓ or W / S | Nose down / nose up                                      |
-| ← / → or A / D | Roll left / right                                        |
+| ← / → or A / D | Roll left / right; rudder on the Simple Trainer          |
 | Q / E          | Yaw left / right                                         |
 | Space / Shift  | Increase / decrease power; releasing the key holds power |
 | X              | Cut power                                                |
@@ -71,7 +75,7 @@ the live monitor. Select **Gentle** in the flight control-response selector if t
 aircraft feels too sensitive; customize rates and expo in the editor.
 
 Follow [controller setup](controllers.md) for gamepads and flight sticks, or
-[FlySky FS-i6](flysky-fs-i6.md) for USB adapters and the Uno/Nano bridge.
+[choose a radio connection](radio-setup.md) for USB adapters and the Uno/Nano bridge.
 
 ## Keep your changes
 
@@ -82,7 +86,11 @@ browser storage belongs to this browser and address.
 Continue with [Edit & save an aircraft](aircraft-editor.md) or
 [build with an agent](agent-workflow.md).
 
+Learn [views, pilot movement and flight setup](flight-guide.md) when you are comfortable with the basic controls.
+
 ## If something is wrong
+
+The [troubleshooting guide](troubleshooting.md) covers connection errors, stopped input, sensitivity and lost edits.
 
 - **No controller listed:** focus Controllers and move a stick. Check that your adapter presents joystick input; a firmware-update cable is different.
 - **Keys scroll the page:** click the flight view first. Form fields keep normal keyboard behavior.

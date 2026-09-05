@@ -1,53 +1,44 @@
-# RCForge documentation
+# Welcome to RCForge
 
-Build, fly and refine RC aircraft in an open, local-first workbench. Aircraft,
-components and experiments are editable files. Use your preferred editor or coding
-agent; RCForge needs no AI service or account.
+RCForge is a browser-based RC flight simulator and aircraft editor. Choose a plane or quad, set up your controls, and try changes to its components and balance. Your setups stay in your browser until you export them. No account or AI service is required.
 
-![Build, check, fly and keep a version of your aircraft](images/diagram-workflow.svg)
+## New here? Start with a flight
 
-## Start flying
+Follow [Your first flight](getting-started.md) to run RCForge, choose an aircraft and learn the basic keys. You can start with a keyboard; a transmitter is optional.
 
-1. [Install & first flight](getting-started.md) — run the workbench and take off.
-2. [Controls & calibration](controllers.md) — set up a keyboard, gamepad or radio.
-3. [Connect a radio](radio-setup.md) — illustrated Arduino wiring and an agent setup prompt.
-4. [Edit & save an aircraft](aircraft-editor.md) — change components and keep versions.
+After that, learn [views and flight setup](flight-guide.md) or [connect your own controls](controllers.md).
 
-The simulator and these docs build into one static website. Open **Docs** in the
-workbench header, or visit `/docs/` on your local or hosted address.
+## What would you like to do?
 
-## Build an aircraft
+| Your task                                                | Open this guide                                          |
+| -------------------------------------------------------- | -------------------------------------------------------- |
+| Fly with a keyboard, gamepad or joystick                 | [Controls and calibration](controllers.md)               |
+| Connect a FlySky transmitter                             | [Choose a radio connection](radio-setup.md)              |
+| Move the pilot, position the aircraft or change the view | [Views and flight setup](flight-guide.md)                |
+| Change a battery, move the CG or save a setup            | [Edit, balance and save an aircraft](aircraft-editor.md) |
+| Make controls gentler or add an FPV camera               | [Cameras, rates and mixing](fpv-and-control-setup.md)    |
+| Solve a connection or flight problem                     | [Troubleshooting](troubleshooting.md)                    |
 
-Use [aircraft definitions](aircraft-authoring.md) for geometry and physical
-contracts, [components & batteries](component-models.md) for mass and power, and
-[FPV, rates & mixing](fpv-and-control-setup.md) for cameras and control response.
-The [quadcopters guide](multirotors.md) covers rotor layouts and controllers.
+## Build on an existing aircraft
 
-[Plans & design credits](plans.md) connects the bundled aircraft to their creators,
-source plans and version-matched JSON files. Download verified originals for local
-inspection without adding their artwork to a public build.
+![Choose a setup, make a change, check it and try a flight](images/diagram-workflow.svg)
 
-## Contribute
+Change one thing at a time and save a version before experimenting. Start in the [aircraft editor](aircraft-editor.md); use the [aircraft file format](aircraft-authoring.md) when you want to add a definition in code.
 
-Follow the [contribution workflow](../CONTRIBUTING.md) from fork to pull request.
-Read [architecture](architecture.md) for code boundaries or the
-[agent workflow](agent-workflow.md) for a guided aircraft implementation.
-Run [physics checks](physics-validation.md) when changing behavior.
+The [aircraft plans and credits](plans.md) page links to the original designers. Model-specific notes cover the [Bronco VTOL](bronco-vtol.md), [quadcopters](multirotors.md), [Flite Test designs](flite-test-reconstruction.md) and [Vortex Simple Trainer](vortex-simple-trainer.md).
 
-Maintainers can find [versions & aircraft history](versioning.md),
-[release & hosting](deployment.md), and [documentation maintenance](documentation.md)
-in the Develop section. Technical reconstruction notes, wiring, sources and
-community policies are grouped under Reference.
+## How realistic is it?
 
-## Understand the limits
+The bundled aircraft use estimated physics. Passing a software test does not establish that a real aircraft will fly the same way. Read [realism and known limits](validation.md) for the evidence, or [run physics experiments](physics-validation.md) to inspect behavior yourself.
 
-The bundled aircraft are engineering approximations. A realistic model or a
-passing numerical test does not establish real-aircraft fidelity. See
-[model limits & evidence](validation.md) for exactly what is covered and what
-requires measured bench or flight data.
+For radio hardware, [connection test status](radio-setup.md#connection-test-status) distinguishes demonstrated trainer reception from receiver connections that still need testing.
 
-The documentation selector separates current development from explicitly frozen
-releases. Each page identifies the application, physics and aircraft format
-versions it describes. No historical release documentation is fabricated.
+## Contribute a change
 
-The [tricopter VTOL guide](bronco-vtol.md) covers front conversion servos, the rear yaw mount, assistance and radio switches.
+Start with [your first contribution](../CONTRIBUTING.md). For code changes, read the [architecture](architecture.md); if using a coding agent, give it the [agent workflow](agent-workflow.md). You can contribute without using an AI service.
+
+## About these docs
+
+Use the sidebar to browse a topic, or **Search docs** to find a term. Each page identifies its documentation version. **Development** describes the current work; a frozen release keeps its own instructions and downloads.
+
+The same Markdown is readable on GitHub and at `/docs/` beside the simulator. Existing guide URLs stay valid when navigation changes. Maintainers can [edit these docs](documentation.md) or follow the [release workflow](versioning.md#maintainer-release-workflow).

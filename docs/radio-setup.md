@@ -1,10 +1,8 @@
-# Connect a radio
+# Choose a radio connection
 
 Choose a path, follow its wiring, then verify the controls. These diagrams describe
 the **original FlySky FS-i6** and **classic ATmega328P Uno R3 / Nano**. Other
 receivers, boards and cable pinouts need their own checks.
-
-![Three radio connection paths and the matching RCForge connection button](images/diagram-radio-paths.svg)
 
 | Your hardware                             | Start here                                          |
 | ----------------------------------------- | --------------------------------------------------- |
@@ -13,10 +11,12 @@ receivers, boards and cable pinouts need their own checks.
 | Bound receiver with CH1–CH6 PWM outputs   | [Receiver PWM](#3-receiver-pwm) — six signal wires  |
 | Documented trainer PPM OUT breakout       | [Trainer PPM](#4-trainer-ppm) — wired to the radio  |
 
+![Three radio connection paths and the matching RCForge connection button](images/diagram-radio-paths.svg)
+
 Need help with your exact parts? [Configure a prompt for your coding agent](#set-up-with-an-ai-agent).
 The [detailed FS-i6 reference](flysky-fs-i6.md) includes troubleshooting and protocol details.
 
-Have an **FS-i6, FS-iA6B and classic Nano**? Follow the [step-by-step bench guide](fs-i6-ia6b-nano-setup.md), including binding, resistor wiring, upload and the CH6 RUN switch.
+Have an **FS-i6 and Nano**? Start with the [direct trainer walkthrough](trainer-nano.md). The [receiver bench procedure](fs-i6-ia6b-nano-setup.md) covers binding and wiring, but **receiver connections are still to be tested successfully**.
 
 ## Connection test status
 

@@ -28,6 +28,7 @@ document.addEventListener("keydown", (event) => {
 query.addEventListener("input", async () => {
   const revision = ++searchRevision;
   const terms = searchable(query.value.trim()).split(/\s+/).filter(Boolean);
+  const phrase = terms.join(" ");
   results.replaceChildren();
   if (!terms.length) {
     status.textContent = "Type to search this documentation version.";
@@ -46,13 +47,21 @@ query.addEventListener("input", async () => {
     const matches = index
       .map((page) => ({
         ...page,
-        score: terms.reduce(
-          (sum, term) =>
-            sum +
-            (searchable(page.title).includes(term) ? 10 : 0) +
-            (searchable(page.text).includes(term) ? 1 : 0),
-          0,
-        ),
+        score:
+          (searchable(page.title).includes(phrase) ? 40 : 0) +
+          (searchable(page.text).includes(phrase) ? 20 : 0) +
+          ((page.headings ?? []).some((heading) =>
+            searchable(heading.text).includes(phrase),
+          )
+            ? 60
+            : 0) +
+          terms.reduce(
+            (sum, term) =>
+              sum +
+              (searchable(page.title).includes(term) ? 10 : 0) +
+              (searchable(page.text).includes(term) ? 1 : 0),
+            0,
+          ),
       }))
       .filter((page) =>
         terms.every((term) =>
@@ -66,13 +75,23 @@ query.addEventListener("input", async () => {
       : "No results. Try a different aircraft, component or control name.";
     for (const page of matches) {
       const a = document.createElement("a");
-      a.href = page.url;
+      const section = (page.headings ?? []).find((heading) =>
+        searchable(heading.text).includes(phrase),
+      );
+      a.href = page.url + (section ? `#${section.id}` : "");
       const label = document.createElement("strong");
       label.textContent = page.title;
       const group = document.createElement("small");
       group.textContent = page.group;
       const preview = document.createElement("p");
-      const at = Math.max(0, searchable(page.text).indexOf(terms[0]) - 45);
+      const fullMatch = page.text
+        .toLowerCase()
+        .indexOf(query.value.trim().toLowerCase());
+      const at = Math.max(
+        0,
+        (fullMatch >= 0 ? fullMatch : searchable(page.text).indexOf(terms[0])) -
+          45,
+      );
       preview.textContent =
         (at ? "…" : "") + page.text.slice(at, at + 175) + "…";
       a.append(group, label, preview);

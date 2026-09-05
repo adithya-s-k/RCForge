@@ -5,6 +5,25 @@ navigation and URL for each selected document. Vite renders it into static HTML
 at `/docs/`; no documentation framework, browser Markdown parser or Three.js
 runtime is loaded there. Marked is a build-only dependency.
 
+## Organize by what the reader needs
+
+- **Start here:** first flight, camera/placement controls and common problems.
+- **Connect your controls:** input setup, radio path selection, hands-on wiring and technical protocol reference.
+- **Customize aircraft:** editor tasks, cameras, controls and special aircraft configurations.
+- **Understand the simulation:** physical limits, experiments, file formats and model evidence.
+- **Contribute & maintain:** contributor workflow, code boundaries and releases.
+- **Project reference:** policies, licenses and project history.
+
+Keep Start here visible. Other sidebar groups expand when selected; the current page's group opens automatically. Reordering navigation must not change existing slugs or frozen snapshot content.
+
+## Write for the person doing the task
+
+Lead with what the reader will do and what they need. Put short action steps before equations, implementation details or long reference tables. Use the same names as the UI. Explain abbreviations at first use and show the expected result after a procedure.
+
+Keep one main home for each topic: flight placement in `flight-guide.md`, calibration in `controllers.md`, connection choices in `radio-setup.md`, symptoms in `troubleshooting.md`, and detailed electrical/protocol contracts in `flysky-fs-i6.md`. Link to those sections rather than repeating the entire procedure.
+
+Separate user-reported results, automated checks and untested hardware. Keep receiver PPM/PWM marked unverified until successful hardware evidence is recorded. Preserve old heading anchors where possible; check existing links before renaming a heading.
+
 ## Edit a guide
 
 1. Edit its existing Markdown file. Keep one source of truth rather than copying a guide into a website directory.
@@ -36,8 +55,7 @@ npm run docs:check
 ```
 
 Controller drawings and button names reuse the simulator's existing SVG helpers.
-The wiring diagrams describe logical connections, not physical connector faces;
-check the firmware and manufacturer references when changing pin assignments.
+Most wiring diagrams describe logical connections. The FS-i6 trainer drawing in `site/trainer-visual.ts` also shows a builder-reported socket view, with source and orientation caveats. Check the firmware, references and actual hardware before changing pin assignments.
 `docs:check` rejects stale generated diagrams. View each affected drawing at normal
 and enlarged sizes, including narrow screens. Local images get an enlarged viewer
 with zoom and an ordinary source link as a fallback. Most diagrams are external images and ship inside each documentation snapshot.

@@ -89,6 +89,7 @@ export function buildDocs(root: string, localPlans = false) {
         group: page.group,
         url: path,
         text: rendered.text,
+        headings: rendered.headings,
       });
       if (content.id === "next" && !page.slug) add("/docs/index.html", html);
     }
@@ -162,9 +163,9 @@ function layout(
             `<a href="${docUrl(content.id, p.slug)}" ${p.slug === page.slug ? 'aria-current="page"' : ""}>${e(p.title)}</a>`,
         )
         .join("");
-      return group === "Reference"
-        ? `<details class="nav-group" ${page.group === group ? "open" : ""}><summary>Reference</summary>${links}</details>`
-        : `<div class="nav-group"><h2>${e(group)}</h2>${links}</div>`;
+      return group === "Start here"
+        ? `<div class="nav-group"><h2>${e(group)}</h2>${links}</div>`
+        : `<details class="nav-group" ${page.group === group ? "open" : ""}><summary>${e(group)}</summary>${links}</details>`;
     })
     .join("");
   const previous = content.pages[index - 1],
