@@ -1,3 +1,6 @@
+import { hardwareIllustration as hardware } from "./hardware-illustrations";
+import { componentIcon } from "../src/view/component-icon";
+import { uiIcon } from "../src/view/icons";
 /** Original, reproducible SVG illustrations. Wiring is logical, not a physical connector pinout.
  * Sources: docs/flysky-fs-i6.md, Arduino board docs and the checked-in bridge sketch.
  * Controller outlines and button names reuse the simulator's own drawing code.
@@ -77,63 +80,70 @@ function svg(title: string, desc: string, height: number, body: string) {
 }
 
 function routes() {
+  const stages = [
+    {
+      title: "USB simulator adapter",
+      note: "The shortest route · no Arduino",
+      items: [
+        ["radio", "FS-i6", "Trainer OUT"],
+        ["adapter", "Simulator adapter", "USB joystick / HID"],
+        ["computer", "RCForge", "Find USB adapter"],
+      ],
+    },
+    {
+      title: "Receiver + Arduino",
+      note: "Wireless radio · PPM or six PWM channels",
+      items: [
+        ["radio", "FS-i6", "Bound radio link"],
+        ["receiver", "Receiver", "PPM / PWM"],
+        ["arduino", "Uno / Nano", "RCF1 serial bridge"],
+        ["computer", "RCForge", "Connect Arduino"],
+      ],
+    },
+    {
+      title: "Trainer output + Arduino",
+      note: "Wired radio · verified PPM OUT breakout",
+      items: [
+        ["radio", "FS-i6", "Verified trainer OUT"],
+        ["arduino", "Uno / Nano", "RCF1 serial bridge"],
+        ["computer", "RCForge", "Connect Arduino"],
+      ],
+    },
+  ] as const;
   let body = "";
-  const rows = [
-    [
-      "01",
-      "USB joystick adapter",
-      "No Arduino needed",
-      "FS-i6",
-      "Trainer OUT",
-      "USB adapter",
-      "Joystick device",
-      "RCForge",
-      "Find USB adapter",
-    ],
-    [
-      "02",
-      "Wireless receiver + Arduino",
-      "PPM or six PWM signals",
-      "FS-i6 → receiver",
-      "Bound radio link",
-      "Uno / Nano",
-      "RCF1 serial bridge",
-      "RCForge",
-      "Connect Arduino",
-    ],
-    [
-      "03",
-      "Trainer output + Arduino",
-      "Requires a verified PPM OUT breakout",
-      "FS-i6",
-      "Verified trainer OUT",
-      "Uno / Nano",
-      "RCF1 serial bridge",
-      "RCForge",
-      "Connect Arduino",
-    ],
-  ];
-  rows.forEach((r, i) => {
-    const y = 112 + i * 155;
+  stages.forEach((row, i) => {
+    const top = 102 + i * 214;
     body +=
-      tag(32, y, r[0], color.usb) +
-      text(95, y + 21, r[1], 22) +
-      text(930, y + 21, r[2], 13, color.muted, "end") +
-      block(32, y + 44, 238, r[3], r[4]) +
-      line(`M282 ${y + 87}h45`, color.signal, true) +
-      block(342, y + 44, 238, r[5], r[6]) +
-      line(`M592 ${y + 87}h65`, color.usb, true) +
-      block(672, y + 44, 258, r[7], r[8]);
+      rect(24, top, 912, 201, "#171b20", "#2c343c", 8) +
+      tag(42, top + 15, `0${i + 1}`, color.usb) +
+      text(101, top + 36, row.title, 21) +
+      text(918, top + 35, row.note, 13, color.muted, "end");
+    const step = row.items.length === 4 ? 238 : 350,
+      offset = row.items.length === 4 ? 124 : 130;
+    row.items.forEach(([kind, label, sub], j) => {
+      const cx = offset + j * step;
+      body +=
+        hardware(kind, cx - 48, top + 48, 0.8) +
+        text(cx, top + 164, label, 17, color.ink, "middle") +
+        text(cx, top + 185, sub, 12, color.muted, "middle");
+      if (j < row.items.length - 1)
+        body += line(
+          `M${cx + 66} ${top + 104}h${step - 140}`,
+          j === row.items.length - 2 ? color.usb : color.signal,
+          true,
+          i === 1 && j === 0,
+        );
+    });
   });
   return svg(
-    "Choose your radio connection",
-    "All paths end in Controllers → RC transmitter. The connection button depends on the route.",
-    648,
+    "Your radio, connected to RCForge",
+    "Choose a route, then follow its wiring diagram. Hardware silhouettes are not connector pinouts.",
+    800,
     body +
       text(
-        32,
-        596,
-        "A firmware-update cable is not a USB joystick simulator adapter.",
+        36,
+        773,
+        "Use a simulator adapter, not a firmware-update cable.",
         16,
         color.signal,
       ),
@@ -176,6 +186,7 @@ function ppm(trainer = false) {
     text(928, 118, "CLASSIC ATmega328P UNO / NANO", 14, color.usb, "end");
   body +=
     rect(32, 155, 260, 248) +
+    hardware(trainer ? "radio" : "receiver", 215, 165, 0.43) +
     text(52, 187, source, 19) +
     text(
       52,
@@ -186,6 +197,7 @@ function ppm(trainer = false) {
     );
   body +=
     rect(662, 155, 266, 248) +
+    hardware("arduino", 860, 163, 0.43) +
     text(682, 187, "Arduino", 22) +
     text(682, 214, "USB-powered board", 14, color.muted);
   body +=
@@ -487,34 +499,115 @@ function workflow(calibration = false) {
   );
 }
 function balance() {
+  let body = rect(24, 102, 912, 392, "#171c21", "#303942", 8);
+  // Top-view trainer, nose left. Translucent skin exposes the installed battery.
+  body +=
+    text(45, 130, "TOP VIEW / NOSE LEFT", 12, color.muted) +
+    line("M92 310H875", "#47525b", false, true);
+  body += `<g stroke="#a0abb2" stroke-width="1.5"><path d="M91 310Q124 278 180 281L406 280 778 305 864 303v14l-86-2-372 26-226-2Q124 342 91 310Z" fill="#303a40"/><path d="M369 154h62l28 118v76l-28 119h-62l-13-119v-76Z" fill="#536068"/><path d="M770 245h29l32 57v16l-32 59h-29v-59Z" fill="#46545d"/><path d="M395 155v311M785 247v129" stroke="#788790"/><path d="m189 283 100-2-17 58-83-2Z" fill="#151f24"/></g>`;
+  body +=
+    rect(149, 294, 88, 32, "#466152", color.green, 4) +
+    text(193, 315, "BATTERY", 11, "#d6e7d8", "middle") +
+    rect(268, 294, 88, 32, "none", color.green, 4);
+  body +=
+    line("M323 361H191", color.green, true) +
+    text(250, 386, "Move the battery forward", 14, color.green, "middle");
+  body +=
+    line("M404 237v150M375 310h57", color.signal) +
+    dot(404, 310, color.signal) +
+    text(414, 237, "CG", 18, color.signal) +
+    line("M420 212h-27", color.signal, true);
+  body +=
+    text(510, 193, "The whole aircraft responds", 19) +
+    text(
+      510,
+      219,
+      "A heavier or more distant part has more influence.",
+      14,
+      color.muted,
+    );
+  body +=
+    line("M380 414v27m-2-14h-70", color.muted) +
+    text(311, 448, "Wing leading edge", 12, color.muted, "middle");
+  const stats = [
+    ["battery", "190 g battery", "Move 50 mm forward"],
+    ["structure", "1,287 g aircraft", "Total mass stays constant"],
+    ["balance", "7.4 mm CG shift", "Calculated toward the nose"],
+  ];
+  stats.forEach(([kind, title, sub], i) => {
+    const x = 32 + i * 304;
+    body +=
+      rect(x, 514, 288, 82, "#1b2126", "#303941", 7) +
+      `<svg x="${x + 15}" y="536" width="34" height="34" viewBox="0 0 24 24" color="#b8c3cb" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${inner(kind === "balance" ? uiIcon("balance") : componentIcon(kind))}</svg>` +
+      text(x + 62, 545, title, 16) +
+      text(x + 62, 569, sub, 12, color.muted);
+  });
   return svg(
-    "Components determine balance",
-    "Each installed part contributes mass, center of gravity and rotational inertia.",
-    472,
-    text(50, 148, "NOSE / FORWARD", 16, color.usb) +
-      text(888, 148, "TAIL", 16, color.muted, "end") +
-      `<path d="M54 257Q68 210 185 205H659L829 235H908V266H184Z" fill="#292f38" stroke="#9ca5b4" stroke-width="2"/><path d="M386 205 526 173H580V287H386Z" fill="#363e48" stroke="#9ca5b4"/>` +
-      rect(166, 224, 112, 33, "#3e483b", color.green, 4) +
-      text(222, 246, "BATTERY", 14, color.green, "middle") +
-      dot(401, 253, color.signal) +
-      line("M401 181v127M370 253h62", color.signal) +
-      text(408, 181, "CG", 22, color.signal) +
-      line("M268 339H137", color.green, true) +
-      text(301, 345, "Move battery forward → CG moves toward the nose.", 19) +
+    "Balance comes from the installed parts",
+    "Illustrative layout; the example uses the 1,287 g VTOL mass ledger and a 190 g battery.",
+    674,
+    body +
       text(
         32,
-        398,
-        "Mass × position matters. Do not add the battery weight twice.",
-        18,
+        626,
+        "CG shift = moved mass ÷ total mass × movement. Count each physical part once.",
+        15,
         color.signal,
-      ) +
-      text(
-        32,
-        428,
-        "CG = sum of (part mass × part position) ÷ total mass",
-        17,
-        color.muted,
       ),
+  );
+}
+function vtolLayout() {
+  let body =
+    rect(24, 104, 546, 422, "#171c21", "#303941", 8) +
+    rect(586, 104, 350, 422, "#171c21", "#303941", 8);
+  body +=
+    text(44, 133, "HOVER / TOP VIEW", 12, color.muted) +
+    text(606, 133, "REAR YAW / LOOKING FORWARD", 12, color.muted);
+  body += `<g stroke="#9eabb3" stroke-width="1.5"><path d="M280 168q15-28 30 0l15 160-30 20-30-20Z" fill="#47575f"/><path d="M93 256h404v47H93Z" fill="#8e999d"/><path d="M176 245h16v206h-16Zm222 0h16v206h-16Z" fill="#6f7c83"/><path d="m184 451 111-74 111 74-8 12-103-65-103 65Z" fill="#808d93"/><path d="M290 310h10v67h-10Z" fill="#b49d73"/></g>`;
+  [
+    [184, 220, "L"],
+    [406, 220, "R"],
+    [295, 369, "REAR"],
+  ].forEach(([x, y, label]) => {
+    body +=
+      `<circle cx="${x}" cy="${y}" r="48" fill="#87c8d50a" stroke="#6f9ca5" stroke-dasharray="5 5"/><path d="M${Number(x) - 42} ${y}h84" stroke="#b3c2c9" stroke-width="7" stroke-linecap="round"/>` +
+      dot(Number(x), Number(y), color.signal);
+  });
+  body += text(
+    295,
+    484,
+    "Front pair: together, vertical → forward",
+    16,
+    color.ink,
+    "middle",
+  );
+  body +=
+    line("M716 226q42-37 87 0", color.signal, true) +
+    text(760, 194, "±20° yaw lean", 17, color.signal, "middle");
+  body +=
+    `<path d="M668 388h185v15H668Z" fill="#ad956e" stroke="#d2bd98"/><path d="M712 383v-40h80v40" fill="none" stroke="#bd643f" stroke-width="9"/><g transform="rotate(-20 752 350)"><path d="M725 347h54v-24h-54Z" fill="#d36b3e"/><rect x="735" y="274" width="34" height="49" rx="5" fill="#30383e" stroke="#adbac0"/><path d="M738 279h28M736 316h32" stroke="#d77b40" stroke-width="7"/><path d="M752 252v22M680 257h144" stroke="#b7c4cb" stroke-width="5" stroke-linecap="round"/></g>` +
+    dot(752, 350, color.signal) +
+    line("M759 353h79v56", color.signal) +
+    text(
+      757,
+      433,
+      "Longitudinal hinge + separate servo",
+      13,
+      color.muted,
+      "middle",
+    );
+  body +=
+    text(44, 558, "RDS3115MG × 2", 19) +
+    text(44, 583, "Front conversion · 0–90°", 14, color.muted) +
+    text(350, 558, "MG996R · provisional", 19) +
+    text(350, 583, "Rear yaw · motor leans sideways", 14, color.muted) +
+    text(666, 558, "Wing-borne cruise", 19) +
+    text(666, 583, "Front rotors forward · rear off", 14, color.muted);
+  return svg(
+    "Three rotors. Three tilt servos.",
+    "Bronco-sized experimental layout. Geometry is reconstructed from references, not a manufacturing drawing.",
+    637,
+    body,
   );
 }
 export function documentationDiagrams() {
@@ -531,6 +624,7 @@ export function documentationDiagrams() {
       "diagram-calibration.svg": workflow(true),
       "diagram-workflow.svg": workflow(),
       "diagram-mass-cg.svg": balance(),
+      "diagram-vtol-layout.svg": vtolLayout(),
     }),
   );
 }

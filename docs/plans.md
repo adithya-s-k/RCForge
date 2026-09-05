@@ -11,7 +11,9 @@ or manufacturing templates.
 The reference library below links each bundled aircraft to its creator and its
 RCForge JSON definition. Flite Test plan entries include the exact reference
 identity, byte count and SHA-256 digest. The Bronco's two configurations share one
-source plan; they retain separate components, controls and local histories.
+source plan; they retain separate components, controls and local histories. The
+[experimental tricopter conversion](bronco-vtol.md) retains Bronco geometry credits
+and adds a separately estimated motor/servo installation. It is not an official FT VTOL plan.
 
 Read the [Flite Test reconstruction notes](flite-test-reconstruction.md) for
 measured plan stations and assembly assumptions, or the

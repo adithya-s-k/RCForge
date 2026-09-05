@@ -153,3 +153,7 @@ for reviewed PDFs. `npm run references:fetch` keeps original plans locally;
 `npm run references:check` verifies identity and preset attribution without a
 network call. Do not commit upstream plans or reference photos without reviewed
 redistribution rights. Document assembly choices and missing data beside the model.
+
+## Tricopter VTOL definitions
+
+Use `vehicleType: "vtol"` and the validated `vtol` block in [bronco-tri-vtol.json](../aircraft/bronco-tri-vtol.json). Three motors and three dedicated tilt servos are linked by ID; no array ordering or transmitter channel is implied. Keep component mass centers distinct from motor tilt-axis force stations. The [VTOL guide](bronco-vtol.md) describes schema settings, provenance, controls, validation commands and the fixed-inertia approximation.

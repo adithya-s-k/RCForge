@@ -75,3 +75,9 @@ Export ordinary aircraft JSON to share one setup, or export a history archive to
 keep all local revisions. Before reloading, apply, save or export unapplied drafts.
 See [versions and recovery](versioning.md) for storage limits, and
 [contributing](../CONTRIBUTING.md) to submit an aircraft to the public catalog.
+
+## Place components on the model
+
+Choose a part by its icon and name, then **Move on model**. Drag the body-axis handles or enter X/Y/Z in millimeters. **Top** and **Side** views help check clearance. The gold CG marker and live balance readout show the effect immediately. **Cancel** keeps the previous draft; **Use placement** writes the position into the draft. Apply when ready to save a local version.
+
+Moving a motor or propeller keeps the paired components and motor force station together. Other installed parts move independently. The editor does not enforce collisions or fabricate a new structural or aerodynamic shape. For the [tricopter VTOL](bronco-vtol.md), **Check motor headroom** reports calculated hover motor commands after a placement change.

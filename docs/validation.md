@@ -2,10 +2,17 @@
 
 ## Current compatibility
 
-Simulation 0.7.1 corrects accumulated contact impulses. Existing aircraft format-1
-files remain compatible. Earlier recordings are rejected because contact
-trajectories change; use their original engine version or record a fresh flight.
-See [the contact correction](component-models.md#contact-correction-071).
+Simulation **0.8.0** adds tricopter VTOL actuator/controller state and replay
+commands. Aircraft format-1 definitions still load; the optional `vtol` extension
+and `vehicleType: "vtol"` require the current reader. Recordings must match the
+exact simulation version; earlier recordings are rejected rather than replayed
+with changed behavior. Use their original engine version or record a fresh flight.
+The [0.7.1 contact correction](component-models.md#contact-correction-071) remains included.
+
+The [VTOL guide](bronco-vtol.md) describes tests and assumptions. The controller
+uses perfect state and model information; no servo bench, physical radio or flight
+log has validated the conversion. Rotor interference, moving tilt inertia, servo
+load/backlash and realistic sensor/estimator behavior remain unmodeled.
 
 ## Automated checks
 

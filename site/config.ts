@@ -38,6 +38,13 @@ export const pages = [
     file: "docs/component-models.md",
   },
   {
+    slug: "bronco-vtol",
+    title: "Tricopter VTOL",
+    group: "Build aircraft",
+    file: "docs/bronco-vtol.md",
+  },
+
+  {
     slug: "multirotors",
     title: "Quadcopters",
     group: "Build aircraft",

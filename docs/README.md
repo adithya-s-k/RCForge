@@ -49,3 +49,5 @@ requires measured bench or flight data.
 The documentation selector separates current development from explicitly frozen
 releases. Each page identifies the application, physics and aircraft format
 versions it describes. No historical release documentation is fabricated.
+
+The [tricopter VTOL guide](bronco-vtol.md) covers front conversion servos, the rear yaw mount, assistance and radio switches.

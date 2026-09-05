@@ -235,3 +235,9 @@ format 1 and local aircraft/controller preferences remain compatible.
 ## Camera mounts and pilot controls
 
 See [FPV and control setup](fpv-and-control-setup.md) for optional `fpv` and `pilotResponse` fields, the camera mass/pose contract, configurable surface mixers, and live servo/linkage testing in the editor.
+
+## Tricopter components and placement
+
+The [Bronco VTOL](bronco-vtol.md) references three installed servo IDs. The two front servos have 0–90° conversion travel; the rear servo sets sideways yaw lean. Each servo, motor, propeller, ESC, bracket and support contributes to the mass ledger once. Manufacturer/retailer speed is a no-load reference, not a simulated torque-versus-speed curve.
+
+In Components, recognizable part icons identify the equipment. **Move on model** opens a cancelable placement view with body-axis handles, precise coordinates and live CG feedback. **Use placement** changes the draft; **Apply to flight** adopts it and saves history. Motor/prop pairs move with their force station; structural surfaces remain separately authored. Hover headroom can be recalculated for VTOL after placement.

@@ -40,6 +40,8 @@ Open the URL Vite prints. The simulator runs at the root and the documentation a
 
 New sessions start on the ground with the pilot beside the aircraft. Press **Start flight**, then hold **Space** to increase throttle. Arrow keys control pitch and roll; **Q/E** controls yaw. **P** pauses and **R** resets. Follow [Install & first flight](docs/getting-started.md) for the complete workflow.
 
+The [Bronco tricopter VTOL](docs/bronco-vtol.md) adds front conversion rotors and a rear yaw mount, with configurable assistance and component placement.
+
 ## Explore the workbench
 
 | Workspace   | What it does                                                                                                 |

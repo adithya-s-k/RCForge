@@ -1035,7 +1035,7 @@ function stats() {
   });
   if (sim.aircraft.vtol && !started && !replay)
     feedback.detail =
-      "Start flight; raise throttle above 50% to climb. Center it to hold height.";
+      "Start flight; raise throttle above 55% to climb. Center it to hold height.";
   $("flight-feedback").dataset.tone = feedback.tone;
   for (const [id, value] of [
     ["flight-cue-title", feedback.title],

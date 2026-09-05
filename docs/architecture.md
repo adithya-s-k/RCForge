@@ -134,3 +134,9 @@ production artifact. Only the local development docs serve verified manifest
 entries. Public pages retain creator links and source identities. Snapshot files
 include permitted aircraft/component JSON and guides, never upstream plan PDFs.
 See [documentation maintenance](documentation.md) and [plans](plans.md).
+
+## Tricopter VTOL path
+
+`core/vtol-config.ts` owns validated aircraft settings and replay state. `core/vtol.ts` computes tilted rotor loads and commands the motors/servos through an independent ideal-state controller. `core/vtol-trim.ts` solves a six-axis physical hover equilibrium; forward trim uses the fixed-wing solver with the rear motor off. These run at the same 120 Hz as the existing integrator. Rendering consumes actual actuator angles and never changes dynamics.
+
+`app/vtol-flight.ts` handles mode/profile UI and `app/vtol-editor.ts` edits the aircraft settings. `view/component-placement.ts` provides a temporary placement preview using the shared mass calculation; the app commits it only on Use placement. `site/hardware-illustrations.ts` and the shared component icons keep documentation and workbench imagery consistent.
