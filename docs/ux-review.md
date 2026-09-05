@@ -52,6 +52,21 @@ unapplied drafts or register custom imports as permanent bundled aircraft.
 | Quad propeller tips could clip at narrow editor widths.                                       | Studio framing uses the rendered model bounds, including the propellers.                                                                                                                     |
 | The guide was a wall of text; narrow toolbars wrapped unevenly.                               | A compact shortcut reference with expandable details, orderly editor actions and smaller flight controls retain the minimal dark style.                                                      |
 
+## Visible flight area
+
+At 390 × 844, the wrapped instrument bar occupied 211 px but the camera still
+framed the full 788 px stage. The expanded attitude/map panel then covered the
+Tiny Trainer in Chase. The scene now ends at the measured top of the instrument
+bar, so framing uses the visible 577 px region. Locate uses an overlay with the
+same bounds; pointer picking already uses the canvas rectangle. The editor keeps
+its full inspection viewport. This also avoids rendering the pixels behind the
+opaque bar, without changing the graphics budget or physics loop.
+
+A 760 × 920 check exposed a separate toolbar/status-card overlap from an older
+breakpoint. Tablet camera controls now sit above the card. Browser checks covered
+390 px Chase, tablet Pilot and Locate, desktop Pilot/Chase, runway placement,
+Ground mode, and moving the observer beside the aircraft.
+
 ## Verification
 
 Browser walkthroughs exercised keyboard launch, throttle increase/cut, pitch/roll input, pause/resume, impact/restart, Pilot/Chase, Locate, aircraft/observer placement, page navigation, Bronco/Tiny Trainer editing, inline errors, Apply & fly, draft-to-experiment handoff, roll-response plotting and metric switching, missing gamepad recovery, and catalog search. Desktop and narrow layouts were visually inspected.

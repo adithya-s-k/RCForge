@@ -558,3 +558,18 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   flight paused at 15.4 s, 8.5 m/s and 19.8 m AGL with 94% charge. No hardware
   input or measured-flight claims. Custom imports remain session catalog entries.
 - Verification: 211 tests / 36 files and production build pass. No dynamics change.
+
+## Pass 25 · visible flight framing
+
+- Reproduced a phone Chase view where the expanded attitude/map panel completely
+  covered the Tiny Trainer. The canvas included 211 px hidden by wrapped bottom
+  instruments. It now excludes the measured HUD height, with Locate sharing the
+  same viewport bounds. No extra draw calls, assets or simulation changes.
+- Fixed a tablet breakpoint that put camera buttons across the status card.
+- Inspected rendered 390 × 844, 760 × 920 and desktop layouts; exercised
+  Pilot/Chase, Locate alignment, runway placement, Ground launch setup and the
+  observer's Beside aircraft preset. The editor viewport remains independent.
+- Previous pass 23 and 24 CI runs passed on Node 22/24 and all six Arduino compile
+  targets. Those are compilation/numerical checks, not physical hardware evidence.
+- Verification for this pass: production typecheck/build and docs checks pass;
+  browser console has no errors. Changes are limited to CSS and overlay markup.

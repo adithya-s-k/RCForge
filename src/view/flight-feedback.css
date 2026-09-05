@@ -3,6 +3,16 @@
   --flight-hud-height: 84px;
   --flight-guide-height: 36px;
 }
+/* Frame the aircraft inside the visible scene, above the opaque instrument bar.
+ * On phones the wrapped bar can otherwise hide the camera's center of interest. */
+#flight-stage > #viewport {
+  bottom: var(--flight-hud-height);
+}
+.flight-scene-overlay {
+  position: absolute;
+  inset: 0 0 var(--flight-hud-height);
+  pointer-events: none;
+}
 .field-label {
   width: 286px;
   padding: 12px 14px;
@@ -155,6 +165,7 @@
     width: 260px;
   }
   .camera-bar {
+    top: 10px;
     left: 20px;
     transform: none;
   }
