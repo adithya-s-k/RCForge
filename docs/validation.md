@@ -83,7 +83,7 @@ Selectable field scenery, temperature/elevation density, surface friction, optio
 
 ## Landscape rendering
 
-Alpine and mesa shapes are derived from offline elevation tiles, with a deliberately flattened airfield and estimated surface materials. The photographic asphalt, paint, shoulders and markers are cosmetic. Surface friction still follows the selected scenery everywhere; hills, buildings, plants and markers have no collision. Real elevation sources do not establish physical flight-model accuracy. The data transformations, source coordinates, licenses and regeneration command are documented in [the scenery manifest](../public/scenery/README.md).
+Alpine and mesa shapes are derived from offline elevation tiles, with a deliberately flattened airfield and estimated surface materials. The photographic asphalt, paint, shoulders and markers are cosmetic. Surface friction still follows the selected scenery everywhere; hills remain visual terrain. Buildings, trees, rocks, field tables, cones and fences now export approximate collision volumes. Real elevation sources do not establish physical flight-model accuracy. The data transformations, source coordinates, licenses and regeneration command are documented in [the scenery manifest](../public/scenery/README.md).
 
 ## Version 0.6 additions
 
@@ -117,7 +117,7 @@ accuracy. Constant-supply trim tests and discharge tests exercise different clai
 
 ## FPV and input response
 
-An FPV view is an ideal perspective projection, without lens distortion or a video-link model. Installing a camera changes component mass properties, but does not automatically supply its drag, electrical load or collision geometry. Gentle rates reduce pilot sensitivity and authority; they do not stabilize a fixed-wing aircraft or resolve an inadequate aerodynamic model. The control bench reproduces the simulated servo/linkage response without actual hardware, hinge loads or airframe motion. See [setup and verification](fpv-and-control-setup.md).
+An FPV view is an ideal perspective projection, without lens distortion or a video-link model. Installing a camera changes component mass properties, but does not automatically supply its drag or electrical load. Its installation envelope participates in scenery collision. Gentle rates reduce pilot sensitivity and authority; they do not stabilize a fixed-wing aircraft or resolve an inadequate aerodynamic model. The control bench reproduces the simulated servo/linkage response without actual hardware, hinge loads or airframe motion. See [setup and verification](fpv-and-control-setup.md).
 
 ## Vortex RC Simple Trainer
 
@@ -141,3 +141,9 @@ The conventional variant retains the published shared 830 g reference using
 estimated allocations; no independently weighed conventional build or measured
 flight data is available. Passing these checks does not validate the aerodynamic
 coefficients or certify the physical assembly.
+
+## Field impacts and visible breakup
+
+Simulation 0.8.1 sweeps CG-relative installed-part envelopes against a recorded field snapshot. Trunks and solid props use boxes; crowns use ellipsoids that exclude transparent card corners. The broad phase rejects distant obstacles before testing part probes. A hit terminates flight and shuts down motors; the renderer then partitions the visible model and simulates a bounded cosmetic aftermath. Tests cover wingtip contact, thin-obstacle tunnelling, missed crowns, fixed-wing/quad termination and exact headless replay.
+
+These are approximate rigid obstruction volumes, not leaf/branch meshes, propeller strike mechanics, tree deformation, material strength, progressive damage or measured fracture physics. Capsule-like part envelopes are deliberately conservative; shape corners and extremely fast angular motion may differ from mesh contact. Moving components moves their collision envelope. Gentle ground landings retain the intact model. Mountain terrain is still not a physical landing surface; cosmetic fragments settle against its visual height but the flight solver still uses flat ground. No real-aircraft crash validation is claimed.

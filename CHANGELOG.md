@@ -4,6 +4,11 @@ Application releases are separate from physics/replay and aircraft format versio
 
 ## 0.8.0 — Unreleased
 
+- Add bounded crash breakup using the aircraft's own geometry, with reset restoring the intact model.
+- Add recorded scenery collisions for trees, buildings, rocks, tables, cones and fences; simulation compatibility advances to 0.8.1 and rejects older replays. Aircraft files remain compatible.
+- Restore a compact photographic sky across all three maps, improve canopy cutouts/shadows and reduce oversized ground colour patches.
+- Add optional, smoothly bounded pilot-camera focus at distance without changing aircraft scale, chase or FPV.
+
 - Make documentation diagrams, enlarged views and SVG downloads follow the chosen light/dark theme.
 - Add shared light/dark appearance across the simulator and documentation, with a two-row navigation layout on small screens.
 - Replace the balance illustration with a conventional Tiny Trainer view and an interactive battery/CG demonstration; retain a downloadable static diagram and frozen documentation snapshots.

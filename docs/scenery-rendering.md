@@ -123,3 +123,13 @@ Northfield Chase at N 160 m, E 90 m, 12 m altitude, followed by Alpine and Deser
 checks. It is a modest tonal correction: the crossed cards and pale source leaves
 remain visible on close inspection. No new samples, assets, geometry or shadow
 passes were added, and no photorealistic vegetation claim is made.
+
+## Clouds, foliage and distant aircraft
+
+The existing CC0 sky photograph is restored. It loads once (5.2 MB compressed HDR source), is reduced to a 1024 × 512 logarithmic RGBA8 texture with mipmaps (about 2.7 MiB GPU memory), and is shared across the three fields. Initial HDR decoding temporarily needs a larger CPU buffer. Field haze and tint preserve each site's light; sun alignment follows the directional light. The gradient remains a fallback if the local image is unavailable. There is no HDR environment convolution, bloom, volumetric cloud pass or new downloaded asset.
+
+The foliage cutout now rejects the source atlas's translucent background fringe. One projected canopy card per plant supplements root occlusion, with sun-aligned shadows on the flat field. This costs one extra instanced draw per species (two to four per site), not a second shadow-map render. Shadows on raised terrain are omitted. Ground macro variation is reduced to avoid broad, painted-looking green patches. The sky, tree shadows and reduced bounce lighting give the aircraft a clearer silhouette and distinguish upper and lower surfaces.
+
+Pilot tracking includes a smooth, bounded lens focus, enabled under **Position & view → Focus at distance**. It does not resize the aircraft, draw an outline or make scenery transparent. A small RC aircraft will still become hard to identify far away, as dictated by its angular size and the display resolution.
+
+Crash debris adds at most 16 visual fragments, retains the source triangles/materials, and settles against the visible ground (motion is capped at twenty seconds). It uses the existing aircraft shadow map. Debris is not part of dynamics or telemetry; reset/model replacement frees its geometry and restores the intact aircraft. The ground solver remains flat. Separate recorded obstruction volumes now handle tree trunks/crowns, buildings, rocks, tables, cones and fences. Mountains still have no aircraft collision. See [validation limits](validation.md#field-impacts-and-visible-breakup).
