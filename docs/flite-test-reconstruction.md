@@ -2,6 +2,30 @@
 
 Reference review: 2026-09-04. These presets are independent procedural reconstructions, not manufacturing CAD or flight-test calibrated digital twins. Images establish assembly topology; full-size drawings establish dimensions where measurable. Cut outlines are not automatically assembled dimensions: foam folds, overlap, dihedral and bevels must be interpreted.
 
+## Inspect and reproduce a preset
+
+In **Aircraft editor**, select FT Bronco, FT Tiny Trainer · Sport or FT-22 Raptor.
+Use **Top** and **Side** for orthographic plan comparisons, and **Perspective** or
+drag to inspect the assembly. **Components** shows the selected part's installation
+envelope. Existing local builds keep their earlier definitions: export any custom
+work before choosing **Restore original aircraft → Apply to flight** to use the
+revised bundled reconstruction.
+
+Validate and exercise the FT-22 with the same core used by the browser:
+
+```sh
+npm run aircraft:validate -- ft-22-raptor
+npm run simulate -- ft-22-raptor --scenario pitch-pulse --duration 5
+npm run replay -- results/ft-22-raptor-pitch-pulse/recording.json
+npm run physics:envelope -- ft-22-raptor
+```
+
+The other IDs are `ft-bronco` and `ft-tiny-trainer`. For an external project, use
+**Import JSON** with the relevant file from `aircraft/`, inspect it, then apply it.
+Unapplied imports are session drafts; applying retains the custom source and edited
+definition locally. **Export** produces the standalone JSON needed by the CLI.
+Read the trim limitations below before interpreting a successful numerical run.
+
 ## Sources inspected
 
 - [FT Bronco build article and assembly images](https://www.flitetest.com/articles/ft-bronco-build)

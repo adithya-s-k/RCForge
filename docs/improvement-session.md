@@ -698,3 +698,25 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   Restored the original 830 g / 2200 mAh / 51 mm CG afterward.
 - Visually inspected all three FT presets in the assembled editor, including
   orthographic FT-22 top view. Reference masses and geometry remain as documented.
+
+## Final verified handoff
+
+- Runtime commit `e141d60` passed CI run `33938918774` on Node 22 and 24 and all
+  six Uno/Nano firmware compile targets. The suite has 217 tests in 37 files;
+  seven bundled aircraft and eight catalog entries validate. Numerical physics
+  verification passes 93/93 checks. The envelope survey reports zero nonfinite
+  loads and retains unsuccessful trim points rather than hiding them.
+- The documented FT-22 validate → 5 s pitch-pulse simulation → replay sequence
+  also passes on 0.7.1. Added direct inspection/import instructions beside the
+  reconstruction evidence and identified the older realism-plan snapshot as 0.6.
+- Browser is left with the original Bronco, Ground, zero throttle, Pilot view,
+  Keyboard, and the observer beside the aircraft. Test battery/mass changes were
+  restored. No physical controller, radio, Arduino or real-aircraft measurements
+  were available; firmware compilation is not hardware acceptance.
+- The FT-22 hand-release/high-power behavior remains an explicit model limitation.
+  Its drawing reconstruction does not establish aerodynamic calibration. Foam
+  flex, loaded linkage motion, propeller clearance tolerances, nonflat collision,
+  wake coupling and measured performance still require additional evidence.
+- All work stays on `improve/flight-polish-20260905`; main remains `f736b58`.
+  Generated verification output and source-reference downloads remain untracked
+  under the ignored results directory. Rendering stays within the existing budget.
