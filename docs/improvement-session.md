@@ -603,3 +603,16 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
 - Passes 25 and 26 CI passed on both Node versions and Arduino compile targets.
 - Verification: production typecheck/build and docs checks pass. Shader compiled
   during the browser comparisons without console errors. No dynamics change.
+
+## Pass 28 · bring the agent architecture guide up to date
+
+- Audited the architecture guide against massProperties, Simulation, powertrain,
+  actuation, trim/launch, storage and scenery code. Corrected stale statements
+  about axis-aligned-only inertia, omitted prop reaction torque, level-only hand
+  launch trim, and the legacy runtime foliage path.
+- Added concise component/power/actuation and local-import contracts, including
+  what is measured input versus approximation. Clarified that quad prop diameter
+  alone does not derive thrust/current and battery charge does not remove mass.
+- This is documentation of existing behavior, not a fidelity or hardware claim.
+- Verification: docs link/script checks and repository formatting pass. Runtime
+  statements were checked against the current source instead of historical notes.
