@@ -68,6 +68,14 @@ breakpoint. Tablet camera controls now sit above the card. Browser checks covere
 390 px Chase, tablet Pilot and Locate, desktop Pilot/Chase, runway placement,
 Ground mode, and moving the observer beside the aircraft.
 
+## Setup panel scrolling
+
+The narrow Flight setup panel previously scrolled its heading and Close button
+out of reach. Its active tab content now owns scrolling; heading, section tabs
+and flight action remain fixed. The 390 × 844 check covered long Aircraft
+content, the high-trim note, the compact keyboard visual and navigation into the
+editor. Desktop retains the same compact panel size.
+
 ## Verification
 
 Browser walkthroughs exercised keyboard launch, throttle increase/cut, pitch/roll input, pause/resume, impact/restart, Pilot/Chase, Locate, aircraft/observer placement, page navigation, Bronco/Tiny Trainer editing, inline errors, Apply & fly, draft-to-experiment handoff, roll-response plotting and metric switching, missing gamepad recovery, and catalog search. Desktop and narrow layouts were visually inspected.

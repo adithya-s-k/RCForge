@@ -2279,11 +2279,17 @@ button.primary:hover {
 
 /* Flight walkthrough: compact choices and a persistent session action. */
 .flight-setup {
+  display: flex;
+  flex-direction: column;
   width: 304px;
   padding: 0;
-  overflow: auto;
+  overflow: hidden;
   max-height: calc(100dvh - var(--ui-header-height) - 125px);
-  scrollbar-gutter: stable;
+}
+.flight-setup > .setup-heading,
+.flight-setup > .setup-tabs,
+.flight-setup > .setup-footer {
+  flex: 0 0 auto;
 }
 .setup-heading {
   display: flex;
@@ -2321,11 +2327,13 @@ button.primary:hover {
   box-shadow: inset 0 -2px var(--ui-text);
 }
 .flight-setup [role="tabpanel"] {
+  min-height: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
   padding: 8px 16px 12px;
 }
 .flight-setup .setup-footer {
-  position: sticky;
-  bottom: 0;
+  position: static;
   padding: 10px 16px 14px;
   border-top: 1px solid var(--ui-border);
   background: var(--ui-panel);

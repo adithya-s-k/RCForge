@@ -638,3 +638,14 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
   checks pass. Numerical report remains passed. Browser confirmed high/failed trim,
   original mass restoration and no console errors. Narrow review found the setup
   heading/Close could scroll away; that is the next layout correction.
+
+## Pass 30 · retain setup navigation while scrolling
+
+- Narrow review reproduced a hidden Flight setup heading/Close after scrolling.
+  Made the panel a bounded column and moved scrolling into its active tab. Close,
+  tabs and the flight action keep their own space rather than overlaying content.
+- Browser checked 390 × 844 Aircraft/Input, keyboard visual, long-content scroll
+  and navigation through Edit this aircraft. No added interface or runtime work.
+- Verification: desktop retains the same compact setup and full inspection view;
+  typecheck/build/docs checks pass. Switching FT-22 Hand throw to Quad 450 selects
+  Ground and disables hand throw; start/pause/reset remain reachable.
