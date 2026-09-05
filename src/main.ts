@@ -13,6 +13,11 @@ import { batteryUsage } from "./core/components";
 import largeQuadData from "../aircraft/quad-x-450.json";
 import detailedQuadData from "../aircraft/quad-x-6s.json";
 import { setupCatalog } from "./app/catalog";
+import {
+  preferredAircraft,
+  rememberAircraft,
+  savedAircraft,
+} from "./app/aircraft-storage";
 import { ControllerActions, navigateSetting } from "./app/controller-actions";
 import { rotate } from "./core/math";
 import { placedLaunch, type Placement } from "./core/placement";
@@ -86,7 +91,7 @@ const originals = [
   parseAircraft(detailedQuadData),
   parseAircraft(largeQuadData),
 ];
-let baseline = originals[0],
+let baseline = preferredAircraft(originals),
   aircraft = structuredClone(baseline),
   environment = calmEnvironment(),
   mode: LaunchMode = "ground",
@@ -295,11 +300,8 @@ async function launch() {
 }
 function loadAircraft(a: Aircraft) {
   baseline = originals.find((v) => v.id === a.id) ?? a;
-  aircraft = structuredClone(a);
-  try {
-    const saved = localStorage.getItem("rcforge.aircraft.v3." + a.id);
-    if (saved) aircraft = parseAircraft(JSON.parse(saved));
-  } catch {}
+  aircraft = savedAircraft(a);
+  rememberAircraft(aircraft.id);
   editor.switchTo(aircraft);
   reset();
   invalidate();
@@ -500,11 +502,7 @@ setupCatalog(
   () =>
     originals.map((a) => {
       if (a.id === aircraft.id) return aircraft;
-      try {
-        const saved = localStorage.getItem("rcforge.aircraft.v3." + a.id);
-        if (saved) return parseAircraft(JSON.parse(saved));
-      } catch {}
-      return a;
+      return savedAircraft(a);
     }),
   () => aircraft.id,
   () => {
@@ -529,6 +527,7 @@ function applyDraft() {
     editor.commitPending();
     aircraft = parseAircraft(editor.draft);
     findTrim(aircraft);
+    rememberAircraft(aircraft.id);
     let stored = true;
     try {
       localStorage.setItem(

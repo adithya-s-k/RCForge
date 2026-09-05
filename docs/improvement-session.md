@@ -543,3 +543,18 @@ concrete task. Keep task output and temporary reference downloads in `results/`.
 - Verification: 209 tests / 35 files, production build and numerical report pass.
   Tiny retains 81/135 trim solutions with zero nonfinite loads. Pass-22 CI
   33935250417 passed on Node 22/24 and Arduino compilation.
+
+## Pass 24 · recover the chosen aircraft on reload
+
+- Browser reload always returned to Bronco, interrupting repeat testing of another
+  model. The last available catalog selection now restores together with its
+  validated applied definition. New sessions still start on the ground in Pilot
+  view with the observer beside the plane. Flight state is not resumed.
+- Centralized saved-model reads for selection and catalog cards. Oversized,
+  malformed and mismatched-ID overrides fall back to their source aircraft;
+  unavailable storage and removed selections remain usable.
+- Browser selected Tiny, changed to hand/chase, then reloaded: Tiny remained
+  selected, Ground/Pilot returned and the observer was 4 m away. Subsequent hand
+  flight paused at 15.4 s, 8.5 m/s and 19.8 m AGL with 94% charge. No hardware
+  input or measured-flight claims. Custom imports remain session catalog entries.
+- Verification: 211 tests / 36 files and production build pass. No dynamics change.

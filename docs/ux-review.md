@@ -23,6 +23,13 @@ Regression coverage checks feedback priority, disconnected-input recovery, repla
 
 The narrow experiment walkthrough also exposed results arriving below the fold without clear feedback. Completed comparisons now move focus to the result region and bring it into view when needed. End states use readable labels; the duration is labeled as a maximum, and ground contact is included among the reasons a run can end early.
 
+Reloading now restores the last aircraft still available in the catalog and its
+validated applied definition. It starts parked in Pilot view with the observer
+beside it; launch/camera state is not resumed. Removed selections and malformed,
+oversized or mismatched-ID stored overrides fall back to the source definition.
+Unavailable browser storage does not prevent flying. This does not retain
+unapplied drafts or register custom imports as permanent bundled aircraft.
+
 ## Findings and changes
 
 | Reproduced problem                                                                            | Change                                                                                                                                                                                       |
