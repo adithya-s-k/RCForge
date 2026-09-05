@@ -161,6 +161,10 @@ Calibration is saved in this browser under the device ID. The serial ID includes
 - No background auto-resume. Signal return, reconnect and switch movement must be followed by a deliberate start/resume action.
 - This is simulator input software, not an aircraft flight controller or safety-rated radio failsafe. It measures channel pulses, not radio latency, RSSI, battery telemetry or actual servo motion.
 
+## Serial protocol
+
+The transport is board-independent: another Arduino or microcontroller can work by implementing this protocol over USB serial. The included sketch is specific to classic ATmega328P Uno/Nano boards. See [using another Arduino](radio-setup.md#can-i-use-another-arduino) for the requirements.
+
 Wire format (developer reference): `RCF1,sequence,valid,mode,count,pulse1,...,pulseN*CRC\r\n`. Sequence is unsigned 16-bit with wraparound; valid is 0/1; mode is PPM/PWM; pulses are integer μs. CRC is four hex digits of CRC-16/CCITT-FALSE (polynomial 0x1021, initial 0xFFFF, no reflection/final XOR), calculated over the ASCII text before `*`. Firmware sends six channels. Browser decoder accepts 4–8 for future bridges. Resetting the board mid-connection can reset sequence numbers; use Disconnect then Connect Arduino to start a new session.
 
 ## Troubleshooting
