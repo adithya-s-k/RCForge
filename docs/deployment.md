@@ -77,4 +77,20 @@ The canonical domain is set in `site/config.ts`. Canonical documentation URLs om
 
 After deploying, check the canonical URL, social PNG and sitemap over HTTPS. Submit `/sitemap.xml` in Google Search Console for the verified domain. A valid sitemap helps discovery; it does not guarantee indexing or ranking. Hash-based simulator views share the root canonical; guides have separate crawlable HTML URLs.
 
+### Verify indexing after launch
+
+1. Open [Google Search Console](https://search.google.com/search-console). Use an existing verified domain property that covers your hostname, or add a URL-prefix property for the exact HTTPS origin. For the official site, that is `https://rcforge.adithyask.com/`.
+2. Complete Google's ownership verification. A domain property uses a DNS TXT record at the authoritative DNS provider; for the official site, DNS is managed at Hostinger. Use the actual verification value Google supplies. Do not invent a token or change the site's A/CNAME records for this step.
+3. In **Sitemaps**, submit `https://rcforge.adithyask.com/sitemap.xml` (replace the hostname for your own deployment). Check that the submission succeeds and that discovered URLs appear. Keep authentication callbacks, previews and nonexistent pages out of the sitemap.
+4. Use **URL inspection** on the homepage, `/docs/next`, `/docs/next/aircraft-editor` and `/docs/next/radio-setup`. Inspect the live URL and rendered HTML. If a page is eligible but not indexed, request indexing once. Repeated requests do not speed up the queue.
+5. Check **Page indexing** for exclusions and **Performance → Search results** for impressions, queries, clicks and pages. Track terms such as `free RC flight simulator`, `open source RC flight simulator`, `browser RC simulator` and `RC transmitter simulator`. Vercel visitor analytics does not establish whether Google has indexed a page.
+
+Google may take days or weeks to recrawl and process changes; neither submission nor valid markup guarantees a position in search. Public `site:` searches are a useful spot check, but URL inspection is the authoritative place to investigate a specific page's indexing status. Record the date of any search audit instead of treating it as permanent coverage.
+
+### Keep useful content discoverable
+
+The simulator's opening text is replaced when the workbench mounts. Do not rely on that temporary text alone: the docs homepage and guides provide readable, linked static HTML after JavaScript runs as well as before it. Keep their descriptions, headings and visible answers accurate. Link to actual guides for aircraft customization, controller connections and self-hosting; do not create duplicate pages for spelling variants or hide repetitive keywords in the interface.
+
+GitHub's repository description, website field, README heading and relevant topics should describe the same free, open-source RC flight simulator. Explain which hardware has been tested and distinguish the hosted sign-in policy from the unrestricted MIT source. Useful build examples and honest community discussions help people discover the project; promises of measured realism, manufactured reviews and repetitive promotional posts do not belong in the copy.
+
 References: [Google JavaScript SEO](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics), [URL structure](https://developers.google.com/search/docs/crawling-indexing/url-structure), [search snippets](https://developers.google.com/search/docs/appearance/snippet) and [software application structured data](https://developers.google.com/search/docs/appearance/structured-data/software-app).

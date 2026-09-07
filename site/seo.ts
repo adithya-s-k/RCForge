@@ -113,7 +113,7 @@ export function docsMetadata(
   version: string,
   frozen: boolean,
 ) {
-  const title = `${page.slug ? page.title : "Free RC flight simulator: guides & customization"} · RCForge docs${frozen ? ` · ${version}` : ""}`;
+  const title = `${page.slug ? page.title : "Free, open-source RC flight simulator"} · RCForge docs${frozen ? ` · ${version}` : ""}`;
   const description =
     descriptions[page.slug] ?? `RCForge documentation: ${page.title}.`;
   const url = canonicalUrl(docUrl(id, page.slug));

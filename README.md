@@ -1,6 +1,6 @@
 <p align="center"><img src="public/brand/rcforge-mark.svg" width="76" height="76" alt="RCForge logo" /></p>
 
-# RCForge
+# RCForge — Free, open-source RC flight simulator
 
 **A free, open-source RC flight simulator you can make your own.**
 
