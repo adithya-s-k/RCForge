@@ -64,6 +64,18 @@ Check total mass, component positions, CG, control direction and available thrus
 
 The models contain estimates. Do not treat a successful simulated flight as validation of a real build; see [known limits](validation.md).
 
+## Flight pauses after a long frame delay
+
+A browser frame took more than a quarter of a second. RCForge pauses instead of
+advancing through old input or silently slowing the flight. Close heavy tabs or
+applications, return to the field and choose **Resume flight**. Time spent paused
+is not added to the flight.
+
+Ordinary low display rates still advance the same fixed physics steps. If the
+aircraft feels floaty while the flight timer matches a real clock, compare its
+power-off behavior, mass and aerodynamic assumptions using
+[physics verification](physics-validation.md#browser-timing-and-input).
+
 ## Ask for help
 
 Include the aircraft, input device, browser, app version, exact error and steps that reproduce it. For Arduino, include the board, transmitter/receiver, sketch name and a few Serial Monitor lines. State whether the USB port itself disappears or only flight input stops. For an aircraft issue, export the setup and any relevant recording.

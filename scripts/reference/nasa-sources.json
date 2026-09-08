@@ -1,0 +1,14 @@
+{
+  "case": "NESC 2015 atmospheric case 02: torque-free rotational subset",
+  "specification": "https://nescacademy.nasa.gov/flightsim/2015/atmospheric/acc02",
+  "body": "https://nescacademy.nasa.gov/flightsim/2015/bodies",
+  "retrieved": "2026-09-08",
+  "baseUrl": "https://nescacademy.nasa.gov/workshop/FlightSim/2015/atmos_scn_02/",
+  "files": {
+    "Atmos_02_sim_01.csv": "deb423c19bcdd1b99fdf6c0d2bbd1b6c1db5b68410a8e1dbe7a6cedb1b724f79",
+    "Atmos_02_sim_02.csv": "2e8f3fd6481f3c10325a0e28167f3c3bc12e50df0244adb04105bdbf8d51c566",
+    "Atmos_02_sim_04.csv": "adc7aa647ed38ae74280979e5c4e4d6d950799c6350ce842f7f3d2fd731e241a",
+    "Atmos_02_sim_05.csv": "1b81189ad638d46416758ef592d13d52d558b43501a23b830396def988987e60",
+    "Atmos_02_sim_06.csv": "b4f97de225adcd15f5d3a91fab718b2e0cddd94efa6b752e461b169ff4931d1a"
+  }
+}

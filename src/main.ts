@@ -5,6 +5,7 @@ import {
   mountHost,
 } from "./app/host";
 import { ComponentPlacementDialog } from "./app/component-placement";
+import { FlightClock } from "./app/flight-clock";
 import "./view/vtol.css";
 import { VtolFlight } from "./app/vtol-flight";
 import { bundledAircraft } from "./app/bundled-aircraft";
@@ -129,8 +130,8 @@ let baseline = preferredAircraft(
   replay: Recording | null = null,
   replayIndex = 0,
   pitchTrim = 0,
-  releaseTrimConverged = true,
-  accumulator = 0;
+  releaseTrimConverged = true;
+const flightClock = new FlightClock(FIXED_DT);
 let placement: Placement | null = null;
 const initialAircraft = physicalAircraft();
 let sim = new Simulation(
@@ -171,7 +172,7 @@ function errorText(e: unknown) {
 function pause(reason?: string) {
   const wasRunning = running;
   running = false;
-  accumulator = 0;
+  flightClock.reset();
   document.body.dataset.running = "false";
   $("toggle-flight-setup").setAttribute(
     "aria-expanded",
@@ -183,7 +184,7 @@ function pause(reason?: string) {
 const responseFilter = new PilotResponseFilter();
 const responsePanel = new ResponsePanel();
 let controlPreview = new ControlPreview(aircraft);
-let previewAccumulator = 0;
+const previewClock = new FlightClock(FIXED_DT);
 let previewPitchTrim = 0;
 let previewStatus = "Enable Test sticks to move the controls.";
 renderControlTest(controlPreview);
@@ -373,7 +374,7 @@ async function launch() {
   positioning.close(false);
   running = true;
   started = true;
-  accumulator = 0;
+  flightClock.reset(performance.now());
   input.clear();
   document.body.dataset.running = "true";
   $("page-fly").classList.add("setup-collapsed");
@@ -493,7 +494,7 @@ function enableControlTest(enabled: boolean) {
   $<HTMLInputElement>("test-sticks").checked = enabled;
   input.clear();
   controlPreview.reset();
-  previewAccumulator = 0;
+  previewClock.reset(performance.now());
   input.testBench = enabled && page === "aircraft";
   input.active = page === "fly" || page === "controllers" || input.testBench;
 }
@@ -531,6 +532,7 @@ function route() {
     page === "aircraft" && $<HTMLInputElement>("test-sticks").checked;
   input.active = page === "fly" || page === "controllers" || input.testBench;
   controlPreview.reset();
+  previewClock.reset(performance.now());
   for (const id of ["fly", "aircraft", "controllers", "experiments"])
     $("page-" + id).hidden = id !== page;
   document.querySelectorAll<HTMLAnchorElement>("[data-route]").forEach((a) => {
@@ -1270,8 +1272,14 @@ function frame(now: number) {
     if (!running && page === "fly" && input.source === "keyboard" && !replay)
       input.read(dt);
     if (running && page === "fly") {
-      accumulator += dt;
-      while (accumulator >= FIXED_DT && running) {
+      // Use the same monotonic clock as launch(): an action can resume flight
+      // inside this callback, after its requestAnimationFrame timestamp.
+      const timing = flightClock.advance(performance.now());
+      if (timing.interrupted) {
+        input.clear();
+        pause("Flight paused after a long frame delay — resume when ready.");
+      }
+      for (let step = 0; step < timing.steps && running; step++) {
         if (replay) {
           if (replayIndex >= replay.frames.length) {
             pause();
@@ -1292,7 +1300,6 @@ function frame(now: number) {
         }
         scene?.captureImpactVelocity(sim.state.velocity);
         sim.step(controls);
-        accumulator -= FIXED_DT;
         if (!replay) {
           recording.frames.push({ ...controls });
           if (recording.frames.length % 12 === 0)
@@ -1324,14 +1331,14 @@ function frame(now: number) {
       const trim = $<HTMLInputElement>("test-trim").checked
         ? previewPitchTrim
         : 0;
-      previewAccumulator += dt;
-      while (previewAccumulator >= FIXED_DT) {
+      const timing = previewClock.advance(performance.now());
+      if (timing.interrupted) input.clear();
+      for (let step = 0; step < timing.steps; step++) {
         const raw =
           connected && document.hasFocus()
             ? input.read(FIXED_DT)
             : { roll: 0, pitch: 0, yaw: 0, throttle: 0 };
         controlPreview.step(raw, responsePanel.settings, trim);
-        previewAccumulator -= FIXED_DT;
       }
     } else if (page === "aircraft")
       previewStatus = "Enable Test sticks to move the controls.";

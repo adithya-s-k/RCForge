@@ -66,6 +66,10 @@ const descriptions: Record<string, string> = {
     "Understand RCForge's flight-model assumptions, unmeasured parameters and known limits. Software tests are not evidence of real-aircraft equivalence.",
   "physics-validation":
     "Run deterministic RCForge physics experiments, inspect trim and flight envelopes, and compare telemetry when changing aircraft definitions.",
+  benchmarks:
+    "Read RCForge's simulation benchmarks: gravity checks, JSBSim comparisons, NASA rotation references, unsolved trim conditions and remaining realism limits.",
+  "physics-reference":
+    "Compare RCForge with native JSBSim using repeatable mass, force and flight-path tests. Inspect numerical errors, source versions and coverage limits.",
   "aircraft-authoring":
     "Bring your aircraft design to RCForge with validated JSON definitions: geometry, components, mass, inertia, controls and source attribution.",
   "component-models":
@@ -113,7 +117,7 @@ export function docsMetadata(
   version: string,
   frozen: boolean,
 ) {
-  const title = `${page.slug ? page.title : "Free RC flight simulator: guides & customization"} · RCForge docs${frozen ? ` · ${version}` : ""}`;
+  const title = `${page.slug ? page.title : "Free, open-source RC flight simulator"} · RCForge docs${frozen ? ` · ${version}` : ""}`;
   const description =
     descriptions[page.slug] ?? `RCForge documentation: ${page.title}.`;
   const url = canonicalUrl(docUrl(id, page.slug));

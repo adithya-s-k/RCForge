@@ -1,6 +1,6 @@
 <p align="center"><img src="public/brand/rcforge-mark.svg" width="76" height="76" alt="RCForge logo" /></p>
 
-# RCForge
+# RCForge — Free, open-source RC flight simulator
 
 **A free, open-source RC flight simulator you can make your own.**
 
@@ -34,6 +34,10 @@ The goal is an open foundation the community can extend. It is not a closed cata
 - **Visible uncertainty:** distinguish sourced dimensions, estimates and measured agreement.
 
 > **Experimental software.** Aircraft presets are not calibrated against real flight data. Numerical checks establish implementation behavior, not safe or equivalent real-world flight. Read the [model limits](docs/validation.md).
+
+[Benchmarks & evidence](docs/benchmarks.md) explains the gravity checks, JSBSim
+comparisons, published NASA references and unsolved flight conditions in plain
+language, with downloadable results and reproduction steps.
 
 ## Get started
 
@@ -76,7 +80,7 @@ npm run references:check  # Credits and optional local plan checksums; no networ
 npm run format:check
 ```
 
-For physics changes, also run `npm run physics:validate` and `npm run physics:envelope`. See [verification](docs/physics-validation.md) for experiments and measured-data comparisons.
+For physics changes, also run `npm run physics:validate` and `npm run physics:envelope`. The optional `npm run physics:reference` compares matched cases against native JSBSim; follow its [setup and coverage guide](docs/physics-reference.md). `npm run physics:nasa -- --fetch` compares torque-free rotation with five published NASA trajectories. See [verification](docs/physics-validation.md) for coverage, experiments and measured-data comparisons.
 
 | Path                                  | Responsibility                                          |
 | ------------------------------------- | ------------------------------------------------------- |

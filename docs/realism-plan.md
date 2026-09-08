@@ -6,7 +6,9 @@ RCForge 0.7.1 additionally has component replacement, individual servo/linkage
 models, battery-consumption comparisons, revised FT reconstructions and corrected
 ground-contact impulses. See [current component contracts](component-models.md),
 [model limits](validation.md) and the [iteration record](archive/improvement-session.md).
-The measurement and independent-validation work below remains outstanding.
+The measurement work below remains outstanding. September 8 adds
+[independent JSBSim verification](physics-reference.md) for matched subsystem
+cases; the historical snapshot below predates that work.
 
 The target is a useful, testable model of a specified aircraft and operating range.
 There is no single percentage of realism. Good rigid-body integration, correct

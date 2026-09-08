@@ -91,10 +91,22 @@ export const pages = [
     file: "docs/validation.md",
   },
   {
+    slug: "benchmarks",
+    title: "Benchmarks & evidence",
+    group: "Understand the simulation",
+    file: "docs/benchmarks.md",
+  },
+  {
     slug: "physics-validation",
     title: "Run physics experiments",
     group: "Understand the simulation",
     file: "docs/physics-validation.md",
+  },
+  {
+    slug: "physics-reference",
+    title: "Compare with JSBSim",
+    group: "Understand the simulation",
+    file: "docs/physics-reference.md",
   },
   {
     slug: "aircraft-authoring",
