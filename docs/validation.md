@@ -1,5 +1,9 @@
 # Validation and model limits
 
+For a readable account of what we tested, the actual errors and the remaining
+gaps, start with [Benchmarks & evidence](benchmarks.md). This page lists the
+model's detailed boundaries and compatibility rules.
+
 ## Current compatibility
 
 Simulation **0.8.1** includes obstacle-collision snapshots and retains the

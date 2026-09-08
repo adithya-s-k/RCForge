@@ -66,7 +66,12 @@ export function workingDocs(root: string): DocsContent {
     readFileSync(join(root, "package.json"), "utf8"),
   ).version;
   const names = new Set<string>(pages.map((p) => p.file));
-  for (const folder of ["docs/images", "aircraft", "components"])
+  for (const folder of [
+    "docs/images",
+    "docs/benchmarks",
+    "aircraft",
+    "components",
+  ])
     for (const name of readdirSync(join(root, folder)))
       if (/\.(png|svg|json)$/.test(name)) names.add(`${folder}/${name}`);
   names.add("hardware/rcforge_bridge/rcforge_bridge.ino");

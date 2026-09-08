@@ -91,6 +91,12 @@ export const pages = [
     file: "docs/validation.md",
   },
   {
+    slug: "benchmarks",
+    title: "Benchmarks & evidence",
+    group: "Understand the simulation",
+    file: "docs/benchmarks.md",
+  },
+  {
     slug: "physics-validation",
     title: "Run physics experiments",
     group: "Understand the simulation",

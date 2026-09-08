@@ -1,5 +1,8 @@
 # Verifying equations and validating flight behavior
 
+Looking for the results first? [Benchmarks & evidence](benchmarks.md) explains
+the current numbers in plain language. This guide covers the commands and methods.
+
 These are separate questions: **does the implementation solve the intended model consistently?** and **does that model reproduce a real vehicle?** RCForge currently has evidence for the first. A separate JSBSim suite now checks independent implementation agreement for matched subsystem cases. Real-flight calibration and complete hardware/controller verification remain pending.
 
 ## 1. Repeatable numerical verification

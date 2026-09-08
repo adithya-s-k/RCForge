@@ -35,6 +35,10 @@ The goal is an open foundation the community can extend. It is not a closed cata
 
 > **Experimental software.** Aircraft presets are not calibrated against real flight data. Numerical checks establish implementation behavior, not safe or equivalent real-world flight. Read the [model limits](docs/validation.md).
 
+[Benchmarks & evidence](docs/benchmarks.md) explains the gravity checks, JSBSim
+comparisons, published NASA references and unsolved flight conditions in plain
+language, with downloadable results and reproduction steps.
+
 ## Get started
 
 Use Node.js 24 and npm. Supported versions are declared in [package.json](package.json).

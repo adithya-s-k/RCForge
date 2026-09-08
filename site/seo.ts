@@ -66,6 +66,8 @@ const descriptions: Record<string, string> = {
     "Understand RCForge's flight-model assumptions, unmeasured parameters and known limits. Software tests are not evidence of real-aircraft equivalence.",
   "physics-validation":
     "Run deterministic RCForge physics experiments, inspect trim and flight envelopes, and compare telemetry when changing aircraft definitions.",
+  benchmarks:
+    "Read RCForge's simulation benchmarks: gravity checks, JSBSim comparisons, NASA rotation references, unsolved trim conditions and remaining realism limits.",
   "physics-reference":
     "Compare RCForge with native JSBSim using repeatable mass, force and flight-path tests. Inspect numerical errors, source versions and coverage limits.",
   "aircraft-authoring":

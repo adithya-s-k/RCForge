@@ -44,7 +44,7 @@ The [aircraft plans and credits](plans.md) page links to the original designers.
 
 ## How realistic is it?
 
-The bundled aircraft use estimated physics. Passing a software test does not establish that a real aircraft will fly the same way. Read [realism and known limits](validation.md) for the evidence, or [run physics experiments](physics-validation.md) to inspect behavior yourself.
+The bundled aircraft use estimated physics. Passing a software test does not establish that a real aircraft will fly the same way. Start with [benchmarks and evidence](benchmarks.md) for the actual results and what they mean, read [known limits](validation.md), or [run physics experiments](physics-validation.md) yourself.
 
 For radio hardware, [connection test status](radio-setup.md#connection-test-status) distinguishes demonstrated trainer reception from receiver connections that still need testing.
 

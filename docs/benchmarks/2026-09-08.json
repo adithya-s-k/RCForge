@@ -1,0 +1,1189 @@
+{
+  "formatVersion": 1,
+  "date": "2026-09-08",
+  "sourceCommit": "2ce1fa5800b6b34dfc74d67abefa9a698c05e8d1",
+  "simulationVersion": "0.8.1",
+  "interpretation": "Dated software-verification summary, not an aircraft fidelity rating or a full NASA check-case pass. No new physical measurements were used.",
+  "reportSHA256": {
+    "report": "ef8ca95c5177843fbf7c34db71c08a354716cc47608bcdc5bb332af0ad69ebce",
+    "reference/report": "7bc5116d9511f22bdd19a288fdc15117158a9902cdb1c13b52499485c28f2676",
+    "nasa/report": "883962b5eb633db8c4aaf233f469e20bee5793b7dca4014e2852bcbceb284946",
+    "envelope": "1d31184a5191fe4b3ea0c65da471f5e126d8a1826bd622d7f0552ca438392ddc",
+    "tests": "00bd403e31dfb51f240b4cb6ddfd483ba931651d4c6fd64d976938532e34356e"
+  },
+  "runTimes": {
+    "numerical": "2026-09-08T07:59:37.388Z",
+    "jsbsim": "2026-09-08T07:59:39.275Z",
+    "nasa": "2026-09-08T08:08:48.111Z",
+    "envelope": "2026-09-08T07:59:37.909Z",
+    "tests": "2026-09-08T08:20:57.935Z"
+  },
+  "coreSHA256": {
+    "actuation.ts": "1966aba6803d9f0c05d8dbfb01b9104d1cd26ec48727da0544c4f39296e5e8f7",
+    "aerodynamics.ts": "e259beb1f8dbc2a298ca8912ee243d9bb9cefd222ade42841e30fa89383e930e",
+    "aircraft-history.ts": "3c1c0bcb2d73fee0ce1b1b250f325fc6dcc701c2e6b5b68374ecfbcb7eec5b7a",
+    "aircraft.ts": "cd1b595e40c13a14cbbcc25068ce1675522275b4b9ba09ccd13228d05c7cfab1",
+    "camera-placement.ts": "dfcb0e8ed810f40f883e09ff5d3239d22a2478668fefa1301e637ec6e06c471f",
+    "component-reference.ts": "9cd8c71f5602ed7de537fff115ea39fe422f6132925c3c9735315293dbd08f06",
+    "components.ts": "bf7a47f5992b77fdb7c2dd14ecfbe73db7cfb21177d3c1effe35d1e7c6e0854a",
+    "control-mixing.ts": "df340d0f3ab098a008edec8eddf7200172380c39b4a1d51f6e43da5644b4bab3",
+    "control-preview.ts": "45ea3c8bc54fb386e75f6afef0be94321cd838042c051f6cca1117bf18aa3ff7",
+    "editor.ts": "2ab297ba90e96235b89a92573dc6d858ab25401ce16b9780f5b1ac7d97092313",
+    "envelope.ts": "b6ee44ba5cc34eaa87da1a644aa35cc05029c2da2d6602b713aaedc3f2d64f87",
+    "experiment.ts": "f4f53e79e103b107474315d2ecf34b7c14e1ff5f83217586dcb0a59cc141f541",
+    "fpv.ts": "c9bd445fcab8a7cd1901e6cb5c42a97101f1a2f3340909a55d8838d049ccb57e",
+    "ground.ts": "279d9755728de4c1e207779c62d9415d91c74c0ac85f42024c51e936c4a78a78",
+    "launch.ts": "499f5a14475f54c579656ab553758597e0a0c8bd751684f774e13be6c68045e1",
+    "math.ts": "033c804cfd1a0ceeb87228864f32cdeeb23a46cf9f5fba8c5bd48565452631df",
+    "multirotor.ts": "f737dc7659d057e359c3cf561773d1ff88f681153af19d93dcb996473edc19e1",
+    "obstacles.ts": "b19137a8e0023c1a9d67647774477423971dd4b87d6f0953bcf29811edeba2a5",
+    "pilot-response.ts": "d206add2838e3632e8ba9d8a20792a0de8979512a33eb3e47704e833214bf0df",
+    "placement.ts": "fc3d4877a473769dc35246ffd11ce1dee6c83055249cb19773cc82430bdad3d2",
+    "powertrain.ts": "33acf134656ab10260a207aa1e24c8e5e19c0046496874dd3bd7cbe1ac9b7f47",
+    "scenery.ts": "7dd63bfc01d096f101063e67a19a4f8bcf2441d85752da122c1993186d0dd0fd",
+    "schema.ts": "0fa03621decf9b7215d79d23eed1dc6809f68cb1497f236e8914013b540259d3",
+    "simulation.ts": "451fabe56cbc647e65cea0f8a86486e1c692d71c7f5a808ee00f17cb552a467a",
+    "surface-control.ts": "db9c54d2a153c8b5cf0d15906212bd1817c5d3289040e7cb504f5395a6db3a0b",
+    "trim.ts": "c066bb9937b1900b8bbf51fd01543e3621c83c5b43661bb8a69fb0a7eabecf78",
+    "versions.ts": "aa1f61646ef3845d7662c6b45efd04c2497c0a11debae9c859582e3bde44f0c6",
+    "vtol-config.ts": "318404c6a14a06fe707701cdf64fdb3d5c31120575201a1fa5b4ce9cd8e7465f",
+    "vtol-trim.ts": "932ceff7083d127967d666b90e74db601457380d9c4043ae0b9f7f5b61e86838",
+    "vtol.ts": "78f8274f7ef65b91759302f70e3ed429b3215bbd0142d58c50f67ea081826f67"
+  },
+  "aircraftSHA256": {
+    "bronco-tri-vtol.json": "7e91c700f59d78862e9fe9369a17b70fc358a4bcb3e22817bbf5181385315453",
+    "ft-22-raptor.json": "69aad45a9c00e323342a1487efa5f59abba97d58232cf37dd665aac365b8bfc4",
+    "ft-bronco-conventional.json": "b4844074a3579e8d530605d2737ad8b7b8af013102872f9032cb1b89e7f35fa7",
+    "ft-bronco.json": "353b9307cf1018adf5054c3cdfe720c3f1e4d83530c7989f6114a7333804c8e8",
+    "ft-tiny-trainer.json": "eccb417481381cd562b7b26edcaa63f46455c8751db95e902742ea853a7678f3",
+    "quad-x-450.json": "b1ef64193ca560014a1dead73c5657afe5794ab15fdb26ab5f6a4d2ddf7e3ca7",
+    "quad-x-5inch.json": "9d747c87dd1e64997630502197ee3bf9563a63d8df114e6529afc69ac88f8077",
+    "quad-x-6s.json": "90a73d9e20c16f50a19339ed612548f9463a3e6422b01004ba64b7856a33c01b",
+    "vt-simple-trainer.json": "830957647e014d3ad22108e6e00a994b2b72ac334d4c4088a630a03b89898555"
+  },
+  "tests": {
+    "passed": 406,
+    "total": 406,
+    "files": 63
+  },
+  "numerical": {
+    "passed": 119,
+    "total": 119,
+    "checks": [
+      {
+        "aircraft": "bronco-tri-vtol",
+        "check": "Torque-free angular momentum relative error, 20 s",
+        "pass": true,
+        "metric": 0.0000027425883404478533,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "bronco-tri-vtol",
+        "check": "Torque-free rotational energy relative error, 20 s",
+        "pass": true,
+        "metric": 0.0000013450721125886831,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "bronco-tri-vtol",
+        "check": "Analytical quadratic-drag fall velocity error (m/s)",
+        "pass": true,
+        "metric": 0.0000016312804795859392,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "bronco-tri-vtol",
+        "check": "Analytical quadratic-drag fall position error (m)",
+        "pass": true,
+        "metric": 0.00005658190275426023,
+        "limit": 0.002
+      },
+      {
+        "aircraft": "bronco-tri-vtol",
+        "check": "Yaw-coordinate invariance position error (m)",
+        "pass": true,
+        "metric": 1.9420971147416815e-15,
+        "limit": 1e-7
+      },
+      {
+        "aircraft": "bronco-tri-vtol",
+        "check": "Equilibrium force/moment residual (N and Nm)",
+        "pass": true,
+        "metric": 8.559206435500608e-12,
+        "limit": 0.01
+      },
+      {
+        "aircraft": "bronco-tri-vtol",
+        "check": "10 s equilibrium altitude drift, fixed SOC (m)",
+        "pass": true,
+        "metric": 0.000049115487346984565,
+        "limit": 0.02
+      },
+      {
+        "aircraft": "bronco-tri-vtol",
+        "check": "Recorded-input replay position error (m)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "bronco-tri-vtol",
+        "check": "120 Hz error vs 480 Hz reference (m)",
+        "pass": true,
+        "metric": 0.0011573655668585623,
+        "limit": 0.002986572033074956
+      },
+      {
+        "aircraft": "ft-22-raptor",
+        "check": "Torque-free angular momentum relative error, 20 s",
+        "pass": true,
+        "metric": 0.000020699519243430024,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "ft-22-raptor",
+        "check": "Torque-free rotational energy relative error, 20 s",
+        "pass": true,
+        "metric": 0.000004500252799910331,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "ft-22-raptor",
+        "check": "Analytical quadratic-drag fall velocity error (m/s)",
+        "pass": true,
+        "metric": 8.057519096382748e-9,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "ft-22-raptor",
+        "check": "Analytical quadratic-drag fall position error (m)",
+        "pass": true,
+        "metric": 0.00005413435610535089,
+        "limit": 0.002
+      },
+      {
+        "aircraft": "ft-22-raptor",
+        "check": "Yaw-coordinate invariance position error (m)",
+        "pass": true,
+        "metric": 2.4613922385709617e-14,
+        "limit": 1e-7
+      },
+      {
+        "aircraft": "ft-22-raptor",
+        "check": "Analytical motor first-order response error",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-12
+      },
+      {
+        "aircraft": "ft-22-raptor",
+        "check": "Separate RK4 integrator, shared forces and fixed SOC: position error (m)",
+        "pass": true,
+        "metric": 0.00010390113797426939,
+        "limit": 0.01
+      },
+      {
+        "aircraft": "ft-22-raptor",
+        "check": "Equilibrium force/moment residual (N and Nm)",
+        "pass": true,
+        "metric": 1.532307857131813e-8,
+        "limit": 0.01
+      },
+      {
+        "aircraft": "ft-22-raptor",
+        "check": "10 s equilibrium altitude drift, fixed SOC (m)",
+        "pass": true,
+        "metric": 8.365129282594808e-7,
+        "limit": 0.02
+      },
+      {
+        "aircraft": "ft-22-raptor",
+        "check": "Recorded-input replay position error (m)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "ft-22-raptor",
+        "check": "120 Hz error vs 480 Hz reference (m)",
+        "pass": true,
+        "metric": 0.026844333665051987,
+        "limit": 0.03
+      },
+      {
+        "aircraft": "ft-bronco-conventional",
+        "check": "Torque-free angular momentum relative error, 20 s",
+        "pass": true,
+        "metric": 0.000003054899476536554,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "ft-bronco-conventional",
+        "check": "Torque-free rotational energy relative error, 20 s",
+        "pass": true,
+        "metric": 0.0000022824305946056084,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "ft-bronco-conventional",
+        "check": "Analytical quadratic-drag fall velocity error (m/s)",
+        "pass": true,
+        "metric": 4.906198327603306e-7,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "ft-bronco-conventional",
+        "check": "Analytical quadratic-drag fall position error (m)",
+        "pass": true,
+        "metric": 0.00005472771044878755,
+        "limit": 0.002
+      },
+      {
+        "aircraft": "ft-bronco-conventional",
+        "check": "Yaw-coordinate invariance position error (m)",
+        "pass": true,
+        "metric": 6.930068680024405e-14,
+        "limit": 1e-7
+      },
+      {
+        "aircraft": "ft-bronco-conventional",
+        "check": "Analytical motor first-order response error",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-12
+      },
+      {
+        "aircraft": "ft-bronco-conventional",
+        "check": "Separate RK4 integrator, shared forces and fixed SOC: position error (m)",
+        "pass": true,
+        "metric": 0.00010641491074530404,
+        "limit": 0.01
+      },
+      {
+        "aircraft": "ft-bronco-conventional",
+        "check": "Equilibrium force/moment residual (N and Nm)",
+        "pass": true,
+        "metric": 1.9099959386852152e-8,
+        "limit": 0.01
+      },
+      {
+        "aircraft": "ft-bronco-conventional",
+        "check": "10 s equilibrium altitude drift, fixed SOC (m)",
+        "pass": true,
+        "metric": 6.397612395403485e-8,
+        "limit": 0.02
+      },
+      {
+        "aircraft": "ft-bronco-conventional",
+        "check": "Recorded-input replay position error (m)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "ft-bronco-conventional",
+        "check": "120 Hz error vs 480 Hz reference (m)",
+        "pass": true,
+        "metric": 0.02387048146851056,
+        "limit": 0.03
+      },
+      {
+        "aircraft": "ft-bronco",
+        "check": "Torque-free angular momentum relative error, 20 s",
+        "pass": true,
+        "metric": 0.0000044653505622403325,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "ft-bronco",
+        "check": "Torque-free rotational energy relative error, 20 s",
+        "pass": true,
+        "metric": 0.0000017931176526141877,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "ft-bronco",
+        "check": "Analytical quadratic-drag fall velocity error (m/s)",
+        "pass": true,
+        "metric": 4.906198327603306e-7,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "ft-bronco",
+        "check": "Analytical quadratic-drag fall position error (m)",
+        "pass": true,
+        "metric": 0.00005472771044878755,
+        "limit": 0.002
+      },
+      {
+        "aircraft": "ft-bronco",
+        "check": "Yaw-coordinate invariance position error (m)",
+        "pass": true,
+        "metric": 5.5863527824997964e-14,
+        "limit": 1e-7
+      },
+      {
+        "aircraft": "ft-bronco",
+        "check": "Analytical motor first-order response error",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-12
+      },
+      {
+        "aircraft": "ft-bronco",
+        "check": "Separate RK4 integrator, shared forces and fixed SOC: position error (m)",
+        "pass": true,
+        "metric": 0.00010922041219538479,
+        "limit": 0.01
+      },
+      {
+        "aircraft": "ft-bronco",
+        "check": "Equilibrium force/moment residual (N and Nm)",
+        "pass": true,
+        "metric": 1.5746466954159732e-8,
+        "limit": 0.01
+      },
+      {
+        "aircraft": "ft-bronco",
+        "check": "10 s equilibrium altitude drift, fixed SOC (m)",
+        "pass": true,
+        "metric": 2.980813107456015e-8,
+        "limit": 0.02
+      },
+      {
+        "aircraft": "ft-bronco",
+        "check": "Recorded-input replay position error (m)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "ft-bronco",
+        "check": "120 Hz error vs 480 Hz reference (m)",
+        "pass": true,
+        "metric": 0.024282739114954686,
+        "limit": 0.03
+      },
+      {
+        "aircraft": "ft-bronco",
+        "check": "Analytical 2 s free-fall position error (m)",
+        "pass": true,
+        "metric": 2.842170943040401e-14,
+        "limit": 1e-8
+      },
+      {
+        "aircraft": "ft-tiny-trainer",
+        "check": "Torque-free angular momentum relative error, 20 s",
+        "pass": true,
+        "metric": 0.0000020517460344380385,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "ft-tiny-trainer",
+        "check": "Torque-free rotational energy relative error, 20 s",
+        "pass": true,
+        "metric": 0.0000017878799304633009,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "ft-tiny-trainer",
+        "check": "Analytical quadratic-drag fall velocity error (m/s)",
+        "pass": true,
+        "metric": 1.8899104503589115e-9,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "ft-tiny-trainer",
+        "check": "Analytical quadratic-drag fall position error (m)",
+        "pass": true,
+        "metric": 0.000054122319852467626,
+        "limit": 0.002
+      },
+      {
+        "aircraft": "ft-tiny-trainer",
+        "check": "Yaw-coordinate invariance position error (m)",
+        "pass": true,
+        "metric": 6.562911352827132e-14,
+        "limit": 1e-7
+      },
+      {
+        "aircraft": "ft-tiny-trainer",
+        "check": "Analytical motor first-order response error",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-12
+      },
+      {
+        "aircraft": "ft-tiny-trainer",
+        "check": "Separate RK4 integrator, shared forces and fixed SOC: position error (m)",
+        "pass": true,
+        "metric": 0.00008601474300745342,
+        "limit": 0.01
+      },
+      {
+        "aircraft": "ft-tiny-trainer",
+        "check": "Equilibrium force/moment residual (N and Nm)",
+        "pass": true,
+        "metric": 5.066748160465357e-8,
+        "limit": 0.01
+      },
+      {
+        "aircraft": "ft-tiny-trainer",
+        "check": "10 s equilibrium altitude drift, fixed SOC (m)",
+        "pass": true,
+        "metric": 0.000006625687920092105,
+        "limit": 0.02
+      },
+      {
+        "aircraft": "ft-tiny-trainer",
+        "check": "Recorded-input replay position error (m)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "ft-tiny-trainer",
+        "check": "120 Hz error vs 480 Hz reference (m)",
+        "pass": true,
+        "metric": 0.025748561733814304,
+        "limit": 0.03
+      },
+      {
+        "aircraft": "quad-x-450",
+        "check": "Torque-free angular momentum relative error, 20 s",
+        "pass": true,
+        "metric": 0.0000069828473043946775,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "quad-x-450",
+        "check": "Torque-free rotational energy relative error, 20 s",
+        "pass": true,
+        "metric": 8.054521264215242e-7,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "quad-x-450",
+        "check": "Analytical quadratic-drag fall velocity error (m/s)",
+        "pass": true,
+        "metric": 8.524834349543653e-7,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "quad-x-450",
+        "check": "Analytical quadratic-drag fall position error (m)",
+        "pass": true,
+        "metric": 0.000055258469728869386,
+        "limit": 0.002
+      },
+      {
+        "aircraft": "quad-x-450",
+        "check": "Yaw-coordinate invariance position error (m)",
+        "pass": true,
+        "metric": 1.576985733514809e-14,
+        "limit": 1e-7
+      },
+      {
+        "aircraft": "quad-x-450",
+        "check": "Equilibrium force/moment residual (N and Nm)",
+        "pass": true,
+        "metric": 3.446132268436486e-13,
+        "limit": 0.01
+      },
+      {
+        "aircraft": "quad-x-450",
+        "check": "10 s equilibrium altitude drift, fixed SOC (m)",
+        "pass": true,
+        "metric": 1.7053025658242404e-11,
+        "limit": 0.02
+      },
+      {
+        "aircraft": "quad-x-450",
+        "check": "Recorded-input replay position error (m)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "quad-x-450",
+        "check": "120 Hz error vs 480 Hz reference (m)",
+        "pass": true,
+        "metric": 0.0027151057728541086,
+        "limit": 0.006953263962589062
+      },
+      {
+        "aircraft": "quad-x-5inch",
+        "check": "Torque-free angular momentum relative error, 20 s",
+        "pass": true,
+        "metric": 0.000007378700840683272,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "quad-x-5inch",
+        "check": "Torque-free rotational energy relative error, 20 s",
+        "pass": true,
+        "metric": 6.727771343241789e-7,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "quad-x-5inch",
+        "check": "Analytical quadratic-drag fall velocity error (m/s)",
+        "pass": true,
+        "metric": 2.1605964661830512e-7,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "quad-x-5inch",
+        "check": "Analytical quadratic-drag fall position error (m)",
+        "pass": true,
+        "metric": 0.000054370882935472764,
+        "limit": 0.002
+      },
+      {
+        "aircraft": "quad-x-5inch",
+        "check": "Yaw-coordinate invariance position error (m)",
+        "pass": true,
+        "metric": 1.1462750303739273e-14,
+        "limit": 1e-7
+      },
+      {
+        "aircraft": "quad-x-5inch",
+        "check": "Equilibrium force/moment residual (N and Nm)",
+        "pass": true,
+        "metric": 4.876099524153688e-13,
+        "limit": 0.01
+      },
+      {
+        "aircraft": "quad-x-5inch",
+        "check": "10 s equilibrium altitude drift, fixed SOC (m)",
+        "pass": true,
+        "metric": 3.7481129311345285e-11,
+        "limit": 0.02
+      },
+      {
+        "aircraft": "quad-x-5inch",
+        "check": "Recorded-input replay position error (m)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "quad-x-5inch",
+        "check": "120 Hz error vs 480 Hz reference (m)",
+        "pass": true,
+        "metric": 0.003230379808687116,
+        "limit": 0.008276972283550796
+      },
+      {
+        "aircraft": "quad-x-6s",
+        "check": "Torque-free angular momentum relative error, 20 s",
+        "pass": true,
+        "metric": 0.000007028299680573961,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "quad-x-6s",
+        "check": "Torque-free rotational energy relative error, 20 s",
+        "pass": true,
+        "metric": 0.0000012794663774213338,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "quad-x-6s",
+        "check": "Analytical quadratic-drag fall velocity error (m/s)",
+        "pass": true,
+        "metric": 2.1605964661830512e-7,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "quad-x-6s",
+        "check": "Analytical quadratic-drag fall position error (m)",
+        "pass": true,
+        "metric": 0.000054370882935472764,
+        "limit": 0.002
+      },
+      {
+        "aircraft": "quad-x-6s",
+        "check": "Yaw-coordinate invariance position error (m)",
+        "pass": true,
+        "metric": 5.6348603740594776e-15,
+        "limit": 1e-7
+      },
+      {
+        "aircraft": "quad-x-6s",
+        "check": "Equilibrium force/moment residual (N and Nm)",
+        "pass": true,
+        "metric": 0.0009806649999999917,
+        "limit": 0.01
+      },
+      {
+        "aircraft": "quad-x-6s",
+        "check": "10 s equilibrium altitude drift, fixed SOC (m)",
+        "pass": true,
+        "metric": 0.00046658940286636863,
+        "limit": 0.02
+      },
+      {
+        "aircraft": "quad-x-6s",
+        "check": "Recorded-input replay position error (m)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "quad-x-6s",
+        "check": "120 Hz error vs 480 Hz reference (m)",
+        "pass": true,
+        "metric": 0.0032430662091268514,
+        "limit": 0.008310718036970689
+      },
+      {
+        "aircraft": "vt-simple-trainer",
+        "check": "Torque-free angular momentum relative error, 20 s",
+        "pass": true,
+        "metric": 0.000007288247515130498,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "vt-simple-trainer",
+        "check": "Torque-free rotational energy relative error, 20 s",
+        "pass": true,
+        "metric": 3.3609827916907366e-7,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "vt-simple-trainer",
+        "check": "Analytical quadratic-drag fall velocity error (m/s)",
+        "pass": true,
+        "metric": 7.581090955000036e-8,
+        "limit": 0.001
+      },
+      {
+        "aircraft": "vt-simple-trainer",
+        "check": "Analytical quadratic-drag fall position error (m)",
+        "pass": true,
+        "metric": 0.00005420948764367495,
+        "limit": 0.002
+      },
+      {
+        "aircraft": "vt-simple-trainer",
+        "check": "Yaw-coordinate invariance position error (m)",
+        "pass": true,
+        "metric": 1.0875018478638741e-13,
+        "limit": 1e-7
+      },
+      {
+        "aircraft": "vt-simple-trainer",
+        "check": "Analytical motor first-order response error",
+        "pass": true,
+        "metric": 5.551115123125783e-17,
+        "limit": 1e-12
+      },
+      {
+        "aircraft": "vt-simple-trainer",
+        "check": "Separate RK4 integrator, shared forces and fixed SOC: position error (m)",
+        "pass": true,
+        "metric": 3.008919914418268e-13,
+        "limit": 0.01
+      },
+      {
+        "aircraft": "vt-simple-trainer",
+        "check": "Equilibrium force/moment residual (N and Nm)",
+        "pass": true,
+        "metric": 1.5201037568468232e-9,
+        "limit": 0.01
+      },
+      {
+        "aircraft": "vt-simple-trainer",
+        "check": "10 s equilibrium altitude drift, fixed SOC (m)",
+        "pass": true,
+        "metric": 9.61220791850792e-8,
+        "limit": 0.02
+      },
+      {
+        "aircraft": "vt-simple-trainer",
+        "check": "Recorded-input replay position error (m)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "vt-simple-trainer",
+        "check": "120 Hz error vs 480 Hz reference (m)",
+        "pass": true,
+        "metric": 0.00000134766803379301,
+        "limit": 0.000003449971544358512
+      },
+      {
+        "aircraft": "bronco-tri-vtol",
+        "check": "Battery resistive circuit residual (V)",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "bronco-tri-vtol",
+        "check": "Battery coulomb-counting residual (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "bronco-tri-vtol",
+        "check": "Electrical state replay error (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "ft-22-raptor",
+        "check": "Battery resistive circuit residual (V)",
+        "pass": true,
+        "metric": 1.7763568394002505e-15,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "ft-22-raptor",
+        "check": "Battery coulomb-counting residual (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "ft-22-raptor",
+        "check": "Electrical state replay error (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "ft-bronco-conventional",
+        "check": "Battery resistive circuit residual (V)",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "ft-bronco-conventional",
+        "check": "Battery coulomb-counting residual (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "ft-bronco-conventional",
+        "check": "Electrical state replay error (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "ft-bronco",
+        "check": "Battery resistive circuit residual (V)",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "ft-bronco",
+        "check": "Battery coulomb-counting residual (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "ft-bronco",
+        "check": "Electrical state replay error (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "ft-tiny-trainer",
+        "check": "Battery resistive circuit residual (V)",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "ft-tiny-trainer",
+        "check": "Battery coulomb-counting residual (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "ft-tiny-trainer",
+        "check": "Electrical state replay error (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "quad-x-450",
+        "check": "Battery resistive circuit residual (V)",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "quad-x-450",
+        "check": "Battery coulomb-counting residual (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "quad-x-450",
+        "check": "Electrical state replay error (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "quad-x-5inch",
+        "check": "Battery resistive circuit residual (V)",
+        "pass": true,
+        "metric": 1.7763568394002505e-15,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "quad-x-5inch",
+        "check": "Battery coulomb-counting residual (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "quad-x-5inch",
+        "check": "Electrical state replay error (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "quad-x-6s",
+        "check": "Battery resistive circuit residual (V)",
+        "pass": true,
+        "metric": 3.552713678800501e-15,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "quad-x-6s",
+        "check": "Battery coulomb-counting residual (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "quad-x-6s",
+        "check": "Electrical state replay error (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      },
+      {
+        "aircraft": "vt-simple-trainer",
+        "check": "Battery resistive circuit residual (V)",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "vt-simple-trainer",
+        "check": "Battery coulomb-counting residual (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 1e-10
+      },
+      {
+        "aircraft": "vt-simple-trainer",
+        "check": "Electrical state replay error (SOC)",
+        "pass": true,
+        "metric": 0,
+        "limit": 0
+      }
+    ]
+  },
+  "jsbsim": {
+    "reference": {
+      "engine": "JSBSim",
+      "version": "1.3.1",
+      "upstreamCommit": "3b25f25e49b42d0489c04ac805674fc1450ca579"
+    },
+    "cases": 56,
+    "checks": 616,
+    "maximumErrors": {
+      "Mass error (kg)": {
+        "value": 1.1102230246251565e-15,
+        "limit": 1e-10,
+        "case": "bronco-tri-vtol/airframe"
+      },
+      "CG error (m)": {
+        "value": 5.001451767786857e-17,
+        "limit": 1e-10,
+        "case": "quad-x-5inch/moved-component"
+      },
+      "Inertia tensor error (kg m²)": {
+        "value": 1.163250784956425e-16,
+        "limit": 1e-10,
+        "case": "bronco-tri-vtol/airframe"
+      },
+      "Maximum force error (N)": {
+        "value": 4.3296420519922953e-14,
+        "limit": 1e-8,
+        "case": "ft-22-raptor/airframe"
+      },
+      "Maximum moment error (Nm)": {
+        "value": 9.018512199660678e-15,
+        "limit": 1e-8,
+        "case": "ft-22-raptor/airframe"
+      },
+      "Maximum position error (m)": {
+        "value": 0.0003695471220452736,
+        "limit": 0.005,
+        "case": "vt-simple-trainer/power-off"
+      },
+      "240 Hz position convergence": {
+        "value": 0.0000924509551946644,
+        "limit": 0.0002786829854316915,
+        "case": "vt-simple-trainer/power-off"
+      },
+      "Maximum velocity error (m/s)": {
+        "value": 0.0023864150883053954,
+        "limit": 0.005,
+        "case": "vt-simple-trainer/power-off"
+      },
+      "240 Hz velocity convergence": {
+        "value": 0.0005494789834241111,
+        "limit": 0.0016904905618137767,
+        "case": "vt-simple-trainer/power-off"
+      },
+      "Maximum omega error (rad/s)": {
+        "value": 0.005619470136850758,
+        "limit": 0.01,
+        "case": "ft-22-raptor/power-off"
+      },
+      "240 Hz omega convergence": {
+        "value": 0.0013821081521202317,
+        "limit": 0.0039536290957955305,
+        "case": "ft-22-raptor/power-off"
+      },
+      "Maximum attitude error (rad)": {
+        "value": 0.00018304648039974865,
+        "limit": 0.002,
+        "case": "ft-22-raptor/power-off"
+      },
+      "240 Hz attitude convergence": {
+        "value": 0.000041436525732961655,
+        "limit": 0.00014813253627982405,
+        "case": "ft-22-raptor/power-off"
+      },
+      "JSBSim 3840/7680 Hz position convergence": {
+        "value": 0.000011920929511386237,
+        "limit": 0.00002,
+        "case": "quad-x-6s/power-off"
+      },
+      "JSBSim 3840/7680 Hz velocity convergence": {
+        "value": 0.000002504545398809737,
+        "limit": 0.00001,
+        "case": "vt-simple-trainer/power-off"
+      },
+      "JSBSim 3840/7680 Hz omega convergence": {
+        "value": 0.000002676795261417427,
+        "limit": 0.00001,
+        "case": "ft-22-raptor/power-off"
+      },
+      "JSBSim 3840/7680 Hz attitude convergence": {
+        "value": 2.598106231415675e-7,
+        "limit": 0.00001,
+        "case": "vt-simple-trainer/power-off"
+      }
+    },
+    "exclusions": [
+      "Measured flight accuracy",
+      "Propwash and rotor-wing interference",
+      "Servo/motor transients",
+      "Battery charge integration",
+      "Closed-loop quad/VTOL controllers",
+      "Ground and obstacle contacts",
+      "Tabulated aerodynamic polars",
+      "Browser wall-clock scheduling"
+    ]
+  },
+  "nasa": {
+    "sources": {
+      "case": "NESC 2015 atmospheric case 02: torque-free rotational subset",
+      "specification": "https://nescacademy.nasa.gov/flightsim/2015/atmospheric/acc02",
+      "body": "https://nescacademy.nasa.gov/flightsim/2015/bodies",
+      "retrieved": "2026-09-08",
+      "baseUrl": "https://nescacademy.nasa.gov/workshop/FlightSim/2015/atmos_scn_02/",
+      "files": {
+        "Atmos_02_sim_01.csv": "deb423c19bcdd1b99fdf6c0d2bbd1b6c1db5b68410a8e1dbe7a6cedb1b724f79",
+        "Atmos_02_sim_02.csv": "2e8f3fd6481f3c10325a0e28167f3c3bc12e50df0244adb04105bdbf8d51c566",
+        "Atmos_02_sim_04.csv": "adc7aa647ed38ae74280979e5c4e4d6d950799c6350ce842f7f3d2fd731e241a",
+        "Atmos_02_sim_05.csv": "1b81189ad638d46416758ef592d13d52d558b43501a23b830396def988987e60",
+        "Atmos_02_sim_06.csv": "b4f97de225adcd15f5d3a91fab718b2e0cddd94efa6b752e461b169ff4931d1a"
+      }
+    },
+    "at120": [
+      {
+        "file": "Atmos_02_sim_01.csv",
+        "samples": 301,
+        "maxRateErrorDegS": 0.00035195201705281396,
+        "rmsRateErrorDegS": 0.00020033728703759012
+      },
+      {
+        "file": "Atmos_02_sim_02.csv",
+        "samples": 301,
+        "maxRateErrorDegS": 0.0009151978930239534,
+        "rmsRateErrorDegS": 0.0005248421939212702
+      },
+      {
+        "file": "Atmos_02_sim_04.csv",
+        "samples": 301,
+        "maxRateErrorDegS": 0.00035195205627442484,
+        "rmsRateErrorDegS": 0.00020033727519715435
+      },
+      {
+        "file": "Atmos_02_sim_05.csv",
+        "samples": 3001,
+        "maxRateErrorDegS": 0.0003156334834692617,
+        "rmsRateErrorDegS": 0.0001733820382832377
+      },
+      {
+        "file": "Atmos_02_sim_06.csv",
+        "samples": 301,
+        "maxRateErrorDegS": 0.004667803404910522,
+        "rmsRateErrorDegS": 0.0037147416498081076
+      }
+    ],
+    "at240": [
+      {
+        "file": "Atmos_02_sim_01.csv",
+        "samples": 301,
+        "maxRateErrorDegS": 0.00008799291520952086,
+        "rmsRateErrorDegS": 0.000050076126115875264
+      },
+      {
+        "file": "Atmos_02_sim_02.csv",
+        "samples": 301,
+        "maxRateErrorDegS": 0.0011723046418019043,
+        "rmsRateErrorDegS": 0.0006704088927755037
+      },
+      {
+        "file": "Atmos_02_sim_04.csv",
+        "samples": 301,
+        "maxRateErrorDegS": 0.00008799295450210093,
+        "rmsRateErrorDegS": 0.000050076114308015635
+      },
+      {
+        "file": "Atmos_02_sim_05.csv",
+        "samples": 3001,
+        "maxRateErrorDegS": 0.000050451704397029693,
+        "rmsRateErrorDegS": 0.00002434630789382178
+      },
+      {
+        "file": "Atmos_02_sim_06.csv",
+        "samples": 301,
+        "maxRateErrorDegS": 0.0047238396702741865,
+        "rmsRateErrorDegS": 0.0038425077199065283
+      }
+    ],
+    "limitDegS": 0.01,
+    "medianConvergenceRatio": 0.25001403723435234,
+    "scope": "Published NESC case 02 torque-free inertial body-rate subset only. Not a complete NASA case pass, rotating-Earth verification or measured flight validation."
+  },
+  "envelope": [
+    {
+      "aircraft": "bronco-tri-vtol",
+      "conditions": 162,
+      "trimmed": 107,
+      "nonfiniteLoads": 0,
+      "sites": ["club", "valley", "mesa"],
+      "speedsMps": [0, 9, 12, 14, 16, 22],
+      "massScales": [0.8, 1, 1.2],
+      "batterySoc": [1, 0.5, 0.15]
+    },
+    {
+      "aircraft": "ft-22-raptor",
+      "conditions": 135,
+      "trimmed": 57,
+      "nonfiniteLoads": 0,
+      "sites": ["club", "valley", "mesa"],
+      "speedsMps": [6, 9, 12, 16, 22],
+      "massScales": [0.8, 1, 1.2],
+      "batterySoc": [1, 0.5, 0.15]
+    },
+    {
+      "aircraft": "ft-bronco-conventional",
+      "conditions": 135,
+      "trimmed": 72,
+      "nonfiniteLoads": 0,
+      "sites": ["club", "valley", "mesa"],
+      "speedsMps": [6, 9, 12, 16, 22],
+      "massScales": [0.8, 1, 1.2],
+      "batterySoc": [1, 0.5, 0.15]
+    },
+    {
+      "aircraft": "ft-bronco",
+      "conditions": 135,
+      "trimmed": 81,
+      "nonfiniteLoads": 0,
+      "sites": ["club", "valley", "mesa"],
+      "speedsMps": [6, 9, 12, 16, 22],
+      "massScales": [0.8, 1, 1.2],
+      "batterySoc": [1, 0.5, 0.15]
+    },
+    {
+      "aircraft": "ft-tiny-trainer",
+      "conditions": 135,
+      "trimmed": 81,
+      "nonfiniteLoads": 0,
+      "sites": ["club", "valley", "mesa"],
+      "speedsMps": [6, 9, 12, 16, 22],
+      "massScales": [0.8, 1, 1.2],
+      "batterySoc": [1, 0.5, 0.15]
+    },
+    {
+      "aircraft": "quad-x-450",
+      "conditions": 27,
+      "trimmed": 27,
+      "nonfiniteLoads": 0,
+      "sites": ["club", "valley", "mesa"],
+      "speedsMps": [0],
+      "massScales": [0.8, 1, 1.2],
+      "batterySoc": [1, 0.5, 0.15]
+    },
+    {
+      "aircraft": "quad-x-5inch",
+      "conditions": 27,
+      "trimmed": 27,
+      "nonfiniteLoads": 0,
+      "sites": ["club", "valley", "mesa"],
+      "speedsMps": [0],
+      "massScales": [0.8, 1, 1.2],
+      "batterySoc": [1, 0.5, 0.15]
+    },
+    {
+      "aircraft": "quad-x-6s",
+      "conditions": 27,
+      "trimmed": 27,
+      "nonfiniteLoads": 0,
+      "sites": ["club", "valley", "mesa"],
+      "speedsMps": [0],
+      "massScales": [0.8, 1, 1.2],
+      "batterySoc": [1, 0.5, 0.15]
+    },
+    {
+      "aircraft": "vt-simple-trainer",
+      "conditions": 135,
+      "trimmed": 81,
+      "nonfiniteLoads": 0,
+      "sites": ["club", "valley", "mesa"],
+      "speedsMps": [6, 9, 12, 16, 22],
+      "massScales": [0.8, 1, 1.2],
+      "batterySoc": [1, 0.5, 0.15]
+    }
+  ]
+}
