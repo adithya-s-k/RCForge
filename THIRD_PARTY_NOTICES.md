@@ -95,3 +95,13 @@ as a separately installed development tool. The original MIT adapter in
 definitions. JSBSim source, binaries and upstream aircraft assets are not bundled
 in RCForge or the browser application. See [comparison methodology](docs/physics-reference.md)
 for the inspected source revision, matching assumptions and evidence limits.
+
+`npm run physics:nasa -- --fetch` downloads five published numerical trajectories
+from the [NASA Engineering and Safety Center 2015 flight-simulation check cases](https://nescacademy.nasa.gov/flightsim/2015).
+The [case 02 specification](https://nescacademy.nasa.gov/flightsim/2015/atmospheric/acc02)
+and [brick definition](https://nescacademy.nasa.gov/flightsim/2015/bodies) supply
+the reference conditions. Exact URLs and SHA-256 identities are recorded in
+`scripts/reference/nasa-sources.json`. Raw files stay in the ignored local
+`results/` cache, outside the application and documentation bundles. The comparison
+covers only inertial body angular rates, not the full rotating-Earth case. No NASA
+endorsement or certification is implied.

@@ -76,7 +76,7 @@ npm run references:check  # Credits and optional local plan checksums; no networ
 npm run format:check
 ```
 
-For physics changes, also run `npm run physics:validate` and `npm run physics:envelope`. The optional `npm run physics:reference` compares matched cases against native JSBSim; follow its [setup and coverage guide](docs/physics-reference.md). See [verification](docs/physics-validation.md) for experiments and measured-data comparisons.
+For physics changes, also run `npm run physics:validate` and `npm run physics:envelope`. The optional `npm run physics:reference` compares matched cases against native JSBSim; follow its [setup and coverage guide](docs/physics-reference.md). `npm run physics:nasa -- --fetch` compares torque-free rotation with five published NASA trajectories. See [verification](docs/physics-validation.md) for coverage, experiments and measured-data comparisons.
 
 | Path                                  | Responsibility                                          |
 | ------------------------------------- | ------------------------------------------------------- |

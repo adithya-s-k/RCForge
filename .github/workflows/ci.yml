@@ -42,7 +42,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
   physics-reference:
-    name: Physics / Independent JSBSim reference
+    name: Physics / JSBSim and published NASA reference
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -59,12 +59,15 @@ jobs:
       - run: npm ci
       - run: python -m pip install -r scripts/reference/requirements.txt
       - run: npm run physics:reference -- --python python
+      - run: npm run physics:nasa -- --fetch
       - name: Retain independent comparison and reference logs
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: jsbsim-reference-verification
-          path: results/validation/reference/
+          name: independent-reference-verification
+          path: |
+            results/validation/reference/
+            results/validation/nasa/
           if-no-files-found: ignore
           retention-days: 14
   arduino:

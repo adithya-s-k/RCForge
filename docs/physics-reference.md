@@ -158,8 +158,13 @@ smaller RCForge timestep. Regenerate the report for current values and hashes.
 
 No gravity constant, aircraft coefficient or runtime dynamics was changed to
 obtain agreement. These results support the numerical implementation within this
-coverage. They do not resolve estimated stall/drag/thrust behavior or the separate
-browser wall-clock slowdown when frame intervals exceed 50 ms.
+coverage. They do not resolve estimated stall/drag/thrust behavior. Separate
+[browser-clock tests](physics-validation.md#browser-timing-and-input) now cover
+the corrected wall-clock scheduling; this JSBSim suite does not exercise the browser.
+
+An additional [published NASA trajectory comparison](physics-validation.md#published-nasa-rotation-reference)
+checks the torque-free rotational subsystem against five externally generated
+datasets, without using RCForge's own trajectories as the reference.
 
 Next additions should bring independent evidence for the uncovered subsystem:
 native JSBSim actuator/transient cases, appropriately matched contact cases, and

@@ -16,6 +16,13 @@ load/backlash and realistic sensor/estimator behavior remain unmodeled.
 
 ## Automated checks
 
+The current verification includes [native JSBSim subsystem comparisons](physics-reference.md),
+[five published NASA rotational trajectories](physics-validation.md#published-nasa-rotation-reference),
+and [browser-clock/input regression tests](physics-validation.md#browser-timing-and-input).
+The clock correction removes the former slow-motion behavior below 20 display FPS;
+long frame stalls now pause flight. Aircraft coefficients remain estimates. No new
+bench or flight measurements were supplied for these checks.
+
 `npm run check` validates all bundled aircraft, runs unit/behavior tests, checks TypeScript and creates a production build. Tests cover:
 
 - Invalid definitions, duplicate IDs and nonfinite parameters.
