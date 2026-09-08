@@ -49,5 +49,6 @@ for mode, bg, ink, muted, grid, standard, finer in [
     out = ROOT / f"docs/images/benchmark-nasa{mode}.svg"
     fig.savefig(out, metadata={"Date": None, "Title": "RCForge versus published NASA angular rates",
                               "Description": "Maximum three-axis inertial body-rate differences over 30 seconds at 120 and 240 Hz; all five reference datasets are below the 0.01 degree per second engineering limit."})
+    out.write_text("\n".join(line.rstrip() for line in out.read_text().splitlines()) + "\n")
     plt.close(fig)
     print(out.relative_to(ROOT))
