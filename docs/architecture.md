@@ -64,7 +64,7 @@ Keyboard commands ease toward their targets to make digital keys usable. Control
 
 Scenarios operate on the same `Simulation` implementation. The comparison UI plots altitude, airspeed, roll or pitch from the recorded samples, defaulting to the axis under test for pulse scenarios. It reports initial control commands as well as final outcomes; independently trimmed cruise cases can follow the same altitude despite different mass or required power. Seeded gusts are analytic time functions, independent of rendering and input polling. Recordings contain the full initial state, environment and aircraft plus every normalized control frame. They are versioned and validated on import. Inputs are recorded after trim/calibration so a replay does not depend on local controller settings.
 
-Browser recording is bounded to 36,000 frames (five minutes). The rendering loop discards large wall-time backlogs and pauses on focus loss. Under load simulation time can advance slower than wall time; physics dt does not stretch. CLI execution has no graphics dependency.
+Browser recording is bounded to 36,000 frames (five minutes). `app/flight-clock.ts` converts elapsed browser time into complete 1/120 s steps, retaining fractional time. It advances the same simulated time at 15 and 60 display FPS; presentation timing is separate. A frame gap over 250 ms pauses flight with an explanation and clears held input, instead of silently slowing time or applying a large burst of stale commands. Focus loss also pauses. Explicit resume resets the clock without advancing through the pause. The control bench uses the same clock for servo preview. CLI execution has no graphics dependency.
 
 ## Extension sequence
 
