@@ -62,6 +62,21 @@ export const sha256 = (data: Buffer | string) =>
   createHash("sha256").update(data).digest("hex");
 
 export function workingDocs(root: string): DocsContent {
+  // A hosted checkout may deliberately pin a reviewed PR before main is merged.
+  // Source links must describe that checkout, including newly added guides.
+  let sourceRef = "main";
+  if (existsSync(join(root, ".git"))) {
+    try {
+      const revision = execFileSync("git", ["rev-parse", "HEAD"], {
+        cwd: root,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"],
+      }).trim();
+      if (/^[a-f0-9]{40}$/.test(revision)) sourceRef = revision;
+    } catch {
+      // Source archives and detached metadata retain the main-branch fallback.
+    }
+  }
   const version = JSON.parse(
     readFileSync(join(root, "package.json"), "utf8"),
   ).version;
@@ -85,7 +100,7 @@ export function workingDocs(root: string): DocsContent {
     version,
     simulation: SIM_VERSION,
     aircraftFormat: AIRCRAFT_FORMAT_VERSION,
-    sourceRef: "main",
+    sourceRef,
     pages,
     files,
     frozen: false,

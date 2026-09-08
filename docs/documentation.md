@@ -76,6 +76,10 @@ the source prompt remains readable with its placeholders.
 The label uses `package.json`, while physics and aircraft format numbers come from
 their own source constants. A development version is not presented as a release.
 
+Source links in a Git checkout use its current commit, so a hosted build pinned to
+a reviewed PR still links to the matching code. Source archives without Git
+metadata fall back to `main`. Frozen releases always use their recorded source commit.
+
 Maintainers freeze a documentation snapshot only when preparing a release:
 
 ```sh
