@@ -2,8 +2,8 @@
 
 ## Current compatibility
 
-Simulation **0.8.0** adds tricopter VTOL actuator/controller state and replay
-commands. Aircraft format-1 definitions still load; the optional `vtol` extension
+Simulation **0.8.1** includes obstacle-collision snapshots and retains the
+tricopter VTOL actuator/controller state and replay commands introduced in 0.8.0. Aircraft format-1 definitions still load; the optional `vtol` extension
 and `vehicleType: "vtol"` require the current reader. Recordings must match the
 exact simulation version; earlier recordings are rejected rather than replayed
 with changed behavior. Use their original engine version or record a fresh flight.
@@ -69,7 +69,7 @@ add artificial stabilization to conceal them.
 
 Measure assembled mass and CG, estimate or measure inertia, measure thrust against throttle/airspeed, obtain appropriate low-Reynolds-number aerodynamic polars, and compare trim speed, glide descent, stall onset and control response with recorded physical flights. Keep calibration data and uncertainty separate from implementation tests. Add regression cases when a model is calibrated.
 
-The estimated Quad X adds upward rotor thrust, reaction torque, actuator lag and a simple internal angle/rate controller. Numerical reports and measured-CSV comparison are available; see `physics-validation.md`. JSBSim comparison, physical hardware verification and flight-test calibration remain future work. The Arduino bridge has user-supplied evidence of trainer-to-Nano PPM reception and serial packet output; accepted flight input, calibration and signal-loss recovery remain unconfirmed. Receiver PPM/PWM connections are still to be tested successfully; see [connection test status](radio-setup.md#connection-test-status). There is no claim that a browser rendering proves numerical accuracy or that simulated success predicts a safe real-world flight.
+The estimated Quad X adds upward rotor thrust, reaction torque, actuator lag and a simple internal angle/rate controller. Numerical reports and measured-CSV comparison are available; see `physics-validation.md`. [JSBSim comparison](physics-reference.md) now checks matched reduced-model cases independently. Complete flight-controller behavior, contact agreement, physical hardware verification and flight-test calibration remain outside that comparison. The Arduino bridge has user-supplied evidence of trainer-to-Nano PPM reception and serial packet output; accepted flight input, calibration and signal-loss recovery remain unconfirmed. Receiver PPM/PWM connections are still to be tested successfully; see [connection test status](radio-setup.md#connection-test-status). There is no claim that a browser rendering proves numerical accuracy or that simulated success predicts a safe real-world flight.
 
 ## Version 0.2 additions
 

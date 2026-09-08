@@ -182,12 +182,13 @@ const report = {
     .update(definitions.join("\n"))
     .digest("hex"),
   scope:
-    "Numerical verification only. No measured aircraft comparison or independent-engine comparison has been performed.",
+    "Internal numerical verification only. Independent JSBSim comparison is a separate physics:reference run; measured-aircraft calibration remains pending.",
   passed: checks.every((c) => c.pass),
   checks,
   externalValidation: {
     measuredFlights: "pending",
-    independentBackend: "pending",
+    independentBackend:
+      "separate physics:reference report; not run by this command",
     physicalController: "pending",
   },
 };
@@ -206,7 +207,7 @@ const escape = (s: string) =>
   );
 await writeFile(
   "results/validation/report.html",
-  `<!doctype html><meta charset="utf-8"><title>RCForge physics verification</title><style>body{font:15px system-ui;background:#111b22;color:#dce7ec;max-width:1100px;margin:50px auto;padding:20px}h1{font-weight:500}p{line-height:1.7;color:#9eb3bf}table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;padding:12px;border-bottom:1px solid #344550}.pass{color:#bbd89e}.fail{color:#ed8f77}</style><h1>RCForge · Physics verification</h1><p>Simulator ${SIM_VERSION} · ${report.generatedAt}<br>${report.scope}</p><h2 class="${report.passed ? "pass" : "fail"}">${checks.filter((c) => c.pass).length} / ${checks.length} checks passed</h2><table><tr><th>Aircraft</th><th>Check</th><th>Measured error</th><th>Limit</th><th>Result</th></tr>${checks.map((c) => `<tr><td>${escape(c.aircraft)}</td><td>${escape(c.check)}</td><td>${c.metric.toExponential(3)}</td><td>${c.limit.toExponential(3)}</td><td class="${c.pass ? "pass" : "fail"}">${c.pass ? "PASS" : "FAIL"}</td></tr>`).join("")}</table><h2>Not yet validated</h2><p>Real flight fidelity, independent engine agreement, exact transmitter integration, rotor thrust curves, flight-controller firmware and battery/electrical response require additional evidence. Passing these numerical checks does not establish those claims.</p>`,
+  `<!doctype html><meta charset="utf-8"><title>RCForge physics verification</title><style>body{font:15px system-ui;background:#111b22;color:#dce7ec;max-width:1100px;margin:50px auto;padding:20px}h1{font-weight:500}p{line-height:1.7;color:#9eb3bf}table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;padding:12px;border-bottom:1px solid #344550}.pass{color:#bbd89e}.fail{color:#ed8f77}</style><h1>RCForge · Physics verification</h1><p>Simulator ${SIM_VERSION} · ${report.generatedAt}<br>${report.scope}</p><h2 class="${report.passed ? "pass" : "fail"}">${checks.filter((c) => c.pass).length} / ${checks.length} checks passed</h2><table><tr><th>Aircraft</th><th>Check</th><th>Measured error</th><th>Limit</th><th>Result</th></tr>${checks.map((c) => `<tr><td>${escape(c.aircraft)}</td><td>${escape(c.check)}</td><td>${c.metric.toExponential(3)}</td><td>${c.limit.toExponential(3)}</td><td class="${c.pass ? "pass" : "fail"}">${c.pass ? "PASS" : "FAIL"}</td></tr>`).join("")}</table><h2>Not yet validated</h2><p>Real flight fidelity, exact transmitter integration, measured rotor thrust curves, flight-controller firmware and battery/electrical response require additional evidence. Independent implementation agreement is reported separately by physics:reference. Passing these numerical checks does not establish those claims.</p>`,
 );
 console.log(JSON.stringify(report, null, 2));
 if (!report.passed) process.exitCode = 1;

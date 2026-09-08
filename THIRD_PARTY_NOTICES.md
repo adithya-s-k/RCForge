@@ -85,3 +85,13 @@ Preserve attribution in the source definition, reference manifest, relevant mode
 guide and any distributed asset's notice. Record the original URL and terms before
 adding artwork. A source link or a checksum identifies evidence; neither grants a
 license. Follow [CONTRIBUTING.md](CONTRIBUTING.md) for review and permitted assets.
+
+## Optional flight-dynamics reference tool
+
+`npm run physics:reference` uses [JSBSim 1.3.1](https://github.com/JSBSim-Team/jsbsim/tree/v1.3.1),
+licensed under [LGPL-2.1](https://github.com/JSBSim-Team/jsbsim/blob/v1.3.1/COPYING),
+as a separately installed development tool. The original MIT adapter in
+`scripts/reference/` uses its public interfaces and independently authored test
+definitions. JSBSim source, binaries and upstream aircraft assets are not bundled
+in RCForge or the browser application. See [comparison methodology](docs/physics-reference.md)
+for the inspected source revision, matching assumptions and evidence limits.

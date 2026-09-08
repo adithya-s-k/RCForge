@@ -68,7 +68,7 @@ Browser recording is bounded to 36,000 frames (five minutes). The rendering loop
 
 ## Extension sequence
 
-Start additions with a concrete use case and tests. New aircraft generally need only JSON. A new input backend should produce `Controls`. A new environment should provide density and wind while retaining deterministic scenario inputs. A second physics backend should preserve state/control/recording semantics with an explicit backend identifier and capability checks; do not pretend all backends accept identical aerodynamic parameters. A JSBSim adapter is a future backend, not implemented.
+Start additions with a concrete use case and tests. New aircraft generally need only JSON. A new input backend should produce `Controls`. A new environment should provide density and wind while retaining deterministic scenario inputs. A second physics backend should preserve state/control/recording semantics with an explicit backend identifier and capability checks; do not pretend all backends accept identical aerodynamic parameters. `scripts/reference/` provides an optional offline JSBSim verification adapter, with independent point-mass assembly, force expressions and native rigid-body integration. It does not replace the browser backend or provide general aircraft conversion. See [reference verification](physics-reference.md).
 
 ## Browser workspaces
 

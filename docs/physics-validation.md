@@ -1,6 +1,6 @@
 # Verifying equations and validating flight behavior
 
-These are separate questions: **does the implementation solve the intended model consistently?** and **does that model reproduce a real vehicle?** RCForge currently has evidence for the first. Real flight, independent-backend agreement and physical hardware checks remain pending.
+These are separate questions: **does the implementation solve the intended model consistently?** and **does that model reproduce a real vehicle?** RCForge currently has evidence for the first. A separate JSBSim suite now checks independent implementation agreement for matched subsystem cases. Real-flight calibration and complete hardware/controller verification remain pending.
 
 ## 1. Repeatable numerical verification
 
@@ -14,11 +14,11 @@ npm run physics:envelope
 
 `physics:validate` discovers all `aircraft/*.json` files or accepts an aircraft ID/JSON path. It writes `results/validation/report.json` and `report.html`, including the simulator version and a SHA-256 digest of aircraft definitions. It checks equilibrium residuals, ten-second equilibrium drift at fixed battery SOC, recorded-input replay, timestep convergence against 480 Hz, an analytical free-fall case, analytical quadratic-drag descent, exact first-order actuator response, torque-free angular momentum/energy conservation, and yaw-coordinate invariance. A separately implemented 1 kHz RK4 integrator also compares airplane trajectories using the shared force model. Tests additionally cover force/control signs, mass/inertia, landing/takeoff, input normalization and multirotor control behavior.
 
-The convergence reference and replay use the same implementation, so they detect integration/serialization problems, not shared errors in aerodynamic assumptions. The free-fall, quadratic drag and actuator cases compare against analytical solutions. RK4 agreement checks the integrator but does not independently validate aerodynamic coefficients. The report explicitly records external validation as pending.
+The convergence reference and replay use the same implementation, so they detect integration/serialization problems, not shared errors in aerodynamic assumptions. The free-fall, quadratic drag and actuator cases compare against analytical solutions. RK4 agreement checks the integrator but does not independently validate aerodynamic coefficients. This report does not run the independent backend; that evidence lives in the separate reference report.
 
 ## 2. Independent model comparison
 
-Build the same mass/inertia, geometry, propulsion and force-model case in a second implementation, then run matched input histories. JSBSim documents a six-degree-of-freedom flight dynamics formulation: https://jsbsim-team.github.io/jsbsim-reference-manual/formulation/equations-of-motion/ . Agreement requires equivalent model assumptions; installing an engine does not provide a trustworthy aircraft model.
+Run `npm run physics:reference` after installing its optional Python requirements. It executes native JSBSim against all bundled aircraft in reduced mass, aerodynamic, gravity, rotation and propulsion cases, plus native wind-axis examples. Read [Compare with JSBSim](physics-reference.md) for setup, tolerances, source references and explicit exclusions. The browser continues to use RCForge. Agreement checks implementation consistency under shared model assumptions; it does not establish the accuracy of estimated aircraft coefficients.
 
 For actual flight-controller software, PX4 supports software-in-the-loop and hardware-in-the-loop integration with sensor/actuator messages: https://docs.px4.io/main/en/simulation/ . RCForge does not currently implement that bridge. It would need sensor models, timestamps, actuator interfaces and an explicit controller/backend selection.
 

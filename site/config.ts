@@ -97,6 +97,12 @@ export const pages = [
     file: "docs/physics-validation.md",
   },
   {
+    slug: "physics-reference",
+    title: "Compare with JSBSim",
+    group: "Understand the simulation",
+    file: "docs/physics-reference.md",
+  },
+  {
     slug: "aircraft-authoring",
     title: "Aircraft file format",
     group: "Understand the simulation",
